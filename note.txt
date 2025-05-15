@@ -1,0 +1,10 @@
+
+
+//  run commands in terminal
+    
+    g++ main.cpp game.cpp $(sdl2-config --cflags --libs) -o main
+
+
+// open the compiled code
+
+    ./main

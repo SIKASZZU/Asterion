@@ -1,0 +1,56 @@
+#pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
+#include <SDL2/SDL.h>
+
+/* map */
+const int map_size = 125;
+const int tile_size = 32; 
+extern int map[map_size][map_size];
+
+// /* screen */
+// int win_width;
+// int win_height;
+
+/* camera offset */
+struct Offset {
+    int x;
+    int y;
+};
+
+/* movement_speed, size, x, y */
+struct Player {
+    int movement_speed;
+    int size;
+    int x;
+    int y;
+};
+
+extern Player player;
+
+/* game */
+extern bool isRunning;
+
+/* framerate */
+extern Uint32 frame_start;
+extern Uint32 frame_time;
+extern int frame_count;
+extern float fps;
+extern Uint32 fps_timer;
+
+/* tickrate */
+extern const int tickrate;
+extern const int tick_delay;
+extern Uint32 previous_tick;
+extern Uint32 tick_lag;
+extern int tick_count;
+extern float ticks_per_second;
+extern Uint32 tick_timer;
+
+/* functions */
+void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset);
+int random_number_gen(int size);
+void generate_random_map(int map[map_size][map_size], int min_val, int max_val);
+void print_map(int map[map_size][map_size]);
+void update_offset(struct Offset& offset);
+void update_player(struct Offset& offset);
+
+
