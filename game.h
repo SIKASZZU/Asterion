@@ -2,8 +2,8 @@
 #include <SDL2/SDL.h>
 
 /* map */
-const int map_size = 256;
-const int tile_size = 32; 
+const int map_size = 100;
+const int tile_size = 100; 
 extern int map[map_size][map_size];
 
 // /* screen */
@@ -47,7 +47,8 @@ extern float ticks_per_second;
 extern Uint32 tick_timer;
 
 /* functions */
-void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset);
+void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
+                SDL_Texture* ground_tex, SDL_Texture* tree_tex);
 int random_number_gen(int size);
 void generate_random_map(int map[map_size][map_size], int min_val, int max_val);
 void print_map(int map[map_size][map_size]);

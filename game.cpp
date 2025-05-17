@@ -30,9 +30,10 @@ const int tick_delay = 1000 / tickrate;
 int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
-int render_radius = 8;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
+int render_radius = 80;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
-void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset) {
+void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
+                SDL_Texture* ground_tex, SDL_Texture* tree_tex) {
     /* Render map array data */
 
     /* RENDER ONLY IN render_radius TILES */
@@ -63,13 +64,19 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             switch (map[column][row]) {
             
             case 1: // green ground
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                SDL_RenderFillRect(renderer, &tile);
+                SDL_RenderCopy(renderer, ground_tex, nullptr, &tile);
+                // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                // SDL_RenderFillRect(renderer, &tile);
                 continue;
                 
             case 2: // grey ground
-                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
-                SDL_RenderFillRect(renderer, &tile);
+                // below
+                SDL_RenderCopy(renderer, ground_tex, nullptr, &tile);
+                // above ground
+                SDL_RenderCopy(renderer, tree_tex, nullptr, &tile);
+
+                // SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+                // SDL_RenderFillRect(renderer, &tile);
                 continue;
             
             default:

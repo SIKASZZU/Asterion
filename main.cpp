@@ -1,4 +1,5 @@
 #include <iostream>
+#include <SDL_image.h>
 #include "game.h"
 
 int main(int argc, char* argv[]) {
@@ -9,6 +10,7 @@ int main(int argc, char* argv[]) {
     // print_map(map);
 
     SDL_Init(SDL_INIT_VIDEO);
+    IMG_Init(IMG_INIT_PNG);
 
     SDL_Window* window = SDL_CreateWindow("SDL cpp",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -16,6 +18,10 @@ int main(int argc, char* argv[]) {
     
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   
+    /* textures */
+    SDL_Texture* ground_tex = IMG_LoadTexture(renderer, "resources/snowy_ground.png");
+    SDL_Texture* tree_tex   = IMG_LoadTexture(renderer, "resources/snowy_tree.png");
+
     SDL_GetWindowSize(window, &win_width, &win_height);
 
     int mid_x_point = (win_width / 2) - (player.size / 2);
@@ -49,12 +55,12 @@ int main(int argc, char* argv[]) {
 
             update_offset(offset);
             update_player(offset, win_width, win_height);
-
+            
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with black
             SDL_RenderClear(renderer);  // clear previous frame
             
-            render_map(renderer, tile_size, offset);
+            render_map(renderer, tile_size, offset, ground_tex, tree_tex);
             
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
             SDL_RenderFillRect(renderer, &rect);  // player
@@ -83,6 +89,9 @@ int main(int argc, char* argv[]) {
     // Cleanup if isRunning == false
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_DestroyTexture(ground_tex);
+    SDL_DestroyTexture(tree_tex);
     SDL_Quit();
+    IMG_Quit();
     return 0;
 }
