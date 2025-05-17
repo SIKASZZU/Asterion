@@ -142,20 +142,27 @@ void print_map(int map[map_size][map_size]) {
 void update_offset(struct Offset& offset) {
     const Uint8* state = SDL_GetKeyboardState(NULL);
 
-    if (state[SDL_SCANCODE_W]) {
-        offset.y += player.movement_speed;
+    /* see updateimine toimub ainult playeri liikumise pealt */
+    int dx = 0;
+    int dy = 0;
+
+    if (state[SDL_SCANCODE_W]) dy += 1;
+    if (state[SDL_SCANCODE_S]) dy -= 1;
+    if (state[SDL_SCANCODE_A]) dx += 1;
+    if (state[SDL_SCANCODE_D]) dx -= 1;
+
+    // Normalize ? input == 2 : default movement logic
+    float length = std::sqrt(dx * dx + dy * dy);
+    if (length != 0) {
+        dx = dx / length * player.movement_speed;
+        dy = dy / length * player.movement_speed;
+
+        offset.x += dx;
+        offset.y += dy;
     }
-    
-    if (state[SDL_SCANCODE_S]) {
-        offset.y -= player.movement_speed;
-    }
-    
-    if (state[SDL_SCANCODE_A]) {
+    else if (dx != 0 || dy != 0){
         offset.x += player.movement_speed;
-    }
-    
-    if (state[SDL_SCANCODE_D]) {
-        offset.x -= player.movement_speed;
+        offset.y += player.movement_speed;
     }
 }
 
