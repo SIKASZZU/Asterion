@@ -12,6 +12,8 @@ Player player = {
 };
 
 bool isRunning = true;
+int win_width;
+int win_height;
 
 /* framerate */
 int frame_count = 0;
@@ -28,28 +30,44 @@ const int tick_delay = 1000 / tickrate;
 int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
+int render_radius = 8;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset) {
-    /* Render map array info */
-    /* 1 = Ground, background = blue */
+    /* Render map array data */
 
+    /* RENDER ONLY IN render_radius TILES */
     for (int column = 0; column < map_size; column++) {
+        
+        int player_tile_y = player.y / tile_size;
+        int bottom = player_tile_y + render_radius;
+        int top    = player_tile_y - render_radius;
+        
+        if (column < top || column > bottom) {
+            continue;
+        }
+
         for (int row = 0; row < map_size; row++) {
-            SDL_Rect tile = {
-                    column * tile_size + offset.x,
-                    row * tile_size + offset.y,
-                    tile_size,
-                    tile_size
-                };
+        
+            int player_tile_x = player.x / tile_size;
+            int left   = player_tile_x - render_radius;
+            int right  = player_tile_x + render_radius;
+        
+            if (row < left || row > right) {
+                continue;  // tile out of bounds
+            }
+            
+            int col_coord = column * tile_size + offset.y;
+            int row_coord = row * tile_size + offset.x;
+            SDL_Rect tile = {row_coord, col_coord, tile_size, tile_size};
 
             switch (map[column][row]) {
             
-            case 1:
+            case 1: // green ground
                 SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
                 SDL_RenderFillRect(renderer, &tile);
                 continue;
                 
-            case 2:
+            case 2: // grey ground
                 SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
                 SDL_RenderFillRect(renderer, &tile);
                 continue;
@@ -141,11 +159,11 @@ void update_offset(struct Offset& offset) {
     }
 }
 
-void update_player(struct Offset& offset){
+void update_player(struct Offset& offset, int win_width, int win_height){
 
     // kui offset x on neg, siis muuta pos ja kui x on pos siis muuta negiks.
-    player.x = -offset.x;
-    player.y = -offset.y;
+    player.x = -offset.x + win_width / 2;
+    player.y = -offset.y + win_height / 2;
 
     // std::cout << "player x,y " << player.x << ' ' << player.y << '\n';
     // std::cout << "offset x,y " << offset.x << ' ' << offset.y << '\n';

@@ -2,13 +2,13 @@
 #include <SDL2/SDL.h>
 
 /* map */
-const int map_size = 125;
+const int map_size = 256;
 const int tile_size = 32; 
 extern int map[map_size][map_size];
 
 // /* screen */
-// int win_width;
-// int win_height;
+extern int win_width;
+extern int win_height;
 
 /* camera offset */
 struct Offset {
@@ -28,6 +28,7 @@ extern Player player;
 
 /* game */
 extern bool isRunning;
+extern int render_radius;
 
 /* framerate */
 extern Uint32 frame_start;
@@ -51,6 +52,6 @@ int random_number_gen(int size);
 void generate_random_map(int map[map_size][map_size], int min_val, int max_val);
 void print_map(int map[map_size][map_size]);
 void update_offset(struct Offset& offset);
-void update_player(struct Offset& offset);
+void update_player(struct Offset& offset, int win_width, int win_height);
 
 

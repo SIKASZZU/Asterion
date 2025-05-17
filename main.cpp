@@ -16,7 +16,6 @@ int main(int argc, char* argv[]) {
     
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   
-    int win_width, win_height;
     SDL_GetWindowSize(window, &win_width, &win_height);
 
     int mid_x_point = (win_width / 2) - (player.size / 2);
@@ -49,7 +48,7 @@ int main(int argc, char* argv[]) {
             tick_lag -= tick_delay;  // update tickrate
 
             update_offset(offset);
-            update_player(offset);
+            update_player(offset, win_width, win_height);
 
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with black
