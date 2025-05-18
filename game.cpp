@@ -34,57 +34,51 @@ int render_radius = 80;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE
 
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
                 SDL_Texture* ground_tex, SDL_Texture* tree_tex) {
-    /* Render map array data */
+    int player_tile_y = player.y / tile_size;
+    int bottom = player_tile_y + render_radius;
+    int top    = player_tile_y - render_radius;
 
-    /* RENDER ONLY IN render_radius TILES */
+    int player_tile_x = player.x / tile_size;
+    int left   = player_tile_x - render_radius;
+    int right  = player_tile_x + render_radius;
+
+    // Pass 1: Render all ground tiles
     for (int column = 0; column < map_size; column++) {
+        if (column < top || column > bottom) continue;
         
-        int player_tile_y = player.y / tile_size;
-        int bottom = player_tile_y + render_radius;
-        int top    = player_tile_y - render_radius;
-        
-        if (column < top || column > bottom) {
-            continue;  // tile out of bounds
+        for (int row = 0; row < map_size; row++) {
+            if (row < left || row > right) continue;
+            
+            int row_coord = row * tile_size + offset.x;
+            int col_coord = column * tile_size + offset.y;
+            SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
+
+            if (map[column][row] != 0) {
+                SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
+            }
         }
+    }
+
+    // Pass 2: Render all tree tiles
+    for (int column = 0; column < map_size; column++) {
+        if (column < top || column > bottom) continue;
 
         for (int row = 0; row < map_size; row++) {
-        
-            int player_tile_x = player.x / tile_size;
-            int left   = player_tile_x - render_radius;
-            int right  = player_tile_x + render_radius;
-        
-            if (row < left || row > right) {
-                continue;  // tile out of bounds
-            }
-            
-            int col_coord = column * tile_size + offset.y;
-            int row_coord = row * tile_size + offset.x;
-            SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
-            
-            int tree_height = tile_size * 3;
-            int tree_width  = tile_size * 2;
-            SDL_Rect tree_tile = {row_coord - (tile_size / 2), col_coord - tree_height + tile_size,
-                                tree_width, tree_height};
-                                
-            SDL_Rect default_tile = {row_coord, col_coord, tile_size, tile_size};
-            switch (map[column][row]) {
-                
-            case !0:
+            if (row < left || row > right) continue;
+
+            if (map[column][row] == 2) {
+                int col_coord = column * tile_size + offset.y;
+                int row_coord = row * tile_size + offset.x;
+
+                SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
                 SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
-                // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                // SDL_RenderFillRect(renderer, &tile);
-                continue;
-                
-            case 2:
-                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
-                SDL_RenderFillRect(renderer, &default_tile);
-                // SDL_RenderCopy(renderer, ground_tex, nullptr, &tile);
-                
+                SDL_Rect tree_tile = {
+                    row_coord - (tile_size / 2),
+                    col_coord - (tile_size * 3) + tile_size,
+                    tile_size * 2,
+                    tile_size * 3
+                };
                 SDL_RenderCopy(renderer, tree_tex, nullptr, &tree_tile);
-                continue;
-            
-            default:
-                continue;
             }
         }
     }
