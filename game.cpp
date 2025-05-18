@@ -44,7 +44,7 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
         int top    = player_tile_y - render_radius;
         
         if (column < top || column > bottom) {
-            continue;
+            continue;  // tile out of bounds
         }
 
         for (int row = 0; row < map_size; row++) {
@@ -59,24 +59,28 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             
             int col_coord = column * tile_size + offset.y;
             int row_coord = row * tile_size + offset.x;
-            SDL_Rect tile = {row_coord, col_coord, tile_size, tile_size};
-
-            switch (map[column][row]) {
+            SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
             
-            case 1: // green ground
-                SDL_RenderCopy(renderer, ground_tex, nullptr, &tile);
+            int tree_height = tile_size * 3;
+            int tree_width  = tile_size * 2;
+            SDL_Rect tree_tile = {row_coord - (tile_size / 2), col_coord - tree_height + tile_size,
+                                tree_width, tree_height};
+                                
+            SDL_Rect default_tile = {row_coord, col_coord, tile_size, tile_size};
+            switch (map[column][row]) {
+                
+            case !0:
+                SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
                 // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
                 // SDL_RenderFillRect(renderer, &tile);
                 continue;
                 
-            case 2: // grey ground
-                // below
-                SDL_RenderCopy(renderer, ground_tex, nullptr, &tile);
-                // above ground
-                SDL_RenderCopy(renderer, tree_tex, nullptr, &tile);
-
-                // SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
-                // SDL_RenderFillRect(renderer, &tile);
+            case 2:
+                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+                SDL_RenderFillRect(renderer, &default_tile);
+                // SDL_RenderCopy(renderer, ground_tex, nullptr, &tile);
+                
+                SDL_RenderCopy(renderer, tree_tex, nullptr, &tree_tile);
                 continue;
             
             default:
