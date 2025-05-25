@@ -24,13 +24,10 @@ int main(int argc, char* argv[]) {
 
     SDL_GetWindowSize(window, &win_width, &win_height);
 
-    int mid_x_point = (win_width / 2) - (player.size / 2);
-    int mid_y_point = (win_height / 2) - (player.size / 2);
-    SDL_Rect rect{mid_x_point, mid_y_point, player.size, player.size};
+    player.x = (win_width / 2) - (player.size / 2);
+    player.y = (win_height / 2) - (player.size / 2);
+    SDL_Rect rect{player.x, player.y, player.size, player.size};
     
-    player.x -= mid_y_point;
-    player.y -= mid_x_point;
-
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
     
@@ -94,6 +91,8 @@ int main(int argc, char* argv[]) {
         /* Framerate cap */
         frame_time = SDL_GetTicks() - frame_start;
         if (frame_time < 8) { SDL_Delay(8 - frame_time); }
+
+        std::cout << std::endl;
 
     }
 

@@ -50,11 +50,11 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             if (column < left || column > right) continue;
             
             
-            int row_coord = row * tile_size + offset.y;
-            int col_coord = column * tile_size + offset.x;
-            SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
+            int row_coord = row * tile_size - offset.y;
+            int col_coord = column * tile_size - offset.x;
+            SDL_Rect ground_tile = {col_coord, row_coord, tile_size, tile_size};
             if (row == 0 && column == 0) {
-                SDL_Rect default_tile = {row_coord, col_coord, tile_size, tile_size};
+                SDL_Rect default_tile = {col_coord, row_coord, tile_size, tile_size};
                 SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
                 SDL_RenderFillRect(renderer, &default_tile);
                 continue;
@@ -74,14 +74,14 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             if (x < left || x > right) continue;
 
             if (map[y][x] == 2) {
-                int row_coord = y * tile_size + offset.y;
-                int col_coord = x * tile_size + offset.x;
+                int row_coord = y * tile_size - offset.y;
+                int col_coord = x * tile_size - offset.x;
 
-                SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
+                SDL_Rect ground_tile = {col_coord, row_coord, tile_size, tile_size};
                 SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
                 SDL_Rect tree_tile = {
-                    row_coord - (tile_size / 2),
                     col_coord - (tile_size * 3) + tile_size,
+                    row_coord - (tile_size * 2),
                     tile_size * 2,
                     tile_size * 3
                 };
@@ -153,8 +153,8 @@ void print_map(int map[map_size][map_size]) {
 
 void update_offset(struct Offset& offset, int win_width, int win_height) {    
 
-    offset.x = -player.x;
-    offset.y = -player.y;
+    offset.x = player.x - win_width / 2;
+    offset.y = player.y - win_height / 2;
 
     std::cout << "OFFSET: " << offset.x << ' ' << offset.y << '\n';
 }
@@ -176,9 +176,10 @@ void update_player(struct Offset& offset, const Uint8* state) {
         dx = dx / length * player.movement_speed;
         dy = dy / length * player.movement_speed;
 
-        player.y += dx;
-        player.x += dy;
+        player.x += dx;
+        player.y += dy;
     }
+
 
     std::cout << "PLAYER: " << player.x << ' ' << player.y << '\n';
 
