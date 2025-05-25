@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     /* game loop */
     while (isRunning) {
         frame_start = SDL_GetTicks();  // framerate
-        
+        SDL_GetMouseState(&mouse_x, &mouse_y);  // a 32-bit button bitmask of the current button state. Mis tra asi see on?
 
         Uint32 current_tick = SDL_GetTicks(); // tickrate
         Uint32 elapsed_ticks = current_tick - previous_tick;
@@ -61,10 +61,12 @@ int main(int argc, char* argv[]) {
                 }
                 
                 if (key_pressed == SDLK_q) {
+                    std::cout << "use_melee called in main.cpp" << '\n';
                     use_melee(player.x, player.y, player.direction);
                 }
                 
                 if (key_pressed == SDLK_e) {
+                    std::cout << "use_arrow called in main.cpp" << '\n';
                     use_arrow(player.x, player.y, player.direction);
                 }
             }
@@ -79,14 +81,15 @@ int main(int argc, char* argv[]) {
             
             update_player(offset, state);
             update_offset(offset, win_width, win_height);
-            update_player_direction(player, window, offset);
-
+            update_player_direction(player, window, offset, mouse_x, mouse_y);
+            
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // clear previous frame
             render_map(renderer, tile_size, offset, ground_tex, tree_tex);
-
-            draw_player_direction(renderer, player, offset);
+            
+            draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
+            update_abilities(renderer, offset);
             
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
             SDL_RenderFillRect(renderer, &rect);  // player w ^^ red!!
@@ -107,8 +110,8 @@ int main(int argc, char* argv[]) {
         }
 
         /* Framerate cap */
-        frame_time = SDL_GetTicks() - frame_start;
-        if (frame_time < 8) { SDL_Delay(8 - frame_time); }
+        // frame_time = SDL_GetTicks() - frame_start;
+        // if (frame_time < 8) { SDL_Delay(8 - frame_time); }
     }
 
     // Cleanup if isRunning == false

@@ -3,12 +3,14 @@
 
 /* map */
 const int map_size = 100;
-const int tile_size = 100; 
+const int tile_size = 70; 
 extern int map[map_size][map_size];
 
 // /* screen */
 extern int win_width;
 extern int win_height;
+extern int mouse_x;
+extern int mouse_y;
 
 /* camera offset */
 struct Offset {

@@ -17,15 +17,19 @@ void update_abilities(SDL_Renderer* renderer, struct Offset& offset) {
         }
 
         // Drawing with offset
-        int screen_x = it->x + offset.x;
-        int screen_y = it->y + offset.y;
+        int screen_x = it->x - offset.x;
+        int screen_y = it->y - offset.y;
 
         SDL_SetRenderDrawColor(renderer,
             it->type == ARROW ? 255 : 200,
             0,
             it->type == MELEE ? 255 : 0,
             255);
-        SDL_Rect r = { screen_x - 5, screen_y - 5, 10, 10 };
+            
+        SDL_Rect r = { screen_x - 5, screen_y - 5, 
+            it->type == ARROW ? 30 : 60,  
+            it->type == ARROW ? 30 : 60};
+
         SDL_RenderFillRect(renderer, &r);
 
         ++it;

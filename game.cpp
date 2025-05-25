@@ -14,6 +14,8 @@ Player player = {
 bool isRunning = true;
 int win_width;
 int win_height;
+int mouse_x = 0;
+int mouse_y = 0;
 
 /* framerate */
 int frame_count = 0;
@@ -30,7 +32,7 @@ const int tick_delay = 1000 / tickrate;
 int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
-int render_radius = 80;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
+int render_radius = 30;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
                 SDL_Texture* ground_tex, SDL_Texture* tree_tex) {
