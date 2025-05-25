@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SDL_image.h>
 #include "game.h"
+#include "abilities.h"
+#include "player.h"
 
 int main(int argc, char* argv[]) {
 
@@ -48,7 +50,7 @@ int main(int argc, char* argv[]) {
             }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
+                // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
 
                 // Example: Specific key action
                 if (key_pressed == SDLK_f) {
@@ -56,6 +58,14 @@ int main(int argc, char* argv[]) {
                     int player_tile_y = player.y / tile_size;
                     int tile_value = map[player_tile_y][player_tile_x];
                     std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
+                }
+                
+                if (key_pressed == SDLK_q) {
+                    use_melee(player.x, player.y, player.direction);
+                }
+                
+                if (key_pressed == SDLK_e) {
+                    use_arrow(player.x, player.y, player.direction);
                 }
             }
         }
@@ -69,15 +79,17 @@ int main(int argc, char* argv[]) {
             
             update_player(offset, state);
             update_offset(offset, win_width, win_height);
-            
+            update_player_direction(player, window, offset);
+
             /* Render begin*/
-            SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with black
+            SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // clear previous frame
-            
             render_map(renderer, tile_size, offset, ground_tex, tree_tex);
+
+            draw_player_direction(renderer, player, offset);
             
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
-            SDL_RenderFillRect(renderer, &rect);  // player
+            SDL_RenderFillRect(renderer, &rect);  // player w ^^ red!!
             SDL_RenderPresent(renderer);  // dispay new frame
 
             // /* Framerate and tickrate updating */

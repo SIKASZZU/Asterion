@@ -16,12 +16,13 @@ struct Offset {
     int y;
 };
 
-/* movement_speed, size, x, y */
+/* movement_speed, size, x, y, direction (facing) */
 struct Player {
     int movement_speed;
     int size;
     int x;
     int y;
+    double direction;
 };
 
 extern Player player;
