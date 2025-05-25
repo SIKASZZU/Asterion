@@ -46,11 +46,17 @@ int main(int argc, char* argv[]) {
                 isRunning = false; 
                 break;
             }
-            if (state[SDL_SCANCODE_F]) {
-                int player_tile_x = player.x / tile_size;
-                int player_tile_y = player.y / tile_size;
-                int tile_value = map[player_tile_y][player_tile_x];
-                std::cout << player_tile_y << ' ' << player_tile_x << ' ' << tile_value << '\n';
+            if (event.type == SDL_KEYDOWN) {
+                SDL_Keycode key_pressed = event.key.keysym.sym;
+                std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
+
+                // Example: Specific key action
+                if (key_pressed == SDLK_f) {
+                    int player_tile_x = player.x / tile_size;
+                    int player_tile_y = player.y / tile_size;
+                    int tile_value = map[player_tile_y][player_tile_x];
+                    std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
+                }
             }
         }
         
