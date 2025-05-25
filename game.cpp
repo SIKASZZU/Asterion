@@ -8,7 +8,7 @@
 int map[map_size][map_size];  // tra mdea, aga see peab siin uuesti olema ilma externita.
 
 Player player = {
-    5, 32, 0, 0
+    9, 32, 0, 0
 };
 
 bool isRunning = true;
@@ -49,16 +49,9 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
         for (int column = 0; column < map_size; column++) {
             if (column < left || column > right) continue;
             
-            
             int row_coord = row * tile_size - offset.y;
             int col_coord = column * tile_size - offset.x;
             SDL_Rect ground_tile = {col_coord, row_coord, tile_size, tile_size};
-            if (row == 0 && column == 0) {
-                SDL_Rect default_tile = {col_coord, row_coord, tile_size, tile_size};
-                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
-                SDL_RenderFillRect(renderer, &default_tile);
-                continue;
-            }
 
             if (map[row][column] != 0) {
                 SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
@@ -66,7 +59,7 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
         }
     }
 
-    // Pass 2: Render all tree tiles
+    // Pass 2: Render all tree tiles w ground underneith
     for (int y = 0; y < map_size; y++) {
         if (y < top || y > bottom) continue;
 
@@ -80,7 +73,7 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
                 SDL_Rect ground_tile = {col_coord, row_coord, tile_size, tile_size};
                 SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
                 SDL_Rect tree_tile = {
-                    col_coord - (tile_size * 3) + tile_size,
+                    col_coord - (tile_size / 2),
                     row_coord - (tile_size * 2),
                     tile_size * 2,
                     tile_size * 3
@@ -156,7 +149,7 @@ void update_offset(struct Offset& offset, int win_width, int win_height) {
     offset.x = player.x - win_width / 2;
     offset.y = player.y - win_height / 2;
 
-    std::cout << "OFFSET: " << offset.x << ' ' << offset.y << '\n';
+    // std::cout << "OFFSET: " << offset.x << ' ' << offset.y << '\n';
 }
 
 
@@ -181,6 +174,6 @@ void update_player(struct Offset& offset, const Uint8* state) {
     }
 
 
-    std::cout << "PLAYER: " << player.x << ' ' << player.y << '\n';
+    // std::cout << "PLAYER: " << player.x << ' ' << player.y << '\n';
 
 }
