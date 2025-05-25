@@ -28,11 +28,16 @@ int main(int argc, char* argv[]) {
     int mid_y_point = (win_height / 2) - (player.size / 2);
     SDL_Rect rect{mid_x_point, mid_y_point, player.size, player.size};
     
-    SDL_Event event;
+    player.x -= mid_y_point;
+    player.y -= mid_x_point;
 
+    SDL_Event event;
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    
     /* game loop */
     while (isRunning) {
         frame_start = SDL_GetTicks();  // framerate
+        
 
         Uint32 current_tick = SDL_GetTicks(); // tickrate
         Uint32 elapsed_ticks = current_tick - previous_tick;
@@ -44,6 +49,12 @@ int main(int argc, char* argv[]) {
                 isRunning = false; 
                 break;
             }
+            if (state[SDL_SCANCODE_F]) {
+                int player_tile_x = player.x / tile_size;
+                int player_tile_y = player.y / tile_size;
+                int tile_value = map[player_tile_y][player_tile_x];
+                std::cout << player_tile_y << ' ' << player_tile_x << ' ' << tile_value << '\n';
+            }
         }
         
         frame_count++;
@@ -52,9 +63,9 @@ int main(int argc, char* argv[]) {
             tick_count++;
 
             tick_lag -= tick_delay;  // update tickrate
-
-            update_offset(offset);
-            update_player(offset, win_width, win_height);
+            
+            update_player(offset, state);
+            update_offset(offset, win_width, win_height);
             
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with black
@@ -81,8 +92,8 @@ int main(int argc, char* argv[]) {
         }
 
         /* Framerate cap */
-        // frame_time = SDL_GetTicks() - frame_start;
-        // if (frame_time < 16) { SDL_Delay(16 - frame_time); }
+        frame_time = SDL_GetTicks() - frame_start;
+        if (frame_time < 8) { SDL_Delay(8 - frame_time); }
 
     }
 

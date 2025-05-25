@@ -43,32 +43,39 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
     int right  = player_tile_x + render_radius;
 
     // Pass 1: Render all ground tiles
-    for (int column = 0; column < map_size; column++) {
-        if (column < top || column > bottom) continue;
+    for (int row = 0; row < map_size; row++) {
+        if (row < top || row > bottom) continue;
         
-        for (int row = 0; row < map_size; row++) {
-            if (row < left || row > right) continue;
+        for (int column = 0; column < map_size; column++) {
+            if (column < left || column > right) continue;
             
-            int row_coord = row * tile_size + offset.x;
-            int col_coord = column * tile_size + offset.y;
+            
+            int row_coord = row * tile_size + offset.y;
+            int col_coord = column * tile_size + offset.x;
             SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
+            if (row == 0 && column == 0) {
+                SDL_Rect default_tile = {row_coord, col_coord, tile_size, tile_size};
+                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+                SDL_RenderFillRect(renderer, &default_tile);
+                continue;
+            }
 
-            if (map[column][row] != 0) {
+            if (map[row][column] != 0) {
                 SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
             }
         }
     }
 
     // Pass 2: Render all tree tiles
-    for (int column = 0; column < map_size; column++) {
-        if (column < top || column > bottom) continue;
+    for (int y = 0; y < map_size; y++) {
+        if (y < top || y > bottom) continue;
 
-        for (int row = 0; row < map_size; row++) {
-            if (row < left || row > right) continue;
+        for (int x = 0; x < map_size; x++) {
+            if (x < left || x > right) continue;
 
-            if (map[column][row] == 2) {
-                int col_coord = column * tile_size + offset.y;
-                int row_coord = row * tile_size + offset.x;
+            if (map[y][x] == 2) {
+                int row_coord = y * tile_size + offset.y;
+                int col_coord = x * tile_size + offset.x;
 
                 SDL_Rect ground_tile = {row_coord, col_coord, tile_size, tile_size};
                 SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
@@ -85,7 +92,7 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
 }
 
 
-int random_number_gen(int size){
+int random_number_gen(int size) {
     /* size arg = (from 1 until size) */
     if (size < 1) { size = 1; };
 
@@ -105,10 +112,10 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
     float center_y = map_size / 2.0f;
     float max_distance = std::sqrt(center_x * center_x + center_y * center_y);
 
-    for (int x = 0; x < map_size; x++) {
-        for (int y = 0; y < map_size; y++) {
-            float dx = x - center_x;
-            float dy = y - center_y;
+    for (int y = 0; y < map_size; y++) {
+        for (int x = 0; x < map_size; x++) {
+            float dx = y - center_x;
+            float dy = x - center_y;
             float distance = std::sqrt(dx * dx + dy * dy) / max_distance;
 
             // Inverse chance of land (closer to center = more land)
@@ -124,10 +131,10 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
             if (land_chance > 0.4f) {
                 // Land: elevation between mid and max
                 int land_val = min_val + (max_val - min_val) / 2 + std::rand() % ((max_val - min_val) / 2 + 1);
-                map[x][y] = land_val;
+                map[y][x] = land_val;
             } else {
                 // Water
-                map[x][y] = min_val;
+                map[y][x] = min_val;
             }
         }
     }
@@ -135,26 +142,33 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
 
 
 void print_map(int map[map_size][map_size]) {
-    for (int x = 0; x < map_size; x++) {
-        for (int y = 0; y < map_size; y++) {
-            std::cout << map[x][y] << ' ';
+    for (int y = 0; y < map_size; y++) {
+        for (int x = 0; x < map_size; x++) {
+            std::cout << map[y][x] << ' ';
         }
         std::cout << '\n';
     }std::cout << std::endl;
 }
 
 
-void update_offset(struct Offset& offset) {
-    const Uint8* state = SDL_GetKeyboardState(NULL);
+void update_offset(struct Offset& offset, int win_width, int win_height) {    
 
+    offset.x = -player.x;
+    offset.y = -player.y;
+
+    std::cout << "OFFSET: " << offset.x << ' ' << offset.y << '\n';
+}
+
+
+void update_player(struct Offset& offset, const Uint8* state) {
     /* see updateimine toimub ainult playeri liikumise pealt */
     int dx = 0;
     int dy = 0;
 
-    if (state[SDL_SCANCODE_W]) dy += 1;
-    if (state[SDL_SCANCODE_S]) dy -= 1;
-    if (state[SDL_SCANCODE_A]) dx += 1;
-    if (state[SDL_SCANCODE_D]) dx -= 1;
+    if (state[SDL_SCANCODE_W]) dy -= 1;
+    if (state[SDL_SCANCODE_S]) dy += 1;
+    if (state[SDL_SCANCODE_A]) dx -= 1;
+    if (state[SDL_SCANCODE_D]) dx += 1;
 
     // Normalize ? input == 2 : default movement logic
     float length = std::sqrt(dx * dx + dy * dy);
@@ -162,22 +176,10 @@ void update_offset(struct Offset& offset) {
         dx = dx / length * player.movement_speed;
         dy = dy / length * player.movement_speed;
 
-        offset.x += dx;
-        offset.y += dy;
+        player.y += dx;
+        player.x += dy;
     }
-    else if (dx != 0 || dy != 0){
-        offset.x += player.movement_speed;
-        offset.y += player.movement_speed;
-    }
-}
 
-void update_player(struct Offset& offset, int win_width, int win_height){
+    std::cout << "PLAYER: " << player.x << ' ' << player.y << '\n';
 
-    // kui offset x on neg, siis muuta pos ja kui x on pos siis muuta negiks.
-    player.x = -offset.x + win_width / 2;
-    player.y = -offset.y + win_height / 2;
-
-    // std::cout << "player x,y " << player.x << ' ' << player.y << '\n';
-    // std::cout << "offset x,y " << offset.x << ' ' << offset.y << '\n';
-    // std::cout << std::endl;
 }

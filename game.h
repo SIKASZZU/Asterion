@@ -29,6 +29,7 @@ extern Player player;
 /* game */
 extern bool isRunning;
 extern int render_radius;
+extern const Uint8* state;
 
 /* framerate */
 extern Uint32 frame_start;
@@ -52,7 +53,5 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
 int random_number_gen(int size);
 void generate_random_map(int map[map_size][map_size], int min_val, int max_val);
 void print_map(int map[map_size][map_size]);
-void update_offset(struct Offset& offset);
-void update_player(struct Offset& offset, int win_width, int win_height);
-
-
+void update_offset(struct Offset& offset, int win_width, int win_height);
+void update_player(struct Offset& offset, const Uint8* state);
