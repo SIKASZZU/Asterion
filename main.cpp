@@ -4,6 +4,10 @@
 #include "abilities.h"
 #include "player.h"
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 int main(int argc, char* argv[]) {
 
     Offset offset = {0, 0};
@@ -32,6 +36,13 @@ int main(int argc, char* argv[]) {
     
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
+    
+    /* client / server */
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    sockaddr_in server_addr{};
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(9999);  // match server.py / vb eraldi fail teha ipdele, portidele.
+    inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);  // or your server IP
     
     /* game loop */
     while (isRunning) {
@@ -95,6 +106,11 @@ int main(int argc, char* argv[]) {
             SDL_RenderFillRect(renderer, &rect);  // player w ^^ red!!
             SDL_RenderPresent(renderer);  // dispay new frame
 
+            /* send data to server */    
+            std::string message = "{\"x\": " + std::to_string(player.x) +
+                                ", \"y\": " + std::to_string(player.y) + "}";
+            sendto(sock, message.c_str(), message.size(), 0, (sockaddr*)&server_addr, sizeof(server_addr));
+            
             // /* Framerate and tickrate updating */
             if (SDL_GetTicks() - fps_timer >= 1000) {
                 fps = frame_count * 1000.0f / (frame_start - fps_timer);
@@ -121,5 +137,6 @@ int main(int argc, char* argv[]) {
     SDL_DestroyTexture(tree_tex);
     SDL_Quit();
     IMG_Quit();
+    close(sock); // Close UDP socket
     return 0;
 }
