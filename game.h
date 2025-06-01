@@ -1,6 +1,9 @@
 #pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
 #include <SDL2/SDL.h>
 
+/* server */
+extern int sock;
+
 /* map */
 const int map_size = 100;
 const int tile_size = 70; 

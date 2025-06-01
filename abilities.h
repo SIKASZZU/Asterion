@@ -13,8 +13,8 @@ struct Ability {
     int damage;
     int speed;
     double direction;
-    int x;
-    int y;
+    float x;
+    float y;
     int length; // for arrows e projectiles
     Uint32 spawn_time;
 };
