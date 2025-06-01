@@ -61,25 +61,7 @@ int main(int argc, char* argv[]) {
             }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
-
-                // Example: Specific key action
-                if (key_pressed == SDLK_f) {
-                    int player_tile_x = player.x / tile_size;
-                    int player_tile_y = player.y / tile_size;
-                    int tile_value = map[player_tile_y][player_tile_x];
-                    std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
-                }
-                
-                if (key_pressed == SDLK_q) {
-                    std::cout << "use_melee called in main.cpp" << '\n';
-                    use_melee(player.x, player.y, player.direction);
-                }
-                
-                if (key_pressed == SDLK_e) {
-                    std::cout << "use_arrow called in main.cpp" << '\n';
-                    use_arrow(player.x, player.y, player.direction);
-                }
+                call_set_functionality(key_pressed);
             }
         }
         

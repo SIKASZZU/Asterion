@@ -3,7 +3,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "game.h"
-
+#include "abilities.h"
 
 int map[map_size][map_size];  // tra mdea, aga see peab siin uuesti olema ilma externita.
 
@@ -178,4 +178,27 @@ void update_player(struct Offset& offset, const Uint8* state) {
 
     // std::cout << "PLAYER: " << player.x << ' ' << player.y << '\n';
 
+}
+
+
+void call_set_functionality(SDL_KeyCode key_pressed) {
+    // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
+
+    // Example: Specific key action
+    if (key_pressed == SDLK_f) {
+        int player_tile_x = player.x / tile_size;
+        int player_tile_y = player.y / tile_size;
+        int tile_value = map[player_tile_y][player_tile_x];
+        std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
+    }
+    
+    if (key_pressed == SDLK_q) {
+        std::cout << "use_melee called in main.cpp" << '\n';
+        use_melee(player.x, player.y, player.direction);
+    }
+    
+    if (key_pressed == SDLK_e) {
+        std::cout << "use_arrow called in main.cpp" << '\n';
+        use_arrow(player.x, player.y, player.direction);
+    }
 }
