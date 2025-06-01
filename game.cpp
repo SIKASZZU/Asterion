@@ -180,8 +180,7 @@ void update_player(struct Offset& offset, const Uint8* state) {
 
 }
 
-
-void call_set_functionality(SDL_KeyCode key_pressed) {
+void call_set_functionality(SDL_Keycode key_pressed) {
     // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
 
     // Example: Specific key action
