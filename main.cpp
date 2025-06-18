@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "game.h"
 #include "abilities.h"
 #include "player.h"

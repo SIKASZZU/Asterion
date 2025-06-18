@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "game.h"
 #include "abilities.h"
+#include <cmath>
 
 int map[map_size][map_size];  // tra mdea, aga see peab siin uuesti olema ilma externita.
 
