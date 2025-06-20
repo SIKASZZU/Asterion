@@ -6,6 +6,7 @@
 #include "abilities.h"
 #include "player.h"
 #include "textures.h"
+#include "render.h"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
@@ -69,8 +70,9 @@ int main(int argc, char* argv[]) {
             
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
-            SDL_RenderClear(renderer);  // clear previous frame
-            render_map(renderer, tile_size, offset, ground_tex, tree_tex);
+            SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
+            
+            load_render(renderer, tile_size, offset);
             
             draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
             update_abilities(renderer, offset);
@@ -103,6 +105,7 @@ int main(int argc, char* argv[]) {
     SDL_DestroyWindow(window);
     SDL_DestroyTexture(ground_tex);
     SDL_DestroyTexture(tree_tex);
+    SDL_DestroyTexture(numbers_tex);
     SDL_Quit();
     IMG_Quit();
     return 0;

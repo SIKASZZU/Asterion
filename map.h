@@ -1,7 +1,7 @@
 /* map */
 
 const int map_size = 100;
-const int tile_size = 15; 
+const int tile_size = 25; 
 extern int map[map_size][map_size];
 
 void generate_map();

@@ -102,12 +102,12 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
             // Glade (central square)
             if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
-                map[y][x] = land_val;
+                map[y][x] = 5;
             }
 
             // Maze ring
             if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
-                map[y][x] = land_val;
+                map[y][x] = 4;
             }
 
             // Sector walls
