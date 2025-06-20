@@ -1,10 +1,7 @@
 #pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
 #include <SDL2/SDL.h>
+#include "map.h"
 
-/* map */
-const int map_size = 100;
-const int tile_size = 70; 
-extern int map[map_size][map_size];
 
 // /* screen */
 extern int win_width;
@@ -54,8 +51,6 @@ extern Uint32 tick_timer;
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
                 SDL_Texture* ground_tex, SDL_Texture* tree_tex);
 int random_number_gen(int size);
-void generate_random_map(int map[map_size][map_size], int min_val, int max_val);
-void print_map(int map[map_size][map_size]);
 void update_offset(struct Offset& offset, int win_width, int win_height);
 void update_player(struct Offset& offset, const Uint8* state);
 void call_set_functionality(SDL_Keycode key_pressed);

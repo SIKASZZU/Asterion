@@ -5,12 +5,13 @@
 #include "game.h"
 #include "abilities.h"
 #include "player.h"
+#include "textures.h"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
     Offset offset = {0, 0};
     
-    generate_random_map(map, 0, 2);
+    generate_map();
     // print_map(map);
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -22,10 +23,8 @@ int main(int argc, char* argv[]) {
     
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   
-    /* textures */
-    SDL_Texture* ground_tex = IMG_LoadTexture(renderer, "resources/snowy_ground.png");
-    SDL_Texture* tree_tex   = IMG_LoadTexture(renderer, "resources/snowy_tree.png");
-
+    load_textures(renderer);
+    
     SDL_GetWindowSize(window, &win_width, &win_height);
 
     player.x = (win_width / 2) - (player.size / 2);
@@ -59,6 +58,7 @@ int main(int argc, char* argv[]) {
         frame_count++;
         
         while (tick_lag > tick_delay) {
+            /* ticki sees peavad olema k6ik, mis fpsiga muutuks kiiremaks ja annaks eelise vs teise m2ngija suhtes. */
             tick_count++;
 
             tick_lag -= tick_delay;  // update tickrate
@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
             SDL_RenderFillRect(renderer, &rect);  // player w ^^ red!!
             SDL_RenderPresent(renderer);  // dispay new frame
 
-            // /* Framerate and tickrate updating */
+            /* Framerate and tickrate updating */
             if (SDL_GetTicks() - fps_timer >= 1000) {
                 fps = frame_count * 1000.0f / (frame_start - fps_timer);
                 ticks_per_second = tick_count * 1000.0f / (frame_start - tick_timer);
