@@ -1,6 +1,7 @@
 #include "abilities.h"
 #include "game.h"
 #include <iostream>
+#include <cmath>
 
 std::vector<Ability> active_abilities;
 

@@ -1,3 +1,5 @@
+#define SDL_MAIN_HANDLED
+
 #include <iostream>
 #include <SDL2/SDL_image.h>
 #include "game.h"
@@ -5,7 +7,7 @@
 #include "player.h"
 
 int main(int argc, char* argv[]) {
-
+    SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
     Offset offset = {0, 0};
     
     generate_random_map(map, 0, 2);

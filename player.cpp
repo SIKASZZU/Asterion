@@ -1,5 +1,6 @@
 #include "game.h"
 #include <iostream>
+#include <cmath>
 
 
 void update_player_direction(Player& player, SDL_Window* window, struct Offset& offset, int mouse_x, int mouse_y) {
