@@ -103,9 +103,7 @@ int main(int argc, char* argv[]) {
     // Cleanup if isRunning == false
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_DestroyTexture(ground_tex);
-    SDL_DestroyTexture(tree_tex);
-    SDL_DestroyTexture(numbers_tex);
+    destroy_all_textures();
     SDL_Quit();
     IMG_Quit();
     return 0;

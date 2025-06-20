@@ -25,13 +25,21 @@ void load_textures(SDL_Renderer* renderer) {
 
 }
 
+
+void destroy_all_textures() {
+    SDL_DestroyTexture(ground_tex);
+    SDL_DestroyTexture(tree_tex);
+    SDL_DestroyTexture(numbers_tex);
+}
+
+
 void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect at_tile) {
     if (number < 0 || number > 9) {
         std::cerr << "Invalid number: " << number << " Numbers combined not added yet" << std::endl;
         return;
     }
 
-    // Load the numbers sprite sheet (10 digits in a row, each 16px wide)
+    // Load the numbers sprite sheet (0 - 9, each 16px wide)
     if (!numbers_tex) {
         SDL_Texture* numbers_tex = IMG_LoadTexture(renderer, "resources/numbers.png");
         SDL_SetTextureScaleMode(numbers_tex, SDL_ScaleModeNearest); // CLEAN the texture
