@@ -6,7 +6,6 @@
 
 #include "map.h"
 
-
 #ifndef M_PI
 #   define M_PI 3.1415926535897932384626433832
 #endif
@@ -72,7 +71,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
     int MIN_VAL  = 0;
     int TREE_VAL = 2;
-    int WALL_VAL = 2;
+    int WALL_VAL = 9;
     int LAND_VAL = 1;
 
     float center_x = map_size / 2.0f;
@@ -86,9 +85,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
     /* Walls surrouding the Glade */
     float tree_ring_radius = glade_radius + 1.0f;
-    float tree_ring_thickness = 0.5f;
-    float radius_sq_min = (tree_ring_radius - tree_ring_thickness) * (tree_ring_radius - tree_ring_thickness);
-    float radius_sq_max = (tree_ring_radius + tree_ring_thickness) * (tree_ring_radius + tree_ring_thickness);
+    float radius_sq_min = (tree_ring_radius - 0.5f) * (tree_ring_radius - 0.5f);
+    float radius_sq_max = (tree_ring_radius + 0.5f) * (tree_ring_radius + 0.5f);
 
     int num_sectors = 8;
 
@@ -129,7 +127,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
             // Walls around Glade
             if (distance_sq >= radius_sq_min && distance_sq <= radius_sq_max) {
-                map[y][x] = TREE_VAL;
+                map[y][x] = WALL_VAL;
             }
 
             // Sector walls
