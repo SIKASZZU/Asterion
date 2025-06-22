@@ -4,7 +4,7 @@
 
 
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
-                SDL_Texture* ground_tex, SDL_Texture* tree_tex) {
+                SDL_Texture* ground_tex, SDL_Texture* tree_tex, SDL_Texture* wall_tex) {
     int player_tile_y = player.y / tile_size;
     int bottom = player_tile_y + render_radius;
     int top    = player_tile_y - render_radius;
@@ -22,11 +22,16 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             
             int row_coord = row * tile_size - offset.y;
             int col_coord = column * tile_size - offset.x;
-            SDL_Rect ground_tile = {col_coord, row_coord, tile_size, tile_size};
+            SDL_Rect destTile = {col_coord, row_coord, tile_size, tile_size};
 
             if (map[row][column] != 0) {
-                SDL_RenderCopy(renderer, ground_tex, nullptr, &ground_tile);
+                SDL_RenderCopy(renderer, ground_tex, nullptr, &destTile);
             }
+
+            if (map[row][column] == 9){
+                load_wall_texture(renderer, wall_tex, map, row, column, destTile);
+            }
+            
         }
     }
 
@@ -73,8 +78,8 @@ void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offs
             
             int row_coord = y * tile_size - offset.y;
             int col_coord = x * tile_size - offset.x;
-            SDL_Rect at_tile = {col_coord, row_coord, tile_size, tile_size};
-            load_specific_number(renderer, map[y][x], at_tile);
+            SDL_Rect destTile = {col_coord, row_coord, tile_size, tile_size};
+            load_specific_number(renderer, map[y][x], destTile);
         }
     }
 }
@@ -82,6 +87,6 @@ void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offs
 
 void load_render(SDL_Renderer* renderer, const int tile_size, struct Offset& offset) {
     /* Vali ise, mis mappi tahad geneda. */
-    render_map(renderer, tile_size, offset, ground_tex, tree_tex);
-    render_map_numbers(renderer, tile_size, offset);
+    render_map(renderer, tile_size, offset, ground_tex, tree_tex, wall_tex);
+    // render_map_numbers(renderer, tile_size, offset);
 }

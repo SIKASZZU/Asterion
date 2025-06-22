@@ -8,7 +8,7 @@
 #include <cmath>
 
 Player player = {
-    9, 32, 0, 0
+    50, 32, 0, 0
 };
 
 bool isRunning = true;
