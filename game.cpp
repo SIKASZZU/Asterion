@@ -6,6 +6,7 @@
 
 #include "abilities.h"
 #include <cmath>
+#include <random>
 
 Player player = {
     50, 32, 0, 0
@@ -32,21 +33,15 @@ const int tick_delay = 1000 / tickrate;
 int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
-int render_radius = 100;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
+int render_radius = 20;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 
-int random_number_gen(int size) {
-    /* size arg = (from 1 until size) */
-    if (size < 1) { size = 1; };
-
-    srand(time(NULL));
-    int number = rand() % size + 1;
-
-    std::cout << number << '\n';
-
-    return number;
+int random_number_gen(int min, int max) {
+    /* args int min, int max */
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<> dist(min, max - 1);
+    return dist(rng);
 }
-
 
 void update_offset(struct Offset& offset, int win_width, int win_height) {    
 

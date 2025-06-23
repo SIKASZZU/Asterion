@@ -86,7 +86,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     /* Walls surrouding the Glade */
     float tree_ring_radius = glade_radius + 1.0f;
     float radius_sq_min = (tree_ring_radius - 0.5f) * (tree_ring_radius - 0.5f);
-    float radius_sq_max = (tree_ring_radius + 0.5f) * (tree_ring_radius + 0.5f);
+    float radius_sq_max = (tree_ring_radius + 1.5f) * (tree_ring_radius + 1.5f);
 
     int num_sectors = 8;
 

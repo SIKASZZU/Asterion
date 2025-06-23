@@ -50,7 +50,7 @@ extern Uint32 tick_timer;
 /* functions */
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset,
                 SDL_Texture* ground_tex, SDL_Texture* tree_tex);
-int random_number_gen(int size);
+int random_number_gen(int min, int max);
 void update_offset(struct Offset& offset, int win_width, int win_height);
 void update_player(struct Offset& offset, const Uint8* state);
 void call_set_functionality(SDL_Keycode key_pressed);
