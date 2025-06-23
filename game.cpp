@@ -9,7 +9,7 @@
 #include <random>
 
 Player player = {
-    50, 32, 0, 0
+    25, 32, 0, 0
 };
 
 bool isRunning = true;
@@ -43,26 +43,32 @@ int random_number_gen(int min, int max) {
     return dist(rng);
 }
 
-void update_offset(struct Offset& offset, int win_width, int win_height) {    
+void update_offset(struct Offset& offset, int win_width, int win_height) {
+    int iso_x = (player.x - player.y) / 2;
+    int iso_y = (player.x + player.y) / 4;
 
-    offset.x = player.x - win_width / 2;
-    offset.y = player.y - win_height / 2;
-
-    // std::cout << "OFFSET: " << offset.x << ' ' << offset.y << '\n';
+    offset.x = iso_x - win_width / 2;
+    offset.y = iso_y - win_height / 2;
 }
 
 
 void update_player(struct Offset& offset, const Uint8* state) {
-    /* see updateimine toimub ainult playeri liikumise pealt */
-    int dx = 0;
-    int dy = 0;
+    float dx = 0;
+    float dy = 0;
 
-    if (state[SDL_SCANCODE_W]) dy -= 1;
-    if (state[SDL_SCANCODE_S]) dy += 1;
-    if (state[SDL_SCANCODE_A]) dx -= 1;
-    if (state[SDL_SCANCODE_D]) dx += 1;
+    // Normal map inputs
+    // if (state[SDL_SCANCODE_W]) dy -= 1;
+    // if (state[SDL_SCANCODE_S]) dy += 1;
+    // if (state[SDL_SCANCODE_A]) dx -= 1;
+    // if (state[SDL_SCANCODE_D]) dx += 1;
 
-    // Normalize ? input == 2 : default movement logic
+    // // isometric directions, broken veits
+    if (state[SDL_SCANCODE_W]) { dx -= 1; dy += 1; }
+    if (state[SDL_SCANCODE_S]) { dx += 1; dy -= 1; }
+    if (state[SDL_SCANCODE_A]) { dx -= 1; dy -= 1; }
+    if (state[SDL_SCANCODE_D]) { dx += 1; dy += 1; }
+
+    // Normalize movement vector
     float length = std::sqrt(dx * dx + dy * dy);
     if (length != 0) {
         dx = dx / length * player.movement_speed;
@@ -71,10 +77,6 @@ void update_player(struct Offset& offset, const Uint8* state) {
         player.x += dx;
         player.y += dy;
     }
-
-
-    // std::cout << "PLAYER: " << player.x << ' ' << player.y << '\n';
-
 }
 
 void call_set_functionality(SDL_Keycode key_pressed) {

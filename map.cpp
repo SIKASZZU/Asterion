@@ -110,7 +110,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                 // int LAND_VAL = MIN_VAL + (max_val - MIN_VAL) / 2 + rand() % ((max_val - MIN_VAL) / 2 + 1);
                 map[y][x] = LAND_VAL;
             } else {
-                map[y][x] = MIN_VAL; // water
+                map[y][x] = TREE_VAL; // water
             }
 
             // --- STRUCTURES OVERLAY ---

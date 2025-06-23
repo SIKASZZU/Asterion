@@ -25,10 +25,10 @@ void load_textures(SDL_Renderer* renderer) {
     std::string ground_tex_path = "resources/Ground/Ground_";
     
     /* textures */
-    snowy_ground_tex  = IMG_LoadTexture(renderer, "resources/snowy_ground.png");
+    snowy_ground_tex  = IMG_LoadTexture(renderer, "resources/ground_cube.png");
     tree_tex    = IMG_LoadTexture(renderer, "resources/snowy_tree.png");
     numbers_tex = IMG_LoadTexture(renderer, "resources/numbers.png");
-    wall_tex    = IMG_LoadTexture(renderer, "resources/wall.png");
+    wall_tex    = IMG_LoadTexture(renderer, "resources/wall_cube.png");
 
     /* Puhasta tekstuuride 22ri et ei oleks blurry */
     SDL_SetTextureScaleMode(snowy_ground_tex, SDL_ScaleModeNearest);
@@ -108,27 +108,28 @@ void draw_wall(SDL_Renderer* renderer, SDL_Texture* wall_tex, const bool neighbo
 
 
 void load_wall_texture(SDL_Renderer* renderer, SDL_Texture* wall_tex, int map[map_size][map_size], int row, int col, SDL_Rect destTile) {
-    bool neighbors[3][3] = {{false}};
-    for (int dr = -1; dr <= 1; ++dr) {
-        for (int dc = -1; dc <= 1; ++dc) {
-            int r = row + dr, c = col + dc;
-            if (r >= 0 && r < 100 && c >= 0 && c < 100 && map[r][c] == 9) {
-                neighbors[dr + 1][dc + 1] = true;
-            }
-        }
-    }
-    neighbors[1][1] = true; // always set center true
-
-    /* print out wall neighbours */
-    // for (int dr = 0; dr < 3; ++dr) {
-    //     for (int dc = 0; dc < 3; ++dc) {
-    //         std::cout << (neighbors[dr][dc] ? '1' : '0') << ' ';
+    SDL_RenderCopy(renderer, wall_tex, nullptr, &destTile);
+    // bool neighbors[3][3] = {{false}};
+    // for (int dr = -1; dr <= 1; ++dr) {
+    //     for (int dc = -1; dc <= 1; ++dc) {
+    //         int r = row + dr, c = col + dc;
+    //         if (r >= 0 && r < 100 && c >= 0 && c < 100 && map[r][c] == 9) {
+    //             neighbors[dr + 1][dc + 1] = true;
+    //         }
     //     }
-    //     std::cout << '\n';
     // }
-    // std::cout << "---\n";
+    // neighbors[1][1] = true; // always set center true
 
-    draw_wall(renderer, wall_tex, neighbors, destTile);
+    // /* print out wall neighbours */
+    // // for (int dr = 0; dr < 3; ++dr) {
+    // //     for (int dc = 0; dc < 3; ++dc) {
+    // //         std::cout << (neighbors[dr][dc] ? '1' : '0') << ' ';
+    // //     }
+    // //     std::cout << '\n';
+    // // }
+    // // std::cout << "---\n";
+
+    // draw_wall(renderer, wall_tex, neighbors, destTile);
 }
 
 

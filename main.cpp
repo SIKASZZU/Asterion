@@ -96,8 +96,8 @@ int main(int argc, char* argv[]) {
         }
 
         /* Framerate cap */
-        // frame_time = SDL_GetTicks() - frame_start;
-        // if (frame_time < 8) { SDL_Delay(8 - frame_time); }
+        frame_time = SDL_GetTicks() - frame_start;
+        if (frame_time < 8) { SDL_Delay(8 - frame_time); }
     }
 
     // Cleanup if isRunning == false
