@@ -25,10 +25,8 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
         for (int column = 0; column < map_size; column++) {
             // if (column < left || column > right) continue;
             
-            // int row_coord = row * tile_size - offset.y;
-            // int col_coord = column * tile_size - offset.x;
-            int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) - offset.y;
-            int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) - offset.x;
+            int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.y;
+            int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.x;
             SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
 
             if (row == player_tile_y && column == player_tile_x) {
@@ -46,8 +44,6 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             if (map[row][column] == 4){
                 load_snowy_ground_texture(renderer, snowy_ground_tex, destTile);
             }
-            
-            
         }
     }
 
@@ -59,15 +55,15 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             // if (column < left || column > right) continue;
                // walls
             if (map[row][column] == 9){
-                int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) - offset.y;
-                int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) - offset.x;
+                int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.y;
+                int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.x;
                 SDL_Rect destTile = {row_coord + tile_size, col_coord, tile_size, tile_size};
                 load_wall_texture(renderer, wall_tex, map, row, column, destTile);
             }
 
             if (map[row][column] == 2){
-                // int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) - offset.y;
-                // int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) - offset.x;
+                // int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.y;
+                // int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.x;
 
                 // SDL_Rect tree_tile = {
                 //     row_coord - (tile_size * 2),
@@ -97,8 +93,8 @@ void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offs
         for (int x = 0; x < map_size; x++) {
             if (x < left || x > right) continue;
             
-            int row_coord = y * tile_size - offset.y;
-            int col_coord = x * tile_size - offset.x;
+            int row_coord = y * tile_size + offset.y;
+            int col_coord = x * tile_size + offset.x;
             SDL_Rect destTile = {col_coord, row_coord, tile_size, tile_size};
             load_specific_number(renderer, map[y][x], destTile);
         }

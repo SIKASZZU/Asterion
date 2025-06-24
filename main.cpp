@@ -27,10 +27,7 @@ int main(int argc, char* argv[]) {
     load_textures(renderer);
     
     SDL_GetWindowSize(window, &win_width, &win_height);
-
-    player.x = (win_width / 2) - (player.size / 2);
-    player.y = (win_height / 2) - (player.size / 2);
-    SDL_Rect rect{player.x, player.y, player.size, player.size};
+    SDL_Rect player_rect = {player.x, player.y, player.size, player.size};
     
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -52,7 +49,7 @@ int main(int argc, char* argv[]) {
             }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                call_set_functionality(key_pressed);
+                call_set_functionality(key_pressed, offset);
             }
         }
         
@@ -78,7 +75,7 @@ int main(int argc, char* argv[]) {
             update_abilities(renderer, offset);
             
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
-            SDL_RenderFillRect(renderer, &rect);  // player w ^^ red!!
+            SDL_RenderFillRect(renderer, &player_rect);  // player w ^^ red!!
             SDL_RenderPresent(renderer);  // dispay new frame
 
             /* Framerate and tickrate updating */
@@ -86,7 +83,7 @@ int main(int argc, char* argv[]) {
                 fps = frame_count * 1000.0f / (frame_start - fps_timer);
                 ticks_per_second = tick_count * 1000.0f / (frame_start - tick_timer);
 
-                std::cout << fps << " fps, " << ticks_per_second << " tps" << std::endl;
+                // std::cout << fps << " fps, " << ticks_per_second << " tps" << std::endl;
 
                 fps_timer = SDL_GetTicks();
                 tick_timer = SDL_GetTicks();

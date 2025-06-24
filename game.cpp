@@ -7,9 +7,10 @@
 #include "abilities.h"
 #include <cmath>
 #include <random>
+#include "isometric_calc.h"
 
 Player player = {
-    25, 32, 0, 0
+    5, 32, 0, 0
 };
 
 bool isRunning = true;
@@ -44,11 +45,8 @@ int random_number_gen(int min, int max) {
 }
 
 void update_offset(struct Offset& offset, int win_width, int win_height) {
-    int iso_x = (player.x - player.y) / 2;
-    int iso_y = (player.x + player.y) / 4;
-
-    offset.x = iso_x - win_width / 2;
-    offset.y = iso_y - win_height / 2;
+    offset.x = win_width / 2 - tile_size / 2;
+    offset.y = win_height / 2 - tile_size / 2;
 }
 
 
@@ -63,10 +61,10 @@ void update_player(struct Offset& offset, const Uint8* state) {
     // if (state[SDL_SCANCODE_D]) dx += 1;
 
     // // isometric directions, broken veits
-    if (state[SDL_SCANCODE_W]) { dx -= 1; dy += 1; }
-    if (state[SDL_SCANCODE_S]) { dx += 1; dy -= 1; }
-    if (state[SDL_SCANCODE_A]) { dx -= 1; dy -= 1; }
-    if (state[SDL_SCANCODE_D]) { dx += 1; dy += 1; }
+    if (state[SDL_SCANCODE_W]) { dx -= 1; dy += 0.5; }
+    if (state[SDL_SCANCODE_S]) { dx += 1; dy -= 0.5; }
+    if (state[SDL_SCANCODE_A]) { dx -= 0.5; dy -= 1; }
+    if (state[SDL_SCANCODE_D]) { dx += 0.5; dy += 1; }
 
     // Normalize movement vector
     float length = std::sqrt(dx * dx + dy * dy);
@@ -74,20 +72,30 @@ void update_player(struct Offset& offset, const Uint8* state) {
         dx = dx / length * player.movement_speed;
         dy = dy / length * player.movement_speed;
 
-        player.x += dx;
-        player.y += dy;
+        player.x += dy;
+        player.y += dx;
     }
 }
 
-void call_set_functionality(SDL_Keycode key_pressed) {
+void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset) {
     // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
 
     // Example: Specific key action
     if (key_pressed == SDLK_f) {
+        std::cout << std::endl;
+
         int player_tile_x = player.x / tile_size;
         int player_tile_y = player.y / tile_size;
         int tile_value = map[player_tile_y][player_tile_x];
-        std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
+        std::cout << "X, Y " << player.x << ", " << player.y << " = value: " << tile_value << '\n';
+        std::cout << "Tile at " << player_tile_y << ", " << player_tile_x << " = " << tile_value << '\n';
+ 
+        SDL_Point iso_player = to_grid_coordinate(player.x, player.y);
+
+        std::cout << "iso " << iso_player.x << ", " << iso_player.y << " = " << iso_player.x / tile_size << ' ' << iso_player.y / tile_size << '\n';
+        // std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
+        
+        std::cout << std::endl;
     }
     
     if (key_pressed == SDLK_q) {

@@ -4,9 +4,9 @@
 #include "isometric_calc.h"
 
 
-void update_player_direction(Player& player, SDL_Window* window, struct Offset& offset, int mouse_x, int mouse_y) {
+void update_player_direction(struct Player& player, SDL_Window* window, struct Offset& offset, int mouse_x, int mouse_y) {
     // Convert player's world position to isometric screen position
-    SDL_Point iso_player = world_to_iso(player.x, player.y);
+    SDL_Point iso_player = to_grid_coordinate(player.x, player.y);
 
     double dx = mouse_x - (iso_player.x - offset.x);
     double dy = mouse_y - (iso_player.y - offset.y);
@@ -19,7 +19,7 @@ double calculate_2_point_distance(double x1, double y1, double x2, double y2) {
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
-void draw_player_direction(SDL_Renderer* renderer, const Player& player, struct Offset& offset, int mouse_x, int mouse_y) {
+void draw_player_direction(SDL_Renderer* renderer, struct Player& player, struct Offset& offset, int mouse_x, int mouse_y) {
     int x1 = player.x;
     int y1 = player.y;
 
@@ -32,8 +32,8 @@ void draw_player_direction(SDL_Renderer* renderer, const Player& player, struct 
     int y2 = y1 + std::sin(player.direction) * distance;
 
     // Convert both points to isometric screen coordinates
-    SDL_Point iso_start = world_to_iso(x1, y1);
-    SDL_Point iso_end   = world_to_iso(x2, y2);
+    SDL_Point iso_start = to_grid_coordinate(x1, y1);
+    SDL_Point iso_end   = to_grid_coordinate(x2, y2);
 
     // Apply offset
     int screen_x1 = iso_start.x - offset.x;
