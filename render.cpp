@@ -1,17 +1,15 @@
 #include "game.h"
 #include <iostream>
 #include "textures.h"
-
+#include "isometric_calc.h"
 
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, 
                 SDL_Texture* tree_tex, SDL_Texture* wall_tex, SDL_Texture* snowy_ground_tex) {
-    
-    // Convert player's world position to isometric grid coordinates
-    float col = ((player.x / (tile_size / 2.0f)) + (player.y / (tile_size / 4.0f))) / 2.0f;
-    float row = ((player.y / (tile_size / 4.0f)) - (player.x / (tile_size / 2.0f))) / 2.0f;
 
-    int player_tile_x = static_cast<int>(col);
-    int player_tile_y = static_cast<int>(row);
+    SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
+    int player_tile_x = static_cast<int>(player.x / tile_size);
+    int player_tile_y = static_cast<int>(player.y / tile_size);
+    std::cout << "player render: " << player_tile_x << ' ' << player_tile_y << "\n";
 
     int left = player_tile_x - render_radius;
     int right = player_tile_x + render_radius;
@@ -25,8 +23,9 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
         for (int column = 0; column < map_size; column++) {
             // if (column < left || column > right) continue;
             
-            int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.y;
-            int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.x;
+            int row_coord = column * (0.5 * tile_size ) + row * (-0.5 * tile_size) + offset.x;
+            int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
+
             SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
 
             if (row == player_tile_y && column == player_tile_x) {
@@ -55,8 +54,8 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             // if (column < left || column > right) continue;
                // walls
             if (map[row][column] == 9){
-                int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.y;
-                int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.x;
+                int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.x;
+                int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.y;
                 SDL_Rect destTile = {row_coord + tile_size, col_coord, tile_size, tile_size};
                 load_wall_texture(renderer, wall_tex, map, row, column, destTile);
             }
@@ -93,8 +92,8 @@ void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offs
         for (int x = 0; x < map_size; x++) {
             if (x < left || x > right) continue;
             
-            int row_coord = y * tile_size + offset.y;
-            int col_coord = x * tile_size + offset.x;
+            int row_coord = y * tile_size + offset.x;
+            int col_coord = x * tile_size + offset.y;
             SDL_Rect destTile = {col_coord, row_coord, tile_size, tile_size};
             load_specific_number(renderer, map[y][x], destTile);
         }

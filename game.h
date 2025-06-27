@@ -10,16 +10,17 @@ extern int mouse_y;
 
 /* camera offset */
 struct Offset {
-    int x;
-    int y;
+    float x;
+    float y;
 };
+
 
 /* movement_speed, size, x, y, direction (facing) */
 struct Player {
     int movement_speed;
     int size;
-    int x;
-    int y;
+    float x;
+    float y;
     double direction;
 };
 
@@ -49,5 +50,5 @@ extern Uint32 tick_timer;
 /* functions */
 int random_number_gen(int min, int max);
 void update_offset(struct Offset& offset, int win_width, int win_height);
-void update_player(struct Offset& offset, const Uint8* state);
+void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* renderer);
 void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset);

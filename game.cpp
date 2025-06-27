@@ -45,36 +45,47 @@ int random_number_gen(int min, int max) {
 }
 
 void update_offset(struct Offset& offset, int win_width, int win_height) {
-    offset.x = win_width / 2 - tile_size / 2;
-    offset.y = win_height / 2 - tile_size / 2;
+
+    SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
+    
+    int player_tile_x = static_cast<int>(player.x / tile_size);
+    int player_tile_y = static_cast<int>(player.y / tile_size);
+    
+    // std::cout << "player game: " << player_tile_x << ' ' << player_tile_y << ' ' << player_iso.x - offset.x << ' ' << player_iso.y - offset.y << "\n";
+    float row_coord = player_tile_x * (0.5 * tile_size ) + player_tile_y * (-0.5 * tile_size);
+    float col_coord = player_tile_x * (0.25 * tile_size) + player_tile_y * (0.25 * tile_size);
+
+    offset.x = win_width / 2 - (tile_size / 2) - row_coord;
+    offset.y = win_height / 2 - col_coord;
 }
 
 
-void update_player(struct Offset& offset, const Uint8* state) {
-    float dx = 0;
-    float dy = 0;
+void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* renderer) {
+    SDL_FPoint dir = {0,0};
 
-    // Normal map inputs
-    // if (state[SDL_SCANCODE_W]) dy -= 1;
-    // if (state[SDL_SCANCODE_S]) dy += 1;
-    // if (state[SDL_SCANCODE_A]) dx -= 1;
-    // if (state[SDL_SCANCODE_D]) dx += 1;
+    if (state[SDL_SCANCODE_W]) { dir.y -= 1; }
+    if (state[SDL_SCANCODE_S]) { dir.y += 1; }
+    if (state[SDL_SCANCODE_A]) { dir.x -= 1; }
+    if (state[SDL_SCANCODE_D]) { dir.x += 1; }
 
-    // // isometric directions, broken veits
-    if (state[SDL_SCANCODE_W]) { dx -= 1; dy += 0.5; }
-    if (state[SDL_SCANCODE_S]) { dx += 1; dy -= 0.5; }
-    if (state[SDL_SCANCODE_A]) { dx -= 0.5; dy -= 1; }
-    if (state[SDL_SCANCODE_D]) { dx += 0.5; dy += 1; }
+    dir.x = dir.x * player.movement_speed;
+    dir.y = dir.y * player.movement_speed;
+    
+    player.x += dir.x;
+    player.y += dir.y;
 
-    // Normalize movement vector
-    float length = std::sqrt(dx * dx + dy * dy);
-    if (length != 0) {
-        dx = dx / length * player.movement_speed;
-        dy = dy / length * player.movement_speed;
 
-        player.x += dy;
-        player.y += dx;
-    }
+    SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
+    
+    int player_tile_x = static_cast<int>(player.x / tile_size);
+    int player_tile_y = static_cast<int>(player.y / tile_size);
+    
+    // std::cout << "player game: " << player_tile_x << ' ' << player_tile_y << ' ' << player_iso.x - offset.x << ' ' << player_iso.y - offset.y << "\n";
+    float row_coord = player_tile_x * (0.5 * tile_size ) + player_tile_y * (-0.5 * tile_size) + offset.x;
+    float col_coord = player_tile_x * (0.25 * tile_size) + player_tile_y * (0.25 * tile_size) + offset.y;
+
+    SDL_FRect player_rect = {row_coord  + (tile_size / 2), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
+    SDL_RenderFillRectF(renderer, &player_rect);
 }
 
 void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset) {
@@ -84,17 +95,9 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset) {
     if (key_pressed == SDLK_f) {
         std::cout << std::endl;
 
-        int player_tile_x = player.x / tile_size;
-        int player_tile_y = player.y / tile_size;
-        int tile_value = map[player_tile_y][player_tile_x];
-        std::cout << "X, Y " << player.x << ", " << player.y << " = value: " << tile_value << '\n';
-        std::cout << "Tile at " << player_tile_y << ", " << player_tile_x << " = " << tile_value << '\n';
- 
-        SDL_Point iso_player = to_grid_coordinate(player.x, player.y);
+        std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
+            << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
 
-        std::cout << "iso " << iso_player.x << ", " << iso_player.y << " = " << iso_player.x / tile_size << ' ' << iso_player.y / tile_size << '\n';
-        // std::cout << "Tile at (" << player_tile_y << ", " << player_tile_x << ") = " << tile_value << '\n';
-        
         std::cout << std::endl;
     }
     

@@ -6,7 +6,7 @@
 
 void update_player_direction(struct Player& player, SDL_Window* window, struct Offset& offset, int mouse_x, int mouse_y) {
     // Convert player's world position to isometric screen position
-    SDL_Point iso_player = to_grid_coordinate(player.x, player.y);
+    SDL_FPoint iso_player = to_grid_coordinate(offset, player.x, player.y);
 
     double dx = mouse_x - (iso_player.x - offset.x);
     double dy = mouse_y - (iso_player.y - offset.y);
@@ -32,16 +32,9 @@ void draw_player_direction(SDL_Renderer* renderer, struct Player& player, struct
     int y2 = y1 + std::sin(player.direction) * distance;
 
     // Convert both points to isometric screen coordinates
-    SDL_Point iso_start = to_grid_coordinate(x1, y1);
-    SDL_Point iso_end   = to_grid_coordinate(x2, y2);
-
-    // Apply offset
-    int screen_x1 = iso_start.x - offset.x;
-    int screen_y1 = iso_start.y - offset.y;
-
-    int screen_x2 = iso_end.x - offset.x;
-    int screen_y2 = iso_end.y - offset.y;
+    SDL_FPoint iso_start = to_grid_coordinate(offset, x1, y1);
+    SDL_FPoint iso_end   = to_grid_coordinate(offset, x2, y2);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // Yellow
-    SDL_RenderDrawLine(renderer, screen_x1, screen_y1, screen_x2, screen_y2);
+    SDL_RenderDrawLine(renderer, iso_start.x, iso_start.y, iso_end.x, iso_end.y);
 }

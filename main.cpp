@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     load_textures(renderer);
     
     SDL_GetWindowSize(window, &win_width, &win_height);
-    SDL_Rect player_rect = {player.x, player.y, player.size, player.size};
+    
     
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -61,8 +61,6 @@ int main(int argc, char* argv[]) {
 
             tick_lag -= tick_delay;  // update tickrate
             
-            update_player(offset, state);
-            update_offset(offset, win_width, win_height);
             update_player_direction(player, window, offset, mouse_x, mouse_y);
             
             /* Render begin*/
@@ -71,11 +69,13 @@ int main(int argc, char* argv[]) {
             
             load_render(renderer, tile_size, offset);
             
-            draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
-            update_abilities(renderer, offset);
+            update_player(offset, state, renderer);
+            update_offset(offset, win_width, win_height);
+            
+            // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
+            // update_abilities(renderer, offset);
             
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
-            SDL_RenderFillRect(renderer, &player_rect);  // player w ^^ red!!
             SDL_RenderPresent(renderer);  // dispay new frame
 
             /* Framerate and tickrate updating */
@@ -93,8 +93,8 @@ int main(int argc, char* argv[]) {
         }
 
         /* Framerate cap */
-        frame_time = SDL_GetTicks() - frame_start;
-        if (frame_time < 8) { SDL_Delay(8 - frame_time); }
+        // frame_time = SDL_GetTicks() - frame_start;
+        // if (frame_time < 8) { SDL_Delay(8 - frame_time); }
     }
 
     // Cleanup if isRunning == false

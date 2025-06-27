@@ -3,13 +3,5 @@
 #include <iostream>
 #include "game.h"
 
-
-constexpr float i_x = 1.0f;
-constexpr float i_y = 0.5f;
-constexpr float j_x = -1.0f;
-constexpr float j_y = 0.5f;
-
-struct Matrix2x2;
-SDL_Point to_grid_coordinate(int screen_x, int screen_y);
-SDL_Point to_screen_coordinate(int grid_x, int grid_y);
-Matrix2x2 invert_matrix(float a, float b, float c, float d);
+SDL_FPoint to_grid_coordinate(struct Offset& offset, float screen_x, float screen_y);
+SDL_FPoint to_screen_coordinate(struct Offset& offset, float grid_x, float grid_y);
