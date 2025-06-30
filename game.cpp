@@ -10,7 +10,7 @@
 #include "isometric_calc.h"
 
 Player player = {
-    5, 32, 0, 0
+    10, 32, 0, 0
 };
 
 bool isRunning = true;
@@ -45,15 +45,9 @@ int random_number_gen(int min, int max) {
 }
 
 void update_offset(struct Offset& offset, int win_width, int win_height) {
-
-    SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
-    
-    int player_tile_x = static_cast<int>(player.x / tile_size);
-    int player_tile_y = static_cast<int>(player.y / tile_size);
-    
-    // std::cout << "player game: " << player_tile_x << ' ' << player_tile_y << ' ' << player_iso.x - offset.x << ' ' << player_iso.y - offset.y << "\n";
-    float row_coord = player_tile_x * (0.5 * tile_size ) + player_tile_y * (-0.5 * tile_size);
-    float col_coord = player_tile_x * (0.25 * tile_size) + player_tile_y * (0.25 * tile_size);
+    // convert to isometric
+    float row_coord = player.x * (0.5) + player.y * (-0.5);
+    float col_coord = player.x * (0.25) + player.y * (0.25);
 
     offset.x = win_width / 2 - (tile_size / 2) - row_coord;
     offset.y = win_height / 2 - col_coord;
@@ -73,22 +67,17 @@ void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* rend
     
     player.x += dir.x;
     player.y += dir.y;
-
-
-    SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
     
-    int player_tile_x = static_cast<int>(player.x / tile_size);
-    int player_tile_y = static_cast<int>(player.y / tile_size);
-    
-    // std::cout << "player game: " << player_tile_x << ' ' << player_tile_y << ' ' << player_iso.x - offset.x << ' ' << player_iso.y - offset.y << "\n";
-    float row_coord = player_tile_x * (0.5 * tile_size ) + player_tile_y * (-0.5 * tile_size) + offset.x;
-    float col_coord = player_tile_x * (0.25 * tile_size) + player_tile_y * (0.25 * tile_size) + offset.y;
+    // convert to isometric
+    float row_coord = player.x * (0.5) + player.y * (-0.5) + offset.x;
+    float col_coord = player.x * (0.25) + player.y * (0.25) + offset.y;
 
-    SDL_FRect player_rect = {row_coord  + (tile_size / 2), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
+    // ma liidan (tile_size / 4) et player tile'i keskele saada. Eeldusega, et tile size ja player size on harmoonias ehk 100 ja 25 n2itkes mitte 100 ja 13  
+    SDL_FRect player_rect = {row_coord  + (tile_size / 4), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
     SDL_RenderFillRectF(renderer, &player_rect);
 }
 
-void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset) {
+void call_set_functionality(SDL_Keycode key_pressed) {
     // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
 
     // Example: Specific key action
@@ -97,7 +86,7 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset) {
 
         std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-
+      
         std::cout << std::endl;
     }
     

@@ -7,9 +7,9 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
                 SDL_Texture* tree_tex, SDL_Texture* wall_tex, SDL_Texture* snowy_ground_tex) {
 
     SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
+    
     int player_tile_x = static_cast<int>(player.x / tile_size);
     int player_tile_y = static_cast<int>(player.y / tile_size);
-    std::cout << "player render: " << player_tile_x << ' ' << player_tile_y << "\n";
 
     int left = player_tile_x - render_radius;
     int right = player_tile_x + render_radius;
@@ -54,15 +54,15 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
             // if (column < left || column > right) continue;
                // walls
             if (map[row][column] == 9){
-                int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.x;
-                int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.y;
-                SDL_Rect destTile = {row_coord + tile_size, col_coord, tile_size, tile_size};
+                int row_coord = column * (0.5 * tile_size ) + row * (-0.5 * tile_size) + offset.x;
+                int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
+                SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
                 load_wall_texture(renderer, wall_tex, map, row, column, destTile);
             }
 
             if (map[row][column] == 2){
-                // int row_coord = column *(0.5*tile_size ) + row *(-0.5*tile_size) + offset.y;
-                // int col_coord = column *(0.25*tile_size) + row *(0.25*tile_size) + offset.x;
+                // int row_coord = column * (0.5 * tile_size ) + row *(-0.5 * tile_size) + offset.x;
+                // int col_coord = column * (0.25 * tile_size) + row *(0.25 * tile_size) + offset.y;
 
                 // SDL_Rect tree_tile = {
                 //     row_coord - (tile_size * 2),

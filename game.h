@@ -51,4 +51,4 @@ extern Uint32 tick_timer;
 int random_number_gen(int min, int max);
 void update_offset(struct Offset& offset, int win_width, int win_height);
 void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* renderer);
-void call_set_functionality(SDL_Keycode key_pressed, struct Offset& offset);
+void call_set_functionality(SDL_Keycode key_pressed);

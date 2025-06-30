@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
             }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                call_set_functionality(key_pressed, offset);
+                call_set_functionality(key_pressed);
             }
         }
         
@@ -69,8 +69,8 @@ int main(int argc, char* argv[]) {
             
             load_render(renderer, tile_size, offset);
             
-            update_player(offset, state, renderer);
             update_offset(offset, win_width, win_height);
+            update_player(offset, state, renderer);
             
             // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
             // update_abilities(renderer, offset);
