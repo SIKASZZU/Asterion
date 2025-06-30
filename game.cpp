@@ -29,7 +29,6 @@ const int tick_delay = 1000 / tickrate;
 int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
-int render_radius = 20;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 
 int random_number_gen(int min, int max) {

@@ -3,6 +3,8 @@
 #include "textures.h"
 #include "isometric_calc.h"
 
+int render_radius = 5;  // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
+
 void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player, 
                 SDL_Texture* tree_tex, SDL_Texture* wall_tex, SDL_Texture* snowy_ground_tex) {
 
@@ -18,10 +20,10 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
 
     // Pass 1: Render all ground tiles
     for (int row = 0; row < map_size; row++) {
-        // if (row < top || row > bottom) continue;
+        if (row < top || row > bottom) continue;
         
         for (int column = 0; column < map_size; column++) {
-            // if (column < left || column > right) continue;
+            if (column < left || column > right) continue;
             
             int row_coord = column * (0.5 * tile_size ) + row * (-0.5 * tile_size) + offset.x;
             int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
@@ -48,11 +50,12 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
 
     // Pass 2: Render all tree tiles w ground underneith
     for (int row = 0; row < map_size; row++) {
-        // if (row < top || row > bottom) continue;
+        if (row < top || row > bottom) continue;
 
         for (int column = 0; column < map_size; column++) {
-            // if (column < left || column > right) continue;
-               // walls
+            if (column < left || column > right) continue;
+            
+            // walls
             if (map[row][column] == 9){
                 int row_coord = column * (0.5 * tile_size ) + row * (-0.5 * tile_size) + offset.x;
                 int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
