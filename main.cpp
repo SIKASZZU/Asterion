@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
             }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                call_set_functionality(key_pressed);
+                call_set_functionality(key_pressed, player);
             }
         }
         
@@ -67,11 +67,11 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
             
-            load_render(renderer, tile_size, offset);
+            load_render(renderer, tile_size, offset, player);
             
-            update_offset(offset, win_width, win_height);
+            update_offset(offset, player, win_width, win_height);
             update_player(offset, state, renderer);
-            
+            draw_player(renderer, player, offset);
             // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
             // update_abilities(renderer, offset);
             

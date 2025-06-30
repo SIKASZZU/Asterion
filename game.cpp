@@ -9,10 +9,7 @@
 #include <random>
 #include "isometric_calc.h"
 
-Player player = {
-    10, 32, 0, 0
-};
-
+/* game state, screen */
 bool isRunning = true;
 int win_width;
 int win_height;
@@ -44,7 +41,7 @@ int random_number_gen(int min, int max) {
     return dist(rng);
 }
 
-void update_offset(struct Offset& offset, int win_width, int win_height) {
+void update_offset(struct Offset& offset, struct Player& player, int win_width, int win_height) {
     // convert to isometric
     float row_coord = player.x * (0.5) + player.y * (-0.5);
     float col_coord = player.x * (0.25) + player.y * (0.25);
@@ -54,34 +51,12 @@ void update_offset(struct Offset& offset, int win_width, int win_height) {
 }
 
 
-void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* renderer) {
-    SDL_FPoint dir = {0,0};
-
-    if (state[SDL_SCANCODE_W]) { dir.y -= 1; }
-    if (state[SDL_SCANCODE_S]) { dir.y += 1; }
-    if (state[SDL_SCANCODE_A]) { dir.x -= 1; }
-    if (state[SDL_SCANCODE_D]) { dir.x += 1; }
-
-    dir.x = dir.x * player.movement_speed;
-    dir.y = dir.y * player.movement_speed;
-    
-    player.x += dir.x;
-    player.y += dir.y;
-    
-    // convert to isometric
-    float row_coord = player.x * (0.5) + player.y * (-0.5) + offset.x;
-    float col_coord = player.x * (0.25) + player.y * (0.25) + offset.y;
-
-    // ma liidan (tile_size / 4) et player tile'i keskele saada. Eeldusega, et tile size ja player size on harmoonias ehk 100 ja 25 n2itkes mitte 100 ja 13  
-    SDL_FRect player_rect = {row_coord  + (tile_size / 4), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
-    SDL_RenderFillRectF(renderer, &player_rect);
-}
-
-void call_set_functionality(SDL_Keycode key_pressed) {
+void call_set_functionality(SDL_Keycode key_pressed, struct Player& player) {
     // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
 
     // Example: Specific key action
     if (key_pressed == SDLK_f) {
+        /* print information */
         std::cout << std::endl;
 
         std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \

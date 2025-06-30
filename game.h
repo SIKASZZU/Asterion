@@ -1,6 +1,7 @@
 #pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
 #include <SDL2/SDL.h>
 #include "map.h"
+#include "player.h"
 
 // /* screen */
 extern int win_width;
@@ -15,16 +16,6 @@ struct Offset {
 };
 
 
-/* movement_speed, size, x, y, direction (facing) */
-struct Player {
-    int movement_speed;
-    int size;
-    float x;
-    float y;
-    double direction;
-};
-
-extern Player player;
 
 /* game */
 extern bool isRunning;
@@ -49,6 +40,5 @@ extern Uint32 tick_timer;
 
 /* functions */
 int random_number_gen(int min, int max);
-void update_offset(struct Offset& offset, int win_width, int win_height);
-void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* renderer);
-void call_set_functionality(SDL_Keycode key_pressed);
+void update_offset(struct Offset& offset, struct Player& player, int win_width, int win_height);
+void call_set_functionality(SDL_Keycode key_pressed, struct Player& player);

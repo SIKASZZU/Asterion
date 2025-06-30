@@ -3,7 +3,7 @@
 #include "textures.h"
 #include "isometric_calc.h"
 
-void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, 
+void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player, 
                 SDL_Texture* tree_tex, SDL_Texture* wall_tex, SDL_Texture* snowy_ground_tex) {
 
     SDL_FPoint player_iso = to_grid_coordinate(offset, player.x, player.y);
@@ -77,7 +77,7 @@ void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offs
 }
 
 
-void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offset& offset) {
+void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player) {
     int player_tile_y = player.y / tile_size;
     int bottom = player_tile_y + render_radius;
     int top    = player_tile_y - render_radius;
@@ -101,8 +101,8 @@ void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offs
 }
 
 
-void load_render(SDL_Renderer* renderer, const int tile_size, struct Offset& offset) {
+void load_render(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player) {
     /* Vali ise, mis mappi tahad geneda. */
-    render_map(renderer, tile_size, offset, tree_tex, wall_tex, snowy_ground_tex);
-    // render_map_numbers(renderer, tile_size, offset);
+    render_map(renderer, tile_size, offset, player, tree_tex, wall_tex, snowy_ground_tex);
+    // render_map_numbers(renderer, tile_size, offset, player);
 }
