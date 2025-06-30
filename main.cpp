@@ -26,9 +26,6 @@ int main(int argc, char* argv[]) {
   
     load_textures(renderer);
     
-    SDL_GetWindowSize(window, &win_width, &win_height);
-    
-    
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
 
@@ -69,7 +66,7 @@ int main(int argc, char* argv[]) {
             
             load_render(renderer, tile_size, offset, player);
             
-            update_offset(offset, player, win_width, win_height);
+            update_offset(offset, player, window);
             update_player(offset, state, renderer);
             draw_player(renderer, player, offset);
             // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);

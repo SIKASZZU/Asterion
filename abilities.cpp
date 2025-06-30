@@ -57,12 +57,12 @@ void update_abilities(SDL_Renderer* renderer, struct Offset& offset) {
 }
 
 
-void use_melee(int x, int y, double direction) {
+void use_melee(struct Player& player) {
     Ability a;
     a.type = MELEE;
-    a.x = static_cast<float>(x);
-    a.y = static_cast<float>(y);
-    a.direction = direction;
+    a.x = static_cast<float>(player.x);
+    a.y = static_cast<float>(player.y);
+    a.direction = player.direction;
     a.range = 40;
     a.damage = 10;
     a.speed = 0; // instant
@@ -71,12 +71,12 @@ void use_melee(int x, int y, double direction) {
 }
 
 
-void use_arrow(int x, int y, double direction) {
+void use_arrow(struct Player& player) {
     Ability a;
     a.type = ARROW;
-    a.x = static_cast<float>(x);
-    a.y = static_cast<float>(y);
-    a.direction = direction;
+    a.x = static_cast<float>(player.x);
+    a.y = static_cast<float>(player.y);
+    a.direction = player.direction;
     a.length = 50;
     a.damage = 8;
     a.speed = 5;

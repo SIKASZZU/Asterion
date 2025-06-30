@@ -3,6 +3,7 @@
 #include "map.h"
 #include "player.h"
 
+
 // /* screen */
 extern int win_width;
 extern int win_height;
@@ -40,5 +41,5 @@ extern Uint32 tick_timer;
 
 /* functions */
 int random_number_gen(int min, int max);
-void update_offset(struct Offset& offset, struct Player& player, int win_width, int win_height);
+void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window);
 void call_set_functionality(SDL_Keycode key_pressed, struct Player& player);

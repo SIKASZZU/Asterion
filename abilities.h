@@ -22,5 +22,5 @@ struct Ability {
 extern std::vector<Ability> active_abilities;  // extern seest muidu compiler fucking
 
 void update_abilities(SDL_Renderer* renderer, struct Offset& offset);
-void use_melee(int x, int y, double direction);
-void use_arrow(int x, int y, double direction);
+void use_melee(struct Player& player);
+void use_arrow(struct Player& player);

@@ -11,8 +11,6 @@
 
 /* game state, screen */
 bool isRunning = true;
-int win_width;
-int win_height;
 int mouse_x = 0;
 int mouse_y = 0;
 
@@ -41,13 +39,16 @@ int random_number_gen(int min, int max) {
     return dist(rng);
 }
 
-void update_offset(struct Offset& offset, struct Player& player, int win_width, int win_height) {
+void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
     // convert to isometric
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
+    
     float row_coord = player.x * (0.5) + player.y * (-0.5);
     float col_coord = player.x * (0.25) + player.y * (0.25);
 
-    offset.x = win_width / 2 - (tile_size / 2) - row_coord;
-    offset.y = win_height / 2 - col_coord;
+    offset.x = width / 2 - (tile_size / 2) - row_coord;
+    offset.y = height / 2 - col_coord;
 }
 
 
@@ -67,11 +68,11 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player) {
     
     if (key_pressed == SDLK_q) {
         std::cout << "use_melee called in call_set_functionality @ game.cpp" << '\n';
-        use_melee(player.x, player.y, player.direction);
+        use_melee(player);
     }
     
     if (key_pressed == SDLK_e) {
         std::cout << "use_arrow called call_set_functionality @ game.cpp" << '\n';
-        use_arrow(player.x, player.y, player.direction);
+        use_arrow(player);
     }
 }
