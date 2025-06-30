@@ -22,11 +22,16 @@ void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* rend
     if (state[SDL_SCANCODE_A]) { dir.x -= 1; }
     if (state[SDL_SCANCODE_D]) { dir.x += 1; }
 
-    dir.x = dir.x * player.movement_speed;
-    dir.y = dir.y * player.movement_speed;
     
-    player.x += dir.x;
-    player.y += dir.y;
+    if (dir.x != 0 || dir.y != 0) {
+        float normalized_dir = sqrt((dir.x * dir.x) + (dir.y * dir.y));  // normalize diagonal movement
+        
+        dir.x = dir.x / normalized_dir * player.movement_speed;
+        dir.y = dir.y / normalized_dir * player.movement_speed;
+        
+        player.x += dir.x;
+        player.y += dir.y;
+    }
 }
 
 
