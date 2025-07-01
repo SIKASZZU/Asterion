@@ -6,11 +6,12 @@
 
 
 Player player = {
-    10.0f,  // float movement_speed
-    32,     // int player_size
-    0.0f,   // float x
-    0.0f,   // float y
-    0.0     // double direction
+    10.0f,               // float movement_speed
+    32,                  // int size
+    0.0f,                // float x
+    0.0f,                // float y
+    0.0,                 // double direction
+    {0.0, 0.0, 0.0, 0.0} // SDL_FRect rect
 };
 
 
@@ -42,8 +43,8 @@ void draw_player(SDL_Renderer* renderer, struct Player& player, struct Offset& o
     float col_coord = player.x * (0.25) + player.y * (0.25) + offset.y;
 
     // ma liidan (tile_size / 4) et player tile'i keskele saada. Eeldusega, et tile size ja player size on harmoonias ehk 100 ja 25 n2itkes mitte 100 ja 13  
-    SDL_FRect player_rect = {row_coord  + (tile_size / 4), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
-    SDL_RenderFillRectF(renderer, &player_rect);
+    player.rect = {row_coord  + (tile_size / 4), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
+    SDL_RenderFillRectF(renderer, &player.rect);
 }
 
 

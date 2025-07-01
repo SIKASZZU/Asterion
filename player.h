@@ -7,6 +7,7 @@ struct Player {
     float x;
     float y;
     double direction;
+    SDL_FRect rect;
 };
 
 extern Player player;

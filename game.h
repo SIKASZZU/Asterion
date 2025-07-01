@@ -16,8 +16,6 @@ struct Offset {
     float y;
 };
 
-
-
 /* game */
 extern bool isRunning;
 extern int render_radius;

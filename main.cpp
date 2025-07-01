@@ -7,6 +7,7 @@
 #include "player.h"
 #include "textures.h"
 #include "render.h"
+#include "collision.h"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
