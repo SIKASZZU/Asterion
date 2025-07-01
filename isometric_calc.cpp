@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include <SDL2/SDL.h>
 #include "game.h"
 #include "isometric_calc.h"

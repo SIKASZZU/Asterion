@@ -1,9 +1,7 @@
 #include "game.h"
-#include <iostream>
-#include <cmath>
 #include "isometric_calc.h"
 #include "player.h"
-
+#include <cmath>
 
 Player player = {
     10.0f,               // float movement_speed

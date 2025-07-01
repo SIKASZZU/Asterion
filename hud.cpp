@@ -1,1 +1,0 @@
-// call smthing and display smthing on screen.

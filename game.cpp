@@ -1,12 +1,8 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include <ctime>
-#include <cstdlib>
 #include "game.h"
 
 #include "abilities.h"
-#include <cmath>
-#include <random>
 #include "isometric_calc.h"
 
 /* game state, screen */
@@ -29,14 +25,6 @@ const int tick_delay = 1000 / tickrate;
 int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
-
-
-int random_number_gen(int min, int max) {
-    /* args int min, int max */
-    static std::mt19937 rng(std::random_device{}());
-    std::uniform_int_distribution<> dist(min, max - 1);
-    return dist(rng);
-}
 
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
     // convert to isometric

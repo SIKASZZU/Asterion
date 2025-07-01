@@ -1,6 +1,5 @@
 #define SDL_MAIN_HANDLED
 
-#include <iostream>
 #include <SDL2/SDL_image.h>
 #include "game.h"
 #include "abilities.h"

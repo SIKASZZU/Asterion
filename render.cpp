@@ -1,7 +1,5 @@
 #include "game.h"
-#include <iostream>
 #include "textures.h"
-#include "isometric_calc.h"
 #include "collision.h"
 
 int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid

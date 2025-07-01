@@ -1,17 +1,15 @@
+#include "map.h"
+#include <iostream>
 #include <cmath>
 #include <ctime>
-#include <cstdlib>
-#include <iostream>
 #include <algorithm>
-
-#include "map.h"
 
 #ifndef M_PI
 #   define M_PI 3.1415926535897932384626433832
 #endif
 
 int map[map_size][map_size];  // tra mdea, aga see peab siin uuesti olema ilma externita.
- 
+
 
 void print_map(int map[map_size][map_size]) {
     for (int y = 0; y < map_size; y++) {
@@ -57,7 +55,8 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
                 // Land: elevation between mid and max
                 int land_val = min_val + (max_val - min_val) / 2 + rand() % ((max_val - min_val) / 2 + 1);
                 map[y][x] = land_val;
-            } else {
+            }
+            else {
                 // Water
                 map[y][x] = min_val;
             }
@@ -69,7 +68,7 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
 void generate_maze_runner_map(int map[map_size][map_size]) {
     srand(static_cast<unsigned int>(std::time(NULL)));
 
-    int MIN_VAL  = 0;
+    int MIN_VAL = 0;
     int TREE_VAL = 2;
     int WALL_VAL = 9;
     int LAND_VAL = 1;
@@ -94,11 +93,11 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
         for (int x = 0; x < map_size; x++) {
             float dx = x - center_x;
             float dy = y - center_y;
-            
+
             float distance_sq = dx * dx + dy * dy;
 
             float distance = std::sqrt(distance_sq);
-            
+
             // Default terrain logic
             float norm_dist = distance / max_distance;
             float land_chance = 1.0f - norm_dist;
@@ -109,7 +108,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             if (land_chance > 0.4f) {
                 // int LAND_VAL = MIN_VAL + (max_val - MIN_VAL) / 2 + rand() % ((max_val - MIN_VAL) / 2 + 1);
                 map[y][x] = LAND_VAL;
-            } else {
+            }
+            else {
                 map[y][x] = TREE_VAL; // water
             }
 
@@ -119,7 +119,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
                 map[y][x] = 5;
             }
-            
+
             // Maze ring (pindala)
             if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
                 map[y][x] = 4;

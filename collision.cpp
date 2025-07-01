@@ -1,6 +1,4 @@
 #include <SDL2/SDL.h>
-#include <iostream>
-
 #include "collision.h"
 #include "isometric_calc.h"
 #include "player.h"
@@ -21,18 +19,12 @@ void check_collision(int map[map_size][map_size], struct Player& player,
     SDL_Rect p_rect = {static_cast<int>(iso_p.x), static_cast<int>(iso_p.y), 
                     static_cast<int>(player.rect.w), static_cast<int>(player.rect.h)};
 
-    std::cout << "player     : " << player.x << " " << player.y << "\n";
-    std::cout << "player rect: " << p_rect.x << " " << p_rect.y << "\n";
-    std::cout << "wall rect:   " << wall_rect.x << " " << wall_rect.y << "\n";
-
-
     // alati true aga lihtsalt fuck you
     SDL_Rect overlap;
     if (!SDL_IntersectRect(&p_rect, &wall_rect, &overlap)) {
         
     } 
 
-    std::cout << "Collision detected!" << "\n";
     if (overlap.w < overlap.h) {
         // Horizontal collision: resolve on X axis
         if (p_rect.x < wall_rect.x) {

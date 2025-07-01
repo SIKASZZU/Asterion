@@ -1,6 +1,5 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include <iostream>
 #include "game.h"
 
 SDL_FPoint to_grid_coordinate(struct Offset& offset, float screen_x, float screen_y);

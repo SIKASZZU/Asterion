@@ -1,1 +1,0 @@
-// kui ability on range, suund vmdgi, suurus. Ss see file vaatab, kas teine mangija on saanud pihta.

@@ -1,6 +1,5 @@
 #include "abilities.h"
 #include "game.h"
-#include <iostream>
 #include <cmath>
 
 std::vector<Ability> active_abilities;
@@ -20,7 +19,7 @@ void update_abilities(SDL_Renderer* renderer, struct Offset& offset) {
         // Draw (convert to screen-space)
         int screen_x = static_cast<int>(it->x) - offset.x;
         int screen_y = static_cast<int>(it->y) - offset.y;
-        
+
         if (it->type == ARROW) {
             float dx = std::cos(it->direction);
             float dy = std::sin(it->direction);
@@ -45,7 +44,8 @@ void update_abilities(SDL_Renderer* renderer, struct Offset& offset) {
                     end_x + arr_offset_x, end_y + arr_offset_y);
             }
 
-        } else {
+        }
+        else {
             // Melee hitbox rectangle
             SDL_SetRenderDrawColor(renderer, 200, 0, 255, 255);  // Purple melee
             SDL_Rect r = { screen_x - 30, screen_y - 30, 60, 60 };
