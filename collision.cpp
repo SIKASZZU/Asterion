@@ -3,53 +3,32 @@
 #include "isometric_calc.h"
 #include "player.h"
 
+#include <iostream>
 
-void check_collision(int map[map_size][map_size], struct Player& player, 
-                    struct Offset& offset, SDL_Rect destTile) {
+bool check_collision(int map[map_size][map_size], SDL_FRect tempRect) {
+    // Calculate grid indices for all four corners
+    int grid_x_left = static_cast<int>(tempRect.x / tile_size);
+    int grid_x_right = static_cast<int>((tempRect.x + tempRect.w) / tile_size);
+    int grid_y_top = static_cast<int>(tempRect.y / tile_size);
+    int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tile_size);
 
-    if (map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] != 9) {
-        return;
-    }
-    
-    SDL_FPoint iso_wall = to_screen_coordinate(offset, destTile.y, destTile.x);
-    SDL_Rect wall_rect = {static_cast<int>(iso_wall.x), static_cast<int>(iso_wall.y), 
-                        tile_size, tile_size};
-    
-    SDL_FPoint iso_p = to_screen_coordinate(offset, player.rect.x, player.rect.y);
-    SDL_Rect p_rect = {static_cast<int>(iso_p.x), static_cast<int>(iso_p.y), 
-                    static_cast<int>(player.rect.w), static_cast<int>(player.rect.h)};
-
-    // alati true aga lihtsalt fuck you
-    SDL_Rect overlap;
-    if (!SDL_IntersectRect(&p_rect, &wall_rect, &overlap)) {
-        
-    } 
-
-    if (overlap.w < overlap.h) {
-        // Horizontal collision: resolve on X axis
-        if (p_rect.x < wall_rect.x) {
-            player.x -= overlap.w;  // push left
-        } else {
-            player.x += overlap.w;  // push right
-        }
-        // player.velX = 0;
-
-    } else {
-        // Vertical collision: resolve on Y axis
-        if (p_rect.y < wall_rect.y) {
-            player.y -= overlap.h;  // push up
-        } else {
-            player.y += overlap.h;  // push down
-        }
-        // player.velY = 0;
-
+    // Check if any grid indices are out of bounds
+    if (grid_x_left < 0 || grid_x_left >= map_size ||
+        grid_x_right < 0 || grid_x_right >= map_size ||
+        grid_y_top < 0 || grid_y_top >= map_size ||
+        grid_y_bottom < 0 || grid_y_bottom >= map_size) {
+        // Handle out of bounds, possibly return true or false based on game logic
+        return false;
     }
 
-}
+    // Check all four corners for collision with tile 9
+    if (map[grid_x_left][grid_y_top] == 9 ||      // Top-left
+        map[grid_x_right][grid_y_top] == 9 ||     // Top-right
+        map[grid_x_left][grid_y_bottom] == 9 ||   // Bottom-left
+        map[grid_x_right][grid_y_bottom] == 9) {  // Bottom-right
+        std::cout << "Encountered alien\n";
+        return false;
+    }
 
-
-void update_collision(int map[map_size][map_size], struct Player& player, 
-                    struct Offset& offset, SDL_Rect destTile) {
-    
-    check_collision(map, player, offset, destTile);
+    return true;
 }

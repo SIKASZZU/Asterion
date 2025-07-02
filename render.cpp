@@ -1,14 +1,14 @@
 #include "game.h"
 #include "textures.h"
 #include "collision.h"
-
+ 
 int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offset, struct Player &player,
                 SDL_Texture *tree_tex, SDL_Texture *wall_tex, SDL_Texture *cube_ground_tex) {
 
-    int player_tile_x = static_cast<int>(player.x / tile_size);
-    int player_tile_y = static_cast<int>(player.y / tile_size);
+    int player_tile_y = static_cast<int>(player.x * (0.5 * tile_size) + player.y * (-0.5 * tile_size) + offset.x);
+    int player_tile_x = static_cast<int>(player.x * (0.25 * tile_size) + player.y * (0.25 * tile_size) + offset.y);
 
     int left = player_tile_x - render_radius;
     int right = player_tile_x + render_radius;
@@ -48,12 +48,6 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
             if (map[row][column] == 9) {
                 // destTile.y -= tile_size; destTile.x += tile_size;
                 load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile);
-                
-                // if player is inside a wall, calculate && activate collision
-                if (row == player_tile_y && column == player_tile_x) {
-                    update_collision(map, player, offset, destTile);
-
-                }
             } 
         }
     }

@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
             load_render(renderer, tile_size, offset, player);
             
             update_offset(offset, player, window);
-            update_player(offset, state, renderer);
+            update_player(map, offset, state, renderer);
             draw_player(renderer, player, offset);
             
             // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);

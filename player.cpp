@@ -2,6 +2,7 @@
 #include "isometric_calc.h"
 #include "player.h"
 #include <cmath>
+#include "collision.h"
 
 Player player = {
     10.0f,               // float movement_speed
@@ -13,7 +14,7 @@ Player player = {
 };
 
 
-void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* renderer) {
+void update_player(int map[map_size][map_size], struct Offset& offset, const Uint8* state, SDL_Renderer* renderer) {
     SDL_FPoint dir = {0,0};
 
     if (state[SDL_SCANCODE_W]) { dir.y -= 1; }
@@ -27,9 +28,18 @@ void update_player(struct Offset& offset, const Uint8* state, SDL_Renderer* rend
         
         dir.x = dir.x / normalized_dir * player.movement_speed;
         dir.y = dir.y / normalized_dir * player.movement_speed;
+
+        SDL_FRect tempPlayerRect = { player.x + dir.x, player.y + dir.y, player.rect.w, player.rect.h};
+        bool accessible = check_collision(map, tempPlayerRect);
         
-        player.x += dir.x;
-        player.y += dir.y;
+        if (!accessible) { 
+            return;
+        } else {
+            
+            player.x += dir.x;
+            player.y += dir.y;
+
+        }
     }
 }
 
@@ -40,8 +50,8 @@ void draw_player(SDL_Renderer* renderer, struct Player& player, struct Offset& o
     float row_coord = player.x * (0.5) + player.y * (-0.5) + offset.x;
     float col_coord = player.x * (0.25) + player.y * (0.25) + offset.y;
 
-    // ma liidan (tile_size / 4) et player tile'i keskele saada. Eeldusega, et tile size ja player size on harmoonias ehk 100 ja 25 n2itkes mitte 100 ja 13  
-    player.rect = {row_coord  + (tile_size / 4), col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
+    //   + (tile_size / 2) - (player.size / 2)
+    player.rect = {row_coord, col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
     SDL_RenderFillRectF(renderer, &player.rect);
 }
 
