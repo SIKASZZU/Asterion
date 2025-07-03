@@ -19,6 +19,7 @@ bool check_collision(int map[map_size][map_size], SDL_FRect tempRect) {
         map[grid_y_bottom][grid_x_right] == 9) {  // Bottom-right
         std::cout << "Encountered alien\n";
         return false;
+    
     } else{ 
 
         return true;

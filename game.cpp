@@ -39,7 +39,7 @@ void update_offset(struct Offset& offset, struct Player& player, SDL_Window* win
 }
 
 
-void call_set_functionality(SDL_Keycode key_pressed, struct Player& player) {
+void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset) {
     // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
 
     // Example: Specific key action
@@ -52,7 +52,13 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player) {
       
         std::cout << "RECT x, y: " << player.rect.x << ", " << player.rect.y << " grid: " << static_cast<int>(player.rect.x / tile_size) << ' ' << static_cast<int>(player.rect.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-      
+            
+        std::cout << "offset isorectiga: " << player.rect.x + offset.x << " " << player.rect.y + offset.y << "\n";
+
+        std::cout << "offset: " << offset.x << " " << offset.y << "\n";
+
+
+
         std::cout << std::endl;
     }
     

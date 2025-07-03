@@ -39,4 +39,4 @@ extern Uint32 tick_timer;
 
 /* functions */
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window);
-void call_set_functionality(SDL_Keycode key_pressed, struct Player& player);
+void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset);
