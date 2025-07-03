@@ -40,14 +40,14 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
 }
 
 
-void draw_player(SDL_Renderer* renderer, struct Player& player, struct Offset& offset) {
+void draw_player(SDL_Renderer* renderer, struct Offset& offset) {
     
     // convert to isometric
     float row_coord = player.x * (0.5) + player.y * (-0.5) + offset.x;
     float col_coord = player.x * (0.25) + player.y * (0.25) + offset.y;
 
     //   + (tile_size / 2) - (player.size / 2)
-    player.rect = {row_coord, col_coord, static_cast<float>(player.size), static_cast<float>(player.size)};
+    player.rect = {row_coord + (tile_size / 2) - (player.size / 2), col_coord - (player.size / 2), static_cast<float>(player.size), static_cast<float>(player.size)};
     SDL_RenderFillRectF(renderer, &player.rect);
 }
 
