@@ -32,13 +32,9 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
         SDL_FRect tempPlayerRect = { player.x + dir.x, player.y + dir.y, player.rect.w, player.rect.h};
         bool accessible = check_collision(map, tempPlayerRect);
         
-        if (!accessible) { 
-            return;
-        } else {
-            
+        if (accessible) { 
             player.x += dir.x;
             player.y += dir.y;
-
         }
     }
 }

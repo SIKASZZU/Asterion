@@ -12,23 +12,17 @@ bool check_collision(int map[map_size][map_size], SDL_FRect tempRect) {
     int grid_y_top = static_cast<int>(tempRect.y / tile_size);
     int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tile_size);
 
-    // Check if any grid indices are out of bounds
-    if (grid_x_left < 0 || grid_x_left >= map_size ||
-        grid_x_right < 0 || grid_x_right >= map_size ||
-        grid_y_top < 0 || grid_y_top >= map_size ||
-        grid_y_bottom < 0 || grid_y_bottom >= map_size) {
-        // Handle out of bounds, possibly return true or false based on game logic
-        return false;
-    }
-
     // Check all four corners for collision with tile 9
-    if (map[grid_x_left][grid_y_top] == 9 ||      // Top-left
-        map[grid_x_right][grid_y_top] == 9 ||     // Top-right
-        map[grid_x_left][grid_y_bottom] == 9 ||   // Bottom-left
-        map[grid_x_right][grid_y_bottom] == 9) {  // Bottom-right
+    if (map[grid_y_top][grid_x_left] == 9 ||      // Top-left
+        map[grid_y_top][grid_x_right] == 9 ||     // Top-right
+        map[grid_y_bottom][grid_x_left] == 9 ||   // Bottom-left
+        map[grid_y_bottom][grid_x_right] == 9) {  // Bottom-right
         std::cout << "Encountered alien\n";
         return false;
+    } else{ 
+
+        return true;
+
     }
 
-    return true;
 }

@@ -17,10 +17,10 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
 
     // Pass 1: Render all ground tiles
     for (int row = 0; row < map_size; row++) {
-        if (row < top || row > bottom) continue;
+        // if (row < top || row > bottom) continue;
 
         for (int column = 0; column < map_size; column++) {
-            if (column < left || column > right) continue;
+            // if (column < left || column > right) continue;
 
             int row_coord = column * (0.5 * tile_size) + row * (-0.5 * tile_size) + offset.x;
             int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
