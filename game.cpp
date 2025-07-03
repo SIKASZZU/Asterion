@@ -67,6 +67,11 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, stru
         use_melee(player);
     }
     
+    if (key_pressed == SDLK_c) {
+        player.collision = !player.collision;
+        std::cout << "Player collision is: " << player.collision << '\n';
+    }
+
     if (key_pressed == SDLK_e) {
         std::cout << "use_arrow called call_set_functionality @ game.cpp" << '\n';
         use_arrow(player);

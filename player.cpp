@@ -5,12 +5,13 @@
 #include "collision.h"
 
 Player player = {
-    10.0f,               // float movement_speed
-    32,                  // int size
-    0.0f,                // float x
-    0.0f,                // float y
-    0.0,                 // double direction
-    {0.0, 0.0, 0.0, 0.0} // SDL_FRect rect
+    10.0f,                // float movement_speed
+    32,                   // int size
+    0.0f,                 // float x
+    0.0f,                 // float y
+    0.0,                  // double direction
+    {0.0, 0.0, 0.0, 0.0}, // SDL_FRect rect
+    false                 // collision on/off
 };
 
 
@@ -30,7 +31,7 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
         dir.y = dir.y / normalized_dir * player.movement_speed;
 
         SDL_FRect tempPlayerRect = { player.x + dir.x, player.y + dir.y, player.rect.w, player.rect.h};
-        bool accessible = check_collision(map, tempPlayerRect);
+        bool accessible = check_collision(map, player, tempPlayerRect);
         
         if (accessible) { 
             player.x += dir.x;

@@ -5,7 +5,13 @@
 
 #include <iostream>
 
-bool check_collision(int map[map_size][map_size], SDL_FRect tempRect) {
+bool check_collision(int map[map_size][map_size], struct Player& player, SDL_FRect tempRect) {
+
+    // player collision on or off
+    if (!player.collision) {
+        return true;
+    }
+
     // Calculate grid indices for all four corners
     int grid_x_left = static_cast<int>(tempRect.x / tile_size);
     int grid_x_right = static_cast<int>((tempRect.x + tempRect.w) / tile_size);

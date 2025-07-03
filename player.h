@@ -8,6 +8,7 @@ struct Player {
     float y;
     double direction;
     SDL_FRect rect;
+    bool collision;
 };
 
 extern Player player;

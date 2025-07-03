@@ -46,7 +46,7 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
 
             // walls
             if (map[row][column] == 9) {
-                // destTile.y -= tile_size; destTile.x += tile_size;
+                destTile.y -= (tile_size / 2);
                 load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile);
             } 
         }
