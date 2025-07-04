@@ -9,6 +9,7 @@ struct Player {
     double direction;
     SDL_FRect rect;
     bool collision;
+    bool render;
 };
 
 extern Player player;

@@ -5,13 +5,14 @@
 #include "collision.h"
 
 Player player = {
-    10.0f,                // float movement_speed
-    32,                   // int size
-    0.0f,                 // float x
-    0.0f,                 // float y
-    0.0,                  // double direction
-    {0.0, 0.0, 0.0, 0.0}, // SDL_FRect rect
-    false                 // collision on/off
+    10.0f,                // float      movement_speed
+    32,                   // int        size
+    0.0f,                 // float      x
+    0.0f,                 // float      y
+    0.0,                  // double     direction
+    {0.0, 0.0, 0.0, 0.0}, // SDL_FRect  rect
+    false,                // bool       collision
+    false                 // bool       render
 };
 
 
@@ -42,7 +43,10 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
 
 
 void draw_player(SDL_Renderer* renderer, struct Offset& offset) {
-    
+    if (!player.render) {
+        return;
+    }
+
     // convert to isometric
     float row_coord = player.x * (0.5) + player.y * (-0.5) + offset.x;
     float col_coord = player.x * (0.25) + player.y * (0.25) + offset.y;

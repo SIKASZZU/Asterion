@@ -1,6 +1,7 @@
 #include "game.h"
 #include "textures.h"
 #include "collision.h"
+#include <iostream>
  
 int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
@@ -74,11 +75,24 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
 
             int row_coord = column * (0.5 * tile_size) + row * (-0.5 * tile_size) + offset.x;
             int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
-
+            
             // note: kui tekstuuri tahta tosta maa peale siis destTile.y -= (tile_size * 0.5);
             // note: 1 kord destTile.y -= (tile_size * 0.5); on v6rdeline 1 korrusega. Lahuta 1x veel, ss block spawnib 2ne korrus.
             
             SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
+            
+            if (row == player_tile_y && column == player_tile_x) {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
+                SDL_RenderDrawRect(renderer, &destTile);
+            }
+
+            if (row <= player_tile_y) {
+                player.render = true;
+                draw_player(renderer, offset);
+            } else {
+                player.render = false;
+            }
+            // std::cout << "render: " << player.render << " " << row << ' ' << player_tile_y << '\n';
 
             // alumine background e ground
             if (map[row][column] != 9 || map[row][column] != 0) {
@@ -107,51 +121,6 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
                 // load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile); // second layer
                 
             } 
-
-
-            }
-
-        }
-
-    // Pass 2: Render all tree tiles w ground underneith
-    for (int row = 0; row < map_size; row++) {
-        if (row < top || row > bottom) continue;
-
-        for (int column = 0; column < map_size; column++) {
-            if (column < left || column > right) continue;
-
-            int row_coord = column * (0.5 * tile_size) + row * (-0.5 * tile_size) + offset.x;
-            int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
-
-            SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
-            // player rect && nearby tiles
-            if (row == player_tile_y && column == player_tile_x) {
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
-                SDL_RenderDrawRect(renderer, &destTile);
-                
-                SDL_Point player_grid = {player_tile_x, player_tile_y};
-                draw_nearby(renderer, offset, player_grid);
-            }
-            // okei, trying to cook some shit up real bad.
-            // idee et renderib peale playerit! kui parem idee, siis see on rm rf ./
-            if (column == player_tile_x && row == (player_tile_y + 1) ||
-                column == (player_tile_x + 1) && row == player_tile_y ||
-                column == (player_tile_x + 1) && row == (player_tile_y + 1)) {
-                
-                // walls first layer
-                if (map[row][column] == 9) {
-                    destTile.y -= (tile_size * 0.5);
-                    load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile);
-                }
-
-                // green trees
-                if (map[row][column] == 2){
-                    destTile.y -= (tile_size / 2);
-                    // destTile.w *= 2; 
-                    // destTile.h *= 3;
-                    SDL_RenderCopy(renderer, tree_tex, nullptr, &destTile);
-                }
-            }
 
         }
     }
