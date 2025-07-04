@@ -49,6 +49,8 @@ void draw_player(SDL_Renderer* renderer, struct Offset& offset) {
 
     //   + (tile_size / 2) - (player.size / 2)
     player.rect = {row_coord + (tile_size / 2) - (player.size / 2), col_coord - (player.size / 2), static_cast<float>(player.size), static_cast<float>(player.size)};
+    
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); //green
     SDL_RenderFillRectF(renderer, &player.rect);
 }
 

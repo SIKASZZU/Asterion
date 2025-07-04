@@ -4,6 +4,8 @@
 
 extern int render_radius;
 
+void draw_nearby(SDL_Renderer *renderer, struct Offset& offset, SDL_Point zero_grid);
+
 void load_render(SDL_Renderer *renderer, const int tile_size, struct Offset &offset, struct Player &player);
 
 void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offset, struct Player &player,
