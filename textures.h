@@ -4,6 +4,7 @@
 extern SDL_Texture *ground_tex;
 extern SDL_Texture *cube_ground_tex;
 extern SDL_Texture *tree_tex;
+extern SDL_Texture *snowy_tree_tex;
 extern SDL_Texture *numbers_tex;
 extern SDL_Texture *wall_tex;
 

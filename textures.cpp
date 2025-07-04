@@ -5,6 +5,7 @@
 // Define the global variables here, et mainis probleeme ei tekiks
 SDL_Texture* cube_ground_tex = nullptr;
 SDL_Texture* tree_tex = nullptr;
+SDL_Texture* snowy_tree_tex = nullptr;
 SDL_Texture* numbers_tex = nullptr;
 SDL_Texture* wall_tex = nullptr;
 
@@ -15,13 +16,15 @@ void load_textures(SDL_Renderer* renderer) {
 
     /* textures */
     cube_ground_tex = IMG_LoadTexture(renderer, "resources/ground_cube.png");
-    tree_tex = IMG_LoadTexture(renderer, "resources/snowy_tree.png");
+    tree_tex = IMG_LoadTexture(renderer, "resources/tree.png");
+    snowy_tree_tex = IMG_LoadTexture(renderer, "resources/snowy_tree.png");
     numbers_tex = IMG_LoadTexture(renderer, "resources/numbers.png");
     wall_tex = IMG_LoadTexture(renderer, "resources/wall_cube.png");
 
     /* Puhasta tekstuuride 22ri et ei oleks blurry */
     SDL_SetTextureScaleMode(cube_ground_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(tree_tex, SDL_ScaleModeNearest);
+    SDL_SetTextureScaleMode(snowy_tree_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(numbers_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(wall_tex, SDL_ScaleModeNearest);
 }
@@ -30,6 +33,7 @@ void load_textures(SDL_Renderer* renderer) {
 void destroy_all_textures() {
     SDL_DestroyTexture(cube_ground_tex);
     SDL_DestroyTexture(tree_tex);
+    SDL_DestroyTexture(snowy_tree_tex);
     SDL_DestroyTexture(numbers_tex);
     SDL_DestroyTexture(wall_tex);
 }

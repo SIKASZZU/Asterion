@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
     SDL_Window* window = SDL_CreateWindow("SDL cpp",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        800, 600, SDL_WINDOW_SHOWN);
+        1200, 720, SDL_WINDOW_SHOWN);
     
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   
@@ -91,8 +91,8 @@ int main(int argc, char* argv[]) {
         }
 
         /* Framerate cap */
-        // frame_time = SDL_GetTicks() - frame_start;
-        // if (frame_time < 8) { SDL_Delay(8 - frame_time); }
+        frame_time = SDL_GetTicks() - frame_start;
+        if (frame_time < 16) { SDL_Delay(16 - frame_time); }
     }
 
     // Cleanup if isRunning == false

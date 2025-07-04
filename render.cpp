@@ -25,6 +25,9 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
             int row_coord = column * (0.5 * tile_size) + row * (-0.5 * tile_size) + offset.x;
             int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
 
+            // note: kui tekstuuri tahta tosta maa peale siis destTile.y -= (tile_size * 0.5);
+            // note: 1 kord destTile.y -= (tile_size * 0.5); on v6rdeline 1 korrusega. Lahuta 1x veel, ss block spawnib 2ne korrus.
+            
             SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
 
             // draw player rect
@@ -44,10 +47,21 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
             //     load_cube_ground_texture(renderer, cube_ground_tex, destTile);
             // }
 
+            // green trees
+            if (map[row][column] == 2){
+                destTile.y -= (tile_size / 2);
+                // destTile.w *= 2; 
+                // destTile.h *= 3;
+                SDL_RenderCopy(renderer, tree_tex, nullptr, &destTile);
+            }
+
             // walls
             if (map[row][column] == 9) {
-                destTile.y -= (tile_size / 2);
-                load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile);
+                destTile.y -= (tile_size * 0.5);
+                load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile); // first layer
+                // destTile.y -= (tile_size * 0.5);
+                // load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile); // second layer
+                
             } 
         }
     }
