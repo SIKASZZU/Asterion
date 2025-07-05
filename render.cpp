@@ -2,61 +2,73 @@
 #include "textures.h"
 #include "collision.h"
 #include <iostream>
- 
+#include <vector>
+#include <functional>
+#include <algorithm>
+
 int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
-void draw_nearby(SDL_Renderer *renderer, struct Offset& offset, SDL_Point zero_grid) {
-    
+void draw_nearby(SDL_Renderer* renderer, struct Offset& offset, SDL_Point zero_grid) {
+
     auto calculate_tile_coords = [&](int x, int y) {
         int row_coord = x * (0.5 * tile_size) + y * (-0.5 * tile_size) + tile_size / 4 + offset.x;
-        int col_coord = x * (0.25 * tile_size) + y * (0.25 * tile_size)  + offset.y;
-        
-        return SDL_Point{row_coord, col_coord};
-    };
-    
+        int col_coord = x * (0.25 * tile_size) + y * (0.25 * tile_size) + offset.y;
+
+        return SDL_Point{ row_coord, col_coord };
+        };
+
     int half_tile = tile_size / 2;
     SDL_Rect nearbyTile;
-    
+
     SDL_SetRenderDrawColor(renderer, 255, 193, 203, 255); //pink -> mida peab renderima enne playerit
-    
+
     SDL_Point left_coords = calculate_tile_coords(zero_grid.x - 1, zero_grid.y);
-    nearbyTile = {left_coords.x, left_coords.y, half_tile, half_tile};
+    nearbyTile = { left_coords.x, left_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
-    
+
     SDL_Point up_coords = calculate_tile_coords(zero_grid.x, zero_grid.y - 1);
-    nearbyTile = {up_coords.x, up_coords.y, half_tile, half_tile};
+    nearbyTile = { up_coords.x, up_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
-    
+
     SDL_Point leftup_coords = calculate_tile_coords(zero_grid.x - 1, zero_grid.y - 1);
-    nearbyTile = {leftup_coords.x, leftup_coords.y, half_tile, half_tile};
+    nearbyTile = { leftup_coords.x, leftup_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
-    
+
     SDL_Point leftdown_coords = calculate_tile_coords(zero_grid.x - 1, zero_grid.y + 1);
-    nearbyTile = {leftdown_coords.x, leftdown_coords.y, half_tile, half_tile};
+    nearbyTile = { leftdown_coords.x, leftdown_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
 
     SDL_Point rightup_coords = calculate_tile_coords(zero_grid.x + 1, zero_grid.y - 1);
-    nearbyTile = {rightup_coords.x, rightup_coords.y, half_tile, half_tile};
+    nearbyTile = { rightup_coords.x, rightup_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
-    
+
     SDL_SetRenderDrawColor(renderer, 193, 65, 255, 255); //magneta -> mida peab renderima peale playerit
 
     SDL_Point down_coords = calculate_tile_coords(zero_grid.x, zero_grid.y + 1);
-    nearbyTile = {down_coords.x, down_coords.y, half_tile, half_tile};
+    nearbyTile = { down_coords.x, down_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
 
     SDL_Point right_coords = calculate_tile_coords(zero_grid.x + 1, zero_grid.y);
-    nearbyTile = {right_coords.x, right_coords.y, half_tile, half_tile};
+    nearbyTile = { right_coords.x, right_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
 
     SDL_Point rightdown_coords = calculate_tile_coords(zero_grid.x + 1, zero_grid.y + 1);
-    nearbyTile = {rightdown_coords.x, rightdown_coords.y, half_tile, half_tile};
+    nearbyTile = { rightdown_coords.x, rightdown_coords.y, half_tile, half_tile };
     SDL_RenderDrawRect(renderer, &nearbyTile);
 }
 
 
-void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offset, struct Player &player,
-                SDL_Texture *tree_tex, SDL_Texture *wall_tex, SDL_Texture *cube_ground_tex) {
+void render_map(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player,
+    SDL_Texture* tree_tex, SDL_Texture* wall_tex, SDL_Texture* cube_ground_tex) {
+
+    struct Renderable {
+        SDL_Texture* tex = nullptr;
+        SDL_Rect dest;
+        int sortY;
+        std::function<void()> custom_draw = nullptr; // Optional for special draw logic
+    };
+
+    std::vector<Renderable> render_queue;  // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
 
     int player_tile_x = static_cast<int>(player.x / tile_size);
     int player_tile_y = static_cast<int>(player.y / tile_size);
@@ -66,7 +78,6 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
     int top = player_tile_y - render_radius;
     int bottom = player_tile_y + render_radius;
 
-    // Pass 1: Render all ground tiles
     for (int row = 0; row < map_size; row++) {
         if (row < top || row > bottom) continue;
 
@@ -75,59 +86,59 @@ void render_map(SDL_Renderer *renderer, const int tile_size, struct Offset &offs
 
             int row_coord = column * (0.5 * tile_size) + row * (-0.5 * tile_size) + offset.x;
             int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
-            
-            // note: kui tekstuuri tahta tosta maa peale siis destTile.y -= (tile_size * 0.5);
-            // note: 1 kord destTile.y -= (tile_size * 0.5); on v6rdeline 1 korrusega. Lahuta 1x veel, ss block spawnib 2ne korrus.
-            
-            SDL_Rect destTile = {row_coord, col_coord, tile_size, tile_size};
-            
-            if (row == player_tile_y && column == player_tile_x) {
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
-                SDL_RenderDrawRect(renderer, &destTile);
-            }
+            int grid_value = map[row][column];
 
-            if (row <= player_tile_y) {
-                player.render = true;
-                draw_player(renderer, offset);
-            } else {
-                player.render = false;
-            }
-            // std::cout << "render: " << player.render << " " << row << ' ' << player_tile_y << '\n';
+            SDL_Rect destTile = { row_coord, col_coord, tile_size, tile_size };
 
-            // alumine background e ground
-            if (map[row][column] != 9 || map[row][column] != 0) {
-                // load_ground_texture(renderer, destTile, row, column);
+            // cube ground
+            if (grid_value == 4) {
                 load_cube_ground_texture(renderer, cube_ground_tex, destTile);
             }
 
-            // // cube ground
-            // if (map[row][column] == 4) {
-            //     load_cube_ground_texture(renderer, cube_ground_tex, destTile);
-            // }
-
             // green trees
-            if (map[row][column] == 2){
+            if (grid_value == 2) {
                 destTile.y -= (tile_size / 2);
-                // destTile.w *= 2; 
-                // destTile.h *= 3;
-                SDL_RenderCopy(renderer, tree_tex, nullptr, &destTile);
+                render_queue.push_back(Renderable{ tree_tex, destTile, destTile.y });
             }
 
             // walls
-            if (map[row][column] == 9) {
-                destTile.y -= (tile_size * 0.5);
-                load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile); // first layer
-                // destTile.y -= (tile_size * 0.5);
-                // load_cube_wall_texture(renderer, wall_tex, map, row, column, destTile); // second layer
-                
-            } 
+            if (grid_value == 9) {
+                destTile.y -= (tile_size / 2);
+                render_queue.push_back(Renderable{ wall_tex, destTile, destTile.y });
+            }
 
+            // Player tile highlight (render last)
+            if (row == player_tile_y && column == player_tile_x) {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                destTile.h = (tile_size / 2);
+                SDL_RenderDrawRect(renderer, &destTile);
+            }
+        }
+    }
+
+    // NOTE: KUI VARA PLAYER V2LJA TULEB  - (tile_size * 0.5)
+        // tuleks teha eraldi igale objektile, kus on see l2vend, et player on TOP
+    int y_v = static_cast<int>(player.x * (0.25) + player.y * (0.25) + offset.y - (tile_size * 0.5));  
+    render_queue.push_back(Renderable{ nullptr, {0,0,0,0}, y_v, [=]() { draw_player(renderer, offset); } });
+
+    // Sort
+    std::sort(render_queue.begin(), render_queue.end(), [](const Renderable& a, const Renderable& b) {
+        return a.sortY < b.sortY;
+        });
+
+    // Render all
+    for (auto& r : render_queue) {
+        if (r.custom_draw) {
+            r.custom_draw();
+        }
+        else if (r.tex) {
+            SDL_RenderCopy(renderer, r.tex, nullptr, &r.dest);
         }
     }
 }
 
 
-void render_map_numbers(SDL_Renderer *renderer, const int tile_size, struct Offset &offset, struct Player &player)
+void render_map_numbers(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player)
 {
     int player_tile_y = player.y / tile_size;
     int bottom = player_tile_y + render_radius;
@@ -149,14 +160,14 @@ void render_map_numbers(SDL_Renderer *renderer, const int tile_size, struct Offs
 
             int row_coord = x * (0.5 * tile_size) + y * (-0.5 * tile_size) + offset.x;
             int col_coord = x * (0.25 * tile_size) + y * (0.25 * tile_size) + offset.y;
-            SDL_Rect destTile = {row_coord + (tile_size / 4), col_coord, tile_size / 2, tile_size / 2};
+            SDL_Rect destTile = { row_coord + (tile_size / 4), col_coord, tile_size / 2, tile_size / 2 };
 
             load_specific_number(renderer, map[y][x], destTile);
         }
     }
 }
 
-void load_render(SDL_Renderer *renderer, const int tile_size, struct Offset &offset, struct Player &player)
+void load_render(SDL_Renderer* renderer, const int tile_size, struct Offset& offset, struct Player& player)
 {
     /* Vali ise, mis mappi tahad geneda. */
     render_map(renderer, tile_size, offset, player, tree_tex, wall_tex, cube_ground_tex);

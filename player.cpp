@@ -42,10 +42,7 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
 }
 
 
-void draw_player(SDL_Renderer* renderer, struct Offset& offset) {
-    if (!player.render) {
-        return;
-    }
+void draw_player(SDL_Renderer* renderer, const struct Offset& offset) {
 
     // convert to isometric
     float row_coord = player.x * (0.5) + player.y * (-0.5) + offset.x;

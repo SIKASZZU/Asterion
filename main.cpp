@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
             
             update_offset(offset, player, window);
             update_player(map, offset, state, renderer);
-            draw_player(renderer, offset);
+            // draw_player(renderer, offset);
             
             // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
             // update_abilities(renderer, offset);
