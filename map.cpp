@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <cmath>
-#include <ctime>
 #include <algorithm>
 
 #ifndef M_PI
@@ -37,8 +36,6 @@ void generate_map() {
 
 
 void generate_random_map(int map[map_size][map_size], int min_val, int max_val) {
-    srand(static_cast<unsigned int>(std::time(NULL)));
-
     float center_x = map_size / 2.0f;
     float center_y = map_size / 2.0f;
     float max_distance = std::sqrt(center_x * center_x + center_y * center_y);
@@ -74,8 +71,6 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
 
 
 void generate_maze_runner_map(int map[map_size][map_size]) {
-    srand(static_cast<unsigned int>(std::time(NULL)));
-
     int MIN_VAL = 0;
     int TREE_VAL = 2;
     int WALL_VAL = 9;
