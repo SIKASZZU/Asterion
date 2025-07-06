@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
             
-            load_render(renderer, tile_size, offset, player);
+            load_render(renderer, offset, player, texture_vector);
             
             update_offset(offset, player, window);
             update_player(map, offset, state, renderer);

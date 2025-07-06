@@ -1,4 +1,6 @@
 #include "map.h"
+#include "save_data.h"
+
 #include <iostream>
 #include <cmath>
 #include <ctime>
@@ -22,9 +24,15 @@ void print_map(int map[map_size][map_size]) {
 
 
 void generate_map() {
-    /* Vali ise, mis mappi tahad geneda.    */
-    // generate_random_map(map, 2, 2);
-    generate_maze_runner_map(map);
+    /* try to load from file */
+    load_map_from_file(map);  // return boolean map_loaded
+    
+    /* Vali ise, mis mappi tahad geneda. */
+    // generate_random_map(map, 2, 2);          // random ring, circular map
+    if (map_loaded) { return; }
+
+    generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
+    save_map_locally(map);
 }
 
 
