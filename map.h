@@ -1,5 +1,6 @@
 #pragma once
 
+
 /* map */
 const int map_size = 100;
 const int tile_size = 100; 

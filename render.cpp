@@ -1,6 +1,7 @@
 #include "game.h"
 #include "textures.h"
 #include "collision.h"
+#include "render.h"
 // #include "map.h"
 
 #include <iostream>
@@ -9,7 +10,7 @@
 #include <algorithm>
 
 int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
-
+std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture>& texture_vector) {
 
@@ -43,23 +44,21 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             int grid_value = map[row][column];
 
             SDL_Rect destTile = { row_coord, col_coord, tile_size, tile_size };
+            
+            std::pair<int, int> grid_pos = {row, column};
 
             // cube ground
-            if (grid_value == 1) {
+            // fixme: static const std::unordered_set<int> ground_underneath_values = {1, 2, 4, 8}
+            if (grid_value == 1 || grid_value == 2 || grid_value == 4 || grid_value == 8) {
                 load_cube_ground_texture(renderer, destTile);
             }
-            
-            if (grid_value == 4) {
-                load_cube_ground_texture(renderer, destTile);
-            }
-            
+
             if (grid_value == 5) {
                 load_cube_snowy_ground_texture(renderer, destTile);
             }
 
             // green trees
             if (grid_value == 2) {
-                load_cube_ground_texture(renderer, destTile);
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ tree_tex, destTile, destTile.y });
             }
@@ -68,6 +67,27 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (grid_value == 9) {
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
+            }
+            
+            // walls w vines
+            if (grid_value == 8) {
+                
+                // Only generate random offset once per block
+                if (random_offsets.find(grid_pos) == random_offsets.end()) {
+                    random_offsets[grid_pos] = rand() % 20;  // see 20 on kui palju px on maxist v2hem
+                }
+                int xr = random_offsets[grid_pos];
+
+                destTile.y -= half_tile;
+                destTile.y += (xr / 2);  // y-d peab eraldi lahutama, muidu block on 6hus xD
+                destTile.x += (xr / 2);
+                destTile.w -= xr; 
+                destTile.h -= xr;
+
+                render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
+                
+                destTile.y += 1;  // +1 sest muidu hakkab walli destTile'iga v6itlema ja flickerib.
+                render_queue.push_back(Renderable{ cube_vine_tex, destTile, destTile.y });
             }
 
             // Player tile highlight (render last)

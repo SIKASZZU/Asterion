@@ -5,8 +5,8 @@
 #include <sstream>
 #include <string>
 
-bool map_loaded; 
-bool map_saved;
+bool map_loaded = false; 
+bool map_saved = false;
 
 // Save the map to a local file
 void save_map_locally(int map[map_size][map_size]) {

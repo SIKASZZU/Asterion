@@ -5,7 +5,7 @@
 #include "collision.h"
 
 Player player = {
-    10.0f,                // float      movement_speed
+    20.0f,                // float      movement_speed
     32,                   // int        size
     0.0f,                 // float      x
     0.0f,                 // float      y

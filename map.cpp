@@ -1,5 +1,4 @@
 #include "map.h"
-#include "save_data.h"
 
 #include <iostream>
 #include <cmath>
@@ -24,14 +23,14 @@ void print_map(int map[map_size][map_size]) {
 
 void generate_map() {
     /* try to load from file */
-    load_map_from_file(map);  // return boolean map_loaded
+    // load_map_from_file(map);  // return boolean map_loaded
     
     /* Vali ise, mis mappi tahad geneda. */
     // generate_random_map(map, 2, 2);          // random ring, circular map
-    if (map_loaded) { return; }
+    // if (map_loaded) { return; }
 
     generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
-    save_map_locally(map);
+    // save_map_locally(map);
 }
 
 
@@ -94,6 +93,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
     for (int y = 0; y < map_size; y++) {
         for (int x = 0; x < map_size; x++) {
+            
             float dx = x - center_x;
             float dy = y - center_y;
 
@@ -108,11 +108,10 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             land_chance = std::clamp(land_chance, 0.0f, 1.0f);
 
             // Land under everything (circular)
-            if (land_chance > 0.4f) {
+            if (land_chance > 0.2f) {
                 // int LAND_VAL = MIN_VAL + (max_val - MIN_VAL) / 2 + rand() % ((max_val - MIN_VAL) / 2 + 1);
                 map[y][x] = LAND_VAL;
-            }
-            else {
+            } else {
                 map[y][x] = TREE_VAL; // water
             }
 
@@ -126,6 +125,11 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             // Maze ring (pindala)
             if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
                 map[y][x] = 4;
+                if (land_chance > 0.8f) {
+                    map[y][x] = 8;
+                } else if (land_chance < 0.3) {
+                    map[y][x] = 9;
+                }
             }
 
             // Walls around Glade
