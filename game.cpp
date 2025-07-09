@@ -26,6 +26,12 @@ int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
 
+/* render.h args */
+int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
+
+/* map.h args */
+int tile_size = 25; 
+
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
     // convert to isometric
     int width, height;
@@ -75,5 +81,26 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, stru
     if (key_pressed == SDLK_e) {
         std::cout << "use_arrow called call_set_functionality @ game.cpp" << '\n';
         use_arrow(player);
+    }
+
+    if (key_pressed == SDLK_KP_PLUS || key_pressed == SDLK_PLUS) {
+        render_radius += 5;
+        std::cout << "render_radius = " << render_radius << "\n";
+    } 
+    
+    if (key_pressed == SDLK_KP_MINUS || key_pressed == SDLK_MINUS) {
+        // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
+        render_radius > 5 ? render_radius -= 5 : render_radius;
+        std::cout << "render_radius = " << render_radius << "\n";
+    }
+
+    if (key_pressed == SDLK_PERIOD) {
+        tile_size += 5;
+        std::cout << "tile_size = " << tile_size << "\n";
+    }
+
+    if (key_pressed == SDLK_COMMA) {
+        tile_size > 5 ? tile_size -= 5 : tile_size;
+        std::cout << "tile_size = " << tile_size << "\n";
     }
 }

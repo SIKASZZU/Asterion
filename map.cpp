@@ -1,4 +1,5 @@
 #include "map.h"
+#include "game.h"
 
 #include <iostream>
 #include <cmath>
@@ -81,6 +82,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
     /* Glade */
     int glade_radius = map_size / 10; // Central square half-size
+    glade_radius = (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
+
     int maze_inner_radius = glade_radius + 2;
     int maze_outer_radius = map_size / 2 - 4;
 

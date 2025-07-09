@@ -1,6 +1,5 @@
 #pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
 #include <SDL2/SDL.h>
-#include "map.h"
 #include "player.h"
 #include <functional>
 
@@ -18,7 +17,6 @@ struct Offset {
 
 /* game */
 extern bool isRunning;
-extern int render_radius;
 extern const Uint8* state;
 
 /* framerate */
@@ -36,6 +34,13 @@ extern Uint32 tick_lag;
 extern int tick_count;
 extern float ticks_per_second;
 extern Uint32 tick_timer;
+
+/* render.h args */
+extern int render_radius;
+
+/* map.h args */
+extern int tile_size; 
+
 
 struct pair_hash {
     std::size_t operator()(const std::pair<int, int>& p) const {

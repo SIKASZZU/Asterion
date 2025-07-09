@@ -1,5 +1,6 @@
 #pragma once
 #include "game.h"
+#include "map.h"
 
 struct Player {
     float movement_speed;

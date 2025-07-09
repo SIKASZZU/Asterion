@@ -2,14 +2,12 @@
 #include "textures.h"
 #include "collision.h"
 #include "render.h"
-// #include "map.h"
 
 #include <iostream>
 #include <vector>
 #include <functional>
 #include <algorithm>
 
-int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector) {
