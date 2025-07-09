@@ -12,7 +12,7 @@
 int render_radius = 5; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
 
-void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture>& texture_vector) {
+void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector) {
 
     struct Renderable {
         SDL_Texture* tex = nullptr;
@@ -48,8 +48,8 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             std::pair<int, int> grid_pos = {row, column};
 
             // cube ground
-            // fixme: static const std::unordered_set<int> ground_underneath_values = {1, 2, 4, 8}
-            if (grid_value == 1 || grid_value == 2 || grid_value == 4 || grid_value == 8) {
+            // fixme tee mingi list vmdgi, ma ei viitsi hetkel: static const std::unordered_set<int> ground_underneath_values = {1, 2, 4, 8, 9}
+            if (grid_value == 1 || grid_value == 2 || grid_value == 4 || grid_value == 8 || grid_value == 9) {
                 load_cube_ground_texture(renderer, destTile);
             }
 
@@ -87,6 +87,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
                 
                 destTile.y += 1;  // +1 sest muidu hakkab walli destTile'iga v6itlema ja flickerib.
+                auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 render_queue.push_back(Renderable{ cube_vine_tex, destTile, destTile.y });
             }
 
@@ -158,7 +159,7 @@ void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Pl
     }
 }
 
-void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture>& texture_vector)
+void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector)
 {
     /* Vali ise, mis mappi tahad geneda. */
     render_map(renderer, offset, player, texture_vector);

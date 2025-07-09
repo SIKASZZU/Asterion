@@ -127,7 +127,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                 map[y][x] = 4;
                 if (land_chance > 0.8f) {
                     map[y][x] = 8;
-                } else if (land_chance < 0.3) {
+                } else if (land_chance < 0.2) {
                     map[y][x] = 9;
                 }
             }

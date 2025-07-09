@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include "map.h"
 #include "player.h"
-
+#include <functional>
 
 // /* screen */
 extern int win_width;
@@ -36,6 +36,12 @@ extern Uint32 tick_lag;
 extern int tick_count;
 extern float ticks_per_second;
 extern Uint32 tick_timer;
+
+struct pair_hash {
+    std::size_t operator()(const std::pair<int, int>& p) const {
+        return std::hash<int>()(p.first) ^ std::hash<int>()(p.second << 1);
+    }
+};
 
 /* functions */
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window);
