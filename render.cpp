@@ -10,7 +10,7 @@
 
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
 
-void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector) {
+void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
 
     struct Renderable {
         SDL_Texture* tex = nullptr;
@@ -59,6 +59,11 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (grid_value == 2) {
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ tree_tex, destTile, destTile.y });
+            }
+            
+            // error cubes!
+            if (grid_value == 7) {
+                load_cube_error_texture(renderer, destTile);
             }
 
             // walls
@@ -157,9 +162,9 @@ void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Pl
     }
 }
 
-void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector)
+void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& player)
 {
     /* Vali ise, mis mappi tahad geneda. */
-    render_map(renderer, offset, player, texture_vector);
+    render_map(renderer, offset, player);
     // render_map_numbers(renderer, offset, player);
 }

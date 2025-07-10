@@ -6,6 +6,7 @@
 
 #include "game.h"
 
+extern SDL_Texture* cube_error_tex;
 extern SDL_Texture* ground_tex;
 extern SDL_Texture* cube_ground_tex;
 extern SDL_Texture* cube_snowy_ground_tex;
@@ -28,6 +29,7 @@ void load_textures(SDL_Renderer* renderer);
 void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect at_tile);
 void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
+void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void destroy_all_textures();
 
 SDL_Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });

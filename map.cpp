@@ -1,5 +1,6 @@
 #include "map.h"
 #include "game.h"
+#include "maze.h"
 
 #include <iostream>
 #include <cmath>
@@ -10,7 +11,6 @@
 #endif
 
 int map[map_size][map_size];  // tra mdea, aga see peab siin uuesti olema ilma externita.
-
 
 void print_map(int map[map_size][map_size]) {
     for (int y = 0; y < map_size; y++) {
@@ -31,6 +31,22 @@ void generate_map() {
     // if (map_loaded) { return; }
 
     generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
+
+    auto find_start = [&]() -> std::pair<int, int> {
+        for (int i = 0; i < map_size; i++) {
+            for (int j = 0; j < map_size; j++) {
+                if (map[i][j] == 4) {
+                    std::cout << "in func found: " << i << " " << j << "\n";
+                    return {i, j};
+                }
+            }
+        }
+        return {0, 0};
+    };
+    std::pair<int, int>fs = find_start();
+    Maze::generate_maze(map, fs.first, fs.second);
+    map[fs.first][fs.second] = 7;
+    // print_map(map);
     // save_map_locally(map);
 }
 
@@ -92,7 +108,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     float radius_sq_min = (tree_ring_radius - 0.5f) * (tree_ring_radius - 0.5f);
     float radius_sq_max = (tree_ring_radius + 1.5f) * (tree_ring_radius + 1.5f);
 
-    int num_sectors = 8;
+    int num_sectors = 4;
 
     for (int y = 0; y < map_size; y++) {
         for (int x = 0; x < map_size; x++) {
@@ -124,15 +140,15 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
                 map[y][x] = 5;
             }
-
+            
             // Maze ring (pindala)
             if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
                 map[y][x] = 4;
-                if (land_chance > 0.8f) {
-                    map[y][x] = 8;
-                } else if (land_chance < 0.2) {
-                    map[y][x] = 9;
-                }
+                // if (land_chance > 0.8f) {
+                //     map[y][x] = 8;
+                // } else if (land_chance < 0.2) {
+                //     map[y][x] = 9;
+                // }
             }
 
             // Walls around Glade
@@ -148,11 +164,12 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
                 for (int s = 0; s < num_sectors; ++s) {
                     float wall_angle = s * sector_angle;
-                    if (std::fabs(angle - wall_angle) < 0.02) {
+                    if (std::fabs(angle - wall_angle) < 0.01) {
                         map[y][x] = WALL_VAL;
                     }
                 }
             }
+            
         }
     }
 }

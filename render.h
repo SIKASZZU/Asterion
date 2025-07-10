@@ -5,9 +5,9 @@
 #include "game.h"
 #include "textures.h"
 
-void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector);
+void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& player);
 
-void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player, const std::vector<SDL_Texture*>& texture_vector);
+void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player);
 
 void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Player& player);
 
