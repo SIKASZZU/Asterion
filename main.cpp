@@ -37,6 +37,8 @@ int main(int argc, char* argv[]) {
     while (isRunning) {
         frame_start = SDL_GetTicks();  // framerate
         SDL_GetMouseState(&mouse_x, &mouse_y);  // a 32-bit button bitmask of the current button state. Mis tra asi see on?
+        
+        const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
         Uint32 current_tick = SDL_GetTicks(); // tickrate
         Uint32 elapsed_ticks = current_tick - previous_tick;
@@ -48,9 +50,17 @@ int main(int argc, char* argv[]) {
                 isRunning = false; 
                 break;
             }
+
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                call_set_functionality(key_pressed, player, offset);
+                call_set_functionality(key_pressed, player, offset, map);
+            }
+    
+            /* out of loop, seest muidu ootab keydown */
+            if (keystate[SDL_SCANCODE_LSHIFT]) {
+                player.movement_speed = player.default_movement_speed / 4;
+            } else {
+                player.movement_speed = player.default_movement_speed;
             }
         }
         

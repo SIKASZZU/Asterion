@@ -3,6 +3,7 @@
 #include "map.h"
 
 struct Player {
+    float default_movement_speed;
     float movement_speed;
     int size;
     float x;

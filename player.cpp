@@ -5,6 +5,7 @@
 #include "collision.h"
 
 Player player = {
+    20.0f,                // float      default movement_speed, seda ei muuda ns
     20.0f,                // float      movement_speed
     32,                   // int        size
     0.0f,                 // float      x

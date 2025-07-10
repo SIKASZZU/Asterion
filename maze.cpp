@@ -4,8 +4,12 @@
 #include <ctime>
 #include <cstdlib>
 #include <random>
+#include <queue>
+#include <utility>
+#include <unordered_map>
 
 #include "map.h"
+#include "game.h"
 
 namespace Maze {
     // Directions: up, down, left, right
@@ -13,7 +17,8 @@ namespace Maze {
         {-2, 0}, {2, 0}, {0, -2}, {0, 2}
     };
 
-
+    std::vector<std::pair<int, int>> path;
+   
     // Shuffle directions
     void shuffle_directions() {
         static std::random_device rd;
@@ -36,41 +41,68 @@ namespace Maze {
             }
         }
     }
+
+    // BFS Pathfinding from (sx, sy) to (gx, gy)
+    bool find_path(int map[map_size][map_size], int sx, int sy, int gx, int gy) {
+        if (map[sx][sy] != 5 || map[gx][gy] != 5) {
+            std::cout << "Invalid start, goal grids" << "\n";
+            return false;  // Invalid start/goal
+        }
+        
+        std::cout << "Starting pathfinder" << "\n";
+
+        std::queue<std::pair<int, int>> q;
+        
+        for (const auto& p : path) {
+            // undo myself (path)
+            std::cout << "(" << p.first << "," << p.second << ") ";
+            map[p.first][p.second] = 5;
+        }
+        path.clear();  // Erases all the elements. 
+        
+        std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> came_from;
+        bool visited[map_size][map_size] = {false};
+
+        q.push({sx, sy});
+        visited[sx][sy] = true;
+
+        int dx[4] = {-1, 1, 0, 0};
+        int dy[4] = {0, 0, -1, 1};
+
+        while (!q.empty()) {
+            auto [x, y] = q.front(); q.pop();
+
+            // end found
+            if (x == gx && y == gy) { 
+                // Reconstruct path
+                std::pair<int, int> curr = {gx, gy};
+                while (curr != std::make_pair(sx, sy)) {
+                    path.push_back(curr);
+                    curr = came_from[curr];
+                }
+                path.push_back({sx, sy});
+                std::reverse(path.begin(), path.end());
+                
+                for (const auto& p : path) {
+                    std::cout << "(" << p.first << "," << p.second << ") ";
+                    map[p.first][p.second] = 7;
+                }
+                std::cout << "\npath found, lenght: " << path.size() << '\n';
+                return true;  // path found
+            }
+
+            for (int i = 0; i < 4; ++i) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (nx >= 0 && ny >= 0 && nx < map_size && ny < map_size &&
+                    map[nx][ny] == 5 && !visited[nx][ny]) {
+                    visited[nx][ny] = true;
+                    came_from[{nx, ny}] = {x, y};
+                    q.push({nx, ny});
+                }
+            }
+        }
+        std::cout << "path failed" << "\n";
+        return false;  // No path found
+    }
 }
-
-    // // Create maze starting from the coordinate of value 4
-    // void create_maze_from_value(int map[map_size][map_size]) {
-    //     int start_x = -1, start_y = -1;
-    //     bool found = false;
-
-    //     // Locate the value 4 in the map
-    //     for (int i = 0; i < map_size && !found; ++i) {
-    //         for (int j = 0; j < map_size && !found; ++j) {
-    //             if (map[i][j] == 4) {
-    //                 start_x = (i % 2 == 0) ? i + 1 : i;
-    //                 start_y = (j % 2 == 0) ? j + 1 : j;
-    //                 found = true;
-    //             }
-    //         }
-    //     }
-
-    //     if (!found) {
-    //         std::cerr << "Value 4 not found in map.\n";
-    //         return;
-    //     }
-
-    //     // Fill the map with walls
-    //     for (int i = 0; i < map_size; ++i)
-    //         for (int j = 0; j < map_size; ++j)
-    //             map[i][j] = 1;
-
-    //     // Ensure start is inside bounds
-    //     if (start_x >= map_size - 1) start_x = map_size - 2;
-    //     if (start_y >= map_size - 1) start_y = map_size - 2;
-
-    //     map[start_x][start_y] = 0;
-
-    //     generate_maze(map, start_x, start_y);
-    // }
-
 

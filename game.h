@@ -1,7 +1,9 @@
 #pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
 #include <SDL2/SDL.h>
-#include "player.h"
 #include <functional>
+
+#include "player.h"
+#include "map.h"
 
 // /* screen */
 extern int win_width;
@@ -41,6 +43,14 @@ extern int render_radius;
 /* map.h args */
 extern int tile_size; 
 
+/* pathfinding */
+extern int pathEndX;
+extern int pathEndY;
+extern int pathStartX;
+extern int pathStartY;
+
+/* keys */
+extern bool shift_pressed;
 
 struct pair_hash {
     std::size_t operator()(const std::pair<int, int>& p) const {
@@ -50,4 +60,4 @@ struct pair_hash {
 
 /* functions */
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window);
-void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset);
+void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset, int map[map_size][map_size]);

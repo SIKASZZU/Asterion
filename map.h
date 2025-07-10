@@ -2,7 +2,7 @@
 
 
 /* map */
-const int map_size = 100;
+const int map_size = 150;
 extern int map[map_size][map_size];
 
 void generate_map();

@@ -1,6 +1,8 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include "game.h"
+#include "map.h"
+#include "maze.h"
 
 #include "abilities.h"
 #include "isometric_calc.h"
@@ -32,6 +34,15 @@ int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE 
 /* map.h args */
 int tile_size = 25; 
 
+/* pathfinding */
+int pathEndX = -1;
+int pathEndY = -1;
+int pathStartX = -1;
+int pathStartY = -1;
+
+/* keys */
+bool shift_pressed = false;
+
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
     // convert to isometric
     int width, height;
@@ -45,26 +56,21 @@ void update_offset(struct Offset& offset, struct Player& player, SDL_Window* win
 }
 
 
-void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset) {
-    // std::cout << "Key pressed: " << SDL_GetKeyName(key_pressed) << " (" << key_pressed << ")\n";
+void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
+    // std::cout << key_pressed << "\n";
 
     // Example: Specific key action
     if (key_pressed == SDLK_f) {
         /* print information */
         std::cout << std::endl;
-
         std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-      
+        
         std::cout << "RECT x, y: " << player.rect.x << ", " << player.rect.y << " grid: " << static_cast<int>(player.rect.x / tile_size) << ' ' << static_cast<int>(player.rect.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-            
+        
         std::cout << "offset isorectiga: " << player.rect.x + offset.x << " " << player.rect.y + offset.y << "\n";
-
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
-
-
-
         std::cout << std::endl;
     }
     
@@ -73,16 +79,18 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, stru
         use_melee(player);
     }
     
-    if (key_pressed == SDLK_c) {
-        player.collision = !player.collision;
-        std::cout << "Player collision is: " << player.collision << '\n';
-    }
-
     if (key_pressed == SDLK_e) {
         std::cout << "use_arrow called call_set_functionality @ game.cpp" << '\n';
         use_arrow(player);
     }
 
+    /* turn player collison off & on*/
+    if (key_pressed == SDLK_c) {
+        player.collision = !player.collision;
+        std::cout << "Player collision is: " << player.collision << '\n';
+    }
+
+    /* plus to increase render_radius; minus to reduce render_radius*/
     if (key_pressed == SDLK_KP_PLUS || key_pressed == SDLK_PLUS) {
         render_radius += 5;
         std::cout << "render_radius = " << render_radius << "\n";
@@ -94,6 +102,7 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, stru
         std::cout << "render_radius = " << render_radius << "\n";
     }
 
+    /* . to reduce tile_size; , to increase tile_size */
     if (key_pressed == SDLK_PERIOD) {
         tile_size += 5;
         std::cout << "tile_size = " << tile_size << "\n";
@@ -103,4 +112,28 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, stru
         tile_size > 5 ? tile_size -= 5 : tile_size;
         std::cout << "tile_size = " << tile_size << "\n";
     }
+    
+    /* pathfinding keys -> p to set end; o to set start*/
+    if (key_pressed == SDLK_p) {
+        pathEndX = static_cast<int>(player.x / tile_size);
+        pathEndY = static_cast<int>(player.y / tile_size);
+        std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
+    }
+
+    if (key_pressed == SDLK_o) {
+        pathStartX = static_cast<int>(player.x / tile_size);
+        pathStartY = static_cast<int>(player.y / tile_size);
+        std::cout << "Start point set: " << pathStartX << " " << pathStartY << "\n";
+    }
+    
+    if (pathEndX != -1 && pathStartX != -1) {
+        Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX); // dont ask miks need tagurpidi on
+        
+        // reset
+        pathEndX = -1;
+        pathEndY = -1;
+        pathStartX = -1;
+        pathStartY = -1;
+    }
+
 }
