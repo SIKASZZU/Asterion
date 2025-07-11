@@ -17,6 +17,8 @@ extern SDL_Texture* cube_wall_tex;
 extern SDL_Texture* cube_vine_hard_tex;
 extern SDL_Texture* cube_vine_medium_tex;
 extern SDL_Texture* cube_vine_soft_tex;
+extern SDL_Texture* cube_yellow_tex;
+extern SDL_Texture* cube_blue_tex;
 
 extern const int digit_width;
 extern const int digit_height;
@@ -30,6 +32,8 @@ void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect at_tile);
 void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile);
+void load_cube_yellow_texture(SDL_Renderer* renderer, SDL_Rect destTile);
+void load_cube_blue_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void destroy_all_textures();
 
 SDL_Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });

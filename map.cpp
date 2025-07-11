@@ -93,7 +93,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     
     int MAZE_LAND_VAL  = 4;
     int SNOWY_LAND_VAL = 5;
-
+    int YELLOW_VAL     = 6;
+    int BLUE_VAL       = 66;
     int ERROR_VAL      = 7;
     int WALL_VAL_VINE  = 8;
     int WALL_VAL       = 9;
@@ -108,7 +109,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
     int maze_inner_radius = glade_radius + 1;
     int maze_outer_radius = map_size / 2 - 4;
-    int maze_outer_section = maze_outer_radius - maze_inner_radius;
+    int maze_third_sector = maze_outer_radius - (maze_outer_radius / 3);
+    int maze_second_sector = maze_outer_radius - (maze_outer_radius / 2);
 
     /* Walls surrouding the Glade */
     float tree_ring_radius = glade_radius + 1.0f;
@@ -168,24 +170,28 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                 }
             }
 
-            if (distance >= maze_outer_section && distance <= maze_outer_radius) {
+            if (distance >= maze_third_sector && distance <= maze_outer_radius) {
                 map[y][x] = ERROR_VAL;
                 // map[y][x] = MAZE_LAND_VAL;
-            }
+            } 
+            else if (distance <= maze_third_sector && distance >= maze_second_sector) {
+                map[y][x] = YELLOW_VAL;
+            } 
+            
 
             // Sector walls -> ei ole seinad, vaid pathwayd, et player gladeist nahhuj saaks orienteeruda. #hack
-            if (distance >= maze_inner_radius && distance <= maze_outer_section) {
-                float angle = std::atan2(dy, dx);
-                if (angle < 0) angle += 2 * M_PI;
-                float sector_angle = 2 * M_PI / num_sectors;
+            // if (distance >= maze_inner_radius && distance <= maze_outer_section) {
+            //     float angle = std::atan2(dy, dx);
+            //     if (angle < 0) angle += 2 * M_PI;
+            //     float sector_angle = 2 * M_PI / num_sectors;
 
-                for (int s = 0; s < num_sectors; ++s) {
-                    float wall_angle = s * sector_angle;
-                    if (std::fabs(angle - wall_angle) < 0.01) {  // 0.01 kontrollib sector wallide thicknessi.
-                        if (map[y][x] == 4) map[y][x] = ERROR_VAL;
-                    }
-                }
-            }
+            //     for (int s = 0; s < num_sectors; ++s) {
+            //         float wall_angle = s * sector_angle;
+            //         if (std::fabs(angle - wall_angle) < 0.01) {  // 0.01 kontrollib sector wallide thicknessi.
+            //             if (map[y][x] == 4) map[y][x] = ERROR_VAL;
+            //         }
+            //     }
+            // }
             
         }
     }

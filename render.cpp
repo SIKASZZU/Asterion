@@ -60,7 +60,16 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ tree_tex, destTile, destTile.y });
             }
+
+            // yellow cubes!
+            if (grid_value == 6) {
+                load_cube_yellow_texture(renderer, destTile);
+            }
             
+            if (grid_value == 66) {
+                load_cube_blue_texture(renderer, destTile);
+            }
+
             // error cubes!
             if (grid_value == 7) {
                 load_cube_error_texture(renderer, destTile);

@@ -18,6 +18,8 @@ SDL_Texture* cube_wall_tex = nullptr;
 SDL_Texture* cube_vine_hard_tex = nullptr;
 SDL_Texture* cube_vine_medium_tex = nullptr;
 SDL_Texture* cube_vine_soft_tex = nullptr;
+SDL_Texture* cube_yellow_tex = nullptr;
+SDL_Texture* cube_blue_tex = nullptr;
 
 const int texture_width = 16;
 const int texture_height = 16;
@@ -37,6 +39,8 @@ void load_textures(SDL_Renderer* renderer) {
     cube_vine_hard_tex = IMG_LoadTexture(renderer, "resources/vine_cube_hard.png");
     cube_vine_medium_tex = IMG_LoadTexture(renderer, "resources/vine_cube_medium.png");
     cube_vine_soft_tex = IMG_LoadTexture(renderer, "resources/vine_cube_soft.png");
+    cube_yellow_tex = IMG_LoadTexture(renderer, "resources/yellow_cube.png");
+    cube_blue_tex = IMG_LoadTexture(renderer, "resources/blue_cube.png");
 
     /* Puhasta tekstuuride 22ri et ei oleks blurry */
     SDL_SetTextureScaleMode(cube_error_tex, SDL_ScaleModeNearest);
@@ -49,6 +53,8 @@ void load_textures(SDL_Renderer* renderer) {
     SDL_SetTextureScaleMode(cube_vine_hard_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(cube_vine_medium_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(cube_vine_soft_tex, SDL_ScaleModeNearest);
+    SDL_SetTextureScaleMode(cube_yellow_tex, SDL_ScaleModeNearest);
+    SDL_SetTextureScaleMode(cube_blue_tex, SDL_ScaleModeNearest);
 
 }
 
@@ -86,6 +92,8 @@ void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_Ren
 void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_ground_tex, nullptr, &destTile); }
 void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_snowy_ground_tex, nullptr, &destTile); }
 void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_error_tex, nullptr, &destTile); }
+void load_cube_yellow_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_yellow_tex, nullptr, &destTile); }
+void load_cube_blue_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_blue_tex, nullptr, &destTile); }
 
 SDL_Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
     SDL_Texture* tex;
