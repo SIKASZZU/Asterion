@@ -114,13 +114,13 @@ void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, stru
     }
     
     /* pathfinding keys -> p to set end; o to set start*/
-    if (key_pressed == SDLK_p) {
+    if (key_pressed == SDLK_PAGEUP) {
         pathEndX = static_cast<int>(player.x / tile_size);
         pathEndY = static_cast<int>(player.y / tile_size);
         std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
     }
 
-    if (key_pressed == SDLK_o) {
+    if (key_pressed == SDLK_PAGEDOWN) {
         pathStartX = static_cast<int>(player.x / tile_size);
         pathStartY = static_cast<int>(player.y / tile_size);
         std::cout << "Start point set: " << pathStartX << " " << pathStartY << "\n";

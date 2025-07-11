@@ -1,9 +1,11 @@
 #pragma once
+#include <vector>
 
 
 /* map */
 const int map_size = 150;
 extern int map[map_size][map_size];
+extern std::vector<std::pair<int, int>> maze_door_grids;
 
 void generate_map();
 void print_map(int map[map_size][map_size]);

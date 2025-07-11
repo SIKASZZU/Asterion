@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                call_set_functionality(key_pressed, player, offset, map);
+                call_set_functionality(key_pressed , player, offset, map);
             }
     
             /* out of loop, seest muidu ootab keydown */

@@ -34,7 +34,7 @@ namespace Maze {
             int nx = start_x + dir.first;
             int ny = start_y + dir.second;
 
-            if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1 && map[nx][ny] == 4) {
+            if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1 && map[nx][ny] == 4 || map[nx][ny] == 7) {
                 map[nx][ny] = 5;
                 map[start_x + dir.first / 2][start_y + dir.second / 2] = 5;
                 generate_maze(map, nx, ny);
@@ -94,7 +94,7 @@ namespace Maze {
             for (int i = 0; i < 4; ++i) {
                 int nx = x + dx[i], ny = y + dy[i];
                 if (nx >= 0 && ny >= 0 && nx < map_size && ny < map_size &&
-                    map[nx][ny] == 5 && !visited[nx][ny]) {
+                    (map[nx][ny] == 5 || map[nx][ny] == 7) && !visited[nx][ny]) {
                     visited[nx][ny] = true;
                     came_from[{nx, ny}] = {x, y};
                     q.push({nx, ny});
