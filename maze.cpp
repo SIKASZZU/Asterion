@@ -14,7 +14,7 @@
 namespace Maze {
     // Directions: up, down, left, right
     std::vector<std::pair<int, int>> directions_norm = {
-        {-2, 0}, {2, 0}, {0, -2}, {0, 2}
+        {-4, 0}, {4, 0}, {0, -4}, {0, 4}  // normal {-2, 0}, {2, 0}, {0, -2}, {0, 2}
     };
 
     std::vector<std::pair<int, int>> directions_dot = {
@@ -53,7 +53,16 @@ namespace Maze {
 
             if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1 && map[nx][ny] == allowed_number) {
                 map[nx][ny] = change_to;
-                map[start_x + (dir.first / 2)][start_y + (dir.second / 2)] = change_to;
+                map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = change_to;
+                map[start_x + (dir.first != 0 ? dir.first + 2 : dir.first)][start_y + (dir.second != 0 ? dir.second + 2 : dir.second)] = change_to;
+                map[start_x + (dir.first != 0 ? dir.first + 3 : dir.first)][start_y + (dir.second != 0 ? dir.second + 3 : dir.second)] = change_to;
+                map[start_x + (dir.first != 0 ? dir.first + 1 : dir.first)][start_y + (dir.second != 0 ? dir.second + 1 : dir.second)] = change_to;
+                
+                if (allowed_number != 6) {
+                    map[start_x + (dir.first != 0 ? dir.first - 3 : dir.first)][start_y + (dir.second != 0 ? dir.second - 3 : dir.second)] = change_to;
+                    map[start_x + (dir.first != 0 ? dir.first - 1 : dir.first)][start_y + (dir.second != 0 ? dir.second - 1 : dir.second)] = change_to;
+
+                }
                 generate_maze(map, nx, ny, type);
             }
         }

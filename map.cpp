@@ -181,8 +181,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             }
 
             if (distance >= maze_third_sector && distance <= maze_outer_radius) {
-                map[y][x] = ERROR_VAL;
-                // map[y][x] = MAZE_LAND_VAL;
+                // map[y][x] = ERROR_VAL;
+                map[y][x] = MAZE_LAND_VAL;
             } 
             else if (distance <= maze_third_sector && distance >= maze_second_sector) {
                 map[y][x] = YELLOW_VAL;
