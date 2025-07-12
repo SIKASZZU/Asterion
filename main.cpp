@@ -40,9 +40,8 @@ int main(int argc, char* argv[]) {
         
         const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
-        Uint32 current_tick = SDL_GetTicks(); // tickrate
-        Uint32 elapsed_ticks = current_tick - previous_tick;
-        previous_tick = current_tick;
+        Uint32 elapsed_ticks = frame_start - previous_tick;
+        previous_tick = frame_start;
         tick_lag += elapsed_ticks;
         
         while (SDL_PollEvent(&event)) {

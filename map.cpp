@@ -31,21 +31,31 @@ void generate_map() {
     // if (map_loaded) { return; }
 
     generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
-
-    auto find_start = [&]() -> std::pair<int, int> {
+    bool sector_1 = false, sector_2 = false;
+    auto find_start_sectors = [&]() -> bool {
         for (int i = 0; i < map_size; i++) {
             for (int j = 0; j < map_size; j++) {
-                if (map[i][j] == 4) {
-                    std::cout << "in func found: " << i << " " << j << "\n";
-                    return {i, j};
+                if (map[i][j] == 4 && sector_1 == false) {
+                    std::cout << "Sector1 start found: " << i << " " << j << "\n";
+                    Maze::generate_maze(map, i, j, "normal");
+                    map[i][j] = 66;
+                    sector_1 = true;
                 }
+                if (map[i][j] == 6 && sector_2 == false) {
+                    std::cout << "Sector2 start found: " << i << " " << j << "\n";
+                    Maze::generate_maze(map, i, j, "dot");
+                    map[i][j] = 66;
+                    sector_2 = true;
+                }
+                if (sector_1 == true && sector_2 == true) return true; 
             }
         }
-        return {0, 0};
+        return false;
     };
-    std::pair<int, int>fs = find_start();
-    Maze::generate_maze(map, fs.first, fs.second);
-    map[fs.first][fs.second] = 7;
+
+    bool sector_status = find_start_sectors();
+    std::cout << "Sector status: (1 = complete, 0 = generation failed) " << sector_status << "\n";
+
     // print_map(map);
     // save_map_locally(map);
 }

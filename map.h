@@ -3,7 +3,7 @@
 
 
 /* map */
-const int map_size = 150;
+const int map_size = 250;
 extern int map[map_size][map_size];
 extern std::vector<std::pair<int, int>> maze_door_grids;
 
