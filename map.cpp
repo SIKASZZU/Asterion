@@ -31,30 +31,37 @@ void generate_map() {
     // if (map_loaded) { return; }
 
     generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
-    bool sector_1 = false, sector_2 = false;
+
+    bool sector_1 = false, sector_2 = false, sector_3 = false;
+
     auto find_start_sectors = [&]() -> bool {
         for (int i = 0; i < map_size; i++) {
             for (int j = 0; j < map_size; j++) {
                 if (map[i][j] == 4 && sector_1 == false) {
-                    std::cout << "Sector1 start found: " << i << " " << j << "\n";
-                    Maze::generate_maze(map, i, j, "normal");
+                    std::cout << "Sector 1 complete. Start grid: " << i << " " << j << "\n";
+                    Maze::generate_maze(map, i, j, "one");
                     map[i][j] = 66;
                     sector_1 = true;
                 }
                 if (map[i][j] == 6 && sector_2 == false) {
-                    std::cout << "Sector2 start found: " << i << " " << j << "\n";
-                    Maze::generate_maze(map, i, j, "dot");
+                    std::cout << "Sector 2 complete. Start grid: " << i << " " << j << "\n";
+                    Maze::generate_maze(map, i, j, "two");
                     map[i][j] = 66;
                     sector_2 = true;
                 }
-                if (sector_1 == true && sector_2 == true) return true; 
+                if (map[i][j] == 7 && sector_3 == false) {
+                    std::cout << "Sector 3 complete. Start grid: " << i << " " << j << "\n";
+                    Maze::generate_maze(map, i, j, "three");
+                    map[i][j] = 66;
+                    sector_3 = true;
+                }
+                if (sector_1 == true && sector_2 == true && sector_3 == true) return true; 
             }
         }
         return false;
     };
 
     bool sector_status = find_start_sectors();
-    std::cout << "Sector status: (1 = complete, 0 = generation failed) " << sector_status << "\n";
 
     // print_map(map);
     // save_map_locally(map);
@@ -127,7 +134,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     float radius_sq_min = (tree_ring_radius - 0.5f) * (tree_ring_radius - 0.5f);
     float radius_sq_max = (tree_ring_radius + 0.5f) * (tree_ring_radius + 0.5f);  // .5f ytleb, kui thick0 gladei ymber wallid on.
 
-    int num_sectors = 16;
+    int num_sectors = 4;
 
     for (int y = 0; y < map_size; y++) {
         for (int x = 0; x < map_size; x++) {
@@ -164,44 +171,42 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             // Maze ring (pindala)
             if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
                 map[y][x] = MAZE_LAND_VAL;
-                // if (land_chance > 0.8f) {
-                //     map[y][x] = 8;
-                // } else if (land_chance < 0.2) {
-                //     map[y][x] = 9;
-                // }
             }
 
             // Walls around Glade
             if (distance_sq >= radius_sq_min && distance_sq <= radius_sq_max) {
-                map[y][x] = WALL_VAL;
                 // doors from and to Glade
                 if (y == center_y || x == center_x) {
                     map[y][x] = SNOWY_LAND_VAL;
+                } else {
+                    map[y][x] = WALL_VAL;
                 }
             }
 
+            // sector nr 3
             if (distance >= maze_third_sector && distance <= maze_outer_radius) {
-                // map[y][x] = ERROR_VAL;
-                map[y][x] = MAZE_LAND_VAL;
+                map[y][x] = ERROR_VAL;
+                // map[y][x] = MAZE_LAND_VAL;
             } 
-            else if (distance <= maze_third_sector && distance >= maze_second_sector) {
+
+            // sector nr 2. Note: teisele sektorile + 4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
+            else if (distance <= maze_third_sector && distance >= maze_second_sector + 4) {
                 map[y][x] = YELLOW_VAL;
             } 
             
-
             // Sector walls -> ei ole seinad, vaid pathwayd, et player gladeist nahhuj saaks orienteeruda. #hack
-            // if (distance >= maze_inner_radius && distance <= maze_outer_section) {
-            //     float angle = std::atan2(dy, dx);
-            //     if (angle < 0) angle += 2 * M_PI;
-            //     float sector_angle = 2 * M_PI / num_sectors;
+            if (distance >= maze_inner_radius && distance <= (maze_second_sector / 2)) {
+                float angle = std::atan2(dy, dx);
+                if (angle < 0) angle += 2 * M_PI;
+                float sector_angle = 2 * M_PI / num_sectors;
 
-            //     for (int s = 0; s < num_sectors; ++s) {
-            //         float wall_angle = s * sector_angle;
-            //         if (std::fabs(angle - wall_angle) < 0.01) {  // 0.01 kontrollib sector wallide thicknessi.
-            //             if (map[y][x] == 4) map[y][x] = ERROR_VAL;
-            //         }
-            //     }
-            // }
+                for (int s = 0; s < num_sectors; ++s) {
+                    float wall_angle = s * sector_angle;
+                    if (std::fabs(angle - wall_angle) < 0.01) {  // 0.01 kontrollib sector wallide thicknessi.
+                        map[y][x] = SNOWY_LAND_VAL;
+                    }
+                }
+            }
             
         }
     }

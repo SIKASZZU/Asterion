@@ -13,12 +13,16 @@
 
 namespace Maze {
     // Directions: up, down, left, right
-    std::vector<std::pair<int, int>> directions_norm = {
-        {-4, 0}, {4, 0}, {0, -4}, {0, 4}  // normal {-2, 0}, {2, 0}, {0, -2}, {0, 2}
+    std::vector<std::pair<int, int>> directions_sec_3 = {
+        {-4, 0}, {4, 0}, {0, -4}, {0, 4}  // suuremad vahed
     };
 
-    std::vector<std::pair<int, int>> directions_dot = {
-        {-4, 0}, {2, 0}, {0, -4}, {0, 2}  // dots
+    std::vector<std::pair<int, int>> directions_sec_2 = {
+        {-4, 0}, {2, 0}, {0, -4}, {0, 2}  // perse l2inud symbioos
+    };
+
+    std::vector<std::pair<int, int>> directions_sec_1 = {
+        {-2, 0}, {2, 0}, {0, -2}, {0, 2}  // normal maze
     };
 
     std::vector<std::pair<int, int>> path;
@@ -34,35 +38,47 @@ namespace Maze {
     void generate_maze(int map[map_size][map_size], int start_x, int start_y, std::string type) {
         std::vector<std::pair<int, int>> directions;
         int allowed_number;
-        int change_to;
-        if (type == "dot") {
-            directions = directions_dot;
-            allowed_number = 6;
-            change_to      = 66;
-        } else {
-            directions = directions_norm;
+        int maze_pathway = 5;
+
+        if (type == "one") {
+            directions = directions_sec_1;
             allowed_number = 4;
-            change_to      = 5;
+        } else if (type == "two") {
+            directions = directions_sec_2;
+            allowed_number = 6;
+        } else if (type == "three") {
+            directions = directions_sec_3;
+            allowed_number = 7;
         }
-        
+
         shuffle_directions(directions);
 
         for (const auto& dir : directions) {
             int nx = start_x + dir.first;
             int ny = start_y + dir.second;
 
-            if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1 && map[nx][ny] == allowed_number) {
-                map[nx][ny] = change_to;
-                map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = change_to;
-                map[start_x + (dir.first != 0 ? dir.first + 2 : dir.first)][start_y + (dir.second != 0 ? dir.second + 2 : dir.second)] = change_to;
-                map[start_x + (dir.first != 0 ? dir.first + 3 : dir.first)][start_y + (dir.second != 0 ? dir.second + 3 : dir.second)] = change_to;
-                map[start_x + (dir.first != 0 ? dir.first + 1 : dir.first)][start_y + (dir.second != 0 ? dir.second + 1 : dir.second)] = change_to;
-                
-                if (allowed_number != 6) {
-                    map[start_x + (dir.first != 0 ? dir.first - 3 : dir.first)][start_y + (dir.second != 0 ? dir.second - 3 : dir.second)] = change_to;
-                    map[start_x + (dir.first != 0 ? dir.first - 1 : dir.first)][start_y + (dir.second != 0 ? dir.second - 1 : dir.second)] = change_to;
-
+            if (map[nx][ny] != allowed_number) {
+                if (map[nx][ny] == maze_pathway && type != "one") { 
+                    continue; 
                 }
+                continue;
+            }
+
+            if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1) {
+                map[nx][ny] = maze_pathway;
+                map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = maze_pathway;
+                
+                if (type == "two" || type == "three") {
+                    map[start_x + (dir.first != 0 ? dir.first + 2 : dir.first)][start_y + (dir.second != 0 ? dir.second + 2 : dir.second)] = maze_pathway;
+                    map[start_x + (dir.first != 0 ? dir.first + 3 : dir.first)][start_y + (dir.second != 0 ? dir.second + 3 : dir.second)] = maze_pathway;
+                    map[start_x + (dir.first != 0 ? dir.first + 1 : dir.first)][start_y + (dir.second != 0 ? dir.second + 1 : dir.second)] = maze_pathway;
+                }
+                
+                if (type == "three") {
+                    map[start_x + (dir.first != 0 ? dir.first - 3 : dir.first)][start_y + (dir.second != 0 ? dir.second - 3 : dir.second)] = maze_pathway;
+                    map[start_x + (dir.first != 0 ? dir.first - 1 : dir.first)][start_y + (dir.second != 0 ? dir.second - 1 : dir.second)] = maze_pathway;
+                }
+
                 generate_maze(map, nx, ny, type);
             }
         }

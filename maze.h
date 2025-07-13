@@ -5,8 +5,9 @@
 #include "map.h"
 
 namespace Maze{
-    extern std::vector<std::pair<int, int>> directions_norm;
-    extern std::vector<std::pair<int, int>> directions_dot;
+    extern std::vector<std::pair<int, int>> directions_sec_3;
+    extern std::vector<std::pair<int, int>> directions_sec_2;
+    extern std::vector<std::pair<int, int>> directions_sec_1;
 
     extern std::vector<std::pair<int, int>> path;
     void shuffle_directions(std::vector<std::pair<int, int>>& directions);
