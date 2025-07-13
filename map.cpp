@@ -202,7 +202,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
                 for (int s = 0; s < num_sectors; ++s) {
                     float wall_angle = s * sector_angle;
-                    if (std::fabs(angle - wall_angle) < 0.01) {  // 0.01 kontrollib sector wallide thicknessi.
+                    if (std::fabs(angle - wall_angle) < 0.07) {  // 0.07 kontrollib sector wallide thicknessi.
                         map[y][x] = SNOWY_LAND_VAL;
                     }
                 }
