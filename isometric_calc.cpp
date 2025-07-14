@@ -1,26 +1,34 @@
 
 #include <SDL2/SDL.h>
 #include "game.h"
-#include "isometric_calc.h"
+#include <iostream>
 
-// Convert screen coordinate back to grid (tile) coordinate
-SDL_FPoint to_grid_coordinate(struct Offset& offset, float screen_x, float screen_y) {
+
+SDL_FPoint to_isometric_grid_coordinate(const struct Offset& offset, float x_grid, float y_grid) {
     
-    // screen x,y peavad olema grid. Siis teeb ta world gridi -> iso coordiks
-    float row_coord = screen_x * (0.5 * tile_size) + screen_y * (-0.5 * tile_size) + offset.x;
-    float col_coord = screen_x * (0.25 * tile_size) + screen_y * ( 0.25 * tile_size) + offset.y;
+    float row_coord = x_grid * (0.5 * tile_size) + y_grid * (-0.5 * tile_size) + offset.x;
+    float col_coord = x_grid * (0.25 * tile_size) + y_grid * ( 0.25 * tile_size) + offset.y;
+
+    return { row_coord, col_coord };
+
+}
+
+SDL_FPoint to_isometric_coordinate(const struct Offset& offset, float x_grid, float y_grid) {
+    
+    float row_coord = x_grid * (0.5) + y_grid * (-0.5) + offset.x;
+    float col_coord = x_grid * (0.25) + y_grid * ( 0.25) + offset.y;
+
     return { row_coord, col_coord };
 
 }
 
 
-// Convert grid (tile) coordinate to screen coordinate
-SDL_FPoint to_screen_coordinate(struct Offset& offset, float grid_x, float grid_y) {
+SDL_FPoint to_screen_coordinate(const struct Offset& offset, float coord_x, float coord_y) {
 
-    float rx = grid_x - offset.x;
-    float cy = grid_y - offset.y;
-    float x = (rx + 2 * cy) / tile_size;
-    float y = (2 * cy - rx) / tile_size;
+    float rx = coord_x - offset.x;
+    float cy = coord_y - offset.y;
+    float grid_x = (rx + 2 * cy) / tile_size;
+    float grid_y = (2 * cy - rx) / tile_size;
     
-    return {x, y};
+    return {grid_x, grid_y};  // grids
 }

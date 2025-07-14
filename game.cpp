@@ -44,22 +44,21 @@ int pathStartY = -1;
 bool shift_pressed = false;
 
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
-    // convert to isometric
-    int width, height;
-    SDL_GetWindowSize(window, &width, &height);
-    
-    float row_coord = player.x * (0.5) + player.y * (-0.5);
-    float col_coord = player.x * (0.25) + player.y * (0.25);
+    int width, height; SDL_GetWindowSize(window, &width, &height);
 
-    offset.x = width / 2 - (tile_size / 2) - row_coord;
-    offset.y = height / 2 - col_coord;
+    SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
+
+    coords.x -= offset.x;
+    coords.y -= offset.y;
+
+    offset.x = width / 2 - (tile_size / 2) - coords.x;
+    offset.y = height / 2 - coords.y;
 }
 
 
 void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
     // std::cout << key_pressed << "\n";
 
-    // Example: Specific key action
     if (key_pressed == SDLK_f) {
         /* print information */
         std::cout << std::endl;

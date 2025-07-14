@@ -2,13 +2,16 @@
 #include "textures.h"
 #include "collision.h"
 #include "render.h"
+#include "isometric_calc.h"
 
 #include <iostream>
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <unordered_set>
 
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
+static const std::unordered_set<int> ground_values = { 1, 2, 8 };
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
 
@@ -37,17 +40,20 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
         for (int column = 0; column < map_size; column++) {
             if (column < left || column > right) continue;
 
-            int row_coord = column * half_tile + row * (-half_tile) + offset.x;
-            int col_coord = column * (0.25 * tile_size) + row * (0.25 * tile_size) + offset.y;
-            int grid_value = map[row][column];
+
+            SDL_FPoint isometric_coordinates = to_isometric_grid_coordinate(offset, column, row);
+
+            int row_coord = isometric_coordinates.x;
+            int col_coord = isometric_coordinates.y;
 
             SDL_Rect destTile = { row_coord, col_coord, tile_size, tile_size };
-            
-            std::pair<int, int> grid_pos = {row, column};
 
-            // cube ground
-            // fixme tee mingi list vmdgi, ma ei viitsi hetkel: static const std::unordered_set<int> ground_underneath_values = {1, 2, 4, 8, 9}
-            if (grid_value == 1 || grid_value == 2 || grid_value == 9) {
+            int grid_value = map[row][column];
+            std::pair<int, int> grid_pos = { row, column };
+
+            // Searching for grid_value in ground_values
+            auto it = ground_values.find(grid_value);
+            if (ground_values.find(grid_value) != ground_values.end()) {
                 load_cube_ground_texture(renderer, destTile);
             }
 
@@ -62,36 +68,28 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             }
 
             // yellow cubes!
-            if (grid_value == 6) {
-                load_cube_yellow_texture(renderer, destTile);
-            }
-            
-            if (grid_value == 66) {
-                load_cube_blue_texture(renderer, destTile);
-            }
+            if (grid_value == 6) { load_cube_yellow_texture(renderer, destTile); }
+
+            if (grid_value == 66) { load_cube_blue_texture(renderer, destTile); }
 
             // error cubes!
-            if (grid_value == 7) {
-                load_cube_error_texture(renderer, destTile);
-            }
+            if (grid_value == 7) { load_cube_error_texture(renderer, destTile); }
 
             /*** MAZE ***/
-            if (grid_value == 4) {
-                load_cube_maze_ground_texture(renderer, destTile);
-            }
+            if (grid_value == 4) { load_cube_maze_ground_texture(renderer, destTile); }  // maze ground
 
             /* Walls */
-            if (grid_value == 9 || grid_value == 91 || grid_value == 93 ) {
+            if (grid_value == 9 || grid_value == 91 || grid_value == 93) {
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
-            } 
+            }
 
             // wall with hairy bottom
             else if (grid_value == 94) {
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ cube_ingrown_wall_tex, destTile, destTile.y });
             }
-            
+
             // walls w vines
             else if (grid_value == 8 || grid_value == 92) {
                 load_cube_ground_texture(renderer, destTile);
@@ -104,11 +102,11 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 destTile.y -= half_tile;
                 destTile.y += (xr / 2);  // y-d peab eraldi lahutama, muidu block on 6hus xD
                 destTile.x += (xr / 2);
-                destTile.w -= xr; 
+                destTile.w -= xr;
                 destTile.h -= xr;
 
                 render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
-                
+
                 destTile.y += 1;  // +1 sest muidu hakkab walli destTile'iga v6itlema ja flickerib.
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 render_queue.push_back(Renderable{ cube_vine_tex, destTile, destTile.y });
@@ -121,7 +119,8 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 if (grid_value == 2) {
                     destTile.y += half_tile; destTile.h = half_tile;
                     SDL_RenderDrawRect(renderer, &destTile);
-                } else {
+                }
+                else {
                     destTile.h = half_tile;
                     SDL_RenderDrawRect(renderer, &destTile);
                 }
@@ -131,8 +130,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 
     // NOTE: KUI VARA PLAYER V2LJA TULEB  - half_tile
         // tuleks teha eraldi igale objektile, kus on see l2vend, et player on TOP
-    int y_v = static_cast<int>(player.x * (0.25) + player.y * (0.25) + offset.y - half_tile);  
-    render_queue.push_back(Renderable{ nullptr, {0,0,0,0}, y_v, [=]() { draw_player(renderer, offset); } });
+    SDL_Rect player_int_rect = { static_cast<int>(player.rect.x),
+                                 static_cast<int>(player.rect.y),
+                                 static_cast<int>(player.rect.w),
+                                 static_cast<int>(player.rect.h)
+    };
+    render_queue.push_back(Renderable{ nullptr, player_int_rect, player_int_rect.y, [=]() { draw_player(renderer, offset); } });
 
     // Sort
     std::sort(render_queue.begin(), render_queue.end(), [](const Renderable& a, const Renderable& b) {
@@ -163,18 +166,17 @@ void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Pl
 
     int half_tile = tile_size / 2;
 
-    for (int y = 0; y < map_size; y++)
-    {
-        if (y < top || y > bottom)
-            continue;
+    for (int y = 0; y < map_size; y++) {
+        if (y < top || y > bottom) continue;
 
-        for (int x = 0; x < map_size; x++)
-        {
-            if (x < left || x > right)
-                continue;
+        for (int x = 0; x < map_size; x++) {
+            if (x < left || x > right) continue;
 
-            int row_coord = x * half_tile + y * (-half_tile) + offset.x;
-            int col_coord = x * (0.25 * tile_size) + y * (0.25 * tile_size) + offset.y;
+            SDL_FPoint isometric_coordinates = to_isometric_grid_coordinate(offset, x, y);
+
+            int row_coord = isometric_coordinates.x;
+            int col_coord = isometric_coordinates.y;
+
             SDL_Rect destTile = { row_coord + (tile_size / 4), col_coord, half_tile, half_tile };
 
             load_specific_number(renderer, map[y][x], destTile);

@@ -85,9 +85,7 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
             // Add stronger noise (-0.4 to +0.4)
             land_chance += ((rand() % 100) / 100.0f - 0.5f) * 0.8f;
 
-            // Clamp to 0–1
-            if (land_chance < 0.0f) land_chance = 0.0f;
-            if (land_chance > 1.0f) land_chance = 1.0f;
+            land_chance = 1.0f ? land_chance > 1.0f : land_chance = 0.0f;  // Clamp to 0–1
 
             if (land_chance > 0.4f) {
                 // Land: elevation between mid and max
@@ -104,31 +102,12 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
 
 
 void generate_maze_runner_map(int map[map_size][map_size]) {
-    int MIN_VAL        = 0;
-    int LAND_VAL       = 1;
-    int TREE_VAL       = 2;
 
-    int MAZE_GROUND_VAL  = 4;
-    int SNOWY_GROUND_VAL = 5;
-    int YELLOW_VAL     = 6;
-    int BLUE_VAL       = 66;
-    int ERROR_VAL      = 7;
-    int WALL_VAL_VINE  = 8;
-    int WALL_VAL       = 9;
-
-    int SECTOR_1_WALL_VAL = 91;
-    int SECTOR_2_WALL_VAL = 92;
-    int SECTOR_3_WALL_VAL = 93;
-
-    int INGROWN_WALL_VAL  = 94;
-
-    float center_x = map_size / 2.0f;
-    float center_y = map_size / 2.0f;
-    float max_distance = std::sqrt(center_x * center_x + center_y * center_y);
+    float half_map_size = map_size / 2.0f;
+    float max_distance = std::sqrt(half_map_size * half_map_size + half_map_size * half_map_size);
 
     /* Glade */
-    int glade_radius = map_size / 10; // Central square half-size
-    glade_radius = (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
+    int glade_radius = (map_size / 10) >= 10 ? 10 : map_size / 10;  // if map_size / 10 > 10; hard cap to 10.
 
     int maze_inner_radius = glade_radius + 1;
     int maze_outer_radius = map_size / 2 - 4;
@@ -136,17 +115,16 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     int maze_second_sector = maze_outer_radius - (maze_outer_radius / 2);
 
     /* Walls surrouding the Glade */
-    float tree_ring_radius = glade_radius + 1.0f;
-    float radius_sq_min = (tree_ring_radius - 0.5f) * (tree_ring_radius - 0.5f);
-    float radius_sq_max = (tree_ring_radius + 0.5f) * (tree_ring_radius + 0.5f);  // .5f ytleb, kui thick0 gladei ymber wallid on.
+    float radius_sq_min = (maze_inner_radius - 0.5f) * (maze_inner_radius - 0.5f);
+    float radius_sq_max = (maze_inner_radius + 0.5f) * (maze_inner_radius + 0.5f);  // .5f ytleb, kui thick0 gladei ymber wallid on.
 
     int num_sectors = 8;
 
     for (int y = 0; y < map_size; y++) {
         for (int x = 0; x < map_size; x++) {
 
-            float dx = x - center_x;
-            float dy = y - center_y;
+            float dx = x - half_map_size;
+            float dy = y - half_map_size;
 
             float distance_sq = dx * dx + dy * dy;
 
@@ -161,24 +139,24 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             // Land under everything (circular)
             if (land_chance > 0.2f) {
                 // int LAND_VAL = MIN_VAL + (max_val - MIN_VAL) / 2 + rand() % ((max_val - MIN_VAL) / 2 + 1);
-                map[y][x] = LAND_VAL;
+                map[y][x] = Map::LAND_VAL;
             } else {
-                map[y][x] = TREE_VAL; // water
+                map[y][x] = Map::TREE_VAL; // water
             }
 
             // sector nr 3
             if (distance >= maze_third_sector && distance <= maze_outer_radius) {
-                map[y][x] = SECTOR_3_WALL_VAL;
+                map[y][x] = Map::SECTOR_3_WALL_VAL;
             }
 
             // sector nr 2. Note: teisele sektorile + 4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
             else if (distance <= maze_third_sector && distance >= maze_second_sector - 4) {
-                map[y][x] = SECTOR_2_WALL_VAL;
+                map[y][x] = Map::SECTOR_2_WALL_VAL;
             }
 
             // sector nr 1
             else if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
-                map[y][x] = SECTOR_1_WALL_VAL;
+                map[y][x] = Map::SECTOR_1_WALL_VAL;
             }
 
             // sector 1 walls -> ei ole seinad, vaid pathwayd, et player gladeist nahhuj saaks orienteeruda. #hack
@@ -193,28 +171,28 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                     // diagonaalis sektsioonide vahelised seinad
                     if (s % 2 != 0 && distance <= (maze_second_sector * 0.7) && (distance >= maze_inner_radius * 3.3)) {
                         if (std::fabs(angle - wall_angle) < 0.5) {  // kontrollib section wallide thicknessi.
-                            map[y][x] = MAZE_GROUND_VAL;
+                            map[y][x] = Map::MAZE_GROUND_VAL;
                         }
                     }
                     // seinad suunas kell 12, 3, 6, 9
                     else if (s % 2 == 0 && distance <= (maze_second_sector / 2.5)) {
                         if (std::fabs(angle - wall_angle) < 0.08) {  // kontrollib section wallide thicknessi.
-                            map[y][x] = MAZE_GROUND_VAL;
+                            map[y][x] = Map::MAZE_GROUND_VAL;
                         }
                     }
                 }
             }
 
             // Glade
-            if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
-                map[y][x] = LAND_VAL;
+            if (abs(x - half_map_size) <= glade_radius && abs(y - half_map_size) <= glade_radius) {
+                map[y][x] = Map::LAND_VAL;
 
             }
 
             // Walls around Glade
             // if (distance_sq >= radius_sq_min && distance_sq <= radius_sq_max) {
             //     // doors from and to Glade
-            //     if (y == center_y || x == center_x) {
+            //     if (y == half_map_size || x == half_map_size) {
             //         map[y][x] = SNOWY_LAND_VAL;
             //     } else {
             //         map[y][x] = WALL_VAL;
@@ -222,7 +200,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             // }
 
             if (y == 0 || x == 0 || y == (map_size - 1) || x == (map_size - 1)) {
-                map[y][x] = INGROWN_WALL_VAL;
+                map[y][x] = Map::INGROWN_WALL_VAL;
             }
         }
     }

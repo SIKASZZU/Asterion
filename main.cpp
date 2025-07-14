@@ -70,9 +70,7 @@ int main(int argc, char* argv[]) {
             tick_count++;
 
             tick_lag -= tick_delay;  // update tickrate
-            
-            // update_player_direction(player, window, offset, mouse_x, mouse_y);
-            
+
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
@@ -81,11 +79,9 @@ int main(int argc, char* argv[]) {
             
             update_offset(offset, player, window);
             update_player(map, offset, state, renderer);
-            // draw_player(renderer, offset);
-            
-            // draw_player_direction(renderer, player, offset, mouse_x, mouse_y);
+
             // update_abilities(renderer, offset);
-            
+
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
             SDL_RenderPresent(renderer);  // dispay new frame
 

@@ -2,6 +2,28 @@
 #include <vector>
 
 
+/* map values */
+namespace Map {
+    const int MIN_VAL  = 0;
+    const int LAND_VAL = 1;
+    const int TREE_VAL = 2;
+
+    const int MAZE_GROUND_VAL  = 4;
+    const int SNOWY_GROUND_VAL = 5;
+    const int YELLOW_VAL     = 6;
+    const int BLUE_VAL       = 66;
+    const int ERROR_VAL      = 7;
+    const int WALL_VAL_VINE  = 8;
+    const int WALL_VAL       = 9;
+
+    const int SECTOR_1_WALL_VAL = 91;
+    const int SECTOR_2_WALL_VAL = 92;
+    const int SECTOR_3_WALL_VAL = 93;
+
+    const int INGROWN_WALL_VAL  = 94;
+}
+
+
 /* map */
 const int map_size = 250;
 extern int map[map_size][map_size];
