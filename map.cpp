@@ -25,7 +25,7 @@ void print_map(int map[map_size][map_size]) {
 void generate_map() {
     /* try to load from file */
     // load_map_from_file(map);  // return boolean map_loaded
-    
+
     /* Vali ise, mis mappi tahad geneda. */
     // generate_random_map(map, 2, 2);          // random ring, circular map
     // if (map_loaded) { return; }
@@ -55,7 +55,7 @@ void generate_map() {
                     map[i][j] = 66;
                     sector_3 = true;
                 }
-                if (sector_1 == true && sector_2 == true && sector_3 == true) return true; 
+                if (sector_1 == true && sector_2 == true && sector_3 == true) return true;
             }
         }
         return false;
@@ -107,7 +107,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     int MIN_VAL        = 0;
     int LAND_VAL       = 1;
     int TREE_VAL       = 2;
-    
+
     int MAZE_GROUND_VAL  = 4;
     int SNOWY_GROUND_VAL = 5;
     int YELLOW_VAL     = 6;
@@ -115,7 +115,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     int ERROR_VAL      = 7;
     int WALL_VAL_VINE  = 8;
     int WALL_VAL       = 9;
-    
+
     int SECTOR_1_WALL_VAL = 91;
     int SECTOR_2_WALL_VAL = 92;
     int SECTOR_3_WALL_VAL = 93;
@@ -144,7 +144,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
     for (int y = 0; y < map_size; y++) {
         for (int x = 0; x < map_size; x++) {
-            
+
             float dx = x - center_x;
             float dy = y - center_y;
 
@@ -169,18 +169,18 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             // sector nr 3
             if (distance >= maze_third_sector && distance <= maze_outer_radius) {
                 map[y][x] = SECTOR_3_WALL_VAL;
-            } 
-            
+            }
+
             // sector nr 2. Note: teisele sektorile + 4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
             else if (distance <= maze_third_sector && distance >= maze_second_sector - 4) {
                 map[y][x] = SECTOR_2_WALL_VAL;
-            } 
+            }
 
             // sector nr 1
             else if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
                 map[y][x] = SECTOR_1_WALL_VAL;
             }
-            
+
             // sector 1 walls -> ei ole seinad, vaid pathwayd, et player gladeist nahhuj saaks orienteeruda. #hack
             if (distance >= maze_inner_radius && distance <= (maze_second_sector)) {
                 float angle = std::atan2(dy, dx);
@@ -191,7 +191,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                     float wall_angle = s * sector_angle;
 
                     // diagonaalis sektsioonide vahelised seinad
-                    if (s % 2 != 0 && distance <= (maze_second_sector * 0.5) && (distance >= maze_inner_radius * 2.5)) {
+                    if (s % 2 != 0 && distance <= (maze_second_sector * 0.7) && (distance >= maze_inner_radius * 3.3)) {
                         if (std::fabs(angle - wall_angle) < 0.5) {  // kontrollib section wallide thicknessi.
                             map[y][x] = MAZE_GROUND_VAL;
                         }
@@ -207,7 +207,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
             // Glade
             if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
-                map[y][x] = SNOWY_GROUND_VAL;
+                map[y][x] = LAND_VAL;
 
             }
 
