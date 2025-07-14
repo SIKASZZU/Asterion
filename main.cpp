@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
 
-    SDL_Window* window = SDL_CreateWindow("SDL cpp",
+    SDL_Window* window = SDL_CreateWindow("Asterion",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         1200, 720, SDL_WINDOW_SHOWN);
     
@@ -109,10 +109,12 @@ int main(int argc, char* argv[]) {
     }
 
     // Cleanup if isRunning == false
+    destroy_all_textures();
+    IMG_Quit();
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    destroy_all_textures();
     SDL_Quit();
-    IMG_Quit();
+    
     return 0;
 }

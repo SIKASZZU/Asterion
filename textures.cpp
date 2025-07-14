@@ -20,6 +20,8 @@ SDL_Texture* cube_vine_medium_tex = nullptr;
 SDL_Texture* cube_vine_soft_tex = nullptr;
 SDL_Texture* cube_yellow_tex = nullptr;
 SDL_Texture* cube_blue_tex = nullptr;
+SDL_Texture* cube_maze_ground_tex = nullptr;
+SDL_Texture* cube_ingrown_wall_tex = nullptr;
 
 const int texture_width = 16;
 const int texture_height = 16;
@@ -41,6 +43,8 @@ void load_textures(SDL_Renderer* renderer) {
     cube_vine_soft_tex = IMG_LoadTexture(renderer, "resources/vine_cube_soft.png");
     cube_yellow_tex = IMG_LoadTexture(renderer, "resources/yellow_cube.png");
     cube_blue_tex = IMG_LoadTexture(renderer, "resources/blue_cube.png");
+    cube_maze_ground_tex = IMG_LoadTexture(renderer, "resources/maze_ground_cube.png");
+    cube_ingrown_wall_tex = IMG_LoadTexture(renderer, "resources/ingrown_wall_cube.png");
 
     /* Puhasta tekstuuride 22ri et ei oleks blurry */
     SDL_SetTextureScaleMode(cube_error_tex, SDL_ScaleModeNearest);
@@ -55,7 +59,8 @@ void load_textures(SDL_Renderer* renderer) {
     SDL_SetTextureScaleMode(cube_vine_soft_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(cube_yellow_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(cube_blue_tex, SDL_ScaleModeNearest);
-
+    SDL_SetTextureScaleMode(cube_maze_ground_tex, SDL_ScaleModeNearest);
+    SDL_SetTextureScaleMode(cube_ingrown_wall_tex, SDL_ScaleModeNearest);
 }
 
 
@@ -69,6 +74,10 @@ void destroy_all_textures() {
     SDL_DestroyTexture(cube_vine_hard_tex);
     SDL_DestroyTexture(cube_vine_medium_tex);
     SDL_DestroyTexture(cube_vine_soft_tex);
+    SDL_DestroyTexture(cube_yellow_tex);
+    SDL_DestroyTexture(cube_blue_tex);
+    SDL_DestroyTexture(cube_maze_ground_tex);
+    SDL_DestroyTexture(cube_ingrown_wall_tex);
 }
 
 
@@ -90,6 +99,7 @@ void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect at_tile) 
 
 void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_wall_tex, nullptr, &destTile); }
 void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_ground_tex, nullptr, &destTile); }
+void load_cube_maze_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_maze_ground_tex, nullptr, &destTile); }
 void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_snowy_ground_tex, nullptr, &destTile); }
 void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_error_tex, nullptr, &destTile); }
 void load_cube_yellow_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_yellow_tex, nullptr, &destTile); }

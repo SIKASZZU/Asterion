@@ -37,19 +37,19 @@ void generate_map() {
     auto find_start_sectors = [&]() -> bool {
         for (int i = 0; i < map_size; i++) {
             for (int j = 0; j < map_size; j++) {
-                if (map[i][j] == 4 && sector_1 == false) {
+                if (map[i][j] == 91 && sector_1 == false) {
                     std::cout << "Sector 1 complete. Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "one");
                     map[i][j] = 66;
                     sector_1 = true;
                 }
-                if (map[i][j] == 6 && sector_2 == false) {
+                if (map[i][j] == 92 && sector_2 == false) {
                     std::cout << "Sector 2 complete. Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "two");
                     map[i][j] = 66;
                     sector_2 = true;
                 }
-                if (map[i][j] == 7 && sector_3 == false) {
+                if (map[i][j] == 93 && sector_3 == false) {
                     std::cout << "Sector 3 complete. Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "three");
                     map[i][j] = 66;
@@ -108,13 +108,19 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     int LAND_VAL       = 1;
     int TREE_VAL       = 2;
     
-    int MAZE_LAND_VAL  = 4;
-    int SNOWY_LAND_VAL = 5;
+    int MAZE_GROUND_VAL  = 4;
+    int SNOWY_GROUND_VAL = 5;
     int YELLOW_VAL     = 6;
     int BLUE_VAL       = 66;
     int ERROR_VAL      = 7;
     int WALL_VAL_VINE  = 8;
     int WALL_VAL       = 9;
+    
+    int SECTOR_1_WALL_VAL = 91;
+    int SECTOR_2_WALL_VAL = 92;
+    int SECTOR_3_WALL_VAL = 93;
+
+    int INGROWN_WALL_VAL  = 94;
 
     float center_x = map_size / 2.0f;
     float center_y = map_size / 2.0f;
@@ -134,7 +140,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     float radius_sq_min = (tree_ring_radius - 0.5f) * (tree_ring_radius - 0.5f);
     float radius_sq_max = (tree_ring_radius + 0.5f) * (tree_ring_radius + 0.5f);  // .5f ytleb, kui thick0 gladei ymber wallid on.
 
-    int num_sectors = 4;
+    int num_sectors = 8;
 
     for (int y = 0; y < map_size; y++) {
         for (int x = 0; x < map_size; x++) {
@@ -160,54 +166,64 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                 map[y][x] = TREE_VAL; // water
             }
 
-            // --- STRUCTURES OVERLAY ---
-
-            // Glade (central square)
-            if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
-                map[y][x] = SNOWY_LAND_VAL;
-
-            }
-            
-            // Maze ring (pindala)
-            if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
-                map[y][x] = MAZE_LAND_VAL;
-            }
-
-            // Walls around Glade
-            if (distance_sq >= radius_sq_min && distance_sq <= radius_sq_max) {
-                // doors from and to Glade
-                if (y == center_y || x == center_x) {
-                    map[y][x] = SNOWY_LAND_VAL;
-                } else {
-                    map[y][x] = WALL_VAL;
-                }
-            }
-
             // sector nr 3
             if (distance >= maze_third_sector && distance <= maze_outer_radius) {
-                map[y][x] = ERROR_VAL;
-                // map[y][x] = MAZE_LAND_VAL;
-            } 
-
-            // sector nr 2. Note: teisele sektorile + 4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
-            else if (distance <= maze_third_sector && distance >= maze_second_sector + 4) {
-                map[y][x] = YELLOW_VAL;
+                map[y][x] = SECTOR_3_WALL_VAL;
             } 
             
-            // Sector walls -> ei ole seinad, vaid pathwayd, et player gladeist nahhuj saaks orienteeruda. #hack
-            if (distance >= maze_inner_radius && distance <= (maze_second_sector / 2)) {
+            // sector nr 2. Note: teisele sektorile + 4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
+            else if (distance <= maze_third_sector && distance >= maze_second_sector - 4) {
+                map[y][x] = SECTOR_2_WALL_VAL;
+            } 
+
+            // sector nr 1
+            else if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
+                map[y][x] = SECTOR_1_WALL_VAL;
+            }
+            
+            // sector 1 walls -> ei ole seinad, vaid pathwayd, et player gladeist nahhuj saaks orienteeruda. #hack
+            if (distance >= maze_inner_radius && distance <= (maze_second_sector)) {
                 float angle = std::atan2(dy, dx);
                 if (angle < 0) angle += 2 * M_PI;
                 float sector_angle = 2 * M_PI / num_sectors;
 
                 for (int s = 0; s < num_sectors; ++s) {
                     float wall_angle = s * sector_angle;
-                    if (std::fabs(angle - wall_angle) < 0.07) {  // 0.07 kontrollib sector wallide thicknessi.
-                        map[y][x] = SNOWY_LAND_VAL;
+
+                    // diagonaalis sektsioonide vahelised seinad
+                    if (s % 2 != 0 && distance <= (maze_second_sector * 0.5) && (distance >= maze_inner_radius * 2.5)) {
+                        if (std::fabs(angle - wall_angle) < 0.5) {  // kontrollib section wallide thicknessi.
+                            map[y][x] = MAZE_GROUND_VAL;
+                        }
+                    }
+                    // seinad suunas kell 12, 3, 6, 9
+                    else if (s % 2 == 0 && distance <= (maze_second_sector / 2.5)) {
+                        if (std::fabs(angle - wall_angle) < 0.08) {  // kontrollib section wallide thicknessi.
+                            map[y][x] = MAZE_GROUND_VAL;
+                        }
                     }
                 }
             }
-            
+
+            // Glade
+            if (abs(x - center_x) <= glade_radius && abs(y - center_y) <= glade_radius) {
+                map[y][x] = SNOWY_GROUND_VAL;
+
+            }
+
+            // Walls around Glade
+            // if (distance_sq >= radius_sq_min && distance_sq <= radius_sq_max) {
+            //     // doors from and to Glade
+            //     if (y == center_y || x == center_x) {
+            //         map[y][x] = SNOWY_LAND_VAL;
+            //     } else {
+            //         map[y][x] = WALL_VAL;
+            //     }
+            // }
+
+            if (y == 0 || x == 0 || y == (map_size - 1) || x == (map_size - 1)) {
+                map[y][x] = INGROWN_WALL_VAL;
+            }
         }
     }
 }

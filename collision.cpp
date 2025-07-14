@@ -1,9 +1,10 @@
 #include <SDL2/SDL.h>
+#include <algorithm> // for std::find
+#include <iostream>
+
 #include "collision.h"
 #include "isometric_calc.h"
 #include "player.h"
-
-#include <iostream>
 
 bool check_collision(int map[map_size][map_size], struct Player& player, SDL_FRect tempRect) {
 
@@ -18,18 +19,24 @@ bool check_collision(int map[map_size][map_size], struct Player& player, SDL_FRe
     int grid_y_top = static_cast<int>(tempRect.y / tile_size);
     int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tile_size);
 
-    // Check all four corners for collision with tile 9
-    if (map[grid_y_top][grid_x_left] == 9 ||      // Top-left
-        map[grid_y_top][grid_x_right] == 9 ||     // Top-right
-        map[grid_y_bottom][grid_x_left] == 9 ||   // Bottom-left
-        map[grid_y_bottom][grid_x_right] == 9) {  // Bottom-right
-        std::cout << "Encountered alien\n";
-        return false;
-    
-    } else{ 
-
+    if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
+                map[grid_y_top][grid_x_left]) == player.collision_vector.end()) {
         return true;
-
     }
-
+    else if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
+                    map[grid_y_top][grid_x_right]) == player.collision_vector.end()) {
+        return true;
+    }
+    else if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
+                    map[grid_y_bottom][grid_x_left]) == player.collision_vector.end()) {
+        return true;
+    }
+    else if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
+                    map[grid_y_bottom][grid_x_right]) == player.collision_vector.end()) {
+        return true;
+    }
+    else {
+        std::cout << "Player collision detected!" << '\n';
+        return false;
+    }
 }

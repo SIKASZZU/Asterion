@@ -19,6 +19,8 @@ extern SDL_Texture* cube_vine_medium_tex;
 extern SDL_Texture* cube_vine_soft_tex;
 extern SDL_Texture* cube_yellow_tex;
 extern SDL_Texture* cube_blue_tex;
+extern SDL_Texture* cube_maze_ground_tex;
+extern SDL_Texture* cube_ingrown_wall_tex;
 
 extern const int digit_width;
 extern const int digit_height;
@@ -30,6 +32,7 @@ void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect destTile)
 void load_textures(SDL_Renderer* renderer);
 void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect at_tile);
 void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
+void load_cube_maze_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void load_cube_yellow_texture(SDL_Renderer* renderer, SDL_Rect destTile);

@@ -1,6 +1,7 @@
 #pragma once
 #include "game.h"
 #include "map.h"
+#include <vector>
 
 struct Player {
     float default_movement_speed;
@@ -10,8 +11,9 @@ struct Player {
     float y;
     double direction;
     SDL_FRect rect;
-    bool collision;
     bool render;
+    bool collision;
+    std::vector<int> collision_vector;
 };
 
 extern Player player;

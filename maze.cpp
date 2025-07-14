@@ -26,6 +26,7 @@ namespace Maze {
     };
 
     std::vector<std::pair<int, int>> path;
+    int pathway = 4;
    
     // Shuffle directions
     void shuffle_directions(std::vector<std::pair<int, int>>& directions) {
@@ -38,17 +39,16 @@ namespace Maze {
     void generate_maze(int map[map_size][map_size], int start_x, int start_y, std::string type) {
         std::vector<std::pair<int, int>> directions;
         int allowed_number;
-        int maze_pathway = 5;
 
         if (type == "one") {
             directions = directions_sec_1;
-            allowed_number = 4;
+            allowed_number = 91;
         } else if (type == "two") {
             directions = directions_sec_2;
-            allowed_number = 6;
+            allowed_number = 92;
         } else if (type == "three") {
             directions = directions_sec_3;
-            allowed_number = 7;
+            allowed_number = 93;
         }
 
         shuffle_directions(directions);
@@ -58,25 +58,25 @@ namespace Maze {
             int ny = start_y + dir.second;
 
             if (map[nx][ny] != allowed_number) {
-                if (map[nx][ny] == maze_pathway && type != "one") { 
+                if (map[nx][ny] == pathway && type != "one") { 
                     continue; 
                 }
                 continue;
             }
 
             if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1) {
-                map[nx][ny] = maze_pathway;
-                map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = maze_pathway;
+                map[nx][ny] = pathway;
+                map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = pathway;
                 
                 if (type == "two" || type == "three") {
-                    map[start_x + (dir.first != 0 ? dir.first + 2 : dir.first)][start_y + (dir.second != 0 ? dir.second + 2 : dir.second)] = maze_pathway;
-                    map[start_x + (dir.first != 0 ? dir.first + 3 : dir.first)][start_y + (dir.second != 0 ? dir.second + 3 : dir.second)] = maze_pathway;
-                    map[start_x + (dir.first != 0 ? dir.first + 1 : dir.first)][start_y + (dir.second != 0 ? dir.second + 1 : dir.second)] = maze_pathway;
+                    map[start_x + (dir.first != 0 ? dir.first + 2 : dir.first)][start_y + (dir.second != 0 ? dir.second + 2 : dir.second)] = pathway;
+                    map[start_x + (dir.first != 0 ? dir.first + 3 : dir.first)][start_y + (dir.second != 0 ? dir.second + 3 : dir.second)] = pathway;
+                    map[start_x + (dir.first != 0 ? dir.first + 1 : dir.first)][start_y + (dir.second != 0 ? dir.second + 1 : dir.second)] = pathway;
                 }
                 
                 if (type == "three") {
-                    map[start_x + (dir.first != 0 ? dir.first - 3 : dir.first)][start_y + (dir.second != 0 ? dir.second - 3 : dir.second)] = maze_pathway;
-                    map[start_x + (dir.first != 0 ? dir.first - 1 : dir.first)][start_y + (dir.second != 0 ? dir.second - 1 : dir.second)] = maze_pathway;
+                    map[start_x + (dir.first != 0 ? dir.first - 3 : dir.first)][start_y + (dir.second != 0 ? dir.second - 3 : dir.second)] = pathway;
+                    map[start_x + (dir.first != 0 ? dir.first - 1 : dir.first)][start_y + (dir.second != 0 ? dir.second - 1 : dir.second)] = pathway;
                 }
 
                 generate_maze(map, nx, ny, type);
@@ -86,11 +86,6 @@ namespace Maze {
 
     // BFS Pathfinding from (sx, sy) to (gx, gy)
     bool find_path(int map[map_size][map_size], int sx, int sy, int gx, int gy) {
-        if (map[sx][sy] != 5 || map[gx][gy] != 5) {
-            std::cout << "Invalid start, goal grids" << "\n";
-            return false;  // Invalid start/goal
-        }
-        
         std::cout << "Starting pathfinder" << "\n";
 
         std::queue<std::pair<int, int>> q;
@@ -98,7 +93,7 @@ namespace Maze {
         for (const auto& p : path) {
             // undo myself (path)
             std::cout << "(" << p.first << "," << p.second << ") ";
-            map[p.first][p.second] = 5;
+            map[p.first][p.second] = pathway;
         }
         path.clear();  // Erases all the elements. 
         
@@ -136,7 +131,7 @@ namespace Maze {
             for (int i = 0; i < 4; ++i) {
                 int nx = x + dx[i], ny = y + dy[i];
                 if (nx >= 0 && ny >= 0 && nx < map_size && ny < map_size &&
-                    map[nx][ny] == 5 && !visited[nx][ny]) {
+                    map[nx][ny] == 4 && !visited[nx][ny]) {
                     visited[nx][ny] = true;
                     came_from[{nx, ny}] = {x, y};
                     q.push({nx, ny});

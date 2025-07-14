@@ -47,7 +47,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 
             // cube ground
             // fixme tee mingi list vmdgi, ma ei viitsi hetkel: static const std::unordered_set<int> ground_underneath_values = {1, 2, 4, 8, 9}
-            if (grid_value == 1 || grid_value == 2 || grid_value == 4 || grid_value == 8 || grid_value == 9) {
+            if (grid_value == 1 || grid_value == 2 || grid_value == 9) {
                 load_cube_ground_texture(renderer, destTile);
             }
 
@@ -75,15 +75,26 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 load_cube_error_texture(renderer, destTile);
             }
 
-            // walls
-            if (grid_value == 9) {
+            /*** MAZE ***/
+            if (grid_value == 4) {
+                load_cube_maze_ground_texture(renderer, destTile);
+            }
+
+            /* Walls */
+            if (grid_value == 9 || grid_value == 91 || grid_value == 93 ) {
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
+            } 
+
+            // wall with hairy bottom
+            else if (grid_value == 94) {
+                destTile.y -= half_tile;
+                render_queue.push_back(Renderable{ cube_ingrown_wall_tex, destTile, destTile.y });
             }
             
             // walls w vines
-            if (grid_value == 8) {
-                
+            else if (grid_value == 8 || grid_value == 92) {
+                load_cube_ground_texture(renderer, destTile);
                 // Only generate random offset once per block
                 if (random_offsets.find(grid_pos) == random_offsets.end()) {
                     random_offsets[grid_pos] = rand() % 20;  // see 20 on kui palju px on maxist v2hem
