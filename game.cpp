@@ -32,7 +32,7 @@ Uint32 tick_timer = SDL_GetTicks();
 int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 /* map.h args */
-int tile_size = 25; 
+int tile_size = 25;
 
 /* pathfinding */
 int pathEndX = -1;
@@ -55,84 +55,114 @@ void update_offset(struct Offset& offset, struct Player& player, SDL_Window* win
     offset.y = height / 2 - coords.y;
 }
 
-
-void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
-    // std::cout << key_pressed << "\n";
-
-    if (key_pressed == SDLK_f) {
+void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
+    switch (key)
+    {
+    case SDLK_f: {
         /* print information */
         std::cout << std::endl;
         std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-        
+
         std::cout << "RECT x, y: " << player.rect.x << ", " << player.rect.y << " grid: " << static_cast<int>(player.rect.x / tile_size) << ' ' << static_cast<int>(player.rect.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-        
+
         std::cout << "offset isorectiga: " << player.rect.x + offset.x << " " << player.rect.y + offset.y << "\n";
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
         std::cout << std::endl;
+        break;
     }
-    
-    if (key_pressed == SDLK_q) {
+    case SDLK_q: {
         std::cout << "use_melee called in call_set_functionality @ game.cpp" << '\n';
         use_melee(player);
+        break;
     }
-    
-    if (key_pressed == SDLK_e) {
+    case SDLK_e: {
         std::cout << "use_arrow called call_set_functionality @ game.cpp" << '\n';
         use_arrow(player);
+        break;
     }
-
-    /* turn player collison off & on*/
-    if (key_pressed == SDLK_c) {
+    case SDLK_c: {
         player.collision = !player.collision;
         std::cout << "Player collision is: " << player.collision << '\n';
+        break;
     }
-
-    /* plus to increase render_radius; minus to reduce render_radius*/
-    if (key_pressed == SDLK_KP_PLUS || key_pressed == SDLK_PLUS) {
+    case SDLK_KP_PLUS: case SDLK_PLUS: {
         render_radius += 5;
         std::cout << "render_radius = " << render_radius << "\n";
-    } 
-    
-    if (key_pressed == SDLK_KP_MINUS || key_pressed == SDLK_MINUS) {
+        break;
+    }
+    case SDLK_KP_MINUS: case SDLK_MINUS: {
         // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
         render_radius > 5 ? render_radius -= 5 : render_radius;
         std::cout << "render_radius = " << render_radius << "\n";
+        break;
     }
-
-    /* . to reduce tile_size; , to increase tile_size */
-    if (key_pressed == SDLK_PERIOD) {
+    case SDLK_PERIOD: {
         tile_size += 5;
         std::cout << "tile_size = " << tile_size << "\n";
+        break;
     }
-
-    if (key_pressed == SDLK_COMMA) {
+    case SDLK_COMMA: {
         tile_size > 5 ? tile_size -= 5 : tile_size;
         std::cout << "tile_size = " << tile_size << "\n";
+        break;
     }
-    
-    /* pathfinding keys -> p to set end; o to set start*/
-    if (key_pressed == SDLK_PAGEUP) {
-        pathEndX = static_cast<int>(player.x / tile_size);
-        pathEndY = static_cast<int>(player.y / tile_size);
-        std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
-    }
-
-    if (key_pressed == SDLK_PAGEDOWN) {
+    case SDLK_PAGEDOWN: {
         pathStartX = static_cast<int>(player.x / tile_size);
         pathStartY = static_cast<int>(player.y / tile_size);
         std::cout << "Start point set: " << pathStartX << " " << pathStartY << "\n";
+        break;
     }
-    
+    case SDLK_PAGEUP: {
+        pathEndX = static_cast<int>(player.x / tile_size);
+        pathEndY = static_cast<int>(player.y / tile_size);
+        std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
+        break;
+    }
+    case SDLK_LSHIFT: {
+        player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED / 4;
+        break;
+    }
+
+    default:
+        break;
+    }
+
     if (pathEndX != -1 && pathStartX != -1) {
         Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX); // dont ask miks need tagurpidi on
-        
+
         // reset
         pathEndX = -1;
         pathEndY = -1;
         pathStartX = -1;
         pathStartY = -1;
     }
+}
 
+void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
+    switch (key)
+    {
+    case SDLK_LSHIFT: {
+        player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED;
+    }
+
+    default:
+        break;
+    }
+}
+
+
+/// @brief This takes more resources due to if statements.
+///
+/// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
+/// as they use switch cases and react to events.
+/// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
+/// @param player 
+void react_to_keyboard_state(const Uint8* state, struct Player& player) {
+    player.movement_vector = { 0, 0 };
+    if (state[SDL_SCANCODE_W]) { player.movement_vector.y -= 1; }
+    if (state[SDL_SCANCODE_S]) { player.movement_vector.y += 1; }
+    if (state[SDL_SCANCODE_A]) { player.movement_vector.x -= 1; }
+    if (state[SDL_SCANCODE_D]) { player.movement_vector.x += 1; }
 }

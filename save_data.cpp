@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 
-bool map_loaded = false; 
+bool map_loaded = false;
 bool map_saved = false;
 
 // Save the map to a local file

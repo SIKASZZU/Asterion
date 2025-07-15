@@ -140,7 +140,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             if (land_chance > 0.2f) {
                 // int LAND_VAL = MIN_VAL + (max_val - MIN_VAL) / 2 + rand() % ((max_val - MIN_VAL) / 2 + 1);
                 map[y][x] = Map::LAND_VAL;
-            } else {
+            }
+            else {
                 map[y][x] = Map::TREE_VAL; // water
             }
 

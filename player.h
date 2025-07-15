@@ -3,17 +3,20 @@
 #include "map.h"
 #include <vector>
 
+static const float DEFAULT_PLAYER_MOVEMENT_SPEED = 20.0f;
+
 struct Player {
-    float default_movement_speed;
     float movement_speed;
     int size;
     float x;
     float y;
     double direction;
     SDL_FRect rect;
-    bool render;
+    bool render; // TODO: remove this since it is not used anywhere
     bool collision;
     std::vector<int> collision_vector;
+    // Will be used to calculate where player will end up at
+    SDL_FPoint movement_vector;
 };
 
 extern Player player;

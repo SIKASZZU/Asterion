@@ -4,7 +4,7 @@
 
 #include "map.h"
 
-namespace Maze{
+namespace Maze {
     extern std::vector<std::pair<int, int>> directions_sec_3;
     extern std::vector<std::pair<int, int>> directions_sec_2;
     extern std::vector<std::pair<int, int>> directions_sec_1;
