@@ -57,41 +57,46 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 load_cube_ground_texture(renderer, destTile);
             }
 
-            if (grid_value == 5) {
-                load_cube_snowy_ground_texture(renderer, destTile);
-            }
 
-            // green trees
-            if (grid_value == 2) {
+            switch (grid_value)
+            {
+            case 2: { // tree.png
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ tree_tex, destTile, destTile.y });
+                break;
+            }
+            case 4: { // maze_ground_cube.png
+                load_cube_maze_ground_texture(renderer, destTile);
+                break;
+            }
+            case 5: { // snowy_ground_cube.png
+                load_cube_snowy_ground_texture(renderer, destTile);
+                break;
+            }
+            case 6: { // yellow_cube.png
+                load_cube_yellow_texture(renderer, destTile);
+                break;
+            }
+            case 7: { // error_cube.png
+                load_cube_error_texture(renderer, destTile);
+                break;
+            }
+            case 66: { // blue_cube.png
+                load_cube_blue_texture(renderer, destTile);
+                break;
             }
 
-            // yellow cubes!
-            if (grid_value == 6) { load_cube_yellow_texture(renderer, destTile); }
-
-            if (grid_value == 66) { load_cube_blue_texture(renderer, destTile); }
-
-            // error cubes!
-            if (grid_value == 7) { load_cube_error_texture(renderer, destTile); }
-
-            /*** MAZE ***/
-            if (grid_value == 4) { load_cube_maze_ground_texture(renderer, destTile); }  // maze ground
-
-            /* Walls */
-            if (grid_value == 9 || grid_value == 91 || grid_value == 93) {
+            case 9: case 91: case 93: { // walls | wall_cube.png
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ cube_wall_tex, destTile, destTile.y });
+                break;
             }
-
-            // wall with hairy bottom
-            else if (grid_value == 94) {
+            case 94: { // hairy bottom walls | ingrown_wall_cube.png
                 destTile.y -= half_tile;
                 render_queue.push_back(Renderable{ cube_ingrown_wall_tex, destTile, destTile.y });
+                break;
             }
-
-            // walls w vines
-            else if (grid_value == 8 || grid_value == 92) {
+            case 8: case 92: { // wall cubes with vines
                 load_cube_ground_texture(renderer, destTile);
                 // Only generate random offset once per block
                 if (random_offsets.find(grid_pos) == random_offsets.end()) {
@@ -99,8 +104,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 }
                 int xr = random_offsets[grid_pos];
 
-                destTile.y -= half_tile;
-                destTile.y += (xr / 2);  // y-d peab eraldi lahutama, muidu block on 6hus xD
+                destTile.y -= half_tile - (xr / 2);
                 destTile.x += (xr / 2);
                 destTile.w -= xr;
                 destTile.h -= xr;
@@ -110,20 +114,20 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 destTile.y += 1;  // +1 sest muidu hakkab walli destTile'iga v6itlema ja flickerib.
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 render_queue.push_back(Renderable{ cube_vine_tex, destTile, destTile.y });
+                break;
+            }
+
+            default:
+                break;
             }
 
             // Player tile highlight (render last)
             if (row == player_tile_y && column == player_tile_x) {
+                destTile.h = half_tile;
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-                if (grid_value == 2) {
-                    destTile.y += half_tile; destTile.h = half_tile;
-                    SDL_RenderDrawRect(renderer, &destTile);
-                }
-                else {
-                    destTile.h = half_tile;
-                    SDL_RenderDrawRect(renderer, &destTile);
-                }
+                SDL_RenderDrawRect(renderer, &destTile);
+                // TODO: make the isometric projection of player collision box
+                // just for debugging purposes, SDL_RenderDrawPoints might be useful
             }
         }
     }
