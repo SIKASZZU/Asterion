@@ -48,12 +48,12 @@ int main(int argc, char* argv[]) {
                 break;
             }
             else if (event.type == SDL_KEYDOWN) {
-                SDL_Keycode key_pressed = event.key.keysym.sym;
-                react_to_keyboard_down(key_pressed, player, offset, map);
+                SDL_Keycode key = event.key.keysym.sym;
+                react_to_keyboard_down(key, player, offset, map);
             }
             else if (event.type == SDL_KEYUP) {
-                SDL_Keycode key_pressed = event.key.keysym.sym;
-                react_to_keyboard_up(key_pressed, player);
+                SDL_Keycode key = event.key.keysym.sym;
+                react_to_keyboard_up(key, player);
             }
             react_to_keyboard_state(state, player);
         }
