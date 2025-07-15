@@ -107,8 +107,8 @@ void load_cube_blue_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_Ren
 
 SDL_Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
     SDL_Texture* tex;
-    
-    if (grid_pos == std::pair{-1,-1}) {
+
+    if (grid_pos == std::pair{ -1,-1 }) {
         return tex = cube_vine_medium_tex;
     }
 
