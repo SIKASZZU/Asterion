@@ -22,9 +22,11 @@ SDL_Texture* cube_yellow_tex = nullptr;
 SDL_Texture* cube_blue_tex = nullptr;
 SDL_Texture* cube_maze_ground_tex = nullptr;
 SDL_Texture* cube_ingrown_wall_tex = nullptr;
+SDL_Texture* player_animation_4x4 = nullptr;
 
 const int texture_width = 16;
 const int texture_height = 16;
+int last_frame = 0;  // Used for animation timing
 
 std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 
@@ -45,6 +47,7 @@ void load_textures(SDL_Renderer* renderer) {
     cube_blue_tex = IMG_LoadTexture(renderer, "resources/blue_cube.png");
     cube_maze_ground_tex = IMG_LoadTexture(renderer, "resources/maze_ground_cube.png");
     cube_ingrown_wall_tex = IMG_LoadTexture(renderer, "resources/ingrown_wall_cube.png");
+    player_animation_4x4 = IMG_LoadTexture(renderer, "resources/player_animation_4x4.png");
 
     /* Puhasta tekstuuride 22ri et ei oleks blurry */
     SDL_SetTextureScaleMode(cube_error_tex, SDL_ScaleModeNearest);
@@ -61,6 +64,7 @@ void load_textures(SDL_Renderer* renderer) {
     SDL_SetTextureScaleMode(cube_blue_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(cube_maze_ground_tex, SDL_ScaleModeNearest);
     SDL_SetTextureScaleMode(cube_ingrown_wall_tex, SDL_ScaleModeNearest);
+    SDL_SetTextureScaleMode(player_animation_4x4, SDL_ScaleModeNearest);
 }
 
 
@@ -78,6 +82,7 @@ void destroy_all_textures() {
     SDL_DestroyTexture(cube_blue_tex);
     SDL_DestroyTexture(cube_maze_ground_tex);
     SDL_DestroyTexture(cube_ingrown_wall_tex);
+    SDL_DestroyTexture(player_animation_4x4);
 }
 
 
@@ -132,4 +137,44 @@ SDL_Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid
     }
 
     return tex;
+}
+
+
+
+void load_player_sprite(SDL_Renderer* renderer) {
+    const int sprite_width = 32;
+    const int sprite_height = 32;
+
+    SDL_Rect srcRect;
+    SDL_Rect dstRect = {
+        static_cast<int>(player.rect.x),
+        static_cast<int>(player.rect.y),
+        static_cast<int>(player.rect.w),
+        static_cast<int>(player.rect.h)
+    };
+    int row = 0;
+
+    // Decide the row based on movement direction
+    switch (player.direction) {
+        case 'd': row = 0; break;  // Right
+        case 'a': row = 1; break;  // Left
+        case 's': row = 2; break;  // Down
+        case 'w': row = 3; break;  // Up
+        default: break;
+    }
+
+    int col = last_frame % 4;  // loop 0-3 for frames
+    last_frame++;
+
+    srcRect.x = col * sprite_width;
+    srcRect.y = row * sprite_height;
+    srcRect.w = sprite_width;
+    srcRect.h = sprite_height;
+
+    // Debug info
+    std::cout << "player last move: " << player.last_move << "\n";
+    std::cout << "srcRect: (" << srcRect.x << ", " << srcRect.y << ")\n";
+    std::cout << "dstRect: (" << dstRect.x << ", " << dstRect.y << ", " << dstRect.w << ", " << dstRect.h << ")\n";
+
+    SDL_RenderCopy(renderer, player_animation_4x4, &srcRect, &dstRect);
 }

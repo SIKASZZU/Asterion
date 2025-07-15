@@ -15,8 +15,7 @@ struct Player {
     bool render; // TODO: remove this since it is not used anywhere
     bool collision;
     std::vector<int> collision_vector;
-    // Will be used to calculate where player will end up at
-    SDL_FPoint movement_vector;
+    SDL_FPoint movement_vector;  // Will be used to calculate where player will end up at
 };
 
 extern Player player;

@@ -16,7 +16,7 @@ Player player = {
     false,                              // bool                 render
     false,                              // bool                 collision
     {8, 9, 91, 92, 93},                 // vector               collision_vector
-    {0, 0}                              // SDL_FPoint   movement_vector
+    {0, 0},                             // SDL_FPoint           movement_vector
 };
 
 
@@ -35,6 +35,7 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
         if (accessible) {
             player.x += dir.x;
             player.y += dir.y;
+            draw_player(renderer, offset);
         }
     }
 }
@@ -51,7 +52,4 @@ void draw_player(SDL_Renderer* renderer, const struct Offset& offset) {
                     static_cast<float>(player.size),
                     static_cast<float>(player.size)
     };
-
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); //green
-    SDL_RenderFillRectF(renderer, &player.rect);
 }

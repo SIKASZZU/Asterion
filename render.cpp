@@ -139,7 +139,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                                  static_cast<int>(player.rect.w),
                                  static_cast<int>(player.rect.h)
     };
-    render_queue.push_back(Renderable{ nullptr, player_int_rect, player_int_rect.y, [=]() { draw_player(renderer, offset); } });
+    render_queue.push_back(Renderable{ nullptr, player_int_rect, player_int_rect.y, [=]() { load_player_sprite(renderer); } });
 
     // Sort
     std::sort(render_queue.begin(), render_queue.end(), [](const Renderable& a, const Renderable& b) {

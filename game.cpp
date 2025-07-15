@@ -145,6 +145,7 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
     {
     case SDLK_LSHIFT: {
         player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED;
+        break;
     }
 
     default:

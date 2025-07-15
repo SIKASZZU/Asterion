@@ -21,11 +21,12 @@ extern SDL_Texture* cube_yellow_tex;
 extern SDL_Texture* cube_blue_tex;
 extern SDL_Texture* cube_maze_ground_tex;
 extern SDL_Texture* cube_ingrown_wall_tex;
+extern SDL_Texture* player_animation_4x4;
 
 extern const int digit_width;
 extern const int digit_height;
+extern int last_frame;
 
-extern std::vector<SDL_Texture*> texture_vector;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;  // igal id 8 gridil eraldi random vine
 
 void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect destTile);
@@ -40,3 +41,5 @@ void load_cube_blue_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void destroy_all_textures();
 
 SDL_Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
+
+void load_player_sprite(SDL_Renderer* renderer);
