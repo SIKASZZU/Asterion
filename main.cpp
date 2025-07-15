@@ -12,8 +12,8 @@
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
-    Offset offset = {0, 0};
-    
+    Offset offset = { 0, 0 };
+
     generate_map();
     // print_map(map);
 
@@ -25,11 +25,11 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = SDL_CreateWindow("Asterion",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         1200, 720, SDL_WINDOW_SHOWN);
-    
+
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-  
+
     load_textures(renderer);
-    
+
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
 
@@ -37,34 +37,29 @@ int main(int argc, char* argv[]) {
     while (isRunning) {
         frame_start = SDL_GetTicks();  // framerate
         SDL_GetMouseState(&mouse_x, &mouse_y);  // a 32-bit button bitmask of the current button state. Mis tra asi see on?
-        
-        const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
         Uint32 elapsed_ticks = frame_start - previous_tick;
         previous_tick = frame_start;
         tick_lag += elapsed_ticks;
-        
+
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                isRunning = false; 
+                isRunning = false;
                 break;
             }
-
-            if (event.type == SDL_KEYDOWN) {
+            else if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key_pressed = event.key.keysym.sym;
-                call_set_functionality(key_pressed , player, offset, map);
+                react_to_keyboard_down(key_pressed, player, offset, map);
             }
-    
-            /* out of loop, seest muidu ootab keydown */
-            if (keystate[SDL_SCANCODE_LSHIFT]) {
-                player.movement_speed = player.default_movement_speed / 4;
-            } else {
-                player.movement_speed = player.default_movement_speed;
+            else if (event.type == SDL_KEYUP) {
+                SDL_Keycode key_pressed = event.key.keysym.sym;
+                react_to_keyboard_up(key_pressed, player);
             }
+            react_to_keyboard_state(state, player);
         }
-        
+
         frame_count++;
-        
+
         while (tick_lag > tick_delay) {
             /* ticki sees peavad olema k6ik, mis fpsiga muutuks kiiremaks ja annaks eelise vs teise m2ngija suhtes. */
             tick_count++;
@@ -74,9 +69,9 @@ int main(int argc, char* argv[]) {
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
-            
+
             load_render(renderer, offset, player);
-            
+
             update_offset(offset, player, window);
             update_player(map, offset, state, renderer);
 
@@ -111,6 +106,6 @@ int main(int argc, char* argv[]) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
+
     return 0;
 }

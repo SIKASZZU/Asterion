@@ -41,7 +41,7 @@ extern Uint32 tick_timer;
 extern int render_radius;
 
 /* map.h args */
-extern int tile_size; 
+extern int tile_size;
 
 /* pathfinding */
 extern int pathEndX;
@@ -60,4 +60,6 @@ struct pair_hash {
 
 /* functions */
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window);
-void call_set_functionality(SDL_Keycode key_pressed, struct Player& player, struct Offset& offset, int map[map_size][map_size]);
+void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]);
+void react_to_keyboard_up(SDL_Keycode key, struct Player& player);
+void react_to_keyboard_state(const Uint8* state, struct Player& player);
