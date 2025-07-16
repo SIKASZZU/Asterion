@@ -4,7 +4,6 @@
 #include <SDL2/SDL_image.h>
 
 #include "game.h"
-#include "abilities.h"
 #include "player.h"
 #include "textures.h"
 #include "render.h"
@@ -72,8 +71,6 @@ int main(int argc, char* argv[]) {
 
             update_offset(offset, player, window);
             update_player(map, offset, state, renderer);
-
-            // update_abilities(renderer, offset);
 
             load_render(renderer, offset, player);
             // enne millegi renderimist, peab lisama rendererile colori.

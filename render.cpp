@@ -152,9 +152,9 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                                  static_cast<int>(player.rect.w),
                                  static_cast<int>(player.rect.h)
     };
-    render_queue.push_back(
-        RenderQueueItem(player_int_rect.y, [&offset](SDL_Renderer* renderer) { draw_player(renderer, offset); })
-    );
+    
+    // TODO: look this over
+    render_queue.push_back(RenderQueueItem(player_int_rect.y, [&]() { load_player_sprite(renderer); }))
 
     std::sort(render_queue.begin(), render_queue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
         return a.z_index < b.z_index;

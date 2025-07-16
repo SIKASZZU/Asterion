@@ -21,6 +21,13 @@ public:
         return this->m_texture;
     }
 
+const int texture_width = 16;
+const int texture_height = 16;
+Uint32 last_update = SDL_GetTicks();
+int last_frame = 0;
+int row = 0;
+int player_animation_speed = 123;
+
     void load_texture(SDL_Renderer* renderer) {
         this->m_texture = IMG_LoadTexture(renderer, this->m_resource_path);
         SDL_SetTextureScaleMode(this->m_texture, SDL_ScaleModeNearest);
@@ -53,6 +60,7 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::CUBE_VINE_HARD_TEX] = ImageTexture(renderer, "resources/vine_cube_hard.png");
     texture_map[Map::CUBE_VINE_MEDIUM_TEX] = ImageTexture(renderer, "resources/vine_cube_medium.png");
     texture_map[Map::CUBE_VINE_SOFT_TEX] = ImageTexture(renderer, "resources/vine_cube_soft.png");
+    texture_map[456] = ImageTexture(renderer, "resources/player_animation_4x4.png");
 }
 
 
@@ -101,6 +109,38 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
         return &texture_map[Map::CUBE_VINE_SOFT_TEX];
     }
     return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
+}
+
+void load_player_sprite(SDL_Renderer* renderer) {
+    const int sprite_width = 32;
+    const int sprite_height = 32;
+
+    SDL_Rect srcRect;
+    SDL_Rect dstRect = {
+        static_cast<int>(player.rect.x),
+        static_cast<int>(player.rect.y),
+        static_cast<int>(player.rect.w),
+        static_cast<int>(player.rect.h)
+    };
+
+    // Decide the row based on movement direction
+    if (player.movement_vector.x == 1)  { row = 0; }
+    if (player.movement_vector.x == -1) { row = 1; }
+    if (player.movement_vector.y == 1)  { row = 2; }
+    if (player.movement_vector.y == -1) { row = 3; }
+
+    int col = last_frame % 4;  // loop 0-3 for frames
+    srcRect.x = col * sprite_width;
+    srcRect.y = row * sprite_height;
+    srcRect.w = sprite_width;
+    srcRect.h = sprite_height;
+
+    if (SDL_GetTicks() - last_update > player_animation_speed) {
+        last_frame++;
+        last_update = SDL_GetTicks();
+    }
+
+    texture_map[456].render(renderer, &srcRect, &dstRect);
 }
 
 /* Texture method definitions*/

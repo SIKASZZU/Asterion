@@ -4,7 +4,6 @@
 #include "map.h"
 #include "maze.h"
 
-#include "abilities.h"
 #include "isometric_calc.h"
 
 /* game state, screen */
@@ -72,16 +71,6 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         std::cout << std::endl;
         break;
     }
-    case SDLK_q: {
-        std::cout << "use_melee called in call_set_functionality @ game.cpp" << '\n';
-        use_melee(player);
-        break;
-    }
-    case SDLK_e: {
-        std::cout << "use_arrow called call_set_functionality @ game.cpp" << '\n';
-        use_arrow(player);
-        break;
-    }
     case SDLK_c: {
         player.collision = !player.collision;
         std::cout << "Player collision is: " << player.collision << '\n';
@@ -145,6 +134,7 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
     {
     case SDLK_LSHIFT: {
         player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED;
+        break;
     }
 
     default:

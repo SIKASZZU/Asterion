@@ -10,15 +10,12 @@ struct Player {
     int size;
     float x;
     float y;
-    double direction;
     SDL_FRect rect;
     bool collision;
-    std::vector<int> collision_vector;
-    // Will be used to calculate where player will end up at
-    SDL_FPoint movement_vector;
+    std::vector<int> collision_array;
+    SDL_FPoint movement_vector;  // Will be used to calculate where player will end up at
 };
 
 extern Player player;
 
 void update_player(int map[map_size][map_size], struct Offset& offset, const Uint8* state, SDL_Renderer* renderer);
-void draw_player(SDL_Renderer* renderer, const struct Offset& offset);
