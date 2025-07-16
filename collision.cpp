@@ -6,11 +6,14 @@
 #include "isometric_calc.h"
 #include "player.h"
 
+// return boolean 0 or 1
+// 1 == collision detected
+// 0 == no collision detected  
 bool check_collision(int map[map_size][map_size], struct Player& player, SDL_FRect tempRect) {
 
     // player collision on or off
     if (!player.collision) {
-        return true;
+        return false;
     }
 
     // Calculate grid indices for all four corners
@@ -19,24 +22,23 @@ bool check_collision(int map[map_size][map_size], struct Player& player, SDL_FRe
     int grid_y_top = static_cast<int>(tempRect.y / tile_size);
     int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tile_size);
 
-    if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
-        map[grid_y_top][grid_x_left]) == player.collision_vector.end()) {
+    if (std::find(player.collision_array.begin(), player.collision_array.end(),
+        map[grid_y_top][grid_x_left]) != player.collision_array.end()) {
         return true;
     }
-    else if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
-        map[grid_y_top][grid_x_right]) == player.collision_vector.end()) {
+    else if (std::find(player.collision_array.begin(), player.collision_array.end(),
+        map[grid_y_top][grid_x_right]) != player.collision_array.end()) {
         return true;
     }
-    else if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
-        map[grid_y_bottom][grid_x_left]) == player.collision_vector.end()) {
+    else if (std::find(player.collision_array.begin(), player.collision_array.end(),
+        map[grid_y_bottom][grid_x_left]) != player.collision_array.end()) {
         return true;
     }
-    else if (std::find(player.collision_vector.begin(), player.collision_vector.end(),
-        map[grid_y_bottom][grid_x_right]) == player.collision_vector.end()) {
+    else if (std::find(player.collision_array.begin(), player.collision_array.end(),
+        map[grid_y_bottom][grid_x_right]) != player.collision_array.end()) {
         return true;
     }
     else {
-        std::cout << "Player collision detected!" << '\n';
         return false;
     }
 }
