@@ -2,9 +2,9 @@
 #include <algorithm> // for std::find
 #include <iostream>
 
-#include "collision.h"
-#include "isometric_calc.h"
-#include "player.h"
+#include "collision.hpp"
+#include "isometric_calc.hpp"
+#include "player.hpp"
 
 // return boolean 0 or 1
 // 1 == collision detected

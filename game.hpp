@@ -2,8 +2,8 @@
 #include <SDL2/SDL.h>
 #include <functional>
 
-#include "player.h"
-#include "map.h"
+#include "player.hpp"
+#include "map.hpp"
 
 // /* screen */
 extern int win_width;

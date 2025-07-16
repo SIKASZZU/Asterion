@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "map.h"
+#include "map.hpp"
 
 namespace Maze {
     extern std::vector<std::pair<int, int>> directions_sec_3;

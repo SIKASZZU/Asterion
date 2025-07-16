@@ -5,8 +5,8 @@
 #include <unordered_set>
 #include <optional>
 
-#include "game.h"
-#include "textures.h"
+#include "game.hpp"
+#include "textures.hpp"
 
 struct RenderQueueItem {
   int z_index;

@@ -3,11 +3,11 @@
 #include <ctime>
 #include <SDL2/SDL_image.h>
 
-#include "game.h"
-#include "player.h"
-#include "textures.h"
-#include "render.h"
-#include "collision.h"
+#include "game.hpp"
+#include "player.hpp"
+#include "textures.hpp"
+#include "render.hpp"
+#include "collision.hpp"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada

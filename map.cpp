@@ -1,6 +1,6 @@
-#include "map.h"
-#include "game.h"
-#include "maze.h"
+#include "map.hpp"
+#include "game.hpp"
+#include "maze.hpp"
 
 #include <iostream>
 #include <cmath>

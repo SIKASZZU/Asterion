@@ -8,8 +8,8 @@
 #include <utility>
 #include <unordered_map>
 
-#include "map.h"
-#include "game.h"
+#include "map.hpp"
+#include "game.hpp"
 
 namespace Maze {
     // Directions: up, down, left, right

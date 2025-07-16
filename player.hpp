@@ -1,6 +1,6 @@
 #pragma once
-#include "game.h"
-#include "map.h"
+#include "game.hpp"
+#include "map.hpp"
 #include <vector>
 
 static const float DEFAULT_PLAYER_MOVEMENT_SPEED = 20.0f;

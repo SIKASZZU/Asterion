@@ -1,10 +1,10 @@
 #include <cmath>
 #include <iostream>
 
-#include "game.h"
-#include "isometric_calc.h"
-#include "player.h"
-#include "collision.h"
+#include "game.hpp"
+#include "isometric_calc.hpp"
+#include "player.hpp"
+#include "collision.hpp"
 
 Player player = {
     DEFAULT_PLAYER_MOVEMENT_SPEED,      // float                movement_speed

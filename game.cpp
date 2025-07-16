@@ -1,10 +1,10 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "game.h"
-#include "map.h"
-#include "maze.h"
+#include "game.hpp"
+#include "map.hpp"
+#include "maze.hpp"
 
-#include "isometric_calc.h"
+#include "isometric_calc.hpp"
 
 /* game state, screen */
 bool isRunning = true;

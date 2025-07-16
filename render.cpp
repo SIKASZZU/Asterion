@@ -1,8 +1,8 @@
-#include "game.h"
-#include "textures.h"
-#include "collision.h"
-#include "render.h"
-#include "isometric_calc.h"
+#include "game.hpp"
+#include "textures.hpp"
+#include "collision.hpp"
+#include "render.hpp"
+#include "isometric_calc.hpp"
 
 #include <iostream>
 #include <vector>

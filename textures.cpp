@@ -1,5 +1,5 @@
-#include "game.h"
-#include "textures.h"
+#include "game.hpp"
+#include "textures.hpp"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 
