@@ -9,7 +9,7 @@
 #include "textures.hpp"
 
 struct RenderQueueItem {
-  int z_index;
+  int render_order;
   SDL_Rect dstrect;
   // if this is defined then texture method for rendering will be used
   std::optional<Texture*> texture;
@@ -19,8 +19,8 @@ struct RenderQueueItem {
   // will cause a performance hit
   std::optional<std::function<void(SDL_Renderer* renderer)>> custom_render;
 
-  RenderQueueItem(int z_index, SDL_Rect dstrect, Texture* texture);
-  RenderQueueItem(int z_index, std::function<void(SDL_Renderer* renderer)> custom_render);
+  RenderQueueItem(int render_order, SDL_Rect dstrect, Texture* texture);
+  RenderQueueItem(int render_order, std::function<void(SDL_Renderer* renderer)> custom_render);
 
   void render(SDL_Renderer* renderer);
 };

@@ -10,13 +10,13 @@
 #include <algorithm>
 #include <unordered_set>
 
-RenderQueueItem::RenderQueueItem(int z_index, SDL_Rect dstrect, Texture* texture) {
-    this->z_index = z_index;
+RenderQueueItem::RenderQueueItem(int render_order, SDL_Rect dstrect, Texture* texture) {
+    this->render_order = render_order;
     this->dstrect = dstrect;
     this->texture = texture;
 }
-RenderQueueItem::RenderQueueItem(int z_index, std::function<void(SDL_Renderer* renderer)> custom_render) {
-    this->z_index = z_index;
+RenderQueueItem::RenderQueueItem(int render_order, std::function<void(SDL_Renderer* renderer)> custom_render) {
+    this->render_order = render_order;
     this->custom_render = custom_render;
 }
 
@@ -150,7 +150,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
     );
 
     std::sort(render_queue.begin(), render_queue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
-        return a.z_index < b.z_index;
+        return a.render_order < b.render_order;
         });
 
     // render things in queue
