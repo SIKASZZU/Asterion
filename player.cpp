@@ -8,16 +8,16 @@
 #include <iostream>
 
 Player player = {
-    movement_speed : DEFAULT_PLAYER_MOVEMENT_SPEED,
+    movement_speed: DEFAULT_PLAYER_MOVEMENT_SPEED,
     size : 64,
     x : 0.0f,
     y : 0.0f,
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
-    collision_array : {Map::WALL_VAL_VINE, Map::WALL_VAL,
-                    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL,
-                    Map::SECTOR_3_WALL_VAL, Map::INGROWN_WALL_VAL
-                    },
+    collision_array : {
+        Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
+        Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
+    },
     movement_vector : {0, 0},
 };
 

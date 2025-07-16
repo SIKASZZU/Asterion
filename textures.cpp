@@ -43,21 +43,21 @@ int player_animation_speed = 123;
 void load_textures(SDL_Renderer* renderer) {
     // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
     texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, "resources/numbers.png");
-    texture_map[Map::TREE_VAL] = ImageTexture(renderer, "resources/tree.png");
+    texture_map[Map::TREE] = ImageTexture(renderer, "resources/tree.png");
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");
     texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, "resources/ground_cube.png");
-    texture_map[Map::MAZE_GROUND_VAL] = ImageTexture(renderer, "resources/maze_ground_cube.png");
-    texture_map[Map::SNOWY_GROUND_VAL] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
-    texture_map[Map::ERROR_VAL] = ImageTexture(renderer, "resources/error_cube.png");
-    texture_map[Map::YELLOW_VAL] = ImageTexture(renderer, "resources/yellow_cube.png");
-    texture_map[Map::BLUE_VAL] = ImageTexture(renderer, "resources/blue_cube.png");
-    texture_map[Map::INGROWN_WALL_VAL] = ImageTexture(renderer, "resources/ingrown_wall_cube.png");
+    texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, "resources/maze_ground_cube.png");
+    texture_map[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
+    texture_map[Map::ERROR_CUBE] = ImageTexture(renderer, "resources/error_cube.png");
+    texture_map[Map::YELLOW_CUBE] = ImageTexture(renderer, "resources/yellow_cube.png");
+    texture_map[Map::BLUE_CUBE] = ImageTexture(renderer, "resources/blue_cube.png");
+    texture_map[Map::INGROWN_WALL_CUBE] = ImageTexture(renderer, "resources/ingrown_wall_cube.png");
     // this is also used as sector 1 and 3 walls
-    texture_map[Map::WALL_VAL] = ImageTexture(renderer, "resources/wall_cube.png");
-    texture_map[Map::CUBE_VINE_HARD_TEX] = ImageTexture(renderer, "resources/vine_cube_hard.png");
-    texture_map[Map::CUBE_VINE_MEDIUM_TEX] = ImageTexture(renderer, "resources/vine_cube_medium.png");
-    texture_map[Map::CUBE_VINE_SOFT_TEX] = ImageTexture(renderer, "resources/vine_cube_soft.png");
-    texture_map[456] = ImageTexture(renderer, "resources/player_animation_4x4.png");
+    texture_map[Map::WALL_CUBE] = ImageTexture(renderer, "resources/wall_cube.png");
+    texture_map[Map::VINE_CUBE_HARD] = ImageTexture(renderer, "resources/vine_cube_hard.png");
+    texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, "resources/vine_cube_medium.png");
+    texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, "resources/vine_cube_soft.png");
+    texture_map[Map::PLAYER] = ImageTexture(renderer, "resources/player_animation_4x4.png");
 }
 
 
@@ -90,22 +90,22 @@ void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect dstrect) 
 
 Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
     if (grid_pos == std::pair{ -1,-1 }) {
-        return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
+        return &texture_map[Map::VINE_CUBE_MEDIUM];
     }
 
     int vine_number = grid_vines.try_emplace(grid_pos, rand() % 3)
         .first->second;
 
     if (type == "hard" || vine_number == 2) {
-        return &texture_map[Map::CUBE_VINE_HARD_TEX];
+        return &texture_map[Map::VINE_CUBE_HARD];
     }
     if (type == "medium" || vine_number == 1) {
-        return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
+        return &texture_map[Map::VINE_CUBE_MEDIUM];
     }
     if (type == "soft" || vine_number == 0) {
-        return &texture_map[Map::CUBE_VINE_SOFT_TEX];
+        return &texture_map[Map::VINE_CUBE_SOFT];
     }
-    return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
+    return &texture_map[Map::VINE_CUBE_MEDIUM];
 }
 
 void load_player_sprite(SDL_Renderer* renderer) {
@@ -137,7 +137,7 @@ void load_player_sprite(SDL_Renderer* renderer) {
         last_update = SDL_GetTicks();
     }
 
-    texture_map[456].render(renderer, &srcRect, &dstRect);
+    texture_map[Map::PLAYER].render(renderer, &srcRect, &dstRect);
 }
 
 /* Texture method definitions*/

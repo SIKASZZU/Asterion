@@ -37,29 +37,29 @@ void generate_map() {
     auto find_start_sectors = [&]() -> bool {
         for (int i = 0; i < map_size; i++) {
             for (int j = 0; j < map_size; j++) {
-                if (map[i][j] == 91 && sector_1 == false) {
+                if (map[i][j] == Map::SECTOR_1_WALL_VAL && sector_1 == false) {
                     std::cout << "Sector 1 complete. Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "one");
-                    map[i][j] = 66;
+                    map[i][j] = Map::BLUE_CUBE;
                     sector_1 = true;
                 }
-                if (map[i][j] == 92 && sector_2 == false) {
+                if (map[i][j] == Map::SECTOR_2_WALL_VAL && sector_2 == false) {
                     std::cout << "Sector 2 complete. Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "two");
-                    map[i][j] = 66;
+                    map[i][j] = Map::BLUE_CUBE;
                     sector_2 = true;
                 }
-                if (map[i][j] == 93 && sector_3 == false) {
+                if (map[i][j] == Map::SECTOR_3_WALL_VAL && sector_3 == false) {
                     std::cout << "Sector 3 complete. Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "three");
-                    map[i][j] = 66;
+                    map[i][j] = Map::BLUE_CUBE;
                     sector_3 = true;
                 }
                 if (sector_1 == true && sector_2 == true && sector_3 == true) return true;
             }
         }
         return false;
-    };
+        };
 
     bool sector_status = find_start_sectors();
 
@@ -67,7 +67,7 @@ void generate_map() {
     // save_map_locally(map);
 }
 
-
+// this is not used anywhere and most likely out of date with recent changes
 void generate_random_map(int map[map_size][map_size], int min_val, int max_val) {
     float center_x = map_size / 2.0f;
     float center_y = map_size / 2.0f;
@@ -138,23 +138,20 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
             // Land under everything (circular)
             if (land_chance > 0.2f) {
-                // int LAND_VAL = MIN_VAL + (max_val - MIN_VAL) / 2 + rand() % ((max_val - MIN_VAL) / 2 + 1);
-                map[y][x] = Map::LAND_VAL;
+                map[y][x] = Map::LAND;
             }
             else {
-                map[y][x] = Map::TREE_VAL; // water
+                map[y][x] = Map::TREE;
             }
 
             // sector nr 3
             if (distance >= maze_third_sector && distance <= maze_outer_radius) {
                 map[y][x] = Map::SECTOR_3_WALL_VAL;
             }
-
             // sector nr 2. Note: teisele sektorile + 4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
             else if (distance <= maze_third_sector && distance >= maze_second_sector - 4) {
                 map[y][x] = Map::SECTOR_2_WALL_VAL;
             }
-
             // sector nr 1
             else if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
                 map[y][x] = Map::SECTOR_1_WALL_VAL;
@@ -172,13 +169,13 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                     // diagonaalis sektsioonide vahelised seinad
                     if (s % 2 != 0 && distance <= (maze_second_sector * 0.7) && (distance >= maze_inner_radius * 3.3)) {
                         if (std::fabs(angle - wall_angle) < 0.5) {  // kontrollib section wallide thicknessi.
-                            map[y][x] = Map::MAZE_GROUND_VAL;
+                            map[y][x] = Map::MAZE_GROUND_CUBE;
                         }
                     }
                     // seinad suunas kell 12, 3, 6, 9
                     else if (s % 2 == 0 && distance <= (maze_second_sector / 2.5)) {
                         if (std::fabs(angle - wall_angle) < 0.08) {  // kontrollib section wallide thicknessi.
-                            map[y][x] = Map::MAZE_GROUND_VAL;
+                            map[y][x] = Map::MAZE_GROUND_CUBE;
                         }
                     }
                 }
@@ -186,7 +183,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
 
             // Glade
             if (abs(x - half_map_size) <= glade_radius && abs(y - half_map_size) <= glade_radius) {
-                map[y][x] = Map::LAND_VAL;
+                map[y][x] = Map::LAND;
 
             }
 
@@ -201,7 +198,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             // }
 
             if (y == 0 || x == 0 || y == (map_size - 1) || x == (map_size - 1)) {
-                map[y][x] = Map::INGROWN_WALL_VAL;
+                map[y][x] = Map::INGROWN_WALL_CUBE;
             }
         }
     }

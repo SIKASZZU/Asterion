@@ -1,35 +1,30 @@
 #pragma once
 #include <vector>
 
-
-// TODO: this can be an enum
-/* map values */
-namespace Map {
-    const int MIN_VAL = 0;
-    const int LAND_VAL = 1;
-    const int TREE_VAL = 2;
-    const int GROUND_CUBE = 3;
-    const int MAZE_GROUND_VAL = 4;
-    const int SNOWY_GROUND_VAL = 5;
-    const int YELLOW_VAL = 6;
-    const int BLUE_VAL = 66;
-    const int ERROR_VAL = 7;
-    const int WALL_VAL_VINE = 8;
-    const int WALL_VAL = 9;
-    const int NUMBER_ATLAS = 10;
-
-    const int SECTOR_1_WALL_VAL = 91;
-    const int SECTOR_2_WALL_VAL = 92;
-    const int SECTOR_3_WALL_VAL = 93;
-
-    const int INGROWN_WALL_VAL = 94;
-
-    const int CUBE_VINE_HARD_TEX = 100;
-    const int CUBE_VINE_MEDIUM_TEX = 101;
-    const int CUBE_VINE_SOFT_TEX = 102;
-
-
-}
+/// @brief Enum for things used in the map generation and rendering
+///
+/// Some things do not have textures associated with them.
+enum Map {
+    PLAYER,
+    LAND, // no texture
+    TREE,
+    GROUND_CUBE,
+    MAZE_GROUND_CUBE,
+    SNOWY_GROUND_CUBE,
+    YELLOW_CUBE,
+    ERROR_CUBE,
+    BLUE_CUBE,
+    WALL_CUBE,
+    INGROWN_WALL_CUBE,
+    VINE_WALL, // no texture
+    VINE_CUBE_HARD,
+    VINE_CUBE_MEDIUM,
+    VINE_CUBE_SOFT,
+    SECTOR_1_WALL_VAL, // no texture
+    SECTOR_2_WALL_VAL, // no texture
+    SECTOR_3_WALL_VAL, // no texture
+    NUMBER_ATLAS,
+};
 
 
 /* map */

@@ -26,7 +26,7 @@ namespace Maze {
     };
 
     std::vector<std::pair<int, int>> path;
-    int pathway = 4;
+    int pathway = Map::MAZE_GROUND_CUBE;
 
     // Shuffle directions
     void shuffle_directions(std::vector<std::pair<int, int>>& directions) {
@@ -42,15 +42,15 @@ namespace Maze {
 
         if (type == "one") {
             directions = directions_sec_1;
-            allowed_number = 91;
+            allowed_number = Map::SECTOR_1_WALL_VAL;
         }
         else if (type == "two") {
             directions = directions_sec_2;
-            allowed_number = 92;
+            allowed_number = Map::SECTOR_2_WALL_VAL;
         }
         else if (type == "three") {
             directions = directions_sec_3;
-            allowed_number = 93;
+            allowed_number = Map::SECTOR_3_WALL_VAL;
         }
 
         shuffle_directions(directions);
@@ -92,12 +92,15 @@ namespace Maze {
 
         std::queue<std::pair<int, int>> q;
 
+        // TODO: before replacing found path with error cubes
+        // save the values of coordinates to an array and use that to restore the path
+        // currently not needed as this will only search path with Map::MAZE_GROUND_CUBE
         for (const auto& p : path) {
             // undo myself (path)
             std::cout << "(" << p.first << "," << p.second << ") ";
             map[p.first][p.second] = pathway;
         }
-        path.clear();  // Erases all the elements. 
+        path.clear();
 
         std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> came_from;
         bool visited[map_size][map_size] = { false };
@@ -124,7 +127,7 @@ namespace Maze {
 
                 for (const auto& p : path) {
                     std::cout << "(" << p.first << "," << p.second << ") ";
-                    map[p.first][p.second] = 7;
+                    map[p.first][p.second] = Map::ERROR_CUBE;
                 }
                 std::cout << "\npath found, lenght: " << path.size() << '\n';
                 return true;  // path found
@@ -132,8 +135,10 @@ namespace Maze {
 
             for (int i = 0; i < 4; ++i) {
                 int nx = x + dx[i], ny = y + dy[i];
+                int grid_value = map[nx][ny];
                 if (nx >= 0 && ny >= 0 && nx < map_size && ny < map_size &&
-                    map[nx][ny] == 4 && !visited[nx][ny]) {
+                    grid_value == Map::MAZE_GROUND_CUBE
+                    && !visited[nx][ny]) {
                     visited[nx][ny] = true;
                     came_from[{nx, ny}] = { x, y };
                     q.push({ nx, ny });
