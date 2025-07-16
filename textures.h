@@ -25,7 +25,11 @@ extern SDL_Texture* player_animation_4x4;
 
 extern const int digit_width;
 extern const int digit_height;
-extern int last_frame;
+
+extern Uint32 last_update;  // Used for animation timing
+extern int last_frame;      // Remember index of last player anim
+extern int row;             // Used for accessing player anim texture
+extern int player_animation_speed;
 
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;  // igal id 8 gridil eraldi random vine
 

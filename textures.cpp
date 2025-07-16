@@ -26,7 +26,10 @@ SDL_Texture* player_animation_4x4 = nullptr;
 
 const int texture_width = 16;
 const int texture_height = 16;
-int last_frame = 0;  // Used for animation timing
+Uint32 last_update = SDL_GetTicks();
+int last_frame = 0;
+int row = 0;
+int player_animation_speed = 123;
 
 std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 
@@ -142,8 +145,8 @@ SDL_Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid
 
 
 void load_player_sprite(SDL_Renderer* renderer) {
-    const int sprite_width = 32;
-    const int sprite_height = 32;
+    const int sprite_width = 31;  // 0,0 kaasaarvatud
+    const int sprite_height = 31;
 
     SDL_Rect srcRect;
     SDL_Rect dstRect = {
@@ -152,29 +155,23 @@ void load_player_sprite(SDL_Renderer* renderer) {
         static_cast<int>(player.rect.w),
         static_cast<int>(player.rect.h)
     };
-    int row = 0;
 
     // Decide the row based on movement direction
-    switch (player.direction) {
-        case 'd': row = 0; break;  // Right
-        case 'a': row = 1; break;  // Left
-        case 's': row = 2; break;  // Down
-        case 'w': row = 3; break;  // Up
-        default: break;
-    }
+    if (player.movement_vector.x == 1)  { row = 0; }
+    if (player.movement_vector.x == -1) { row = 1; }
+    if (player.movement_vector.y == 1)  { row = 2; }
+    if (player.movement_vector.y == -1) { row = 3; }
 
     int col = last_frame % 4;  // loop 0-3 for frames
-    last_frame++;
-
     srcRect.x = col * sprite_width;
     srcRect.y = row * sprite_height;
     srcRect.w = sprite_width;
     srcRect.h = sprite_height;
 
-    // Debug info
-    std::cout << "player last move: " << player.last_move << "\n";
-    std::cout << "srcRect: (" << srcRect.x << ", " << srcRect.y << ")\n";
-    std::cout << "dstRect: (" << dstRect.x << ", " << dstRect.y << ", " << dstRect.w << ", " << dstRect.h << ")\n";
+    if (SDL_GetTicks() - last_update > player_animation_speed) {
+        last_frame++;
+        last_update = SDL_GetTicks();
+    }
 
     SDL_RenderCopy(renderer, player_animation_4x4, &srcRect, &dstRect);
 }
