@@ -13,7 +13,6 @@ Player player = {
     0.0f,                               // float                y
     0.0,                                // double               direction
     {0.0, 0.0, 0.0, 0.0},               // SDL_FRect            rect
-    false,                              // bool                 render
     false,                              // bool                 collision
     {8, 9, 91, 92, 93},                 // vector               collision_vector
     {0, 0}                              // SDL_FPoint   movement_vector

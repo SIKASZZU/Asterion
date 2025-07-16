@@ -12,7 +12,6 @@ struct Player {
     float y;
     double direction;
     SDL_FRect rect;
-    bool render; // TODO: remove this since it is not used anywhere
     bool collision;
     std::vector<int> collision_vector;
     // Will be used to calculate where player will end up at
