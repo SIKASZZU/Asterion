@@ -145,16 +145,9 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
         }
     }
 
-    // NOTE: KUI VARA PLAYER V2LJA TULEB  - half_tile
-        // tuleks teha eraldi igale objektile, kus on see l2vend, et player on TOP
-    SDL_Rect player_int_rect = { static_cast<int>(player.rect.x),
-                                 static_cast<int>(player.rect.y),
-                                 static_cast<int>(player.rect.w),
-                                 static_cast<int>(player.rect.h)
-    };
-    
-    // TODO: look this over
-    render_queue.push_back(RenderQueueItem(player_int_rect.y, [&]() { load_player_sprite(renderer); }))
+    render_queue.push_back(
+        RenderQueueItem(static_cast<int>(player.rect.y), [](SDL_Renderer* renderer) { load_player_sprite(renderer); })
+    );
 
     std::sort(render_queue.begin(), render_queue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
         return a.z_index < b.z_index;

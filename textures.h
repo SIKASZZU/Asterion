@@ -10,14 +10,12 @@ class Texture {
 protected:
   SDL_Texture* m_texture;
 public:
-  // Texture(SDL_Texture* texture) : m_texture{ texture } {}
   SDL_Texture* get_texture() { return m_texture; }
 
   void destroy_texture();
   void render(SDL_Renderer* renderer, const SDL_Rect* srcrect, const SDL_Rect* dstrect);
   void render(SDL_Renderer* renderer, const SDL_Rect* dstrect);
 };
-
 
 extern std::unordered_map<int, Texture> texture_map;
 // igal id 8 gridil eraldi random vine

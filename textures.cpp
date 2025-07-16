@@ -21,13 +21,6 @@ public:
         return this->m_texture;
     }
 
-const int texture_width = 16;
-const int texture_height = 16;
-Uint32 last_update = SDL_GetTicks();
-int last_frame = 0;
-int row = 0;
-int player_animation_speed = 123;
-
     void load_texture(SDL_Renderer* renderer) {
         this->m_texture = IMG_LoadTexture(renderer, this->m_resource_path);
         SDL_SetTextureScaleMode(this->m_texture, SDL_ScaleModeNearest);
@@ -42,6 +35,10 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 
 const int texture_width = 16;
 const int texture_height = 16;
+Uint32 last_update = SDL_GetTicks();
+int last_frame = 0;
+int row = 0;
+int player_animation_speed = 123;
 
 void load_textures(SDL_Renderer* renderer) {
     // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
@@ -124,9 +121,9 @@ void load_player_sprite(SDL_Renderer* renderer) {
     };
 
     // Decide the row based on movement direction
-    if (player.movement_vector.x == 1)  { row = 0; }
+    if (player.movement_vector.x == 1) { row = 0; }
     if (player.movement_vector.x == -1) { row = 1; }
-    if (player.movement_vector.y == 1)  { row = 2; }
+    if (player.movement_vector.y == 1) { row = 2; }
     if (player.movement_vector.y == -1) { row = 3; }
 
     int col = last_frame % 4;  // loop 0-3 for frames
