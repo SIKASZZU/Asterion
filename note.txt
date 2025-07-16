@@ -1,9 +1,0 @@
-
-
-//  run commands in terminal
-    
-    g++ main.cpp game.cpp abilities.cpp player.cpp $(sdl2-config --cflags --libs) -lSDL2_image -o main
-
-// open the compiled code
-
-    ./main
