@@ -145,8 +145,8 @@ SDL_Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid
 
 
 void load_player_sprite(SDL_Renderer* renderer) {
-    const int sprite_width = 31;  // 0,0 kaasaarvatud
-    const int sprite_height = 31;
+    const int sprite_width = 32;
+    const int sprite_height = 32;
 
     SDL_Rect srcRect;
     SDL_Rect dstRect = {
