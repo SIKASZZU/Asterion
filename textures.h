@@ -1,49 +1,37 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include "game.h"
+
 #include <vector>
 #include <iostream>
 #include <unordered_map>
 
-#include "game.h"
+class Texture {
+protected:
+  SDL_Texture* m_texture;
+public:
+  // Texture(SDL_Texture* texture) : m_texture{ texture } {}
+  SDL_Texture* get_texture() { return m_texture; }
 
-extern SDL_Texture* cube_error_tex;
-extern SDL_Texture* ground_tex;
-extern SDL_Texture* cube_ground_tex;
-extern SDL_Texture* cube_snowy_ground_tex;
-extern SDL_Texture* tree_tex;
-extern SDL_Texture* snowy_tree_tex;
-extern SDL_Texture* numbers_tex;
-extern SDL_Texture* cube_wall_tex;
-extern SDL_Texture* cube_vine_hard_tex;
-extern SDL_Texture* cube_vine_medium_tex;
-extern SDL_Texture* cube_vine_soft_tex;
-extern SDL_Texture* cube_yellow_tex;
-extern SDL_Texture* cube_blue_tex;
-extern SDL_Texture* cube_maze_ground_tex;
-extern SDL_Texture* cube_ingrown_wall_tex;
-extern SDL_Texture* player_animation_4x4;
+  void destroy_texture();
+  void render(SDL_Renderer* renderer, const SDL_Rect* srcrect, const SDL_Rect* dstrect);
+  void render(SDL_Renderer* renderer, const SDL_Rect* dstrect);
+};
 
-extern const int digit_width;
-extern const int digit_height;
 
+extern std::unordered_map<int, Texture> texture_map;
+// igal id 8 gridil eraldi random vine
+extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 extern Uint32 last_update;  // Used for animation timing
 extern int last_frame;      // Remember index of last player anim
 extern int row;             // Used for accessing player anim texture
 extern int player_animation_speed;
 
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;  // igal id 8 gridil eraldi random vine
 
 void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect destTile);
 void load_textures(SDL_Renderer* renderer);
-void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect at_tile);
-void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
-void load_cube_maze_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
-void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile);
-void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile);
-void load_cube_yellow_texture(SDL_Renderer* renderer, SDL_Rect destTile);
-void load_cube_blue_texture(SDL_Renderer* renderer, SDL_Rect destTile);
 void destroy_all_textures();
-
-SDL_Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
-
 void load_player_sprite(SDL_Renderer* renderer);
+
+Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
+

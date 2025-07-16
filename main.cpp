@@ -69,13 +69,14 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
 
-            load_render(renderer, offset, player);
-
             update_offset(offset, player, window);
             update_player(map, offset, state, renderer);
 
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // enne millegi renderimist, peab lisama rendererile colori.        
-            SDL_RenderPresent(renderer);  // dispay new frame
+            load_render(renderer, offset, player);
+            // enne millegi renderimist, peab lisama rendererile colori.
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            // dispay new frame
+            SDL_RenderPresent(renderer);
 
             /* Framerate and tickrate updating */
             if (SDL_GetTicks() - fps_timer >= 1000) {

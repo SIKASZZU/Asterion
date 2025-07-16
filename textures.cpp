@@ -1,28 +1,25 @@
 #include "game.h"
 #include "textures.h"
-
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
+
 #include <vector>
 #include <iostream>
 #include <unordered_map>
 
-// Define the global variables here, et mainis probleeme ei tekiks
-SDL_Texture* cube_error_tex = nullptr;
-SDL_Texture* cube_ground_tex = nullptr;
-SDL_Texture* cube_snowy_ground_tex = nullptr;
-SDL_Texture* tree_tex = nullptr;
-SDL_Texture* snowy_tree_tex = nullptr;
-SDL_Texture* numbers_tex = nullptr;
-SDL_Texture* cube_wall_tex = nullptr;
-SDL_Texture* cube_vine_hard_tex = nullptr;
-SDL_Texture* cube_vine_medium_tex = nullptr;
-SDL_Texture* cube_vine_soft_tex = nullptr;
-SDL_Texture* cube_yellow_tex = nullptr;
-SDL_Texture* cube_blue_tex = nullptr;
-SDL_Texture* cube_maze_ground_tex = nullptr;
-SDL_Texture* cube_ingrown_wall_tex = nullptr;
-SDL_Texture* player_animation_4x4 = nullptr;
+// Image textures that are loaded into the GPU memory, see IMG_LoadTexture
+class ImageTexture : public Texture {
+private:
+    const char* m_resource_path;
+public:
+    ImageTexture(SDL_Renderer* renderer, const char* resource_path) {
+        this->m_resource_path = resource_path;
+        this->load_texture(renderer);
+    }
+
+    SDL_Texture* get_texture() {
+        return this->m_texture;
+    }
 
 const int texture_width = 16;
 const int texture_height = 16;
@@ -31,118 +28,88 @@ int last_frame = 0;
 int row = 0;
 int player_animation_speed = 123;
 
+    void load_texture(SDL_Renderer* renderer) {
+        this->m_texture = IMG_LoadTexture(renderer, this->m_resource_path);
+        SDL_SetTextureScaleMode(this->m_texture, SDL_ScaleModeNearest);
+    }
+};
+
+// do not modify this after initialization with data
+// stable-adressing does not work with this
+// see https://jguegant.github.io/blogs/tech/dense-hash-map.html#dense-hash-map
+std::unordered_map<int, Texture> texture_map;
 std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 
+const int texture_width = 16;
+const int texture_height = 16;
+
 void load_textures(SDL_Renderer* renderer) {
-
-    /* textures */
-    cube_error_tex = IMG_LoadTexture(renderer, "resources/error_cube.png");
-    cube_ground_tex = IMG_LoadTexture(renderer, "resources/ground_cube.png");
-    cube_snowy_ground_tex = IMG_LoadTexture(renderer, "resources/snowy_ground_cube.png");
-    tree_tex = IMG_LoadTexture(renderer, "resources/tree.png");
-    snowy_tree_tex = IMG_LoadTexture(renderer, "resources/snowy_tree.png");
-    numbers_tex = IMG_LoadTexture(renderer, "resources/numbers.png");
-    cube_wall_tex = IMG_LoadTexture(renderer, "resources/wall_cube.png");
-    cube_vine_hard_tex = IMG_LoadTexture(renderer, "resources/vine_cube_hard.png");
-    cube_vine_medium_tex = IMG_LoadTexture(renderer, "resources/vine_cube_medium.png");
-    cube_vine_soft_tex = IMG_LoadTexture(renderer, "resources/vine_cube_soft.png");
-    cube_yellow_tex = IMG_LoadTexture(renderer, "resources/yellow_cube.png");
-    cube_blue_tex = IMG_LoadTexture(renderer, "resources/blue_cube.png");
-    cube_maze_ground_tex = IMG_LoadTexture(renderer, "resources/maze_ground_cube.png");
-    cube_ingrown_wall_tex = IMG_LoadTexture(renderer, "resources/ingrown_wall_cube.png");
-    player_animation_4x4 = IMG_LoadTexture(renderer, "resources/player_animation_4x4.png");
-
-    /* Puhasta tekstuuride 22ri et ei oleks blurry */
-    SDL_SetTextureScaleMode(cube_error_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_ground_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_snowy_ground_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(tree_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(snowy_tree_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(numbers_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_wall_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_vine_hard_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_vine_medium_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_vine_soft_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_yellow_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_blue_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_maze_ground_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(cube_ingrown_wall_tex, SDL_ScaleModeNearest);
-    SDL_SetTextureScaleMode(player_animation_4x4, SDL_ScaleModeNearest);
+    // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
+    texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, "resources/numbers.png");
+    texture_map[Map::TREE_VAL] = ImageTexture(renderer, "resources/tree.png");
+    // notused = ImageTexture(renderer, "resources/snowy_tree.png");
+    texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, "resources/ground_cube.png");
+    texture_map[Map::MAZE_GROUND_VAL] = ImageTexture(renderer, "resources/maze_ground_cube.png");
+    texture_map[Map::SNOWY_GROUND_VAL] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
+    texture_map[Map::ERROR_VAL] = ImageTexture(renderer, "resources/error_cube.png");
+    texture_map[Map::YELLOW_VAL] = ImageTexture(renderer, "resources/yellow_cube.png");
+    texture_map[Map::BLUE_VAL] = ImageTexture(renderer, "resources/blue_cube.png");
+    texture_map[Map::INGROWN_WALL_VAL] = ImageTexture(renderer, "resources/ingrown_wall_cube.png");
+    // this is also used as sector 1 and 3 walls
+    texture_map[Map::WALL_VAL] = ImageTexture(renderer, "resources/wall_cube.png");
+    texture_map[Map::CUBE_VINE_HARD_TEX] = ImageTexture(renderer, "resources/vine_cube_hard.png");
+    texture_map[Map::CUBE_VINE_MEDIUM_TEX] = ImageTexture(renderer, "resources/vine_cube_medium.png");
+    texture_map[Map::CUBE_VINE_SOFT_TEX] = ImageTexture(renderer, "resources/vine_cube_soft.png");
+    texture_map[456] = ImageTexture(renderer, "resources/player_animation_4x4.png");
 }
 
 
 void destroy_all_textures() {
-    SDL_DestroyTexture(cube_ground_tex);
-    SDL_DestroyTexture(cube_snowy_ground_tex);
-    SDL_DestroyTexture(tree_tex);
-    SDL_DestroyTexture(snowy_tree_tex);
-    SDL_DestroyTexture(numbers_tex);
-    SDL_DestroyTexture(cube_wall_tex);
-    SDL_DestroyTexture(cube_vine_hard_tex);
-    SDL_DestroyTexture(cube_vine_medium_tex);
-    SDL_DestroyTexture(cube_vine_soft_tex);
-    SDL_DestroyTexture(cube_yellow_tex);
-    SDL_DestroyTexture(cube_blue_tex);
-    SDL_DestroyTexture(cube_maze_ground_tex);
-    SDL_DestroyTexture(cube_ingrown_wall_tex);
-    SDL_DestroyTexture(player_animation_4x4);
+    for (auto& pair : texture_map) {
+        pair.second.destroy_texture();
+    }
+    texture_map.clear();
 }
 
 
-void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect at_tile) {
+/// @brief Will render an image for numbers between [0-9] (inclusive)
+///
+/// If the number is outside 0-9, it is ignored, will not be rendered
+/// @param renderer 
+/// @param number 
+/// @param at_tile 
+void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect dstrect) {
+    // this function could be replaced by rendering text
+    // instead of a picture of
     if (number < 0 || number > 9) {
         return;
     }
 
-    // Load the numbers sprite sheet (0 - 9, each 16px wide)
-    if (!numbers_tex) {
-        SDL_Texture* numbers_tex = IMG_LoadTexture(renderer, "resources/numbers.png");
-        SDL_SetTextureScaleMode(numbers_tex, SDL_ScaleModeNearest); // CLEAN the texture
-    }
-
+    // used to select a specific number from atlas
     SDL_Rect number_rect = { number * texture_width, 0, texture_width, texture_height };
-    SDL_RenderCopy(renderer, numbers_tex, &number_rect, &at_tile);
+    texture_map[Map::NUMBER_ATLAS].render(renderer, &number_rect, &dstrect);
 }
 
 
-void load_cube_wall_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_wall_tex, nullptr, &destTile); }
-void load_cube_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_ground_tex, nullptr, &destTile); }
-void load_cube_maze_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_maze_ground_tex, nullptr, &destTile); }
-void load_cube_snowy_ground_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_snowy_ground_tex, nullptr, &destTile); }
-void load_cube_error_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_error_tex, nullptr, &destTile); }
-void load_cube_yellow_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_yellow_tex, nullptr, &destTile); }
-void load_cube_blue_texture(SDL_Renderer* renderer, SDL_Rect destTile) { SDL_RenderCopy(renderer, cube_blue_tex, nullptr, &destTile); }
-
-SDL_Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
-    SDL_Texture* tex;
-
+Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
     if (grid_pos == std::pair{ -1,-1 }) {
-        return tex = cube_vine_medium_tex;
+        return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
     }
 
-    if (grid_vines.find(grid_pos) == grid_vines.end()) {
-        grid_vines[grid_pos] = rand() % 3;
-    }
-
-    int vine_number = grid_vines[grid_pos];
+    int vine_number = grid_vines.try_emplace(grid_pos, rand() % 3)
+        .first->second;
 
     if (type == "hard" || vine_number == 2) {
-        tex = cube_vine_hard_tex;
+        return &texture_map[Map::CUBE_VINE_HARD_TEX];
     }
-    else if (type == "medium" || vine_number == 1) {
-        tex = cube_vine_medium_tex;
+    if (type == "medium" || vine_number == 1) {
+        return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
     }
-    else if (type == "soft" || vine_number == 0) {
-        tex = cube_vine_soft_tex;
+    if (type == "soft" || vine_number == 0) {
+        return &texture_map[Map::CUBE_VINE_SOFT_TEX];
     }
-    else {
-        tex = cube_vine_medium_tex;
-    }
-
-    return tex;
+    return &texture_map[Map::CUBE_VINE_MEDIUM_TEX];
 }
-
-
 
 void load_player_sprite(SDL_Renderer* renderer) {
     const int sprite_width = 32;
@@ -173,5 +140,18 @@ void load_player_sprite(SDL_Renderer* renderer) {
         last_update = SDL_GetTicks();
     }
 
-    SDL_RenderCopy(renderer, player_animation_4x4, &srcRect, &dstRect);
+    texture_map[456].render(renderer, &srcRect, &dstRect);
+}
+
+/* Texture method definitions*/
+
+void Texture::destroy_texture() {
+    SDL_DestroyTexture(this->m_texture);
+}
+
+void Texture::render(SDL_Renderer* renderer, const SDL_Rect* srcrect, const SDL_Rect* dstrect) {
+    SDL_RenderCopy(renderer, this->m_texture, srcrect, dstrect);
+}
+void Texture::render(SDL_Renderer* renderer, const SDL_Rect* dstrect) {
+    SDL_RenderCopy(renderer, this->m_texture, nullptr, dstrect);
 }
