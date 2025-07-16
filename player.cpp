@@ -1,20 +1,24 @@
-#include <cmath>
-#include <iostream>
-
+#include "map.hpp"
 #include "game.hpp"
 #include "isometric_calc.hpp"
 #include "player.hpp"
 #include "collision.hpp"
 
+#include <cmath>
+#include <iostream>
+
 Player player = {
-    DEFAULT_PLAYER_MOVEMENT_SPEED,      // float                movement_speed
-    64,                                 // int                  size
-    0.0f,                               // float                x
-    0.0f,                               // float                y
-    {0.0, 0.0, 0.0, 0.0},               // SDL_FRect            rect
-    false,                              // bool                 collision
-    {8, 9, 91, 92, 93, 94},             // vector               collision_array
-    {0, 0},                             // SDL_FPoint           movement_vector
+    movement_speed : DEFAULT_PLAYER_MOVEMENT_SPEED,
+    size : 64,
+    x : 0.0f,
+    y : 0.0f,
+    rect : {0.0, 0.0, 0.0, 0.0},
+    collision : false,
+    collision_array : {Map::WALL_VAL_VINE, Map::WALL_VAL,
+                    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL,
+                    Map::SECTOR_3_WALL_VAL, Map::INGROWN_WALL_VAL
+                    },
+    movement_vector : {0, 0},
 };
 
 
@@ -39,7 +43,7 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
                     (coords.y) - (player.size / 2),
                     static_cast<float>(player.size),
                     static_cast<float>(player.size)
-                    };
+            };
         }
     }
 }
