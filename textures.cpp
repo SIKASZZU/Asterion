@@ -38,7 +38,6 @@ const int texture_height = 16;
 Uint32 last_update = SDL_GetTicks();
 int last_frame = 0;
 int row = 0;
-int player_animation_speed = 123;
 
 void load_textures(SDL_Renderer* renderer) {
     // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
@@ -57,7 +56,7 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::VINE_CUBE_HARD] = ImageTexture(renderer, "resources/vine_cube_hard.png");
     texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, "resources/vine_cube_medium.png");
     texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, "resources/vine_cube_soft.png");
-    texture_map[Map::PLAYER] = ImageTexture(renderer, "resources/player_animation_4x4.png");
+    texture_map[Map::PLAYER] = ImageTexture(renderer, "resources/player_animation.png");
 }
 
 
@@ -110,7 +109,7 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
 
 void load_player_sprite(SDL_Renderer* renderer) {
     const int sprite_width = 32;
-    const int sprite_height = 32;
+    const int sprite_height = 31;
 
     SDL_Rect srcRect;
     SDL_Rect dstRect = {
@@ -119,20 +118,29 @@ void load_player_sprite(SDL_Renderer* renderer) {
         static_cast<int>(player.rect.w),
         static_cast<int>(player.rect.h)
     };
+    int col;
+    if (player.movement_vector.x == 0 && player.movement_vector.y == 0) {
+        col = 4;  // standing index
+    } else {
+        col = last_frame % 4;  // loop 0-3 for frames
+    }
 
     // Decide the row based on movement direction
-    if (player.movement_vector.x == 1) { row = 0; }
+    if (player.movement_vector.x ==  1) { row = 0; }
     if (player.movement_vector.x == -1) { row = 1; }
-    if (player.movement_vector.y == 1) { row = 2; }
+    if (player.movement_vector.y ==  1) { row = 2; }
     if (player.movement_vector.y == -1) { row = 3; }
 
-    int col = last_frame % 4;  // loop 0-3 for frames
     srcRect.x = col * sprite_width;
     srcRect.y = row * sprite_height;
     srcRect.w = sprite_width;
     srcRect.h = sprite_height;
 
-    if (SDL_GetTicks() - last_update > player_animation_speed) {
+    // todo: Tile sizeiga tuleb 2ra arvutada, kui palju peab frame updateima. tile isze== 100 ss ja speed 20 ss 5 framei per tile size?
+    std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250; 
+    // std::cout << "animation speed: " << player.animation_speed << "\n";
+    
+    if (SDL_GetTicks() - last_update > player.animation_speed) {
         last_frame++;
         last_update = SDL_GetTicks();
     }

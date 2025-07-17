@@ -54,8 +54,9 @@ int main(int argc, char* argv[]) {
                 SDL_Keycode key = event.key.keysym.sym;
                 react_to_keyboard_up(key, player);
             }
-            react_to_keyboard_state(state, player);
         }
+        
+        react_to_keyboard_state(state, player);  // movement vectori slow downimiseks on vaja seda funci alati callida 
 
         frame_count++;
 
