@@ -71,9 +71,10 @@ int main(int argc, char* argv[]) {
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
 
             update_offset(offset, player, window);
-            update_player(map, offset, state, renderer);
-
+            
             load_render(renderer, offset, player);
+            update_player(map, offset, state, renderer);
+            
             // enne millegi renderimist, peab lisama rendererile colori.
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
             // dispay new frame

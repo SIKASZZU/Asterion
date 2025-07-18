@@ -9,7 +9,7 @@
 
 Player player = {
     movement_speed: DEFAULT_PLAYER_MOVEMENT_SPEED,
-    size : 128,
+    size : tile_size,
     x : 0.0f,
     y : 0.0f,
     rect : {0.0, 0.0, 0.0, 0.0},
@@ -50,4 +50,5 @@ void update_player(int map[map_size][map_size], struct Offset& offset, const Uin
             };
         }
     }
+    SDL_RenderDrawRectF(renderer, &player.rect);
 }

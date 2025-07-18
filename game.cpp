@@ -90,11 +90,13 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     case SDLK_PERIOD: {
         tile_size += 5;
         std::cout << "tile_size = " << tile_size << "\n";
+        player.size = tile_size;
         break;
     }
     case SDLK_COMMA: {
         tile_size > 5 ? tile_size -= 5 : tile_size;
         std::cout << "tile_size = " << tile_size << "\n";
+        player.size = tile_size;
         break;
     }
     case SDLK_PAGEDOWN: {
