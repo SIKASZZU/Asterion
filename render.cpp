@@ -40,8 +40,8 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
     int render_diameter = render_radius * 2;
     render_queue.reserve(render_diameter * render_diameter);
 
-    int player_tile_x = static_cast<int>(player.x / tile_size);
-    int player_tile_y = static_cast<int>(player.y / tile_size);
+    int player_tile_x = static_cast<int>((player.x + (player.size / 2)) / tile_size);
+    int player_tile_y = static_cast<int>((player.y + (player.size / 2)) / tile_size);
 
     int left = player_tile_x - render_radius;
     int right = player_tile_x + render_radius;
@@ -145,8 +145,9 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
         }
     }
 
+    int render_after =  -(tile_size / 2);
     render_queue.push_back(
-        RenderQueueItem(static_cast<int>(player.rect.y), [](SDL_Renderer* renderer) { load_player_sprite(renderer); })
+        RenderQueueItem(static_cast<int>(player.rect.y + render_after), [](SDL_Renderer* renderer) { load_player_sprite(renderer); })
     );
 
     std::sort(render_queue.begin(), render_queue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {

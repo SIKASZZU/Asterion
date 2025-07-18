@@ -31,7 +31,7 @@ Uint32 tick_timer = SDL_GetTicks();
 int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 /* map.h args */
-int tile_size = 25;
+int tile_size = 100;
 
 /* pathfinding */
 int pathEndX = -1;
@@ -90,13 +90,13 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     case SDLK_PERIOD: {
         tile_size += 5;
         std::cout << "tile_size = " << tile_size << "\n";
-        player.size = tile_size;
+        player.size = tile_size / 2;
         break;
     }
     case SDLK_COMMA: {
         tile_size > 5 ? tile_size -= 5 : tile_size;
         std::cout << "tile_size = " << tile_size << "\n";
-        player.size = tile_size;
+        player.size = tile_size / 2;
         break;
     }
     case SDLK_PAGEDOWN: {
