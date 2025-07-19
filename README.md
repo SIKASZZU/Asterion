@@ -63,7 +63,8 @@ pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
 > This will install them on the UCRT64 [environment](https://www.msys2.org/docs/environments/)
 
 Make sure to add them to your windows `PATH` environment variable
-> the path I added was `C:\tools\msys64\ucrt64\bin`
+> Paths added to user variables: `*\msys64\ucrt64\bin`
+>                                `*\msys64\usr\bin`
 
 ### Install SDL
 
