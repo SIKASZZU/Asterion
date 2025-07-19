@@ -95,14 +95,16 @@ The installation steps are:
 
 ### Building and running the project
 
-This project can be run by first building the project
+This project uses [make](https://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents) to build and run the project
+
+Simply run the following command to build and run the game
 
 ```bash
-g++ -Isrc/include -Lsrc/lib -o main.exe *.cpp -lSDL2 -lSDL2_image -lmingw32
+make
 ```
 
-Then running the resulting executable with
+---
 
-```bash
-main.exe
-```
+For Visual Studio Code it is reccomended to use the [MakeFile Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools) extension
+
+Although that is not needed as running the project with `F5` will work just fine

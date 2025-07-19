@@ -10,7 +10,6 @@ enum Map {
     TREE,
     GROUND_CUBE,
     MAZE_GROUND_CUBE,
-    SNOWY_GROUND_CUBE,
     YELLOW_CUBE,
     ERROR_CUBE,
     BLUE_CUBE,

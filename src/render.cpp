@@ -74,7 +74,6 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             {
                 // simple textures that can be immediately rendered
             case Map::MAZE_GROUND_CUBE:
-            case Map::SNOWY_GROUND_CUBE:
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
             case Map::BLUE_CUBE: {

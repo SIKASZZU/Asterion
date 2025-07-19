@@ -1,11 +1,13 @@
 #include "game.hpp"
 #include "textures.hpp"
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL.h>
+#include "assets.hpp"
 
 #include <vector>
 #include <iostream>
 #include <unordered_map>
+
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL.h>
 
 // Image textures that are loaded into the GPU memory, see IMG_LoadTexture
 class ImageTexture : public Texture {
@@ -41,22 +43,22 @@ int row = 0;
 
 void load_textures(SDL_Renderer* renderer) {
     // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
-    texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, "resources/numbers.png");
-    texture_map[Map::TREE] = ImageTexture(renderer, "resources/tree.png");
+    texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, Assets::Images::numbers);
+    texture_map[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");
-    texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, "resources/ground_cube.png");
-    texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, "resources/maze_ground_cube.png");
-    texture_map[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
-    texture_map[Map::ERROR_CUBE] = ImageTexture(renderer, "resources/error_cube.png");
-    texture_map[Map::YELLOW_CUBE] = ImageTexture(renderer, "resources/yellow_cube.png");
-    texture_map[Map::BLUE_CUBE] = ImageTexture(renderer, "resources/blue_cube.png");
-    texture_map[Map::INGROWN_WALL_CUBE] = ImageTexture(renderer, "resources/ingrown_wall_cube.png");
+    texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, Assets::Images::ground_cube);
+    texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer,Assets::Images::maze_ground_cube);
+    // texture_map[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
+    texture_map[Map::ERROR_CUBE] = ImageTexture(renderer, Assets::Images::error_cube);
+    texture_map[Map::YELLOW_CUBE] = ImageTexture(renderer, Assets::Images::yellow_cube);
+    texture_map[Map::BLUE_CUBE] = ImageTexture(renderer, Assets::Images::blue_cube);
+    texture_map[Map::INGROWN_WALL_CUBE] = ImageTexture(renderer, Assets::Images::ingrown_wall_cube);
     // this is also used as sector 1 and 3 walls
-    texture_map[Map::WALL_CUBE] = ImageTexture(renderer, "resources/wall_cube.png");
-    texture_map[Map::VINE_CUBE_HARD] = ImageTexture(renderer, "resources/vine_cube_hard.png");
-    texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, "resources/vine_cube_medium.png");
-    texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, "resources/vine_cube_soft.png");
-    texture_map[Map::PLAYER] = ImageTexture(renderer, "resources/player_animation.png");
+    texture_map[Map::WALL_CUBE] = ImageTexture(renderer, Assets::Images::wall_cube);
+    texture_map[Map::VINE_CUBE_HARD] = ImageTexture(renderer, Assets::Images::vine_cube_hard);
+    texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, Assets::Images::vine_cube_medium);
+    texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, Assets::Images::vine_cube_soft);
+    texture_map[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
 }
 
 
