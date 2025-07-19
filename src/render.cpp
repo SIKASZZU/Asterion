@@ -32,7 +32,14 @@ void RenderQueueItem::render(SDL_Renderer* renderer) {
 }
 
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
-static const std::unordered_set<int> ground_values = { Map::LAND, Map::TREE, Map::VINE_WALL };
+static const std::unordered_set<int> ground_values = {
+    Map::LAND, Map::TREE
+};
+
+static const std::unordered_set<int> wall_values = {
+    Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
+    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL 
+};
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
     // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
@@ -68,11 +75,14 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (ground_values.find(grid_value) != ground_values.end()) {
                 texture_map[Map::GROUND_CUBE].render(renderer, &destTile);
             }
-
+            // Maze pathway texture under walls
+            if (wall_values.find(grid_value) != wall_values.end()) {
+                texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+            }
 
             switch (grid_value)
             {
-                // simple textures that can be immediately rendered
+            // simple textures that can be immediately rendered
             case Map::MAZE_GROUND_CUBE:
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
@@ -80,7 +90,6 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 texture_map[grid_value].render(renderer, &destTile);
                 break;
             }
-
             case Map::TREE: {
                 destTile.y -= half_tile;
                 render_queue.push_back(
@@ -88,10 +97,30 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-                          // these tree use the same texture atm
-            case Map::WALL_CUBE:
-            case Map::SECTOR_1_WALL_VAL:
             case Map::SECTOR_3_WALL_VAL: {
+                destTile.y -= half_tile;
+                if (wall_values.find(map[row+1][column]) != wall_values.end() &&
+                    wall_values.find(map[row][column+1]) != wall_values.end() &&
+                    wall_values.find(map[row-1][column]) != wall_values.end() &&
+                    wall_values.find(map[row][column-1]) != wall_values.end()) {
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
+                    );
+                    break;
+                }
+                // random block size code code
+                destTile.y += (tile_size / 9);
+                destTile.x += (tile_size / 16);
+                destTile.w -= (tile_size / 8);
+                destTile.h -= (tile_size / 8);
+                render_queue.push_back(
+                    RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
+                );
+                break;
+            }
+            // these tree use the same texture atm
+            case Map::WALL_CUBE:
+            case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= half_tile;
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
@@ -103,28 +132,30 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[Map::INGROWN_WALL_CUBE])
                 );
+                destTile.y -= half_tile;
+                render_queue.push_back(
+                    RenderQueueItem(destTile.y + half_tile + 1, destTile, &texture_map[Map::WALL_CUBE])
+                );
                 break;
             }
             case Map::VINE_WALL: case Map::SECTOR_2_WALL_VAL: {
-                texture_map[Map::GROUND_CUBE].render(renderer, &destTile);
                 // Only generate random offset once per block
-                // see 20 on kui palju px on maxist v2hem
-                int xr = random_offsets.try_emplace(grid_pos, rand() % 20)
+                // see rand % number on kui palju px on maxist v2hem
+                int xr = random_offsets.try_emplace(grid_pos, rand() % 60)
                     .first->second;
 
-                destTile.y -= half_tile - (xr / 2);
-                destTile.x += (xr / 2);
-                destTile.w -= xr;
-                destTile.h -= xr;
+                destTile.y -= half_tile - (xr / 2.5);
+                destTile.x += (xr / 4);
+                destTile.w -= (xr / 2);
+                destTile.h -= (xr / 2);
 
-                render_queue.push_back(
-                    RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
-                );
-
-                destTile.y += 1;  // +1 sest muidu hakkab walli destTile'iga v6itlema ja flickerib.
+                // vine'il y += 1, et vine tekstuur oleks on top of wall
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 render_queue.push_back(
-                    RenderQueueItem(destTile.y, destTile, cube_vine_tex)
+                    RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
+                );
+                render_queue.push_back(
+                    RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
                 );
                 break;
             }
