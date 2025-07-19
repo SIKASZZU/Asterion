@@ -60,5 +60,12 @@
     "unordered_set": "cpp",
     "list": "cpp",
     "map": "cpp"
-  }
+  },
+  "makefile.launchConfigurations": [
+    {
+      "cwd": "c:\\_PROJECTS\\Asterion\\bin",
+      "binaryPath": "c:\\_PROJECTS\\Asterion\\bin\\main",
+      "binaryArgs": []
+    }
+  ]
 }
