@@ -59,7 +59,8 @@
     "sstream": "cpp",
     "unordered_set": "cpp",
     "list": "cpp",
-    "map": "cpp"
+    "map": "cpp",
+    "set": "cpp"
   },
   "makefile.launchConfigurations": [
     {
