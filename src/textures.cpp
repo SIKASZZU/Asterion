@@ -47,7 +47,7 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");
     texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, Assets::Images::ground_cube);
-    texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer,Assets::Images::maze_ground_cube);
+    texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, Assets::Images::maze_ground_cube);
     // texture_map[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
     texture_map[Map::ERROR_CUBE] = ImageTexture(renderer, Assets::Images::error_cube);
     texture_map[Map::YELLOW_CUBE] = ImageTexture(renderer, Assets::Images::yellow_cube);
@@ -59,6 +59,9 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, Assets::Images::vine_cube_medium);
     texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, Assets::Images::vine_cube_soft);
     texture_map[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
+    texture_map[Map::VINE_OVERHANG_SN] = ImageTexture(renderer, Assets::Images::vine_overhang_sn);
+    texture_map[Map::VINE_OVERHANG_EW] = ImageTexture(renderer, Assets::Images::vine_overhang_ew);
+    texture_map[Map::VINE_COVER_N] = ImageTexture(renderer, Assets::Images::vine_cover_n);
 }
 
 
@@ -123,14 +126,15 @@ void load_player_sprite(SDL_Renderer* renderer) {
     int col;
     if (player.movement_vector.x == 0 && player.movement_vector.y == 0) {
         col = 4;  // standing index
-    } else {
+    }
+    else {
         col = last_frame % 4;  // loop 0-3 for frames
     }
 
     // Decide the row based on movement direction
-    if (player.movement_vector.x ==  1) { row = 0; }
+    if (player.movement_vector.x == 1) { row = 0; }
     if (player.movement_vector.x == -1) { row = 1; }
-    if (player.movement_vector.y ==  1) { row = 2; }
+    if (player.movement_vector.y == 1) { row = 2; }
     if (player.movement_vector.y == -1) { row = 3; }
 
     srcRect.x = col * sprite_width;
@@ -139,9 +143,9 @@ void load_player_sprite(SDL_Renderer* renderer) {
     srcRect.h = sprite_height;
 
     // todo: Tile sizeiga tuleb 2ra arvutada, kui palju peab frame updateima. tile isze== 100 ss ja speed 20 ss 5 framei per tile size?
-    std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250; 
+    std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
     // std::cout << "animation speed: " << player.animation_speed << "\n";
-    
+
     if (SDL_GetTicks() - last_update > player.animation_speed) {
         last_frame++;
         last_update = SDL_GetTicks();

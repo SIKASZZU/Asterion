@@ -4,9 +4,13 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
+#include <utility>
+#include <set>
 
 #include "game.hpp"
 #include "textures.hpp"
+
+extern std::set<std::pair<int, int>> grid_vine_checked;
 
 struct RenderQueueItem {
   int render_order;

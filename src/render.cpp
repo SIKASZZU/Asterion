@@ -9,6 +9,8 @@
 #include <functional>
 #include <algorithm>
 #include <unordered_set>
+#include <utility>
+#include <set>
 
 RenderQueueItem::RenderQueueItem(int render_order, SDL_Rect dstrect, Texture* texture) {
     this->render_order = render_order;
@@ -32,13 +34,15 @@ void RenderQueueItem::render(SDL_Renderer* renderer) {
 }
 
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
+std::set<std::pair<int, int>> grid_vine_checked;
+
 static const std::unordered_set<int> ground_values = {
-    Map::LAND, Map::TREE
+    Map::LAND, Map::TREE,
 };
 
 static const std::unordered_set<int> wall_values = {
     Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
-    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL 
+    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
 };
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
@@ -76,7 +80,9 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 texture_map[Map::GROUND_CUBE].render(renderer, &destTile);
             }
             // Maze pathway texture under walls
-            if (wall_values.find(grid_value) != wall_values.end()) {
+            if (wall_values.find(grid_value) != wall_values.end() ||
+                grid_value == Map::VINE_OVERHANG_SN ||
+                grid_value == Map::VINE_OVERHANG_EW) {
                 texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
             }
 
@@ -90,6 +96,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 texture_map[grid_value].render(renderer, &destTile);
                 break;
             }
+            // simple textures with -= half_tile i.e first floor above ground
+            case Map::VINE_OVERHANG_SN:
+            case Map::VINE_OVERHANG_EW:
+            case Map::VINE_COVER_N:
             case Map::TREE: {
                 destTile.y -= half_tile;
                 render_queue.push_back(
@@ -99,20 +109,20 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             }
             case Map::SECTOR_3_WALL_VAL: {
                 destTile.y -= half_tile;
-                if (wall_values.find(map[row+1][column]) != wall_values.end() &&
-                    wall_values.find(map[row][column+1]) != wall_values.end() &&
-                    wall_values.find(map[row-1][column]) != wall_values.end() &&
-                    wall_values.find(map[row][column-1]) != wall_values.end()) {
+                if (wall_values.find(map[row + 1][column]) != wall_values.end() &&
+                    wall_values.find(map[row][column + 1]) != wall_values.end() &&
+                    wall_values.find(map[row - 1][column]) != wall_values.end() &&
+                    wall_values.find(map[row][column - 1]) != wall_values.end()) {
                     render_queue.push_back(
                         RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
                     );
                     break;
                 }
                 // random block size code code
-                destTile.y += (tile_size / 9);
-                destTile.x += (tile_size / 16);
+                // destTile.y += (tile_size / 9);
+                // destTile.x += (tile_size / 16);
                 destTile.w -= (tile_size / 8);
-                destTile.h -= (tile_size / 8);
+                // destTile.h -= (tile_size / 8);
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
                 );
@@ -122,6 +132,11 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             case Map::WALL_CUBE:
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= half_tile;
+                // random block size code code
+                destTile.y += (tile_size / 9);
+                destTile.x += (tile_size / 16);
+                destTile.w -= (tile_size / 8);
+                destTile.h -= (tile_size / 8);
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
                 );
@@ -138,25 +153,61 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-            case Map::VINE_WALL: case Map::SECTOR_2_WALL_VAL: {
+            case Map::VINE_WALL: 
+            case Map::SECTOR_2_WALL_VAL: {
+                // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
+                int grid_below = map[row - 1][column];
+                if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
+                    // add overhang vines VINE_OVERHANG_SN
+                    if (grid_below == Map::MAZE_GROUND_CUBE && 
+                        (map[row - 2][column] == Map::VINE_WALL || 
+                        map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
+                        map[row - 1][column] = Map::VINE_OVERHANG_SN;
+                    }
+                    // add overhang vines VINE_OVERHANG_EW
+                    if (map[row][column + 1] == Map::MAZE_GROUND_CUBE  && 
+                        (map[row][column + 2] == Map::VINE_WALL || 
+                        map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                        map[row][column + 1] = Map::VINE_OVERHANG_EW;
+                    }
+                }
+                if (rand() % 10 == 1 && !grid_vine_checked.count(grid_pos)) {
+                    // add VINE_COVER_N to wall's southern side
+                    if (grid_below == Map::MAZE_GROUND_CUBE || 
+                        grid_below == Map::VINE_OVERHANG_SN || 
+                        grid_below == Map::VINE_OVERHANG_EW) {
+                        map[row - 1][column] = Map::VINE_COVER_N;
+                        // expand vine to neighbouring blocks aswell.
+                        // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
+                        // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
+                        if (map[row][column + 1] == Map::VINE_OVERHANG_SN || 
+                            map[row][column + 1] == Map::VINE_OVERHANG_EW) {
+                            map[row - 1][column + 1] = Map::VINE_COVER_N;
+                        }
+                        if (map[row][column - 1] == Map::VINE_OVERHANG_SN || 
+                            map[row][column - 1] == Map::VINE_OVERHANG_EW) {
+                            map[row - 1][column - 1] = Map::VINE_COVER_N;
+                        }
+                    }
+                }
+
+                grid_vine_checked.insert(grid_pos);
                 // Only generate random offset once per block
                 // see rand % number on kui palju px on maxist v2hem
-                int xr = random_offsets.try_emplace(grid_pos, rand() % 60)
+                int xr = random_offsets.try_emplace(grid_pos, rand() % 40)
                     .first->second;
-
                 destTile.y -= half_tile - (xr / 2.5);
                 destTile.x += (xr / 4);
                 destTile.w -= (xr / 2);
                 destTile.h -= (xr / 2);
-
+                render_queue.push_back(
+                    RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
+                );
                 // vine'il y += 1, et vine tekstuur oleks on top of wall
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 render_queue.push_back(
                     RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
-                );
-                render_queue.push_back(
-                    RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
-                );
+                );         
                 break;
             }
 
@@ -175,7 +226,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
         }
     }
 
-    int render_after =  -(tile_size / 2);
+    int render_after = -(tile_size / 2);
     render_queue.push_back(
         RenderQueueItem(static_cast<int>(player.rect.y + render_after), [](SDL_Renderer* renderer) { load_player_sprite(renderer); })
     );
