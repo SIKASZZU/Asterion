@@ -37,7 +37,7 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets;
 std::set<std::pair<int, int>> grid_vine_checked;
 
 static const std::unordered_set<int> ground_values = {
-    Map::LAND, Map::TREE,
+    Map::LAND, Map::TREE, Map::GRASS_COVER,
 };
 
 static const std::unordered_set<int> wall_values = {
@@ -88,15 +88,22 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 
             switch (grid_value)
             {
-            // simple textures that can be immediately rendered
+            // simple textures that can be immediately rendered (no render_q)
             case Map::MAZE_GROUND_CUBE:
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
+            case Map::VOID_CUBE:
             case Map::BLUE_CUBE: {
                 texture_map[grid_value].render(renderer, &destTile);
                 break;
             }
-            // simple textures with -= half_tile i.e first floor above ground
+            // textures above ground, 1st floor (no render_q)
+            case Map::GRASS_COVER: {
+                destTile.y -= half_tile;
+                texture_map[grid_value].render(renderer, &destTile);
+                break;
+            }
+            // textures above ground i.e .y -= half_tile
             case Map::VINE_OVERHANG_SN:
             case Map::VINE_OVERHANG_EW:
             case Map::VINE_COVER_N:
@@ -243,7 +250,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 }
 
 
-void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Player& player)
+void render_map_numbers(SDL_Renderer* renderer,  struct Offset& offset, struct Player& player)
 {
     int player_tile_y = player.y / tile_size;
     int bottom = player_tile_y + render_radius;

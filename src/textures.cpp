@@ -62,6 +62,8 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::VINE_OVERHANG_SN] = ImageTexture(renderer, Assets::Images::vine_overhang_sn);
     texture_map[Map::VINE_OVERHANG_EW] = ImageTexture(renderer, Assets::Images::vine_overhang_ew);
     texture_map[Map::VINE_COVER_N] = ImageTexture(renderer, Assets::Images::vine_cover_n);
+    texture_map[Map::VOID_CUBE] = ImageTexture(renderer, Assets::Images::void_cube);
+    texture_map[Map::GRASS_COVER] = ImageTexture(renderer, Assets::Images::grass_cover);
 }
 
 

@@ -21,4 +21,6 @@ namespace Assets::Images {
   static const char* vine_overhang_sn = "resources/vine_overhang_SN.png";
   static const char* vine_overhang_ew = "resources/vine_overhang_EW.png";
   static const char* vine_cover_n = "resources/vine_cover_N.png";
+  static const char* void_cube = "resources/void_cube.png";
+  static const char* grass_cover = "resources/grass_cover.png";
 }
