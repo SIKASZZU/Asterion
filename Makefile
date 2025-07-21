@@ -8,9 +8,10 @@ SRC_DIR ?= src
 BUILD_DIR ?= bld
 BIN_DIR ?= bin
 
+TARGET := $(BIN_DIR)/$(TARGET_EXEC)
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(SOURCES:%=$(BUILD_DIR)/%.o)
-TARGET := ./$(BIN_DIR)/$(TARGET_EXEC)
+DEPENDENDIES = $(OBJECTS:.o=.d)
 
 RESOURCE_MAP := $(SRC_DIR)/assets.hpp
 RESOURCE_FILES := $(shell \
@@ -57,3 +58,5 @@ clean:
 	$(RM) -r $(BIN_DIR)
 
 .PHONY: clean all var_data run copy_resources
+
+-include $(DEPENDENDIES)
