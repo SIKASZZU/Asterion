@@ -163,11 +163,10 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             land_chance = std::clamp(land_chance, 0.0f, 1.0f);
 
             if (distance >= maze_outer_radius) {
-                if (land_chance >= 0.05f) {
+                if (land_chance >= 0.01f) {
                     land_chance >= 0.5f ? map[y][x] = Map::GRASS_COVER : map[y][x] = Map::LAND;
-
                 } else {
-                    map[y][x] = Map::TREE;
+                    rand() % 2 == 1 ? map[y][x] = Map::TREE_TRUNK : map[y][x] = Map::TREE;
                 }
             }
 
@@ -180,9 +179,9 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                     if (sector % 2 != 0
                         && std::fabs(delta) < size_of_forest
                         && land_chance <= 0.3f) {
-                        map[y][x] = Map::TREE;
+                        rand() % 125 == 1 ? map[y][x] = Map::TREE_TRUNK : map[y][x] = Map::TREE;
                     }
-                    // mapi nurkades on metsad o_o, 
+                    // mapi nurkades on suured metsad o_o, 
                     // metsades on portaalid O_O, 
                     // varsti saab neist sisse minna (❁´◡`❁)
                     if (sector % 2 != 0

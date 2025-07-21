@@ -6,6 +6,7 @@
 namespace Assets::Images {
   static const char* numbers = "resources/numbers.png";
   static const char* tree = "resources/tree.png";
+  static const char* tree_trunk = "resources/tree_trunk.png";
   static const char* ground_cube = "resources/ground_cube.png";
   static const char* maze_ground_cube = "resources/maze_ground_cube.png";
   // static const char* snowy_ground_cube = "resources/snowy_ground_cube.png";
@@ -22,5 +23,6 @@ namespace Assets::Images {
   static const char* vine_overhang_ew = "resources/vine_overhang_EW.png";
   static const char* vine_cover_n = "resources/vine_cover_N.png";
   static const char* void_cube = "resources/void_cube.png";
+  static const char* void_cube_tilemap = "resources/void_cube_tilemap.png";
   static const char* grass_cover = "resources/grass_cover.png";
 }

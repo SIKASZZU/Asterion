@@ -30,6 +30,8 @@ void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect destTile)
 void load_textures(SDL_Renderer* renderer);
 void destroy_all_textures();
 void load_player_sprite(SDL_Renderer* renderer);
+void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
+  int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_Rect destTile);
 
 Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
 

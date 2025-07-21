@@ -45,6 +45,7 @@ void load_textures(SDL_Renderer* renderer) {
     // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
     texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, Assets::Images::numbers);
     texture_map[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
+    texture_map[Map::TREE_TRUNK] = ImageTexture(renderer, Assets::Images::tree_trunk);
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");
     texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, Assets::Images::ground_cube);
     texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, Assets::Images::maze_ground_cube);
@@ -63,6 +64,7 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::VINE_OVERHANG_EW] = ImageTexture(renderer, Assets::Images::vine_overhang_ew);
     texture_map[Map::VINE_COVER_N] = ImageTexture(renderer, Assets::Images::vine_cover_n);
     texture_map[Map::VOID_CUBE] = ImageTexture(renderer, Assets::Images::void_cube);
+    texture_map[Map::VOID_CUBE_NEIGHBOUR] = ImageTexture(renderer, Assets::Images::void_cube_tilemap);
     texture_map[Map::GRASS_COVER] = ImageTexture(renderer, Assets::Images::grass_cover);
 }
 
@@ -114,6 +116,7 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
     return &texture_map[Map::VINE_CUBE_MEDIUM];
 }
 
+
 void load_player_sprite(SDL_Renderer* renderer) {
     const int sprite_width = 32;
     const int sprite_height = 31;
@@ -155,6 +158,66 @@ void load_player_sprite(SDL_Renderer* renderer) {
 
     texture_map[Map::PLAYER].render(renderer, &srcRect, &dstRect);
 }
+
+
+void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset, 
+    int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_Rect destTile) {
+    int tex_width = 32;
+    int tex_height = 31;
+    SDL_Rect srcTile = { 0, 0, tex_width, tex_height};
+
+    auto [row, col] = grid_pos;
+
+    if (map[row][col] == Map::VOID_CUBE) {
+        // render 32, 0, tex_width, tex_height,
+        // VOID_CUBE_NEIGHBOUR on 2x2 tilemap, VOID_CUBE on single tile.
+        srcTile.x = 32; srcTile.y = 0;
+        texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+        // change 2x2 to VOID_CUBE_NEIGHBOURS
+        map[row + 1][col] = Map::VOID_CUBE_NEIGHBOUR;  // East
+        map[row][col + 1] = Map::VOID_CUBE_NEIGHBOUR;  // West
+        map[row + 1][col + 1] = Map::VOID_CUBE_NEIGHBOUR;  // South
+    }
+    if (map[row][col] == Map::VOID_CUBE_NEIGHBOUR) {
+        // check surroudings
+        if (map[row - 1][col] == VOID_CUBE) {
+            srcTile.x = 0, srcTile.y = 31;
+            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+        }
+        else if (map[row][col - 1] == VOID_CUBE) {
+            srcTile.x = 32, srcTile.y = 31;
+            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+        }
+        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR 
+            && map[row][col - 1] == VOID_CUBE_NEIGHBOUR) {
+            srcTile.x = 0, srcTile.y = 0;
+            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+        }
+    }
+    // around void, set trees to tree_trunks
+    if (map[row][col] == Map::VOID_CUBE) {
+        const int radius = 3;
+        for (int dy = -radius; dy <= radius; ++dy) {
+            for (int dx = -radius; dx <= radius; ++dx) {
+                int ny = row + dy;
+                int nx = col + dx;
+
+                // Check if the (nx, ny) is within circular radius
+                if (dx*dx + dy*dy <= radius*radius) {
+                    // Bounds check
+                    if (ny >= 0 && ny < map_size &&
+                        nx >= 0 && nx < map_size) {
+
+                        if (map[ny][nx] == Map::TREE) {
+                            map[ny][nx] = Map::TREE_TRUNK;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 /* Texture method definitions*/
 

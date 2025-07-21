@@ -10,6 +10,7 @@ enum Map {
     PLAYER,
     LAND, // no texture
     TREE,
+    TREE_TRUNK,
     GROUND_CUBE,
     MAZE_GROUND_CUBE,
     YELLOW_CUBE,
@@ -29,6 +30,7 @@ enum Map {
     VINE_OVERHANG_EW,
     VINE_COVER_N,
     VOID_CUBE,
+    VOID_CUBE_NEIGHBOUR,
     GRASS_COVER,
 };
 
