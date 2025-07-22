@@ -43,19 +43,16 @@ void generate_map() {
                 if (map[i][j] == Map::SECTOR_1_WALL_VAL && sector_1 == false) {
                     std::cout << "Generating SECTION 1: Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "one");
-                    map[i][j] = Map::BLUE_CUBE;
                     sector_1 = true;
                 }
                 if (map[i][j] == Map::SECTOR_2_WALL_VAL && sector_2 == false) {
                     std::cout << "Generating SECTION 2: Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "two");
-                    map[i][j] = Map::BLUE_CUBE;
                     sector_2 = true;
                 }
                 if (map[i][j] == Map::SECTOR_3_WALL_VAL && sector_3 == false) {
                     std::cout << "Generating SECTION 3: Start grid: " << i << " " << j << "\n";
                     Maze::generate_maze(map, i, j, "three");
-                    map[i][j] = Map::BLUE_CUBE;
                     sector_3 = true;
                 }
                 if (sector_1 == true && sector_2 == true && sector_3 == true) return true;
@@ -105,8 +102,7 @@ void generate_random_map(int map[map_size][map_size], int min_val, int max_val) 
 
 
 void generate_maze_runner_map(int map[map_size][map_size]) {
-
-    float half_map_size = map_size / 2.0f;
+    int half_map_size = map_size / 2;
     float max_distance = std::sqrt(half_map_size * half_map_size + half_map_size * half_map_size);
 
     /* Glade */
@@ -124,10 +120,6 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
     // void spawnpoints, chooses randomly from set int max_voids
     std::set<std::pair<int, int>> void_spawnpoints;
 
-    /* Walls surrouding the Glade */
-    float radius_sq_min = (maze_inner_radius - 0.5f) * (maze_inner_radius - 0.5f);
-    float radius_sq_max = (maze_inner_radius + 0.5f) * (maze_inner_radius + 0.5f);  // .5f ytleb, kui thick0 gladei ymber wallid on.
-
     const int num_sectors = 8;
     const int max_voids = 10;
 
@@ -140,19 +132,6 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             float distance_sq = dx * dx + dy * dy;
             float distance = std::sqrt(distance_sq);
 
-            // sector nr 3
-            if (distance >= maze_third_sector && distance <= maze_outer_radius) {
-                map[y][x] = Map::SECTOR_3_WALL_VAL;
-            }
-            // sector nr 2. Note: teisele sektorile -4 on buffer kahe sektori vahel, et lahendusteekond oleks garanteeritud
-            else if (distance <= maze_third_sector && distance >= maze_second_sector - 4) {
-                map[y][x] = Map::SECTOR_2_WALL_VAL;
-            }
-            // sector nr 1
-            else if (distance >= maze_inner_radius && distance <= maze_outer_radius) {
-                map[y][x] = Map::SECTOR_1_WALL_VAL;
-            }
-
             float angle = std::atan2(dy, dx);
             if (angle < 0) angle += 2 * M_PI;
             float sector_angle = 2 * M_PI / num_sectors;
@@ -161,7 +140,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             float land_chance = 1.0f - norm_dist;
             land_chance += ((rand() % 100) / 100.0f - 0.5f) * 0.8f;
             land_chance = std::clamp(land_chance, 0.0f, 1.0f);
-
+            
             if (distance >= maze_outer_radius) {
                 if (land_chance >= 0.01f) {
                     land_chance >= 0.5f ? map[y][x] = Map::GRASS_COVER : map[y][x] = Map::LAND;
@@ -170,6 +149,23 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                 }
             }
 
+            // maze ala full maze_ground, section overwritib oma enda dataga.
+            if (distance >= maze_inner_radius 
+                && distance <= maze_outer_radius) {
+                map[y][x] = Map::MAZE_GROUND_CUBE;
+            }
+            int drawback_buffer = 3;
+            if (distance >= maze_inner_radius 
+                && distance <= maze_second_sector - drawback_buffer) {
+                map[y][x] = Map::SECTOR_1_WALL_VAL;
+            }
+            else if (distance >= maze_second_sector && distance <= maze_third_sector) {
+                map[y][x] = Map::SECTOR_2_WALL_VAL;
+            }
+            else if (distance >= maze_third_sector && distance <= maze_outer_radius) {
+                map[y][x] = Map::SECTOR_3_WALL_VAL;
+            }
+            
             for (int sector = 0; sector < num_sectors; ++sector) {
                 float wall_angle = sector * sector_angle;
                 // normalize to [-PI, PI]
@@ -192,17 +188,10 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                         void_spawnpoints.insert({ y, x });
                     }
                 }
-                //todo: buffer peale maze_outer_radiust == to be changed!!!!
-                if (distance >= maze_outer_radius && distance <= maze_outer_radius + 2) {
-                    if (distance >= maze_outer_radius + 1 && distance <= maze_outer_radius + 2) {
-                        map[y][x] = Map::MAZE_GROUND_CUBE;
-                    }
-                    else {
-                        map[y][x] = Map::ERROR_CUBE;  // see muuta seinaks?
-                    }
-                }
                 // diagonaalidel mazei vahekohad
-                if (sector % 2 != 0 && distance <= (maze_second_sector * 0.7) && (distance >= maze_inner_radius * 3.3)) {
+                if (sector % 2 != 0 
+                    && distance <= (maze_second_sector * 0.7) 
+                    && (distance >= maze_inner_radius * 3.3)) {
                     if (std::fabs(delta) < 0.5) {  // kontrollib section wallide thicknessi.
                         map[y][x] = Map::MAZE_GROUND_CUBE;
                     }
@@ -213,25 +202,51 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                         map[y][x] = Map::MAZE_GROUND_CUBE;
                     }
                 }
+                // walls between sector 1/2 
+                int thickness_section_wall = 2;
+                if (distance <= maze_second_sector
+                    && distance >= maze_second_sector - thickness_section_wall
+                    && std::fabs(delta) < 0.3) { 
+                    map[y][x] = Map::INGROWN_WALL_CUBE; 
+                }
+            }
+            // walls between sector 3/outside
+            if (distance >= maze_outer_radius 
+                && distance <= maze_outer_radius + 2) {
+                if (distance >= maze_outer_radius + 1 
+                    && distance <= maze_outer_radius + 2) {
+                    map[y][x] = Map::MAZE_GROUND_CUBE;
+                }
+                else {
+                    map[y][x] = Map::INGROWN_WALL_CUBE;
+                }
+            }
+            // walls between sector 2/3 
+            if (distance <= maze_third_sector
+                && distance >= maze_third_sector - 1) { 
+                map[y][x] = Map::INGROWN_WALL_CUBE; 
             }
 
-            // Glade
-            if (abs(x - half_map_size) <= glade_radius && abs(y - half_map_size) <= glade_radius) {
-                map[y][x] = Map::LAND;
-            }
-
-            // Walls around Glade
-            // if (distance_sq >= radius_sq_min && distance_sq <= radius_sq_max) {
-            //     // doors from and to Glade
-            //     if (y == half_map_size || x == half_map_size) {
-            //         map[y][x] = SNOWY_LAND_VAL;
-            //     } else {
-            //         map[y][x] = WALL_VAL;
-            //     }
-            // }
-
+            // walls around the map, map border.
             if (y == 0 || x == 0 || y == (map_size - 1) || x == (map_size - 1)) {
                 map[y][x] = Map::INGROWN_WALL_CUBE;
+            }
+            // Glade (square) and Ingrown walls around glade
+            int glade_wall_thickness = 1;
+            if (std::abs(dx) <= glade_radius + glade_wall_thickness 
+                && std::abs(dy) <= glade_radius + glade_wall_thickness) {
+                // walls outside of glade radius
+                if (static_cast<int>(std::abs(dx)) == glade_radius + 1 
+                    || static_cast<int>(std::abs(dy)) == glade_radius + 1) {
+                    if (x != half_map_size && y != half_map_size) {
+                        map[y][x] = Map::INGROWN_WALL_CUBE;
+                    }
+                } 
+                // inner glade
+                else {
+                    map[y][x] = Map::LAND;
+                }
+
             }
         }
     }
