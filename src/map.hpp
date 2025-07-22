@@ -32,6 +32,7 @@ enum Map {
     VOID_CUBE,
     VOID_CUBE_NEIGHBOUR,
     GRASS_COVER,
+    INVISIBLE_CUBE,
 };
 
 
