@@ -38,7 +38,7 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_trees;
 std::set<std::pair<int, int>> grid_vine_checked;
 
 static const std::unordered_set<int> ground_values = {
-    Map::LAND, Map::TREE, Map::GRASS_COVER, Map::TREE_TRUNK
+    Map::GROUND_CUBE, Map::TREE, Map::GRASS_COVER, Map::TREE_TRUNK
 };
 
 static const std::unordered_set<int> wall_values = {
@@ -87,8 +87,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
             }
 
-            switch (grid_value)
-            {
+            switch (grid_value) {
             case Map::VOID_CUBE:
             case Map::VOID_CUBE_NEIGHBOUR: {
                 render_void_tilemap(renderer, offset, map, grid_pos, destTile);
@@ -98,6 +97,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             case Map::MAZE_GROUND_CUBE:
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
+            case Map::LAND_CUBE:
             case Map::BLUE_CUBE: {
                 texture_map[grid_value].render(renderer, &destTile);
                 break;
@@ -173,8 +173,13 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
+            // section wall, thicker wall
             case Map::INGROWN_WALL_CUBE: {
                 destTile.y -= half_tile;
+                destTile.y -= 5;
+                destTile.x -= 5;
+                destTile.w += 5;
+                destTile.h += 5;
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[grid_value])
                 );
