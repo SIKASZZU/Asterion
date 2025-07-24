@@ -3,7 +3,7 @@
 #include "map.hpp"
 #include <vector>
 
-static const float DEFAULT_PLAYER_MOVEMENT_SPEED = 20.0f;
+static const float DEFAULT_PLAYER_MOVEMENT_SPEED = 50.0f;
 
 struct Player {
     float movement_speed;

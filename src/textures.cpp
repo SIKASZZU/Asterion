@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "textures.hpp"
 #include "assets.hpp"
+#include "render.hpp"
 
 #include <vector>
 #include <iostream>
@@ -131,8 +132,8 @@ void load_player_sprite(SDL_Renderer* renderer) {
         static_cast<int>(player.rect.h)
     };
     int col;
-    if ((player.movement_vector.x == 0 
-        && player.movement_vector.y == 0) 
+    if ((player.movement_vector.x == 0
+        && player.movement_vector.y == 0)
         || player.movement_speed == 0) {
         col = standing_index;  // standing index
         player.animation_speed = 0;
@@ -163,11 +164,11 @@ void load_player_sprite(SDL_Renderer* renderer) {
 }
 
 
-void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset, 
+void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
     int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_Rect destTile) {
     int tex_width = 32;
     int tex_height = 31;
-    SDL_Rect srcTile = { 0, 0, tex_width, tex_height};
+    SDL_Rect srcTile = { 0, 0, tex_width, tex_height };
 
     auto [row, col] = grid_pos;
 
@@ -191,7 +192,7 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
             srcTile.x = 32, srcTile.y = 31;
             texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
         }
-        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR 
+        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR
             && map[row][col - 1] == VOID_CUBE_NEIGHBOUR) {
             srcTile.x = 0, srcTile.y = 0;
             texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
@@ -204,14 +205,13 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
             for (int dx = -radius; dx <= radius; ++dx) {
                 int ny = row + dy;
                 int nx = col + dx;
-
                 // Check if the (nx, ny) is within circular radius
-                if (dx*dx + dy*dy <= radius*radius) {
+                if (dx * dx + dy * dy <= radius * radius) {
                     // Bounds check
                     if (ny >= 0 && ny < map_size &&
                         nx >= 0 && nx < map_size) {
-
                         if (map[ny][nx] == Map::TREE) {
+                            random_offsets_trees.erase({ny, nx});
                             map[ny][nx] = Map::TREE_TRUNK;
                         }
                     }
