@@ -156,25 +156,19 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
 void react_to_keyboard_state(const Uint8* state, struct Player& player) {
     SDL_FPoint dir = player.movement_vector;
     // std::cout << "movement_vector: " << dir.x << ' ' << dir.y << " & of dir and pMovementVec " << &dir << " " << &player.movement_vector << '\n';
-    double slide_after_running = 0.08f;  // lower number = more sliding
+    float slide_after_running = 0.1f;  // lower number = more sliding
+    float sliding_threshold = 0.1f;
 
     if (state[SDL_SCANCODE_W]) { dir.y = -1; }
     if (state[SDL_SCANCODE_S]) { dir.y =  1; }
     if (state[SDL_SCANCODE_A]) { dir.x = -1; }
     if (state[SDL_SCANCODE_D]) { dir.x =  1; }
 
-    // if player presses movement key then reset the sliding
-    if (abs(dir.x) == 1 || abs(dir.y) == 1) { 
-        if (!player.shifting) {player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED; } 
-        else { player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED / 4; } }
-
     if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S]) { 
-        std::abs(dir.y) > 0.1f ? dir.y -= slide_after_running * (dir.y / std::abs(dir.y)) : dir.y = 0.0f; 
+        std::abs(dir.y) > sliding_threshold ? dir.y -= slide_after_running * (dir.y / std::abs(dir.y)) : dir.y = 0.0f; 
     }
-    
     if (!state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D]) { 
-        std::abs(dir.x) > 0.1f ? dir.x -= slide_after_running * (dir.x / std::abs(dir.x)) : dir.x = 0.0f; 
+        std::abs(dir.x) > sliding_threshold ? dir.x -= slide_after_running * (dir.x / std::abs(dir.x)) : dir.x = 0.0f; 
     }
-
     player.movement_vector = { dir.x, dir.y};
 }

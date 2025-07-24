@@ -121,6 +121,7 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
 void load_player_sprite(SDL_Renderer* renderer) {
     const int sprite_width = 32;
     const int sprite_height = 31;
+    const int standing_index = 4;
 
     SDL_Rect srcRect;
     SDL_Rect dstRect = {
@@ -130,10 +131,15 @@ void load_player_sprite(SDL_Renderer* renderer) {
         static_cast<int>(player.rect.h)
     };
     int col;
-    if (player.movement_vector.x == 0 && player.movement_vector.y == 0) {
-        col = 4;  // standing index
+    if ((player.movement_vector.x == 0 
+        && player.movement_vector.y == 0) 
+        || player.movement_speed == 0) {
+        col = standing_index;  // standing index
+        player.animation_speed = 0;
     }
     else {
+        // todo: Tile sizeiga tuleb 2ra arvutada, kui palju peab frame updateima. tile isze== 100 ss ja speed 20 ss 5 framei per tile size?
+        std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
         col = last_frame % 4;  // loop 0-3 for frames
     }
 
@@ -147,10 +153,6 @@ void load_player_sprite(SDL_Renderer* renderer) {
     srcRect.y = row * sprite_height;
     srcRect.w = sprite_width;
     srcRect.h = sprite_height;
-
-    // todo: Tile sizeiga tuleb 2ra arvutada, kui palju peab frame updateima. tile isze== 100 ss ja speed 20 ss 5 framei per tile size?
-    std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
-    // std::cout << "animation speed: " << player.animation_speed << "\n";
 
     if (SDL_GetTicks() - last_update > player.animation_speed) {
         last_frame++;
