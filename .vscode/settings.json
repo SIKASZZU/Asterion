@@ -60,7 +60,8 @@
     "unordered_set": "cpp",
     "list": "cpp",
     "map": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "cstring": "cpp"
   },
   "makefile.launchConfigurations": [
     {

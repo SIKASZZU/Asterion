@@ -13,7 +13,6 @@ Player player = {
     x : 0.0f,
     y : 0.0f,
     rect : {0.0, 0.0, 0.0, 0.0},
-    rect_collision : {0.0, 0.0, 0.0, 0.0},
     collision : false,
     collision_array : {
         Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
@@ -26,40 +25,43 @@ Player player = {
 
 
 void update_player(int map[map_size][map_size], struct Offset& offset, const Uint8* state, SDL_Renderer* renderer) {
-    SDL_FPoint dir = player.movement_vector;  // don't update player.movement_vector var in this func. 
+    SDL_FPoint dir = player.movement_vector;  // don't update player.movement_vector var in this func.
+    SDL_FPoint velocity = { 0.0f, 0.0f };
+    bool collision_x = false;
+    bool collision_y = false;
 
     if (dir.x != 0 || dir.y != 0) {
-        // float normalized_dir = sqrt((dir.x * dir.x) + (dir.y * dir.y));
-        float speed_x = dir.x * player.movement_speed;
-        float speed_y = dir.y * player.movement_speed;
-        player.movement_speed = std::max(std::abs(speed_x), std::abs(speed_y));
+        float normalized_dir = sqrt((dir.x * dir.x) + (dir.y * dir.y));
+        velocity.x = dir.x / normalized_dir * player.movement_speed;
+        velocity.y = dir.y / normalized_dir * player.movement_speed;
 
-        // std::cout << "speed: " << speed_x << " " << speed_y << " Saved speed: " << player.movement_speed << "\n";
+        SDL_FRect playerScreenRect = { player.x  + (tile_size / 2) - (player.size / 2), 
+            player.y - (player.size / 4), 
+            player.rect.w - (player.size / 2), 
+            player.rect.h 
+        };
+        SDL_FRect rectX = playerScreenRect;
+        rectX.x += velocity.x;
+        collision_x = check_collision(map, player, rectX);
         
-        SDL_FRect tempPlayerRect = { player.x  + (player.size / 4) + speed_x, player.y + speed_y, player.rect.w - (player.size / 2), player.rect.h };
-        bool collision = check_collision(map, player, tempPlayerRect);
+        SDL_FRect rectY = playerScreenRect;
+        rectY.y += velocity.y;
+        collision_y = check_collision(map, player, rectY);
+        
+        if (collision_x) { velocity.x = 0; }
+        if (collision_y) { velocity.y = 0; }
 
-        if (!collision) {
-            player.x += speed_x;
-            player.y += speed_y;
+        player.movement_speed = std::max(std::abs(velocity.x), std::abs(velocity.y));
+        player.x += velocity.x;
+        player.y += velocity.y;
 
-            SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
-            player.rect = { (coords.x) + (tile_size / 2) - (player.size / 2),
-                            (coords.y) - (player.size / 4),
-                            static_cast<float>(player.size),
-                            static_cast<float>(player.size)
-            };
-            
-        }
+        SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
+        player.rect = { (coords.x) + (tile_size / 2) - (player.size / 2),
+            (coords.y) - (player.size / 4),
+            static_cast<float>(player.size),
+            static_cast<float>(player.size)
+        };
     }
-        
-        
-    SDL_RenderDrawRectF(renderer, &player.rect);
-    player.rect_collision = {player.rect.x + (player.size / 8),
-                            player.rect.y + (player.size / 8),
-                            player.rect.w - (player.size / 4),
-                            player.rect.h - (player.size / 4)
-    };
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_RenderDrawRectF(renderer, &player.rect_collision);
+    SDL_RenderDrawRectF(renderer, &player.rect);
 }
