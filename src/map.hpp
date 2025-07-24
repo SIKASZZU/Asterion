@@ -8,10 +8,11 @@
 /// Some things do not have textures associated with them.
 enum Map {
     PLAYER,
-    LAND, // no texture
-    TREE,
+    LAND_CUBE,
     TREE_TRUNK,
     GROUND_CUBE,
+    GRASS_COVER,
+    TREE,
     MAZE_GROUND_CUBE,
     YELLOW_CUBE,
     ERROR_CUBE,
@@ -31,7 +32,6 @@ enum Map {
     VINE_COVER_N,
     VOID_CUBE,
     VOID_CUBE_NEIGHBOUR,
-    GRASS_COVER,
     INVISIBLE_CUBE,
 };
 

@@ -143,7 +143,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             
             if (distance >= maze_outer_radius) {
                 if (land_chance >= 0.01f) {
-                    land_chance >= 0.5f ? map[y][x] = Map::GRASS_COVER : map[y][x] = Map::LAND;
+                    land_chance >= 0.5f ? map[y][x] = Map::GRASS_COVER : map[y][x] = Map::GROUND_CUBE;
                 } else {
                     rand() % 2 == 1 ? map[y][x] = Map::TREE_TRUNK : map[y][x] = Map::TREE;
                 }
@@ -244,7 +244,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
                 } 
                 // inner glade
                 else {
-                    map[y][x] = Map::LAND;
+                    map[y][x] = Map::LAND_CUBE;
                 }
 
             }

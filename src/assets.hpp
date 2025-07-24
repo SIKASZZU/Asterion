@@ -8,6 +8,7 @@ namespace Assets::Images {
   static const char* tree = "resources/tree.png";
   static const char* tree_trunk = "resources/tree_trunk.png";
   static const char* ground_cube = "resources/ground_cube.png";
+  static const char* land = "resources/land_cube.png";
   static const char* maze_ground_cube = "resources/maze_ground_cube.png";
   // static const char* snowy_ground_cube = "resources/snowy_ground_cube.png";
   static const char* error_cube = "resources/error_cube.png";
