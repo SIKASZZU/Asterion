@@ -42,8 +42,8 @@ void update_player(int map[map_size][map_size],
         velocity.x = dir.x / normalized_dir * player.movement_speed;
         velocity.y = dir.y / normalized_dir * player.movement_speed;
 
-        SDL_FRect playerScreenRect = { player.x  + (tile_size / 2) - (player.size / 2), 
-            player.y - (player.size / 4), 
+        SDL_FRect playerScreenRect = { player.x, 
+            player.y, 
             player.rect.w - (player.size / 2), 
             player.rect.h 
         };
@@ -63,8 +63,8 @@ void update_player(int map[map_size][map_size],
         player.movement_speed = std::max(std::abs(velocity.x), std::abs(velocity.y));
 
         SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
-        player.rect = { (coords.x) + (tile_size / 2) - (player.size / 2),
-            (coords.y) - (player.size / 4),
+        player.rect = { coords.x,
+            coords.y,
             static_cast<float>(player.size),
             static_cast<float>(player.size)
         };

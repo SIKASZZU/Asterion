@@ -9,10 +9,6 @@
 #include <set>
 #include <random>
 
-#ifndef M_PI
-#   define M_PI 3.1415926535897932384626433832
-#endif
-
 int map[map_size][map_size];  // tra mdea, aga see peab siin uuesti olema ilma externita.
 
 void print_map(int map[map_size][map_size]) {
@@ -133,8 +129,8 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             float distance = std::sqrt(distance_sq);
 
             float angle = std::atan2(dy, dx);
-            if (angle < 0) angle += 2 * M_PI;
-            float sector_angle = 2 * M_PI / num_sectors;
+            if (angle < 0) angle += 2 * PI;
+            float sector_angle = 2 * PI / num_sectors;
 
             float norm_dist = distance / max_distance;
             float land_chance = 1.0f - norm_dist;
@@ -169,7 +165,7 @@ void generate_maze_runner_map(int map[map_size][map_size]) {
             for (int sector = 0; sector < num_sectors; ++sector) {
                 float wall_angle = sector * sector_angle;
                 // normalize to [-PI, PI]
-                float delta = std::fmod(angle - wall_angle + M_PI, 2 * M_PI) - M_PI;
+                float delta = std::fmod(angle - wall_angle + PI, 2 * PI) - PI;
                 if (distance >= maze_outer_radius) {
                     float size_of_forest = 0.3f;
                     if (sector % 2 != 0
