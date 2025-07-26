@@ -51,6 +51,10 @@ extern int pathStartY;
 
 /* keys */
 extern bool shift_pressed;
+extern bool r_pressed;
+
+/* constants */
+const double PI = 3.1415926535897932384626433832; 
 
 struct pair_hash {
     std::size_t operator()(const std::pair<int, int>& p) const {

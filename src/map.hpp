@@ -2,6 +2,7 @@
 #include <vector>
 #include <set>
 #include <utility>
+#include <unordered_set>
 
 /// @brief Enum for things used in the map generation and rendering
 ///
@@ -35,6 +36,10 @@ enum Map {
     INVISIBLE_CUBE,
 };
 
+static const std::unordered_set<int> wall_values = {
+    Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
+    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
+};
 
 /* map */
 const int map_size = 325;

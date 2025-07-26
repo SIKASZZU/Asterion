@@ -41,11 +41,6 @@ static const std::unordered_set<int> ground_values = {
     Map::GROUND_CUBE, Map::TREE, Map::GRASS_COVER, Map::TREE_TRUNK
 };
 
-static const std::unordered_set<int> wall_values = {
-    Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
-    Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
-};
-
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
     // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
     std::vector<RenderQueueItem> render_queue;

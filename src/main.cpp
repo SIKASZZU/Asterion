@@ -8,6 +8,7 @@
 #include "textures.hpp"
 #include "render.hpp"
 #include "collision.hpp"
+#include "raycast.hpp"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
@@ -68,15 +69,14 @@ int main(int argc, char* argv[]) {
 
             /* Render begin*/
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
-            SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaks
-
+            SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaksd
+            
             update_offset(offset, player, window);
-            
             load_render(renderer, offset, player);
-            update_player(map, offset, state, renderer);
             
-            // enne millegi renderimist, peab lisama rendererile colori.
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            update_player(map, offset, state, renderer);
+            Raycast::draw(renderer, offset, map);
+            
             // dispay new frame
             SDL_RenderPresent(renderer);
 

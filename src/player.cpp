@@ -31,30 +31,30 @@ void update_player(int map[map_size][map_size],
     SDL_FPoint velocity = { 0.0f, 0.0f };
     bool collision_x = false;
     bool collision_y = false;
-
     if (dir.x != 0 || dir.y != 0) {
         // if player presses movement key then reset the sliding with giga hard speed
         if (abs(dir.x) == 1 || abs(dir.y) == 1) { 
-        if (!player.shifting) {player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED; } 
-        else { player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED / 4; } }
+            if (!player.shifting) {player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED; } 
+            else { player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED / 4; } 
+        }
 
         float normalized_dir = sqrt((dir.x * dir.x) + (dir.y * dir.y));
         velocity.x = dir.x / normalized_dir * player.movement_speed;
         velocity.y = dir.y / normalized_dir * player.movement_speed;
-
-        SDL_FRect playerScreenRect = { player.x  + (tile_size / 2) - (player.size / 2), 
-            player.y - (player.size / 4), 
-            player.rect.w - (player.size / 2), 
-            player.rect.h 
+        
+        SDL_FRect playerScreenRect = { player.x, 
+            player.y,
+            player.rect.w,
+            player.rect.h
         };
         SDL_FRect rectX = playerScreenRect;
         rectX.x += velocity.x;
         collision_x = check_collision(map, player, rectX);
-
+        
         SDL_FRect rectY = playerScreenRect;
         rectY.y += velocity.y;
         collision_y = check_collision(map, player, rectY);
-
+        
         if (collision_x) { velocity.x = 0; }
         if (collision_y) { velocity.y = 0; }
 
@@ -62,16 +62,16 @@ void update_player(int map[map_size][map_size],
         player.y += velocity.y;
         player.movement_speed = std::max(std::abs(velocity.x), std::abs(velocity.y));
 
-        SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
-        player.rect = { (coords.x) + (tile_size / 2) - (player.size / 2),
-            (coords.y) - (player.size / 4),
-            static_cast<float>(player.size),
-            static_cast<float>(player.size)
-        };
     } else {
         // muidu player seisab aga variable ytleb, et speed == 20
         player.movement_speed = 0;
     }
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_RenderDrawRectF(renderer, &player.rect);
+    SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
+    player.rect = { (coords.x),
+        (coords.y),
+        static_cast<float>(player.size),
+        static_cast<float>(player.size)
+    };
+    // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    // SDL_RenderDrawRectF(renderer, &player.rect);
 }

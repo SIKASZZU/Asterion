@@ -41,6 +41,7 @@ int pathStartY = -1;
 
 /* keys */
 bool shift_pressed = false;
+bool r_pressed = false;
 
 void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
     int width, height; SDL_GetWindowSize(window, &width, &height);
@@ -50,7 +51,7 @@ void update_offset(struct Offset& offset, struct Player& player, SDL_Window* win
     coords.x -= offset.x;
     coords.y -= offset.y;
 
-    offset.x = width / 2 - (tile_size / 2) - coords.x;
+    offset.x = width / 2 - coords.x;
     offset.y = height / 2 - coords.y;
 }
 
@@ -114,6 +115,11 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     case SDLK_LSHIFT: {
         player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED / 4;
         player.shifting = true;
+        break;
+    }
+    case SDLK_r: {
+        r_pressed = !r_pressed;
+        std::cout << "Raycast is: " << player.collision << '\n';
         break;
     }
 
