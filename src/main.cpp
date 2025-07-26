@@ -9,6 +9,7 @@
 #include "render.hpp"
 #include "collision.hpp"
 #include "raycast.hpp"
+#include "raycast.hpp"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
