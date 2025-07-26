@@ -27,6 +27,8 @@ int main(int argc, char* argv[]) {
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         1200, 720, SDL_WINDOW_SHOWN);
 
+    SDL_GetWindowSize(window, &screen_width, &screen_height);
+
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     load_textures(renderer);
@@ -72,7 +74,7 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);  // Clear with blue!
             SDL_RenderClear(renderer);  // enne uut framei, t6mba plats puhtaksd
             
-            update_offset(offset, player, window);
+            update_offset(offset, player);
             load_render(renderer, offset, player);
             
             update_player(map, offset, state, renderer);

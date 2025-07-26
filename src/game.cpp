@@ -10,6 +10,8 @@
 bool isRunning = true;
 int mouse_x = 0;
 int mouse_y = 0;
+int screen_width = 0;
+int screen_height = 0;
 
 /* framerate */
 int frame_count = 0;
@@ -43,16 +45,15 @@ int pathStartY = -1;
 bool shift_pressed = false;
 bool r_pressed = false;
 
-void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window) {
-    int width, height; SDL_GetWindowSize(window, &width, &height);
+void update_offset(struct Offset& offset, struct Player& player) {
 
     SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
 
     coords.x -= offset.x;
     coords.y -= offset.y;
 
-    offset.x = width / 2 - coords.x;
-    offset.y = height / 2 - coords.y;
+    offset.x = screen_width / 2 - coords.x;
+    offset.y = screen_height / 2 - coords.y;
 }
 
 void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
@@ -119,7 +120,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     }
     case SDLK_r: {
         r_pressed = !r_pressed;
-        std::cout << "Raycast is: " << player.collision << '\n';
+        std::cout << "Raycast is: " << r_pressed << '\n';
         break;
     }
 

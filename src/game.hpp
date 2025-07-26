@@ -6,8 +6,8 @@
 #include "map.hpp"
 
 // /* screen */
-extern int win_width;
-extern int win_height;
+extern int screen_width;
+extern int screen_height;
 extern int mouse_x;
 extern int mouse_y;
 
@@ -63,7 +63,7 @@ struct pair_hash {
 };
 
 /* functions */
-void update_offset(struct Offset& offset, struct Player& player, SDL_Window* window);
+void update_offset(struct Offset& offset, struct Player& player);
 void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]);
 void react_to_keyboard_up(SDL_Keycode key, struct Player& player);
 void react_to_keyboard_state(const Uint8* state, struct Player& player);
