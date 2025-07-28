@@ -112,3 +112,19 @@ make
 For Visual Studio Code it is reccomended to use the [MakeFile Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools) extension
 
 Although that is not needed as running the project with `F5` will work just fine
+
+### Key	Action Description
+
+Below is a breakdown of in-game keybindings and their functionalities:
+
+- W, A, S, D	  Move the player in the respective direction. Includes subtle sliding after movement.
+- F         	  Print detailed player info (coordinates, grid position, tile values, offset, etc).
+- C	Toggle      Player collision on/off.
+- R	Toggle      Raycasting and vision system on/off.
+- PLUS  +	      Increase render_radius and update raycast range.
+- MINUS -	      Decrease render_radius (minimum of 5) and update raycast range.
+- . (Period)	  Increase tile_size (and player size accordingly).
+- , (Comma)	    Decrease tile_size (with a minimum cap).
+- PageDown	    Set pathfinding start point to player's current grid tile.
+- PageUp	      Set pathfinding end point to player's current grid tile, then compute path.
+- Left Shift	  Temporarily reduce movement speed (1/4th); enables "sneak" or precision
