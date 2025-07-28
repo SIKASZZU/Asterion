@@ -3,13 +3,13 @@
 #include "raycast.hpp"
 #include "isometric_calc.hpp"
 #include "game.hpp"
+#include "vision.hpp"
 
 #include <iostream>
 #include <sdl2/SDL.h>
 #include <cmath>
 
 namespace Raycast {
-    int max_ray_length = 1000;
     int half_tile = (tile_size / 2);
     SDL_FPoint source_pos = {};
 
@@ -46,28 +46,29 @@ namespace Raycast {
             
             int grid_x = static_cast<int>(start_pos.x / tile_size);
             int grid_y = static_cast<int>(start_pos.y / tile_size);
-            
-            // SDL_Rect ray_rect = {start_pos.x, start_pos.y, tile};
-            
+
             if (wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
                 if (!wall_found) { wall_found = true; continue; }
 
                 if (wall_found && wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
+                    // add the wall to visible rect aswell
+                    Vision::cutout_rects.insert({grid_x, grid_y});
                     break;
                 } 
             }
             distance += angle_step + half_tile;
+            Vision::cutout_rects.insert({grid_x, grid_y});
         }
         return distance;
     }
     void draw(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         if (r_pressed) return;
-
+        Vision::cutout_rects = {};
         // update light source pos
         update_source_pos();
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
 
-        for (int angle = 0; angle < 360; angle += angle_step) {
+        for (int angle = 0; angle < amount_of_rays; angle += angle_step) {
             SDL_FPoint direction = angle_to_direction(static_cast<float>(angle));
             float calculated_length = calculate_line_length(map, direction);
             SDL_FPoint end = {
@@ -80,5 +81,6 @@ namespace Raycast {
                 renderer, iso_start.x + half_tile, iso_start.y, iso_end.x + half_tile, iso_end.y
             );
         }
+        // std::cout << "Size of walls: " << Vision::cutout_rects.size() << "\n";
     }
 }

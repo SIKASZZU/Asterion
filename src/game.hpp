@@ -37,11 +37,14 @@ extern int tick_count;
 extern float ticks_per_second;
 extern Uint32 tick_timer;
 
-/* render.h args */
+/* render.hpp args */
 extern int render_radius;
 
-/* map.h args */
+/* map.hpp args */
 extern int tile_size;
+
+/* raycast.hpp args */
+extern int max_ray_length;
 
 /* pathfinding */
 extern int pathEndX;

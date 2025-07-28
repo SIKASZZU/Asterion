@@ -3,6 +3,7 @@
 #include "collision.hpp"
 #include "render.hpp"
 #include "isometric_calc.hpp"
+#include "vision.hpp"
 
 #include <iostream>
 #include <vector>
@@ -62,9 +63,15 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 
         for (int column = 0; column < map_size; column++) {
             if (column < left || column > right) continue;
-
+            
             int grid_value = map[row][column];
-            std::pair<int, int> grid_pos = { row, column };
+            std::pair<int, int> grid_pos = { column, row };
+
+            // grid_pos not detected by raycast i.e not in player vision
+            if (Vision::cutout_rects.find(grid_pos) == Vision::cutout_rects.end() 
+                && r_pressed != true) {
+                continue;
+            }
 
             SDL_FPoint isometric_coordinates = to_isometric_grid_coordinate(offset, column, row);
             int row_coord = isometric_coordinates.x;

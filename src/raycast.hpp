@@ -7,10 +7,10 @@
 #include <cmath>
 
 namespace Raycast { 
-    extern int ray_length;
     extern SDL_FPoint source_pos;
     const int angle_step = 1;
-
+    const int amount_of_rays = 540;
+    
     void update_source_pos();
     float to_radians(float degrees);
     SDL_FPoint angle_to_direction(float angle_deg);

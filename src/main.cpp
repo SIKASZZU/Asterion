@@ -10,6 +10,7 @@
 #include "collision.hpp"
 #include "raycast.hpp"
 #include "raycast.hpp"
+#include "vision.hpp"
 
 int main(int argc, char* argv[]) {
     SDL_SetMainReady();  // compiler ja windows bitching. Yritab muidu SDL maini kasutada
@@ -30,8 +31,8 @@ int main(int argc, char* argv[]) {
     SDL_GetWindowSize(window, &screen_width, &screen_height);
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
     load_textures(renderer);
+    Vision::create_darkness(renderer);
 
     SDL_Event event;
     const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -80,6 +81,8 @@ int main(int argc, char* argv[]) {
             update_player(map, offset, state, renderer);
             Raycast::draw(renderer, offset, map);
             
+            Vision::draw_overlay(renderer, offset);
+
             // dispay new frame
             SDL_RenderPresent(renderer);
 

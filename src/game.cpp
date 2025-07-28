@@ -29,11 +29,14 @@ int tick_count = 0;
 float ticks_per_second = 0.0f;
 Uint32 tick_timer = SDL_GetTicks();
 
-/* render.h args */
+/* render.hpp args */
 int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
-/* map.h args */
+/* map.hpp args */
 int tile_size = 100;
+
+/* raycast.hpp args */
+int max_ray_length = render_radius * (tile_size / 2);
 
 /* pathfinding */
 int pathEndX = -1;
@@ -65,11 +68,10 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
             << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
 
-        std::cout << "RECT x, y: " << player.rect.x << ", " << player.rect.y << " grid: " << static_cast<int>(player.rect.x / tile_size) << ' ' << static_cast<int>(player.rect.y / tile_size) \
-            << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-
-        std::cout << "offset isorectiga: " << player.rect.x + offset.x << " " << player.rect.y + offset.y << "\n";
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
+
+        std::cout << "RECT x, y: " << player.rect.x << ", " << player.rect.y << "\n";
+        std::cout << "RECT + offset: " << player.rect.x + offset.x << " " << player.rect.y + offset.y << "\n";
         std::cout << std::endl;
         break;
     }
@@ -80,13 +82,15 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     }
     case SDLK_KP_PLUS: case SDLK_PLUS: {
         render_radius += 5;
-        std::cout << "render_radius = " << render_radius << "\n";
+        max_ray_length = render_radius * (tile_size / 2);
+        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " <<  max_ray_length << "\n";
         break;
     }
     case SDLK_KP_MINUS: case SDLK_MINUS: {
         // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
         render_radius > 5 ? render_radius -= 5 : render_radius;
-        std::cout << "render_radius = " << render_radius << "\n";
+        max_ray_length = render_radius * (tile_size / 2);
+        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " <<  max_ray_length << "\n";
         break;
     }
     case SDLK_PERIOD: {
@@ -120,7 +124,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     }
     case SDLK_r: {
         r_pressed = !r_pressed;
-        std::cout << "Raycast is: " << r_pressed << '\n';
+        std::cout << "Raycast & Vision is: " << r_pressed << '\n';
         break;
     }
 
