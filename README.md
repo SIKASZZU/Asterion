@@ -1,13 +1,35 @@
 # Asterion <!-- omit in toc -->
 
-TODO: introduction
 
+GAMEPLAY: Introduction
+- [Game](#key-functionality)
+
+Introductions to setup project
 - [Windows Setup](#windows-setup)
   - [Install Msys2](#install-msys2)
   - [Install toolchain for msys2](#install-toolchain-for-msys2)
   - [Install SDL](#install-sdl)
-  - [Install SDL2\_image](#install-sdl2_image)
+  - [Install SDL3\_image](#install-sdl3_image)
   - [Building and running the project](#building-and-running-the-project)
+
+
+## Game
+### Key Functionality
+
+Below is a breakdown of in-game keybindings and their functionalities:
+
+- W, A, S, D	  Move the player in the respective direction. Includes subtle sliding after movement.
+- F         	  Print detailed player info (coordinates, grid position, tile values, offset, etc).
+- C	Toggle      Player collision on/off.
+- R	Toggle      Raycasting and vision system on/off.
+- PLUS  +	      Increase render_radius and update raycast range.
+- MINUS -	      Decrease render_radius (minimum of 5) and update raycast range.
+- . (Period)	  Increase tile_size (and player size accordingly).
+- , (Comma)	    Decrease tile_size (with a minimum cap).
+- PageDown	    Set pathfinding start point to player's current grid tile.
+- PageUp	      Set pathfinding end point to player's current grid tile, then compute path.
+- Left Shift	  Temporarily reduce movement speed (1/4th); enables "sneak" or precision
+
 
 ## Windows Setup
 
@@ -70,32 +92,35 @@ Paths added to user variables:
 - `*\msys64\ucrt64\bin`
 
 ### Install SDL
+SDL3 version [3.2.18](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.18)
 
-This project uses [SDL](https://github.com/libsdl-org/SDL) version [2.38.8](https://github.com/libsdl-org/SDL/releases/tag/release-2.32.8)
+Manually install SDL3-devel-3.2.18-mingw.zip. 
+Extract files.
+Use MSYS and cd to *\SDL3-devel-3.2.18-mingw\SDL3-3.2.18
+Then use `make`
+Run cmd to install 64-bit version
+- make install-x86_64"
 
-The installation steps are:
+Run commands below to move SDL3 files to mingw64
+- cp -r /usr/local/include/SDL3/* /mingw64/include/SDL3/
+- cp /usr/local/lib/libSDL3.dll.a /mingw64/lib/
+- cp /usr/local/bin/SDL3.dll /mingw64/bin/
 
-- download [SDL2](https://github.com/libsdl-org/SDL/releases/download/release-2.32.8/SDL2-2.32.8.zip)
-- extract it
-- open the directory in the UCRT64
-- run `./configure; make; make install`
 
-> This will add SDL2 to UCRT64 cmake library  
-> `C:\tools\msys64\ucrt64\lib\cmake`
+### Install SDL3_image
+SDL3_image version [3.2.4](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.4)
 
-### Install SDL2_image
+Manually install SDL3_image-devel-3.2.4-mingw.zip.
+Extract files.
+Use MSYS and cd to *\SDL3-devel-3.2.4-mingw\SDL3-3.2.4
+Then use `make`
+Run cmd to install 64-bit version
+- make install-x86_64"
 
-This project uses [SDL_image](https://github.com/libsdl-org/SDL_image) version [2.8.8](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.8.8)
-
-The installation steps are:
-
-- download [SDL2_image](https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.8/SDL2_image-2.8.8.zip)
-- extract it
-- open the directory in the UCRT64
-- run `./configure; make; make install`
-
-> This will add SDL2_image to UCRT64 cmake library  
-> `C:\tools\msys64\ucrt64\lib\cmake`
+Run commands below to move SDL3_image files to mingw64
+- cp -r /usr/local/include/SDL3_image/* /mingw64/include/SDL3/
+- cp /usr/local/lib/libSDL3_image.dll.a /mingw64/lib/
+- cp /usr/local/bin/SDL3_image.dll /mingw64/bin/
 
 ### Building and running the project
 
@@ -112,19 +137,3 @@ make
 For Visual Studio Code it is reccomended to use the [MakeFile Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools) extension
 
 Although that is not needed as running the project with `F5` will work just fine
-
-### Key	Action Description
-
-Below is a breakdown of in-game keybindings and their functionalities:
-
-- W, A, S, D	  Move the player in the respective direction. Includes subtle sliding after movement.
-- F         	  Print detailed player info (coordinates, grid position, tile values, offset, etc).
-- C	Toggle      Player collision on/off.
-- R	Toggle      Raycasting and vision system on/off.
-- PLUS  +	      Increase render_radius and update raycast range.
-- MINUS -	      Decrease render_radius (minimum of 5) and update raycast range.
-- . (Period)	  Increase tile_size (and player size accordingly).
-- , (Comma)	    Decrease tile_size (with a minimum cap).
-- PageDown	    Set pathfinding start point to player's current grid tile.
-- PageUp	      Set pathfinding end point to player's current grid tile, then compute path.
-- Left Shift	  Temporarily reduce movement speed (1/4th); enables "sneak" or precision
