@@ -23,7 +23,7 @@ RESOURCE_FILES_IN_BLD := $(RESOURCE_FILES:%=$(BIN_DIR)/%)
 # CXX := g++
 # CXXFLAGS := -Isrc/lib
 CPPFLAGS := -MMD -MP -g
-LDFLAGS := -lSDL2 -lSDL2_image
+LDFLAGS := -lSDL3 -lSDL3_image
 
 all: build run
 
