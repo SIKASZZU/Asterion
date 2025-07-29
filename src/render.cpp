@@ -13,7 +13,7 @@
 #include <utility>
 #include <set>
 
-RenderQueueItem::RenderQueueItem(int render_order, SDL_Rect dstrect, Texture* texture) {
+RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* texture) {
     this->render_order = render_order;
     this->dstrect = dstrect;
     this->texture = texture;
@@ -63,20 +63,20 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 
         for (int column = 0; column < map_size; column++) {
             if (column < left || column > right) continue;
-            
+
             int grid_value = map[row][column];
             std::pair<int, int> grid_pos = { column, row };
 
             // grid_pos not detected by raycast i.e not in player vision
-            if (Vision::cutout_rects.find(grid_pos) == Vision::cutout_rects.end() 
+            if (Vision::cutout_rects.find(grid_pos) == Vision::cutout_rects.end()
                 && r_pressed != true) {
                 continue;
             }
 
             SDL_FPoint isometric_coordinates = to_isometric_grid_coordinate(offset, column, row);
-            int row_coord = isometric_coordinates.x;
-            int col_coord = isometric_coordinates.y;
-            SDL_Rect destTile = { row_coord, col_coord, tile_size, tile_size };
+            float row_coord = isometric_coordinates.x;
+            float col_coord = isometric_coordinates.y;
+            SDL_FRect destTile = { row_coord, col_coord, tile_size, tile_size };
 
             // Searching for grid_value in ground_values
             if (ground_values.find(grid_value) != ground_values.end()) {
@@ -95,7 +95,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 render_void_tilemap(renderer, offset, map, grid_pos, destTile);
                 break;
             }
-            // simple textures that can be immediately rendered (no render_q)
+                                         // simple textures that can be immediately rendered (no render_q)
             case Map::MAZE_GROUND_CUBE:
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
@@ -107,12 +107,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             case Map::TREE_TRUNK: {
                 int xr = random_offsets_trees.try_emplace(grid_pos, rand() % 20)
                     .first->second;
-                destTile.x += (tile_size  / 5) + xr;
-                destTile.y += (tile_size  / 3) + xr;
-                destTile.h = (tile_size  / 2) - xr;
-                destTile.w = (tile_size  / 2) - xr;
+                destTile.x += (tile_size / 5) + xr;
+                destTile.y += (tile_size / 3) + xr;
+                destTile.h = (tile_size / 2) - xr;
+                destTile.w = (tile_size / 2) - xr;
             }
-            // textures above ground, 1st floor (no render_q)
+                                // textures above ground, 1st floor (no render_q)
             case Map::GRASS_COVER: {
                 destTile.y -= half_tile;
                 texture_map[grid_value].render(renderer, &destTile);
@@ -130,7 +130,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-            // textures above ground i.e .y -= half_tile
+                          // textures above ground i.e .y -= half_tile
             case Map::VINE_OVERHANG_SN:
             case Map::VINE_OVERHANG_EW:
             case Map::VINE_COVER_N: {
@@ -161,7 +161,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-            // these tree use the same texture atm
+                                       // these tree use the same texture atm
             case Map::WALL_CUBE:
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= half_tile;
@@ -175,7 +175,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-            // section wall, thicker wall
+                                       // section wall, thicker wall
             case Map::INGROWN_WALL_CUBE: {
                 destTile.y -= half_tile;
                 destTile.y -= 5;
@@ -191,38 +191,38 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-            case Map::VINE_WALL: 
+            case Map::VINE_WALL:
             case Map::SECTOR_2_WALL_VAL: {
                 // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
                 int grid_below = map[row - 1][column];
                 if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
                     // add overhang vines VINE_OVERHANG_SN
-                    if (grid_below == Map::MAZE_GROUND_CUBE && 
-                        (map[row - 2][column] == Map::VINE_WALL || 
-                        map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
+                    if (grid_below == Map::MAZE_GROUND_CUBE &&
+                        (map[row - 2][column] == Map::VINE_WALL ||
+                            map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
                         map[row - 1][column] = Map::VINE_OVERHANG_SN;
                     }
                     // add overhang vines VINE_OVERHANG_EW
-                    if (map[row][column + 1] == Map::MAZE_GROUND_CUBE  && 
-                        (map[row][column + 2] == Map::VINE_WALL || 
-                        map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                    if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
+                        (map[row][column + 2] == Map::VINE_WALL ||
+                            map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
                         map[row][column + 1] = Map::VINE_OVERHANG_EW;
                     }
                 }
                 if (rand() % 10 == 1 && !grid_vine_checked.count(grid_pos)) {
                     // add VINE_COVER_N to wall's southern side
-                    if (grid_below == Map::MAZE_GROUND_CUBE || 
-                        grid_below == Map::VINE_OVERHANG_SN || 
+                    if (grid_below == Map::MAZE_GROUND_CUBE ||
+                        grid_below == Map::VINE_OVERHANG_SN ||
                         grid_below == Map::VINE_OVERHANG_EW) {
                         map[row - 1][column] = Map::VINE_COVER_N;
                         // expand vine to neighbouring blocks aswell.
                         // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
                         // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
-                        if (map[row][column + 1] == Map::VINE_OVERHANG_SN || 
+                        if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
                             map[row][column + 1] == Map::VINE_OVERHANG_EW) {
                             map[row - 1][column + 1] = Map::VINE_COVER_N;
                         }
-                        if (map[row][column - 1] == Map::VINE_OVERHANG_SN || 
+                        if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
                             map[row][column - 1] == Map::VINE_OVERHANG_EW) {
                             map[row - 1][column - 1] = Map::VINE_COVER_N;
                         }
@@ -245,7 +245,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 render_queue.push_back(
                     RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
-                );         
+                );
                 break;
             }
 
@@ -257,22 +257,19 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (row == player_tile_y && column == player_tile_x) {
                 destTile.h = half_tile;
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                SDL_RenderDrawRect(renderer, &destTile);
+                SDL_RenderRect(renderer, &destTile);
                 // TODO: make the isometric projection of player collision box
                 // just for debugging purposes, SDL_RenderDrawPoints might be useful
             }
         }
     }
-
-    int render_after = -(tile_size / 2);
+    float render_after = -(tile_size / 2);
     render_queue.push_back(
         RenderQueueItem(static_cast<int>(player.rect.y + render_after), [](SDL_Renderer* renderer) { load_player_sprite(renderer); })
     );
-
     std::sort(render_queue.begin(), render_queue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
         return a.render_order < b.render_order;
         });
-
     // render things in queue
     for (auto& r : render_queue) {
         r.render(renderer);
@@ -281,8 +278,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
 }
 
 
-void render_map_numbers(SDL_Renderer* renderer,  struct Offset& offset, struct Player& player)
-{
+void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
     int player_tile_y = player.y / tile_size;
     int bottom = player_tile_y + render_radius;
     int top = player_tile_y - render_radius;
@@ -291,7 +287,7 @@ void render_map_numbers(SDL_Renderer* renderer,  struct Offset& offset, struct P
     int left = player_tile_x - render_radius;
     int right = player_tile_x + render_radius;
 
-    int half_tile = tile_size / 2;
+    float half_tile = tile_size / 2;
 
     for (int y = 0; y < map_size; y++) {
         if (y < top || y > bottom) continue;
@@ -300,10 +296,9 @@ void render_map_numbers(SDL_Renderer* renderer,  struct Offset& offset, struct P
             if (x < left || x > right) continue;
 
             SDL_FPoint isometric_coordinates = to_isometric_grid_coordinate(offset, x, y);
-            int row_coord = isometric_coordinates.x;
-            int col_coord = isometric_coordinates.y;
-            SDL_Rect destTile = { row_coord + (tile_size / 4), col_coord, half_tile, half_tile };
-
+            float row_coord = isometric_coordinates.x;
+            float col_coord = isometric_coordinates.y;
+            SDL_FRect destTile = { row_coord + (tile_size / 4), col_coord, half_tile, half_tile };
             load_specific_number(renderer, map[y][x], destTile);
         }
     }

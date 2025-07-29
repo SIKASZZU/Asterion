@@ -25,7 +25,7 @@ Player player = {
 
 
 void update_player(int map[map_size][map_size], 
-    struct Offset& offset, const Uint8* state, SDL_Renderer* renderer) {
+    struct Offset& offset, SDL_Renderer* renderer) {
     // don't update player.movement_vector var in this func.
     SDL_FPoint dir = player.movement_vector;
     SDL_FPoint velocity = { 0.0f, 0.0f };
@@ -67,11 +67,11 @@ void update_player(int map[map_size][map_size],
         player.movement_speed = 0;
     }
     SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
-    player.rect = { (coords.x),
-        (coords.y),
-        static_cast<float>(player.size),
-        static_cast<float>(player.size)
+    player.rect = { coords.x,
+        coords.y,
+        player.size,
+        player.size
     };
     // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    // SDL_RenderDrawRectF(renderer, &player.rect);
+    // SDL_RenderRect(renderer, &player.rect);
 }

@@ -7,8 +7,8 @@
 #include <iostream>
 #include <unordered_map>
 
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_image.h>
+#include <SDL3/SDL.h>
 
 // Image textures that are loaded into the GPU memory, see IMG_LoadTexture
 class ImageTexture : public Texture {
@@ -26,7 +26,7 @@ public:
 
     void load_texture(SDL_Renderer* renderer) {
         this->m_texture = IMG_LoadTexture(renderer, this->m_resource_path);
-        SDL_SetTextureScaleMode(this->m_texture, SDL_ScaleModeNearest);
+        SDL_SetTextureScaleMode(this->m_texture, SDL_SCALEMODE_NEAREST);
     }
 };
 
@@ -86,7 +86,7 @@ void destroy_all_textures() {
 /// @param renderer 
 /// @param number 
 /// @param at_tile 
-void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect dstrect) {
+void load_specific_number(SDL_Renderer* renderer, int number, SDL_FRect dstrect) {
     // this function could be replaced by rendering text
     // instead of a picture of
     if (number < 0 || number > 9) {
@@ -94,7 +94,12 @@ void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect dstrect) 
     }
 
     // used to select a specific number from atlas
-    SDL_Rect number_rect = { number * texture_width, 0, texture_width, texture_height };
+    SDL_FRect number_rect = {
+        static_cast<float>(number * texture_width),
+        0,
+        texture_width,
+        texture_height
+    };
     texture_map[Map::NUMBER_ATLAS].render(renderer, &number_rect, &dstrect);
 }
 
@@ -124,14 +129,7 @@ void load_player_sprite(SDL_Renderer* renderer) {
     const int sprite_width = 32;
     const int sprite_height = 31;
     const int standing_index = 4;
-
-    SDL_Rect srcRect;
-    SDL_Rect dstRect = {
-        static_cast<int>(player.rect.x),
-        static_cast<int>(player.rect.y),
-        static_cast<int>(player.rect.w),
-        static_cast<int>(player.rect.h)
-    };
+    SDL_FRect srcRect;
     int col;
     if ((player.movement_vector.x == 0
         && player.movement_vector.y == 0)
@@ -144,7 +142,6 @@ void load_player_sprite(SDL_Renderer* renderer) {
         std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
         col = last_frame % 4;  // loop 0-3 for frames
     }
-
     // Decide the row based on movement direction
     if (player.movement_vector.x == 1) { row = 0; }
     if (player.movement_vector.x == -1) { row = 1; }
@@ -161,15 +158,15 @@ void load_player_sprite(SDL_Renderer* renderer) {
         last_update = SDL_GetTicks();
     }
 
-    texture_map[Map::PLAYER].render(renderer, &srcRect, &dstRect);
+    texture_map[Map::PLAYER].render(renderer, &srcRect, &player.rect);
 }
 
 
 void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
-    int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_Rect destTile) {
-    int tex_width = 32;
-    int tex_height = 31;
-    SDL_Rect srcTile = { 0, 0, tex_width, tex_height };
+    int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_FRect destTile) {
+    float tex_width = 32.0f;
+    float tex_height = 31.0f;
+    SDL_FRect srcTile = { 0, 0, tex_width, tex_height };
 
     auto [row, col] = grid_pos;
 
@@ -212,7 +209,7 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
                     if (ny >= 0 && ny < map_size &&
                         nx >= 0 && nx < map_size) {
                         if (map[ny][nx] == Map::TREE) {
-                            random_offsets_trees.erase({ny, nx});
+                            random_offsets_trees.erase({ ny, nx });
                             map[ny][nx] = Map::TREE_TRUNK;
                         }
                     }
@@ -229,9 +226,9 @@ void Texture::destroy_texture() {
     SDL_DestroyTexture(this->m_texture);
 }
 
-void Texture::render(SDL_Renderer* renderer, const SDL_Rect* srcrect, const SDL_Rect* dstrect) {
-    SDL_RenderCopy(renderer, this->m_texture, srcrect, dstrect);
+void Texture::render(SDL_Renderer* renderer, const SDL_FRect* srcrect, const SDL_FRect* dstrect) {
+    SDL_RenderTexture(renderer, this->m_texture, srcrect, dstrect);
 }
-void Texture::render(SDL_Renderer* renderer, const SDL_Rect* dstrect) {
-    SDL_RenderCopy(renderer, this->m_texture, nullptr, dstrect);
+void Texture::render(SDL_Renderer* renderer, const SDL_FRect* dstrect) {
+    SDL_RenderTexture(renderer, this->m_texture, nullptr, dstrect);
 }

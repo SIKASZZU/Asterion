@@ -14,7 +14,7 @@ extern std::set<std::pair<int, int>> grid_vine_checked;
 
 struct RenderQueueItem {
   int render_order;
-  SDL_Rect dstrect;
+  SDL_FRect dstrect;
   // if this is defined then texture method for rendering will be used
   std::optional<Texture*> texture;
   // function to call when rendering needs to be done, must contain 
@@ -23,7 +23,7 @@ struct RenderQueueItem {
   // will cause a performance hit
   std::optional<std::function<void(SDL_Renderer* renderer)>> custom_render;
 
-  RenderQueueItem(int render_order, SDL_Rect dstrect, Texture* texture);
+  RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* texture);
   RenderQueueItem(int render_order, std::function<void(SDL_Renderer* renderer)> custom_render);
 
   void render(SDL_Renderer* renderer);

@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 #include "game.hpp"
 #include "map.hpp"
@@ -8,8 +8,8 @@
 
 /* game state, screen */
 bool isRunning = true;
-int mouse_x = 0;
-int mouse_y = 0;
+float mouse_x = 0;
+float mouse_y = 0;
 int screen_width = 0;
 int screen_height = 0;
 
@@ -33,7 +33,7 @@ Uint32 tick_timer = SDL_GetTicks();
 int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
 
 /* map.hpp args */
-int tile_size = 100;
+float tile_size = 100.0f;
 
 /* raycast.hpp args */
 int max_ray_length = render_radius * (tile_size / 2);
@@ -62,7 +62,7 @@ void update_offset(struct Offset& offset, struct Player& player) {
 void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
     switch (key)
     {
-    case SDLK_f: {
+    case SDLK_F: {
         /* print information */
         std::cout << std::endl;
         std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
@@ -75,7 +75,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         std::cout << std::endl;
         break;
     }
-    case SDLK_c: {
+    case SDLK_C: {
         player.collision = !player.collision;
         std::cout << "Player collision is: " << player.collision << '\n';
         break;
@@ -83,14 +83,14 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     case SDLK_KP_PLUS: case SDLK_PLUS: {
         render_radius += 5;
         max_ray_length = render_radius * (tile_size / 2);
-        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " <<  max_ray_length << "\n";
+        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " << max_ray_length << "\n";
         break;
     }
     case SDLK_KP_MINUS: case SDLK_MINUS: {
         // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
         render_radius > 5 ? render_radius -= 5 : render_radius;
         max_ray_length = render_radius * (tile_size / 2);
-        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " <<  max_ray_length << "\n";
+        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " << max_ray_length << "\n";
         break;
     }
     case SDLK_PERIOD: {
@@ -122,7 +122,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         player.shifting = true;
         break;
     }
-    case SDLK_r: {
+    case SDLK_R: {
         r_pressed = !r_pressed;
         std::cout << "Raycast & Vision is: " << r_pressed << '\n';
         break;
@@ -164,22 +164,22 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
 /// as they use switch cases and react to events.
 /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
 /// @param player 
-void react_to_keyboard_state(const Uint8* state, struct Player& player) {
+void react_to_keyboard_state(const bool* state, struct Player& player) {
     SDL_FPoint dir = player.movement_vector;
     // std::cout << "movement_vector: " << dir.x << ' ' << dir.y << " & of dir and pMovementVec " << &dir << " " << &player.movement_vector << '\n';
     float slide_after_running = 0.25f;  // lower number = more sliding
     float sliding_threshold = 0.1f;
 
     if (state[SDL_SCANCODE_W]) { dir.y = -1; }
-    if (state[SDL_SCANCODE_S]) { dir.y =  1; }
+    if (state[SDL_SCANCODE_S]) { dir.y = 1; }
     if (state[SDL_SCANCODE_A]) { dir.x = -1; }
-    if (state[SDL_SCANCODE_D]) { dir.x =  1; }
+    if (state[SDL_SCANCODE_D]) { dir.x = 1; }
 
-    if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S]) { 
-        std::abs(dir.y) > sliding_threshold ? dir.y -= slide_after_running * (dir.y / std::abs(dir.y)) : dir.y = 0.0f; 
+    if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S]) {
+        std::abs(dir.y) > sliding_threshold ? dir.y -= slide_after_running * (dir.y / std::abs(dir.y)) : dir.y = 0.0f;
     }
-    if (!state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D]) { 
-        std::abs(dir.x) > sliding_threshold ? dir.x -= slide_after_running * (dir.x / std::abs(dir.x)) : dir.x = 0.0f; 
+    if (!state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D]) {
+        std::abs(dir.x) > sliding_threshold ? dir.x -= slide_after_running * (dir.x / std::abs(dir.x)) : dir.x = 0.0f;
     }
-    player.movement_vector = { dir.x, dir.y};
+    player.movement_vector = { dir.x, dir.y };
 }

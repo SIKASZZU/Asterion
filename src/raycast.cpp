@@ -6,7 +6,7 @@
 #include "vision.hpp"
 
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <cmath>
 
 namespace Raycast {
@@ -14,7 +14,7 @@ namespace Raycast {
     SDL_FPoint source_pos = {};
     bool draw_rays = true;
 
-    void update_source_pos(){
+    void update_source_pos() {
         source_pos = { player.x + player.size, player.y };
     }
     float to_radians(float degrees) {
@@ -50,12 +50,12 @@ namespace Raycast {
                 if (!wall_found) { wall_found = true; continue; }
                 if (wall_found && wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
                     // add the wall to visible rect aswell
-                    Vision::cutout_rects.insert({grid_x, grid_y});
+                    Vision::cutout_rects.insert({ grid_x, grid_y });
                     break;
                 }
             }
             distance += angle_step + half_tile;
-            Vision::cutout_rects.insert({grid_x, grid_y});
+            Vision::cutout_rects.insert({ grid_x, grid_y });
         }
         return distance;
     }
@@ -65,15 +65,15 @@ namespace Raycast {
             SDL_FPoint direction = angle_to_direction(static_cast<float>(angle));
             float calculated_length = calculate_line_length(map, direction);
             if (draw_rays == true) {
-            SDL_FPoint end = {
-                source_pos.x + direction.x * calculated_length,
-                source_pos.y + direction.y * calculated_length
-            };
-            SDL_FPoint iso_start = to_isometric_coordinate(offset, source_pos.x , source_pos.y );
-            SDL_FPoint iso_end = to_isometric_coordinate(offset, end.x , end.y );
-            SDL_RenderDrawLineF(
-                renderer, iso_start.x + half_tile, iso_start.y, iso_end.x + half_tile, iso_end.y
-            );
+                SDL_FPoint end = {
+                    source_pos.x + direction.x * calculated_length,
+                    source_pos.y + direction.y * calculated_length
+                };
+                SDL_FPoint iso_start = to_isometric_coordinate(offset, source_pos.x, source_pos.y);
+                SDL_FPoint iso_end = to_isometric_coordinate(offset, end.x, end.y);
+                SDL_RenderLine(
+                    renderer, iso_start.x + half_tile, iso_start.y, iso_end.x + half_tile, iso_end.y
+                );
             }
         }
     }

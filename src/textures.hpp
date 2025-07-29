@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include "game.hpp"
 
 #include <vector>
@@ -13,8 +13,8 @@ public:
   SDL_Texture* get_texture() { return m_texture; }
 
   void destroy_texture();
-  void render(SDL_Renderer* renderer, const SDL_Rect* srcrect, const SDL_Rect* dstrect);
-  void render(SDL_Renderer* renderer, const SDL_Rect* dstrect);
+  void render(SDL_Renderer* renderer, const SDL_FRect* srcrect, const SDL_FRect* dstrect);
+  void render(SDL_Renderer* renderer, const SDL_FRect* dstrect);
 };
 
 extern std::unordered_map<int, Texture> texture_map;
@@ -26,12 +26,12 @@ extern int row;             // Used for accessing player anim texture
 extern int player_animation_speed;
 
 
-void load_specific_number(SDL_Renderer* renderer, int number, SDL_Rect destTile);
+void load_specific_number(SDL_Renderer* renderer, int number, SDL_FRect destTile);
 void load_textures(SDL_Renderer* renderer);
 void destroy_all_textures();
 void load_player_sprite(SDL_Renderer* renderer);
 void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
-  int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_Rect destTile);
+  int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_FRect destTile);
 
 Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
 

@@ -3,15 +3,15 @@
 #include "player.hpp"
 
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <cmath>
 
-namespace Raycast { 
+namespace Raycast {
     extern SDL_FPoint source_pos;
     extern bool draw_rays;
     const int angle_step = 1;
     const int amount_of_rays = 360;
-    
+
     void update_source_pos();
     float to_radians(float degrees);
     SDL_FPoint angle_to_direction(float angle_deg);
