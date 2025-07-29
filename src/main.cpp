@@ -4,7 +4,6 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 
-
 #include "game.hpp"
 #include "player.hpp"
 #include "textures.hpp"
@@ -28,8 +27,8 @@ int main(int argc, char* argv[]) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/primitives", 640, 480, 0, &window, &renderer)) {
+    // 1280	720, https://en.wikipedia.org/wiki/16:9_aspect_ratio
+    if (!SDL_CreateWindowAndRenderer("examples/renderer/primitives", 960, 540, 0, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -37,7 +36,7 @@ int main(int argc, char* argv[]) {
     SDL_GetWindowSize(window, &screen_width, &screen_height);
 
     load_textures(renderer);
-    Vision::create_darkness(renderer);
+    // Vision::create_darkness(renderer);
 
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
@@ -68,7 +67,6 @@ int main(int argc, char* argv[]) {
         react_to_keyboard_state(state, player);
 
         frame_count++;
-
         while (tick_lag > tick_delay) {
             tick_count++;
             tick_lag -= tick_delay;
@@ -82,7 +80,7 @@ int main(int argc, char* argv[]) {
             update_player(map, offset, renderer);
             Raycast::update(renderer, offset, map);
 
-            Vision::draw_overlay(renderer, offset);
+            Vision::update(renderer, offset);
 
             SDL_RenderPresent(renderer);
 
@@ -102,7 +100,6 @@ int main(int argc, char* argv[]) {
     }
 
     destroy_all_textures();
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

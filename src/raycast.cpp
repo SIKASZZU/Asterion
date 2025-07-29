@@ -11,9 +11,16 @@
 
 namespace Raycast {
     int half_tile = (tile_size / 2);
+    std::vector<SDL_FPoint> ray_endpoints = {};
     SDL_FPoint source_pos = {};
-    bool draw_rays = true;
+    bool draw_rays = false;
 
+    std::vector<SDL_FPoint>& get_ray_endpoints() {
+        return ray_endpoints;
+    }
+    SDL_FPoint get_iso_source_pos(struct Offset& offset) {
+        return to_isometric_coordinate(offset, source_pos.x, source_pos.y);
+    }
     void update_source_pos() {
         source_pos = { player.x + player.size, player.y };
     }
@@ -49,37 +56,38 @@ namespace Raycast {
             if (wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
                 if (!wall_found) { wall_found = true; continue; }
                 if (wall_found && wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
-                    // add the wall to visible rect aswell
-                    Vision::cutout_rects.insert({ grid_x, grid_y });
                     break;
                 }
             }
             distance += angle_step + half_tile;
-            Vision::cutout_rects.insert({ grid_x, grid_y });
         }
         return distance;
     }
     void calculate(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
+        ray_endpoints.clear();  // clear at the start of calculate()
         for (int angle = 0; angle < amount_of_rays; angle += angle_step) {
             SDL_FPoint direction = angle_to_direction(static_cast<float>(angle));
             float calculated_length = calculate_line_length(map, direction);
-            if (draw_rays == true) {
-                SDL_FPoint end = {
-                    source_pos.x + direction.x * calculated_length,
-                    source_pos.y + direction.y * calculated_length
-                };
+            
+            SDL_FPoint end = {
+                source_pos.x + direction.x * calculated_length,
+                source_pos.y + direction.y * calculated_length
+            };
+            SDL_FPoint iso_end = to_isometric_coordinate(offset, end.x, end.y);
+            ray_endpoints.push_back(iso_end); // Save the point for later polygon use
+            
+            if (draw_rays) {
                 SDL_FPoint iso_start = to_isometric_coordinate(offset, source_pos.x, source_pos.y);
-                SDL_FPoint iso_end = to_isometric_coordinate(offset, end.x, end.y);
                 SDL_RenderLine(
-                    renderer, iso_start.x + half_tile, iso_start.y, iso_end.x + half_tile, iso_end.y
+                    renderer, iso_start.x + half_tile, iso_start.y,
+                    iso_end.x + half_tile, iso_end.y
                 );
             }
         }
     }
     void update(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         if (r_pressed) return;
-        Vision::cutout_rects = {};
         // update light source pos
         update_source_pos();
         calculate(renderer, offset, map);
