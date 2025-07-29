@@ -3,17 +3,19 @@
 #include "player.hpp"
 
 #include <iostream>
-#include <sdl2/SDL.h>
+#include <SDL2/SDL.h>
 #include <cmath>
 
 namespace Raycast { 
     extern SDL_FPoint source_pos;
+    extern bool draw_rays;
     const int angle_step = 1;
-    const int amount_of_rays = 540;
+    const int amount_of_rays = 360;
     
     void update_source_pos();
     float to_radians(float degrees);
     SDL_FPoint angle_to_direction(float angle_deg);
     float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction);
-    void draw(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]);
+    void calculate(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]);
+    void update(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]);
 }

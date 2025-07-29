@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
             load_render(renderer, offset, player);
             
             update_player(map, offset, state, renderer);
-            Raycast::draw(renderer, offset, map);
+            Raycast::update(renderer, offset, map);
             
             Vision::draw_overlay(renderer, offset);
 
