@@ -44,21 +44,21 @@ namespace Vision {
         const auto& pts = Raycast::get_ray_endpoints();
         if (pts.size() < 3) return;
 
-        SDL_FPoint center = Raycast::get_iso_source_pos(offset);
+        SDL_FPoint center = Raycast::get_source_pos(offset);
         std::vector<SDL_Vertex> verts;
         std::vector<int> idx;
 
         // Center vertex, white opaque
         verts.push_back(SDL_Vertex{
-            .position = { center.x, center.y  },
-            .color    = { 255, 255, 255, alpha },
+            .position = { center.x + (tile_size / 2), center.y  },
+            .color    = { 255, 255, 255, 0.5f },  // todo: replace 0.5f with alpha // was testing
             .tex_coord= { 0, 0 }
         });
 
         // Outer verts
         for (auto& p : pts) {
             verts.push_back(SDL_Vertex{
-                .position = { p.x, p.y },
+                .position = { p.x + (tile_size / 2), p.y },
                 .color    = { 255, 255, 255, alpha },
                 .tex_coord= { 0, 0 }
             });
@@ -93,7 +93,7 @@ namespace Vision {
         // 2) Build the light‐mask: transparent everywhere except polygon
         SDL_SetRenderTarget(renderer, lightMask);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
         SDL_RenderClear(renderer);
         draw_polygon_mask(renderer, offset);
 
