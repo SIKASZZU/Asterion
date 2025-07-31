@@ -10,7 +10,6 @@
 #include "render.hpp"
 #include "collision.hpp"
 #include "raycast.hpp"
-#include "raycast.hpp"
 #include "vision.hpp"
 
 int main(int argc, char* argv[]) {
@@ -36,8 +35,7 @@ int main(int argc, char* argv[]) {
     SDL_GetWindowSize(window, &screen_width, &screen_height);
 
     load_textures(renderer);
-    // Vision::create_darkness(renderer);
-
+    Vision::create_darkness(renderer);
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
 

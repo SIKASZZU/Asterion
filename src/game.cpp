@@ -3,6 +3,7 @@
 #include "game.hpp"
 #include "map.hpp"
 #include "maze.hpp"
+#include "raycast.hpp"
 
 #include "isometric_calc.hpp"
 
@@ -47,6 +48,7 @@ int pathStartY = -1;
 /* keys */
 bool shift_pressed = false;
 bool r_pressed = false;
+bool v_pressed = false;
 
 void update_offset(struct Offset& offset, struct Player& player) {
 
@@ -124,14 +126,17 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     }
     case SDLK_R: {
         r_pressed = !r_pressed;
-        std::cout << "Raycast & Vision is: " << r_pressed << '\n';
+        std::cout << "Raycast is: " << r_pressed << '\n';
         break;
     }
-
+    case SDLK_V: {
+        v_pressed = !v_pressed;
+        std::cout << "Vision is: " << v_pressed << '\n';
+        break;
+    }
     default:
         break;
     }
-
     if (pathEndX != -1 && pathStartX != -1) {
         Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX); // dont ask miks need tagurpidi on
 
