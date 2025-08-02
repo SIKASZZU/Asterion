@@ -61,7 +61,8 @@
     "list": "cpp",
     "map": "cpp",
     "set": "cpp",
-    "cstring": "cpp"
+    "cstring": "cpp",
+    "source_location": "cpp"
   },
   "makefile.launchConfigurations": [
     {
