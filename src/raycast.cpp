@@ -119,7 +119,7 @@ namespace Raycast {
         if (!updateMaxGridSize) return;
         updateMaxGridSize = false;
         maxActiveSize = (render_radius * render_radius * PI);
-        maxDecaySize = maxActiveSize / 2;
+        maxDecaySize = maxActiveSize;
     }
     void update(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         if (!r_pressed) return;
