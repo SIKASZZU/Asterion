@@ -68,8 +68,8 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             std::pair<int, int> grid_pos = { column, row };
 
             // grid_pos not detected by raycast i.e not in player vision
-            if (Raycast::ray_endpoints_grids.find(grid_pos)
-                == Raycast::ray_endpoints_grids.end() && r_pressed != false) {
+            if (Raycast::endpointActiveGrids.find(grid_pos)
+                == Raycast::endpointActiveGrids.end() && r_pressed != false) {
                 continue;
             }
 

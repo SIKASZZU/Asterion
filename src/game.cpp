@@ -85,6 +85,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     case SDLK_KP_PLUS: case SDLK_PLUS: {
         render_radius += 5;
         max_ray_length = render_radius * tile_size;
+        Raycast::updateMaxGridSize = true;
         std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " << max_ray_length << "\n";
         break;
     }
@@ -92,6 +93,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
         render_radius > 5 ? render_radius -= 5 : render_radius;
         max_ray_length = render_radius * tile_size;
+        Raycast::updateMaxGridSize = true;
         std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " << max_ray_length << "\n";
         break;
     }
@@ -99,12 +101,14 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         tile_size += 5;
         std::cout << "tile_size = " << tile_size << "\n";
         player.size = tile_size / 2;
+        Raycast::updateMaxGridSize = true;
         break;
     }
     case SDLK_COMMA: {
         tile_size > 5 ? tile_size -= 5 : tile_size;
         std::cout << "tile_size = " << tile_size << "\n";
         player.size = tile_size / 2;
+        Raycast::updateMaxGridSize = true;
         break;
     }
     case SDLK_PAGEDOWN: {

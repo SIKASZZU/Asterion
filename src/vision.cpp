@@ -24,13 +24,17 @@ namespace Vision {
         SDL_SetRenderTarget(renderer, darkness);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
         SDL_RenderClear(renderer);
-
-        // Cut out transparent holes
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        std::cout << "Raycast::ray_endpoints_grids.size(): " << Raycast::ray_endpoints_grids.size() << "\n";
-        for (const auto& [x, y] : Raycast::ray_endpoints_grids) {
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 100);
+        for (const auto& [x, y] : Raycast::decayGrids) {
             SDL_FPoint coords = to_isometric_grid_coordinate(offset, x, y);
-            // coords.y -= tile_size / 2;
+            coords.y -= tile_size / 2;
+            SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
+            SDL_RenderFillRect(renderer, &rect);
+        }
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        for (const auto& [x, y] : Raycast::endpointActiveGrids) {
+            SDL_FPoint coords = to_isometric_grid_coordinate(offset, x, y);
+            coords.y -= tile_size / 2;
             SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
             SDL_RenderFillRect(renderer, &rect);
         }

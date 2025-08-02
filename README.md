@@ -21,7 +21,8 @@ Below is a breakdown of in-game keybindings and their functionalities:
 - W, A, S, D	  Move the player in the respective direction. Includes subtle sliding after movement.
 - F         	  Print detailed player info (coordinates, grid position, tile values, offset, etc).
 - C	Toggle      Player collision on/off.
-- R	Toggle      Raycasting and vision system on/off.
+- R	Toggle      Raycasting system toggle on/off.
+- V	Toggle      Vision system toggle on/off.
 - PLUS  +	      Increase render_radius and update raycast range.
 - MINUS -	      Decrease render_radius (minimum of 5) and update raycast range.
 - . (Period)	  Increase tile_size (and player size accordingly).
