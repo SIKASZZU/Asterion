@@ -43,9 +43,6 @@ extern int render_radius;
 /* map.hpp args */
 extern float tile_size;
 
-/* raycast.hpp args */
-extern float max_ray_length;
-
 /* pathfinding */
 extern int pathEndX;
 extern int pathEndY;

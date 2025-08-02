@@ -16,6 +16,7 @@ namespace Raycast {
     const int angleStep = 1;
     extern signed int maxActiveSize;
     extern signed int maxDecaySize;
+    extern float maxRayLength;
     extern bool updateMaxGridSize;
     extern std::set<std::pair<int, int>> endpointActiveGrids;
     extern std::set<std::pair<int, int>> activeGridsMaxSize;

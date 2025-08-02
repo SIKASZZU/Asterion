@@ -67,10 +67,16 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             int grid_value = map[row][column];
             std::pair<int, int> grid_pos = { column, row };
 
-            // grid_pos not detected by raycast i.e not in player vision
-            if (Raycast::endpointActiveGrids.find(grid_pos)
-                == Raycast::endpointActiveGrids.end() && r_pressed != false) {
-                continue;
+            if (r_pressed == false) {
+                // pass through
+            }
+            //  if gridPos not inside endpointActiveGrids
+            else if (Raycast::endpointActiveGrids.find(grid_pos) == Raycast::endpointActiveGrids.end()) {
+                // continue if gridPos inside decayGrids
+                if (std::find(Raycast::decayGrids.begin(), Raycast::decayGrids.end(), grid_pos)
+                    == Raycast::decayGrids.end()) {
+                    continue;
+                }
             }
 
             SDL_FPoint isometric_coordinates = to_isometric_grid_coordinate(offset, column, row);

@@ -36,9 +36,6 @@ int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE 
 /* map.hpp args */
 float tile_size = 100.0f;
 
-/* raycast.hpp args */
-float max_ray_length = render_radius * tile_size;
-
 /* pathfinding */
 int pathEndX = -1;
 int pathEndY = -1;
@@ -84,17 +81,17 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     }
     case SDLK_KP_PLUS: case SDLK_PLUS: {
         render_radius += 5;
-        max_ray_length = render_radius * tile_size;
+        Raycast::maxRayLength = render_radius * (tile_size * 0.75);
         Raycast::updateMaxGridSize = true;
-        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " << max_ray_length << "\n";
+        std::cout << "render_radius = " << render_radius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
         break;
     }
     case SDLK_KP_MINUS: case SDLK_MINUS: {
         // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
         render_radius > 5 ? render_radius -= 5 : render_radius;
-        max_ray_length = render_radius * tile_size;
+        Raycast::maxRayLength = render_radius * (tile_size * 0.75);
         Raycast::updateMaxGridSize = true;
-        std::cout << "render_radius = " << render_radius << ". Raycast max_ray_length = " << max_ray_length << "\n";
+        std::cout << "render_radius = " << render_radius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
         break;
     }
     case SDLK_PERIOD: {

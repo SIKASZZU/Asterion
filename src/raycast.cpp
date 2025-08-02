@@ -18,6 +18,7 @@ namespace Raycast {
     bool showRays = true;
     signed int maxActiveSize = ((render_radius / tile_size) * (render_radius / tile_size) * PI);
     signed int maxDecaySize = maxActiveSize / 2;
+    float maxRayLength = render_radius * (tile_size * 0.75);
     bool updateMaxGridSize = true;
     /// endpointActiveGrids.size() >= maxActiveSize
     std::set<std::pair<int, int>> endpointActiveGrids;
@@ -47,7 +48,7 @@ namespace Raycast {
         SDL_FPoint start_pos = sourcePos;
         bool wall_found = false;
 
-        while (distance < max_ray_length) {
+        while (distance < maxRayLength) {
             // fixme: optimise kui grid on hit, ss arvuta j2rgmise gridi oma
             if (wall_found == true) {
                 // liiga suure stepiga on wall ehk otsi increment
@@ -71,7 +72,6 @@ namespace Raycast {
             }
             distance += increment + (tile_size / 2);
             endpointActiveGrids.insert(gP);
-            
             // todo: SIIN KUKUB PERFORMANCE!!! optimiseerimisest v6ida tagasi?
             // Removes duplicates aswell
             decayGrids.erase(std::remove(decayGrids.begin(), decayGrids.end(), gP),
