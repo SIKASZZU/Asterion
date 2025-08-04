@@ -167,7 +167,6 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
     float tex_width = 32.0f;
     float tex_height = 31.0f;
     SDL_FRect srcTile = { 0, 0, tex_width, tex_height };
-
     auto [row, col] = grid_pos;
 
     if (map[row][col] == Map::VOID_CUBE) {
@@ -179,25 +178,7 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
         map[row + 1][col] = Map::VOID_CUBE_NEIGHBOUR;  // East
         map[row][col + 1] = Map::VOID_CUBE_NEIGHBOUR;  // West
         map[row + 1][col + 1] = Map::VOID_CUBE_NEIGHBOUR;  // South
-    }
-    if (map[row][col] == Map::VOID_CUBE_NEIGHBOUR) {
-        // check surroudings
-        if (map[row - 1][col] == VOID_CUBE) {
-            srcTile.x = 0, srcTile.y = 31;
-            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
-        }
-        else if (map[row][col - 1] == VOID_CUBE) {
-            srcTile.x = 32, srcTile.y = 31;
-            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
-        }
-        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR
-            && map[row][col - 1] == VOID_CUBE_NEIGHBOUR) {
-            srcTile.x = 0, srcTile.y = 0;
-            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
-        }
-    }
-    // around void, set trees to tree_trunks
-    if (map[row][col] == Map::VOID_CUBE) {
+        // around void, set trees to tree_trunks
         const int radius = 3;
         for (int dy = -radius; dy <= radius; ++dy) {
             for (int dx = -radius; dx <= radius; ++dx) {
@@ -215,6 +196,22 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
                     }
                 }
             }
+        }
+    }
+    if (map[row][col] == Map::VOID_CUBE_NEIGHBOUR) {
+        // check surroudings
+        if (map[row - 1][col] == VOID_CUBE) {
+            srcTile.x = 0, srcTile.y = 31;
+            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+        }
+        else if (map[row][col - 1] == VOID_CUBE) {
+            srcTile.x = 32, srcTile.y = 31;
+            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+        }
+        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR
+            && map[row][col - 1] == VOID_CUBE_NEIGHBOUR) {
+            srcTile.x = 0, srcTile.y = 0;
+            texture_map[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
         }
     }
 }

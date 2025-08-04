@@ -65,7 +65,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (column < left || column > right) continue;
 
             int grid_value = map[row][column];
-            std::pair<int, int> grid_pos = { column, row };
+            std::pair<int, int> grid_pos = { row, column };
 
             if (r_pressed == false) {
                 // pass through

@@ -61,7 +61,7 @@ namespace Raycast {
             }
             int grid_x = static_cast<int>(start_pos.x / tile_size);
             int grid_y = static_cast<int>(start_pos.y / tile_size);
-            auto gP = std::make_pair(grid_x, grid_y);
+            auto gP = std::make_pair(grid_y, grid_x);
             if (wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
                 if (!wall_found) { wall_found = true; continue; }
                 if (wall_found && wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
