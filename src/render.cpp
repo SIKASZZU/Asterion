@@ -84,17 +84,18 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             float col_coord = isometric_coordinates.y;
             SDL_FRect destTile = { row_coord, col_coord, tile_size, tile_size };
 
-            // Searching for grid_value in ground_values
+            // GRID_VALUES IN GROUND_VALUES
             if (ground_values.find(grid_value) != ground_values.end()) {
                 texture_map[Map::GROUND_CUBE].render(renderer, &destTile);
             }
-            // Maze pathway texture under walls
-            if (wall_values.find(grid_value) != wall_values.end() ||
-                grid_value == Map::VINE_OVERHANG_SN ||
-                grid_value == Map::VINE_OVERHANG_EW) {
+            if (grid_value == Map::VINE_OVERHANG_SN 
+                || grid_value == Map::VINE_OVERHANG_EW) {
                 texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
             }
-
+            // Maze pathway texture under walls
+            if (wall_values.find(grid_value) != wall_values.end()) {
+                texture_map[Map::GROUND_UNDER_WALL_CUBE].render(renderer, &destTile);
+            }
             switch (grid_value) {
             case Map::VOID_CUBE:
             case Map::VOID_CUBE_NEIGHBOUR: {
