@@ -1,6 +1,7 @@
 #include "map.hpp"
 #include "game.hpp"
 #include "maze.hpp"
+#include "mod_map_data.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -58,7 +59,8 @@ void generate_map() {
         };
 
     bool sector_status = find_start_sectors();
-
+    
+    mod_map_sector_3();
     // print_map(map);
     // save_map_locally(map);
 }

@@ -4,6 +4,7 @@
 #include "render.hpp"
 #include "isometric_calc.hpp"
 #include "raycast.hpp"
+#include "mod_map_data.hpp"
 
 #include <iostream>
 #include <vector>
@@ -148,25 +149,13 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 break;
             }
             case Map::SECTOR_3_WALL_VAL: {
-                destTile.y -= half_tile;
-                if (wall_values.find(map[row + 1][column]) != wall_values.end() &&
-                    wall_values.find(map[row][column + 1]) != wall_values.end() &&
-                    wall_values.find(map[row - 1][column]) != wall_values.end() &&
-                    wall_values.find(map[row][column - 1]) != wall_values.end()) {
+                if (unchangable_walls_s3.find(grid_pos) != unchangable_walls_s3.end()) {
+                    destTile.y -= half_tile;
                     render_queue.push_back(
                         RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
                     );
                     break;
                 }
-                // random block size code code
-                // destTile.y += (tile_size / 9);
-                // destTile.x += (tile_size / 16);
-                destTile.w -= (tile_size / 8);
-                // destTile.h -= (tile_size / 8);
-                render_queue.push_back(
-                    RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
-                );
-                break;
             }
                                        // these tree use the same texture atm
             case Map::WALL_CUBE:
