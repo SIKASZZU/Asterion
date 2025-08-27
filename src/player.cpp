@@ -10,8 +10,8 @@
 Player player = {
     movement_speed: DEFAULT_PLAYER_MOVEMENT_SPEED,
     size : (tile_size / 2),
-    x : 0.0f,
-    y : 0.0f,
+    x : 9000.0f,
+    y : 9000.0f,
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
     collision_array : {
@@ -49,10 +49,16 @@ void update_player(int map[map_size][map_size],
         };
         SDL_FRect rectX = playerScreenRect;
         rectX.x += velocity.x;
+        rectX.y += velocity.x;
+        rectX.h += velocity.x;
+        rectX.w += velocity.x;
         collision_x = check_collision(map, player, rectX);
         
         SDL_FRect rectY = playerScreenRect;
         rectY.y += velocity.y;
+        rectY.y += velocity.y;
+        rectY.h += velocity.y;
+        rectY.w += velocity.y;
         collision_y = check_collision(map, player, rectY);
         
         if (collision_x) { velocity.x = 0; }
@@ -67,8 +73,8 @@ void update_player(int map[map_size][map_size],
         player.movement_speed = 0;
     }
     SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
-    player.rect = { coords.x,
-        coords.y,
+    player.rect = { coords.x + player.size / 2,
+        coords.y - player.size / 2,
         player.size,
         player.size
     };

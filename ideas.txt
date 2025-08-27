@@ -1,0 +1,12 @@
+feat: particles // randy
+feat: rain
+feat: day/night cycle
+feat: vision, mis s6ltub kordidooridest.
+feat: tracki, kui Vision::cutout_rects l2heb miski maha, ss tee rect hallikamaks mitte kohe mustaks.
+feat: treede, trunkide all saab olla grass, see lihtsalt blendib kokku ja ongi bcjo
+
+debug: visuaalselt displayida world coordiga recte player ymber. 
+
+bug: player mazeis runnides clipib wallide sisse
+bug: raycast on sellep perses i think
+bug (mis kedagi ei koti): kui tile size on spetsnaz ja Vision, raycastiga m2ngida, ss m6nikord m6ni tile ei satu Vision::rect setti ja mappi tekivad augud. (tilesize 100 no problem? bueno)
