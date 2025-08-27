@@ -10,8 +10,8 @@
 Player player = {
     movement_speed: DEFAULT_PLAYER_MOVEMENT_SPEED,
     size : (tile_size / 2),
-    x : 9000.0f,
-    y : 9000.0f,
+    x : map_size / 2 * tile_size,
+    y : map_size / 2 * tile_size,
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
     collision_array : {
