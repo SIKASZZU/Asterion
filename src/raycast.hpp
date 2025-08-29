@@ -12,7 +12,7 @@
 namespace Raycast {
     extern SDL_FPoint sourcePos;
     extern bool showRays;
-    const int increment = 1;
+    const int increment = 3;
     const int angleStep = 1;
     extern signed int maxActiveSize;
     extern signed int maxDecaySize;

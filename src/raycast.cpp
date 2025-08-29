@@ -28,8 +28,8 @@ namespace Raycast {
 
     void update_sourcePos() {
         sourcePos = {
-            player.x + (player.size / 2),
-            player.y + (player.size / 2)
+            player.x,
+            player.y
         };
     }
     float to_radians(float degrees) {
@@ -43,43 +43,75 @@ namespace Raycast {
             sinf(angle_rad)
         };
     }
-    float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
-        float distance = 0.0f;
-        SDL_FPoint start_pos = sourcePos;
-        bool wall_found = false;
+float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
+    // Idea from javidx9 https://www.youtube.com/watch?v=NbSee-XM7WA
 
-        while (distance < maxRayLength) {
-            // fixme: optimise kui grid on hit, ss arvuta j2rgmise gridi oma
-            if (wall_found == true) {
-                // liiga suure stepiga on wall ehk otsi increment
-                start_pos.x += direction.x * (increment);
-                start_pos.y += direction.y * (increment);
-            }
-            else {
-                start_pos.x += direction.x * (increment + (tile_size / 2));
-                start_pos.y += direction.y * (increment + (tile_size / 2));
-            }
-            int grid_x = static_cast<int>(start_pos.x / tile_size);
-            int grid_y = static_cast<int>(start_pos.y / tile_size);
-            auto gP = std::make_pair(grid_y, grid_x);
-            if (wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
-                if (!wall_found) { wall_found = true; continue; }
-                if (wall_found && wall_values.find(map[grid_y][grid_x]) != wall_values.end()) {
-                    // add the wall to visible rect aswell
-                    endpointActiveGrids.insert(gP);
-                    break;
-                }
-            }
-            distance += increment + (tile_size / 2);
-            endpointActiveGrids.insert(gP);
-            // todo: SIIN KUKUB PERFORMANCE!!! optimiseerimisest v6ida tagasi?
-            // Removes duplicates aswell
-            decayGrids.erase(std::remove(decayGrids.begin(), decayGrids.end(), gP),
-                decayGrids.end()
-            );
-        }
-        return distance;
+    // Current grid cell
+    int gridX = static_cast<int>(sourcePos.x / tile_size);
+    int gridY = static_cast<int>(sourcePos.y / tile_size);
+
+    // Length of ray from one x or y side to next
+    SDL_FPoint rayUnitStep = {
+        std::sqrt(1 + (direction.y / direction.x) * (direction.y / direction.x)),
+        std::sqrt(1 + (direction.x / direction.y) * (direction.x / direction.y))
+    };
+
+    // Step direction (+1 or -1) and initial distances
+    SDL_Point step;
+    SDL_FPoint rayLength1D;
+
+    if (direction.x < 0) {
+        step.x = -1;
+        rayLength1D.x = (sourcePos.x - (gridX * tile_size)) / tile_size * rayUnitStep.x;
+    } else {
+        step.x = 1;
+        rayLength1D.x = ((gridX + 1) * tile_size - sourcePos.x) / tile_size * rayUnitStep.x;
     }
+
+    if (direction.y < 0) {
+        step.y = -1;
+        rayLength1D.y = (sourcePos.y - (gridY * tile_size)) / tile_size * rayUnitStep.y;
+    } else {
+        step.y = 1;
+        rayLength1D.y = ((gridY + 1) * tile_size - sourcePos.y) / tile_size * rayUnitStep.y;
+    }
+
+    // Ray walk
+    float distance = 0.0f;
+    bool wall_found = false;
+
+    while (distance < maxRayLength) {
+        // Mark this cell as visible
+        auto gP = std::make_pair(gridY, gridX);
+        endpointActiveGrids.insert(gP);
+        decayGrids.erase(std::remove(decayGrids.begin(), decayGrids.end(), gP),
+                         decayGrids.end());
+
+        // Step in whichever direction is closer
+        if (rayLength1D.x < rayLength1D.y) {
+            gridX += step.x;
+            distance = rayLength1D.x * tile_size;
+            rayLength1D.x += rayUnitStep.x;
+        } else {
+            gridY += step.y;
+            distance = rayLength1D.y * tile_size;
+            rayLength1D.y += rayUnitStep.y;
+        }
+
+        // Bounds check
+        if (gridX < 0 || gridX >= map_size || gridY < 0 || gridY >= map_size)
+            break;
+
+        // Hit wall?
+        if (wall_values.find(map[gridY][gridX]) != wall_values.end()) {
+            wall_found = true;
+            endpointActiveGrids.insert(std::make_pair(gridY, gridX));
+            break;
+        }
+    }
+
+    return distance;
+}
     void calculate_active_grids(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
         for (int angle = 0; angle < 360; angle += angleStep) {
