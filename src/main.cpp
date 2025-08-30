@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
         return SDL_APP_FAILURE;
     }
     // 1280	720, https://en.wikipedia.org/wiki/16:9_aspect_ratio
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/primitives", 960, 540, 0, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("examples/renderer/primitives", 1600, 900, 0, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -72,8 +72,8 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
             SDL_RenderClear(renderer);
 
-            update_offset(offset, player);
             load_render(renderer, offset, player);
+            update_offset(offset, player);
 
             update_player(map, offset, renderer);
             Raycast::update(renderer, offset, map);
