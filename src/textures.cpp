@@ -132,15 +132,15 @@ void load_player_sprite(SDL_Renderer* renderer) {
     const int standing_index = 4;
     SDL_FRect srcRect;
     int col;
-    if ((player.movement_vector.x == 0
-        && player.movement_vector.y == 0)
+    if ((player.velocity.x == 0
+        && player.velocity.y == 0)
         || player.movement_speed == 0) {
         col = standing_index;  // standing index
         player.animation_speed = 0;
     }
     else {
         // todo: Tile sizeiga tuleb 2ra arvutada, kui palju peab frame updateima. tile isze== 100 ss ja speed 20 ss 5 framei per tile size?
-        std::abs(player.movement_speed) > DEFAULT_PLAYER_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
+        std::abs(player.movement_speed) > DEFAULT_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
         col = last_frame % 4;  // loop 0-3 for frames
     }
     // Decide the row based on movement direction
@@ -158,7 +158,6 @@ void load_player_sprite(SDL_Renderer* renderer) {
         last_frame++;
         last_update = SDL_GetTicks();
     }
-
     texture_map[Map::PLAYER].render(renderer, &srcRect, &player.rect);
 }
 

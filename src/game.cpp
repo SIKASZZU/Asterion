@@ -4,6 +4,7 @@
 #include "map.hpp"
 #include "maze.hpp"
 #include "raycast.hpp"
+#include "player.hpp"
 
 #include "isometric_calc.hpp"
 
@@ -121,7 +122,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         break;
     }
     case SDLK_LSHIFT: {
-        player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED / 4;
+        player.movement_speed = DEFAULT_MOVEMENT_SPEED / 4;
         player.shifting = true;
         break;
     }
@@ -153,7 +154,7 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
     switch (key)
     {
     case SDLK_LSHIFT: {
-        player.movement_speed = DEFAULT_PLAYER_MOVEMENT_SPEED;
+        player.movement_speed = DEFAULT_MOVEMENT_SPEED;
         player.shifting = false;
         break;
     }
@@ -169,22 +170,20 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
 /// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
 /// as they use switch cases and react to events.
 /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
-/// @param player 
+/// @param player struct Player player
 void react_to_keyboard_state(const bool* state, struct Player& player) {
     SDL_FPoint dir = player.movement_vector;
-    // std::cout << "movement_vector: " << dir.x << ' ' << dir.y << " & of dir and pMovementVec " << &dir << " " << &player.movement_vector << '\n';
-    float slide_after_running = 0.25f;  // lower number = more sliding
+    std::cout << "movement_vector: " << dir.x << ' ' << dir.y << '\n';
+    float slide_after_running = 0.2f;  // lower number = more sliding
     float sliding_threshold = 0.1f;
-
-    if (state[SDL_SCANCODE_W]) { dir.y = -1; }
-    if (state[SDL_SCANCODE_S]) { dir.y = 1; }
-    if (state[SDL_SCANCODE_A]) { dir.x = -1; }
-    if (state[SDL_SCANCODE_D]) { dir.x = 1; }
-
-    if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S]) {
+    if (state[SDL_SCANCODE_W] && !collisionY) { dir.y = -1; }
+    if (state[SDL_SCANCODE_S] && !collisionY) { dir.y = 1; }
+    if (state[SDL_SCANCODE_A] && !collisionX) { dir.x = -1; }
+    if (state[SDL_SCANCODE_D] && !collisionX) { dir.x = 1; }
+    if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S] || collisionY) {
         std::abs(dir.y) > sliding_threshold ? dir.y -= slide_after_running * (dir.y / std::abs(dir.y)) : dir.y = 0.0f;
     }
-    if (!state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D]) {
+    if (!state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D] || collisionX) {
         std::abs(dir.x) > sliding_threshold ? dir.x -= slide_after_running * (dir.x / std::abs(dir.x)) : dir.x = 0.0f;
     }
     player.movement_vector = { dir.x, dir.y };
