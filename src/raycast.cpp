@@ -59,7 +59,6 @@ float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
     // Step direction (+1 or -1) and initial distances
     SDL_Point step;
     SDL_FPoint rayLength1D;
-
     if (direction.x < 0) {
         step.x = -1;
         rayLength1D.x = (sourcePos.x - (gridX * tile_size)) / tile_size * rayUnitStep.x;
@@ -79,14 +78,10 @@ float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
     // Ray walk
     float distance = 0.0f;
     bool wall_found = false;
-
     while (distance < maxRayLength) {
         // Mark this cell as visible
         auto gP = std::make_pair(gridY, gridX);
         endpointActiveGrids.insert(gP);
-        decayGrids.erase(std::remove(decayGrids.begin(), decayGrids.end(), gP),
-                         decayGrids.end());
-
         // Step in whichever direction is closer
         if (rayLength1D.x < rayLength1D.y) {
             gridX += step.x;
@@ -97,11 +92,6 @@ float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
             distance = rayLength1D.y * tile_size;
             rayLength1D.y += rayUnitStep.y;
         }
-
-        // Bounds check
-        if (gridX < 0 || gridX >= map_size || gridY < 0 || gridY >= map_size)
-            break;
-
         // Hit wall?
         if (wall_values.find(map[gridY][gridX]) != wall_values.end()) {
             wall_found = true;
@@ -109,9 +99,8 @@ float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
             break;
         }
     }
-
     return distance;
-}
+    }
     void calculate_active_grids(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
         for (int angle = 0; angle < 360; angle += angleStep) {

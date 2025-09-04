@@ -173,7 +173,6 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
 /// @param player struct Player player
 void react_to_keyboard_state(const bool* state, struct Player& player) {
     SDL_FPoint dir = player.movement_vector;
-    std::cout << "movement_vector: " << dir.x << ' ' << dir.y << '\n';
     float slide_after_running = 0.2f;  // lower number = more sliding
     float sliding_threshold = 0.1f;
     if (state[SDL_SCANCODE_W] && !collisionY) { dir.y = -1; }

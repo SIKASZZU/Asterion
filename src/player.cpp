@@ -64,24 +64,19 @@ void update_player(int map[map_size][map_size],
         if (collisionY) { 
             velocity.y = 0; 
         }
-        std::cout << "collision: " << collisionX << " " << collisionY << "\n";
         player.x += velocity.x;
         player.y += velocity.y;
         player.velocity = velocity;
-        // player.movement_speed = std::max(std::abs(velocity.x), std::abs(velocity.y));
-        std::cout << std::endl;
     }
     else {
         // muidu player seisab aga variable ytleb, et speed == 20
         player.movement_speed = 0;
     }
-    
+
     SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
     player.rect = { coords.x + player.size / 2,
         coords.y - player.size / 2,
         player.size,
         player.size
     };
-    std::cout << "player.velocity: " << player.velocity.x << " " << player.velocity.y << "\n";
-    std::cout << "player.movement_speed: " << player.movement_speed << "\n";
 }
