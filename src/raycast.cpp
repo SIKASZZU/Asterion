@@ -15,7 +15,7 @@
 
 namespace Raycast {
     SDL_FPoint sourcePos = {};
-    bool showRays = true;
+    bool showRays = false;
     signed int maxActiveSize = ((render_radius / tile_size) * (render_radius / tile_size) * PI);
     signed int maxDecaySize = maxActiveSize / 2;
     float maxRayLength = render_radius * (tile_size * 0.75);
@@ -43,63 +43,58 @@ namespace Raycast {
             sinf(angle_rad)
         };
     }
-float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
-    // Idea from javidx9 https://www.youtube.com/watch?v=NbSee-XM7WA
+    float calculate_line_length(int map[map_size][map_size], SDL_FPoint direction) {
+        // Idea from javidx9 https://www.youtube.com/watch?v=NbSee-XM7WA
 
-    // Current grid cell
-    int gridX = static_cast<int>(sourcePos.x / tile_size);
-    int gridY = static_cast<int>(sourcePos.y / tile_size);
+        // Current grid cell
+        int gridX = static_cast<int>(sourcePos.x / tile_size);
+        int gridY = static_cast<int>(sourcePos.y / tile_size);
 
-    // Length of ray from one x or y side to next
-    SDL_FPoint rayUnitStep = {
-        std::sqrt(1 + (direction.y / direction.x) * (direction.y / direction.x)),
-        std::sqrt(1 + (direction.x / direction.y) * (direction.x / direction.y))
-    };
+        // Length of ray from one x or y side to next
+        SDL_FPoint rayUnitStep = {
+            std::sqrt(1 + (direction.y / direction.x) * (direction.y / direction.x)),
+            std::sqrt(1 + (direction.x / direction.y) * (direction.x / direction.y))
+        };
 
-    // Step direction (+1 or -1) and initial distances
-    SDL_Point step;
-    SDL_FPoint rayLength1D;
-    if (direction.x < 0) {
-        step.x = -1;
-        rayLength1D.x = (sourcePos.x - (gridX * tile_size)) / tile_size * rayUnitStep.x;
-    } else {
-        step.x = 1;
-        rayLength1D.x = ((gridX + 1) * tile_size - sourcePos.x) / tile_size * rayUnitStep.x;
-    }
-
-    if (direction.y < 0) {
-        step.y = -1;
-        rayLength1D.y = (sourcePos.y - (gridY * tile_size)) / tile_size * rayUnitStep.y;
-    } else {
-        step.y = 1;
-        rayLength1D.y = ((gridY + 1) * tile_size - sourcePos.y) / tile_size * rayUnitStep.y;
-    }
-
-    // Ray walk
-    float distance = 0.0f;
-    bool wall_found = false;
-    while (distance < maxRayLength) {
-        // Mark this cell as visible
-        auto gP = std::make_pair(gridY, gridX);
-        endpointActiveGrids.insert(gP);
-        // Step in whichever direction is closer
-        if (rayLength1D.x < rayLength1D.y) {
-            gridX += step.x;
-            distance = rayLength1D.x * tile_size;
-            rayLength1D.x += rayUnitStep.x;
+        // Step direction (+1 or -1) and initial distances
+        SDL_Point step;
+        SDL_FPoint rayLength1D;
+        if (direction.x < 0) {
+            step.x = -1;
+            rayLength1D.x = (sourcePos.x - (gridX * tile_size)) / tile_size * rayUnitStep.x;
         } else {
-            gridY += step.y;
-            distance = rayLength1D.y * tile_size;
-            rayLength1D.y += rayUnitStep.y;
+            step.x = 1;
+            rayLength1D.x = ((gridX + 1) * tile_size - sourcePos.x) / tile_size * rayUnitStep.x;
         }
-        // Hit wall?
-        if (wall_values.find(map[gridY][gridX]) != wall_values.end()) {
-            wall_found = true;
+
+        if (direction.y < 0) {
+            step.y = -1;
+            rayLength1D.y = (sourcePos.y - (gridY * tile_size)) / tile_size * rayUnitStep.y;
+        } else {
+            step.y = 1;
+            rayLength1D.y = ((gridY + 1) * tile_size - sourcePos.y) / tile_size * rayUnitStep.y;
+        }
+
+        // Ray walk // borderline fucked
+        float distance = 0.0f;
+        while (distance < maxRayLength) {
             endpointActiveGrids.insert(std::make_pair(gridY, gridX));
-            break;
+            if (rayLength1D.x < rayLength1D.y) {
+                gridX += step.x;
+                distance = rayLength1D.x * tile_size;
+                rayLength1D.x += rayUnitStep.x;
+            } else {
+                gridY += step.y;
+                distance = rayLength1D.y * tile_size;
+                rayLength1D.y += rayUnitStep.y;
+            }
+            // Hit wall?
+            if (wall_values.find(map[gridY][gridX]) != wall_values.end()) {
+                endpointActiveGrids.insert(std::make_pair(gridY, gridX));
+                break;
+            }
         }
-    }
-    return distance;
+        return distance;
     }
     void calculate_active_grids(SDL_Renderer* renderer, struct Offset& offset, int map[map_size][map_size]) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
