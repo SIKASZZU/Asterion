@@ -24,8 +24,6 @@ namespace Vision {
         SDL_SetRenderTarget(renderer, darkness);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
         SDL_RenderClear(renderer);
-        // optimise et kasutaks vaid yhte for loopi
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 100);
         for (const auto& [y, x] : Raycast::decayGrids) {
             SDL_FPoint coords = to_isometric_grid_coordinate(offset, x, y);
             coords.y -= tile_size / 2;

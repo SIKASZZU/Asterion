@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
             tick_count++;
             tick_lag -= tick_delay;
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
             load_render(renderer, offset, player);

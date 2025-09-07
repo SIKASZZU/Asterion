@@ -162,10 +162,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= half_tile;
                 // random block size code code
-                destTile.y += (tile_size / 9);
-                destTile.x += (tile_size / 16);
-                destTile.w -= (tile_size / 8);
-                destTile.h -= (tile_size / 8);
+                // destTile.y += (tile_size / 9);
+                // destTile.x += (tile_size / 16);
+                // destTile.w -= (tile_size / 8);
+                // destTile.h -= (tile_size / 8);
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
                 );
