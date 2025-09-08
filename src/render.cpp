@@ -39,10 +39,6 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_walls;
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_trees;
 std::set<std::pair<int, int>> grid_vine_checked;
 
-static const std::unordered_set<int> ground_values = {
-    Map::GROUND_CUBE, Map::TREE, Map::GRASS_COVER, Map::TREE_TRUNK
-};
-
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
     // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
     std::vector<RenderQueueItem> render_queue;
@@ -89,13 +85,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (ground_values.find(grid_value) != ground_values.end()) {
                 texture_map[Map::GROUND_CUBE].render(renderer, &destTile);
             }
+            if (wall_values.find(grid_value) != wall_values.end()) {
+                texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+            }
             if (grid_value == Map::VINE_OVERHANG_SN 
                 || grid_value == Map::VINE_OVERHANG_EW) {
                 texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
-            }
-            // Maze pathway texture under walls
-            if (wall_values.find(grid_value) != wall_values.end()) {
-                texture_map[Map::GROUND_UNDER_WALL_CUBE].render(renderer, &destTile);
             }
             switch (grid_value) {
             case Map::VOID_CUBE:
@@ -103,7 +98,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 render_void_tilemap(renderer, offset, map, grid_pos, destTile);
                 break;
             }
-                                         // simple textures that can be immediately rendered (no render_q)
+            // simple textures that can be immediately rendered (no render_q)
             case Map::MAZE_GROUND_CUBE:
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
@@ -120,7 +115,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 destTile.h = (tile_size / 2) - xr;
                 destTile.w = (tile_size / 2) - xr;
             }
-                                // textures above ground, 1st floor (no render_q)
+            // textures above ground, 1st floor (no render_q)
             case Map::GRASS_COVER: {
                 destTile.y -= half_tile;
                 texture_map[grid_value].render(renderer, &destTile);
@@ -138,10 +133,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-                          // textures above ground i.e .y -= half_tile
-            case Map::VINE_OVERHANG_SN:
-            case Map::VINE_OVERHANG_EW:
+            // textures above ground i.e .y -= half_tile
             case Map::VINE_COVER_N: {
+                texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+            }
+            case Map::VINE_OVERHANG_SN:
+            case Map::VINE_OVERHANG_EW: {
                 destTile.y -= half_tile;
                 render_queue.push_back(
                     RenderQueueItem(destTile.y, destTile, &texture_map[grid_value])
@@ -157,7 +154,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     break;
                 }
             }
-                                       // these tree use the same texture atm
+            // these tree use the same texture atm
             case Map::WALL_CUBE:
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= half_tile;
@@ -171,7 +168,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-                                       // section wall, thicker wall
+            // section wall, thicker wall
             case Map::INGROWN_WALL_CUBE: {
                 destTile.y -= half_tile;
                 destTile.y -= 5;
@@ -224,7 +221,6 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                         }
                     }
                 }
-
                 grid_vine_checked.insert(grid_pos);
                 // Only generate random offset once per block
                 // see rand % number on kui palju px on maxist v2hem
@@ -244,11 +240,9 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-
             default:
                 break;
             }
-
             // Player tile highlight (render last)
             if (row == player_tile_y && column == player_tile_x) {
                 destTile.h = half_tile;

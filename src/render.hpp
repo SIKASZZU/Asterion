@@ -38,4 +38,3 @@ void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Pl
 
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_walls;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_trees;
-

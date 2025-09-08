@@ -15,7 +15,6 @@ enum Map {
     GRASS_COVER,
     TREE,
     MAZE_GROUND_CUBE,
-    GROUND_UNDER_WALL_CUBE,
     YELLOW_CUBE,
     ERROR_CUBE,
     BLUE_CUBE,
@@ -42,10 +41,13 @@ static const std::unordered_set<int> wall_values = {
     Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
 };
 
+static const std::unordered_set<int> ground_values = {
+    Map::GROUND_CUBE, Map::TREE, Map::GRASS_COVER, Map::TREE_TRUNK
+};
+
 /* map */
 const int map_size = 325;
 extern int map[map_size][map_size];
-extern std::vector<std::pair<int, int>> maze_door_grids;
 
 void generate_map();
 void print_map(int map[map_size][map_size]);
