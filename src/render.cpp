@@ -221,7 +221,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 grid_vine_checked.insert(grid_pos);
                 // Only generate random offset once per block
                 // see rand % number on kui palju px on maxist v2hem
-                int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 40)
+                int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 30)
                     .first->second;
                 destTile.y -= half_tile - (xr / 2.5);
                 destTile.x += (xr / 4);
@@ -232,6 +232,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 // vine'il y += 1, et vine tekstuur oleks on top of wall
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
+                if (cube_vine_tex == nullptr) break;
                 render_queue.push_back(
                     RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
                 );

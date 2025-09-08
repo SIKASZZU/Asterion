@@ -106,10 +106,10 @@ void load_specific_number(SDL_Renderer* renderer, int number, SDL_FRect dstrect)
 
 Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
     if (grid_pos == std::pair{ -1,-1 }) {
-        return &texture_map[Map::VINE_CUBE_MEDIUM];
+        return nullptr;
     }
 
-    int vine_number = grid_vines.try_emplace(grid_pos, rand() % 3)
+    int vine_number = grid_vines.try_emplace(grid_pos, rand() % 4)
         .first->second;
 
     if (type == "hard" || vine_number == 2) {
@@ -121,7 +121,7 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
     if (type == "soft" || vine_number == 0) {
         return &texture_map[Map::VINE_CUBE_SOFT];
     }
-    return &texture_map[Map::VINE_CUBE_MEDIUM];
+    return nullptr;
 }
 
 
