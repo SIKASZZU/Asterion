@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <set>
+#include <algorithm>
 
 #include "game.hpp"
 #include "vision.hpp"
@@ -22,21 +23,38 @@ namespace Vision {
     void draw_overlay(SDL_Renderer* renderer, struct Offset& offset) {
         // Render darkness to texture
         SDL_SetRenderTarget(renderer, darkness);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 120);
         SDL_RenderClear(renderer);
+
+        auto draw_fade_rect = [&](int gridX, int gridY) {
+            SDL_FPoint coords = to_isometric_grid_coordinate(offset, gridX, gridY);
+            coords.y -= tile_size / 2;
+            SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
+            float dx = (gridX * tile_size + tile_size / 2) - (player.x);
+            float dy = (gridY * tile_size + tile_size / 2) - (player.y);
+            float dist = std::sqrt(dx * dx + dy * dy) / (tile_size * 4);
+            float t = std::clamp(dist / (render_radius), 0.0f, 1.0f);
+            Uint8 alpha = t * 255.0f;
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
+            SDL_RenderFillRect(renderer, &rect);
+        };
+
+        // Draw decay grids (darker, farther away)
         for (const auto& [y, x] : Raycast::decayGrids) {
-            SDL_FPoint coords = to_isometric_grid_coordinate(offset, x, y);
-            coords.y -= tile_size / 2;
-            SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
-            SDL_RenderFillRect(renderer, &rect);
+            // fixme: optimize this shit. o(n)
+            // problem: overlap within decayGrids with enpointActiveGrids
+            if (Raycast::endpointActiveGrids.count(std::make_pair(y, x)) > 0) {
+                continue; // skip, it became active again
+            }
+            draw_fade_rect(x, y);
         }
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+
+        // Draw active grids (lighter, close to player)
         for (const auto& [y, x] : Raycast::endpointActiveGrids) {
-            SDL_FPoint coords = to_isometric_grid_coordinate(offset, x, y);
-            coords.y -= tile_size / 2;
-            SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
-            SDL_RenderFillRect(renderer, &rect);
+            draw_fade_rect(x, y);
         }
+
         // Reset and render to screen
         SDL_SetRenderTarget(renderer, nullptr);
         SDL_RenderTexture(renderer, darkness, nullptr, nullptr);
