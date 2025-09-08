@@ -184,21 +184,18 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 );
                 break;
             }
-            case Map::VINE_WALL:
             case Map::SECTOR_2_WALL_VAL: {
                 // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
                 int grid_below = map[row - 1][column];
                 if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
                     // add overhang vines VINE_OVERHANG_SN
                     if (grid_below == Map::MAZE_GROUND_CUBE &&
-                        (map[row - 2][column] == Map::VINE_WALL ||
-                            map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
+                        (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
                         map[row - 1][column] = Map::VINE_OVERHANG_SN;
                     }
                     // add overhang vines VINE_OVERHANG_EW
                     if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
-                        (map[row][column + 2] == Map::VINE_WALL ||
-                            map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                        (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
                         map[row][column + 1] = Map::VINE_OVERHANG_EW;
                     }
                 }

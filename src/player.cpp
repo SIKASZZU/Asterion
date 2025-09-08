@@ -14,10 +14,7 @@ Player player = {
     y : map_size / 2 * tile_size,
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
-    collision_array : {
-        Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
-        Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
-    },
+    collision_array : wall_values,
     movement_vector : {0, 0},
     velocity : {0, 0},
     animation_speed : 125,

@@ -20,7 +20,6 @@ enum Map {
     BLUE_CUBE,
     WALL_CUBE,
     INGROWN_WALL_CUBE,
-    VINE_WALL, // no texture
     VINE_CUBE_HARD,
     VINE_CUBE_MEDIUM,
     VINE_CUBE_SOFT,
@@ -37,7 +36,7 @@ enum Map {
 };
 
 static const std::unordered_set<int> wall_values = {
-    Map::VINE_WALL, Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
+    Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
     Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
 };
 

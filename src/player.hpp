@@ -12,7 +12,7 @@ struct Player {
     float y;
     SDL_FRect rect;
     bool collision;
-    std::vector<int> collision_array;
+    std::unordered_set<int> collision_array;
     SDL_FPoint movement_vector;  // Will be used to calculate where player will end up at, direction alike.
     SDL_FPoint velocity;
     int animation_speed;
