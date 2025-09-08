@@ -2,9 +2,9 @@
 
 
 GAMEPLAY: Introduction
-- [Game]
-- [Gameplay preview](#preview)
-- [Keys](#key-functionality)
+- [Game](#game)
+  - [Gameplay preview](#preview)
+  - [Keys](#key-functionality)
 
 Introductions to setup project
 - [Windows Setup](#windows-setup)
@@ -148,3 +148,4 @@ For Visual Studio Code it is reccomended to use the [MakeFile Tools](https://mar
 
 
 Although that is not needed as running the project with `F5` will work just fine
+
