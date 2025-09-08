@@ -2,7 +2,9 @@
 
 
 GAMEPLAY: Introduction
-- [Game](#key-functionality)
+- [Game]
+- [Gameplay preview](#preview)
+- [Keys](#key-functionality)
 
 Introductions to setup project
 - [Windows Setup](#windows-setup)
@@ -14,6 +16,11 @@ Introductions to setup project
 
 
 ## Game
+
+### Preview
+
+https://github.com/user-attachments/assets/10ef7af4-9685-42c5-8c61-f2241fd20a4b
+
 ### Key Functionality
 
 Below is a breakdown of in-game keybindings and their functionalities:
@@ -93,6 +100,7 @@ Paths added to user variables:
 - `*\msys64\ucrt64\bin`
 
 ### Install SDL
+
 SDL3 version [3.2.18](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.18)
 
 Manually install SDL3-devel-3.2.18-mingw.zip. 
@@ -109,6 +117,7 @@ Run commands below to move SDL3 files to mingw64
 
 
 ### Install SDL3_image
+
 SDL3_image version [3.2.4](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.4)
 
 Manually install SDL3_image-devel-3.2.4-mingw.zip.
@@ -136,5 +145,6 @@ make
 ---
 
 For Visual Studio Code it is reccomended to use the [MakeFile Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools) extension
+
 
 Although that is not needed as running the project with `F5` will work just fine
