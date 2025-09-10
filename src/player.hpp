@@ -17,6 +17,7 @@ struct Player {
     SDL_FPoint velocity;
     int animation_speed;
     bool shifting;  // has player pressed shift?
+    char last_movement_key;
 };
 
 extern Player player;

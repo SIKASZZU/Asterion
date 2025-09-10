@@ -175,10 +175,22 @@ void react_to_keyboard_state(const bool* state, struct Player& player) {
     SDL_FPoint dir = player.movement_vector;
     float slide_after_running = 0.2f;  // lower number = more sliding
     float sliding_threshold = 0.1f;
-    if (state[SDL_SCANCODE_W] && !collisionY) { dir.y = -1; }
-    if (state[SDL_SCANCODE_S] && !collisionY) { dir.y = 1; }
-    if (state[SDL_SCANCODE_A] && !collisionX) { dir.x = -1; }
-    if (state[SDL_SCANCODE_D] && !collisionX) { dir.x = 1; }
+    if (state[SDL_SCANCODE_W] && !collisionY) { 
+        dir.y = -1; 
+        player.last_movement_key = 'w';
+    }
+    if (state[SDL_SCANCODE_S] && !collisionY) { 
+        dir.y = 1; 
+        player.last_movement_key = 's';
+    }
+    if (state[SDL_SCANCODE_A] && !collisionX) { 
+        dir.x = -1; 
+        player.last_movement_key = 'a';
+    }
+    if (state[SDL_SCANCODE_D] && !collisionX) { 
+        dir.x = 1; 
+        player.last_movement_key = 'd';
+    }
     if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S] || collisionY) {
         std::abs(dir.y) > sliding_threshold ? dir.y -= slide_after_running * (dir.y / std::abs(dir.y)) : dir.y = 0.0f;
     }

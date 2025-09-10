@@ -19,6 +19,7 @@ Player player = {
     velocity : {0, 0},
     animation_speed : 125,
     shifting : false,
+    last_movement_key : 'a',
 };
 
 bool collisionX = false;
