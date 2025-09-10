@@ -19,7 +19,7 @@ namespace Assets::Images {
   static const char* vine_cube_hard = "resources/vine_cube_hard.png";
   static const char* vine_cube_medium = "resources/vine_cube_medium.png";
   static const char* vine_cube_soft = "resources/vine_cube_soft.png";
-  static const char* player_animation = "resources/player_animation.png";
+  static const char* player_animation = "resources/player_sprite_sheet.png";
   static const char* vine_overhang_sn = "resources/vine_overhang_SN.png";
   static const char* vine_overhang_ew = "resources/vine_overhang_EW.png";
   static const char* vine_cover_n = "resources/vine_cover_N.png";

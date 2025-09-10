@@ -126,9 +126,9 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
 
 
 void load_player_sprite(SDL_Renderer* renderer) {
-    const int sprite_width = 32;
-    const int sprite_height = 31;
-    const int standing_index = 4;
+    const int sprite_width = 64;
+    const int sprite_height = 64;
+    const int standing_index = 0;
     SDL_FRect srcRect;
     int col;
     if ((player.velocity.x == 0
@@ -138,15 +138,14 @@ void load_player_sprite(SDL_Renderer* renderer) {
         player.animation_speed = 0;
     }
     else {
-        // todo: Tile sizeiga tuleb 2ra arvutada, kui palju peab frame updateima. tile isze== 100 ss ja speed 20 ss 5 framei per tile size?
-        std::abs(player.movement_speed) > DEFAULT_MOVEMENT_SPEED * 0.75 ? player.animation_speed = 123 : player.animation_speed = 250;
-        col = last_frame % 4;  // loop 0-3 for frames
+        shift_pressed == true ? player.animation_speed = player.movement_speed * 1.5 : player.animation_speed = player.movement_speed * 3;
+        col = last_frame % 8;  // loop 0-3 for frames
     }
     // Decide the row based on movement direction
     if (player.movement_vector.x == 1) { row = 0; }
     if (player.movement_vector.x == -1) { row = 1; }
-    if (player.movement_vector.y == 1) { row = 2; }
-    if (player.movement_vector.y == -1) { row = 3; }
+    if (player.movement_vector.y == 1) { row = 1; }
+    if (player.movement_vector.y == -1) { row = 0; }
 
     srcRect.x = col * sprite_width;
     srcRect.y = row * sprite_height;
