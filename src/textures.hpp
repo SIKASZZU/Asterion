@@ -23,8 +23,6 @@ extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 extern Uint32 last_update;  // Used for animation timing
 extern int last_frame;      // Remember index of last player anim
 extern int row;             // Used for accessing player anim texture
-extern int player_animation_speed;
-
 
 void load_specific_number(SDL_Renderer* renderer, int number, SDL_FRect destTile);
 void load_textures(SDL_Renderer* renderer);

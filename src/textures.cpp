@@ -128,24 +128,31 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
 void load_player_sprite(SDL_Renderer* renderer) {
     const int sprite_width = 64;
     const int sprite_height = 64;
-    const int standing_index = 0;
     SDL_FRect srcRect;
     int col;
-    if ((player.velocity.x == 0
-        && player.velocity.y == 0)
+
+    // player standing
+    if ((player.velocity.x == 0 && player.velocity.y == 0)
         || player.movement_speed == 0) {
-        col = standing_index;  // standing index
-        player.animation_speed = 0;
+        
+        col = last_frame % 12;
+        player.animation_speed = 100;
+        if (player.last_movement_key == 'w' || player.last_movement_key == 'd') {
+            row = 2;
+        }
+        else if (player.last_movement_key == 's' || player.last_movement_key == 'a') {
+            row = 3;
+        }
     }
+    // player moving
     else {
+        col = last_frame % 8;
         shift_pressed == true ? player.animation_speed = player.movement_speed * 1.5 : player.animation_speed = player.movement_speed * 3;
-        col = last_frame % 8;  // loop 0-3 for frames
+        if (player.movement_vector.x == 1) { row = 0; }
+        if (player.movement_vector.x == -1) { row = 1; }
+        if (player.movement_vector.y == 1) { row = 1; }
+        if (player.movement_vector.y == -1) { row = 0; }
     }
-    // Decide the row based on movement direction
-    if (player.movement_vector.x == 1) { row = 0; }
-    if (player.movement_vector.x == -1) { row = 1; }
-    if (player.movement_vector.y == 1) { row = 1; }
-    if (player.movement_vector.y == -1) { row = 0; }
 
     srcRect.x = col * sprite_width;
     srcRect.y = row * sprite_height;

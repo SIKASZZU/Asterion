@@ -80,7 +80,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             float row_coord = isometric_coordinates.x;
             float col_coord = isometric_coordinates.y;
             SDL_FRect destTile = { row_coord, col_coord, tile_size, tile_size };
-
+            // Player tile highlight (render last)
+            if (row == player_tile_y && column == player_tile_x) {
+                render_queue.push_back(
+                    RenderQueueItem(destTile.y - 1, destTile, &texture_map[Map::INVISIBLE_CUBE])
+                );
+            }
             // GRID_VALUES IN GROUND_VALUES
             if (ground_values.find(grid_value) != ground_values.end()) {
                 texture_map[Map::GROUND_CUBE].render(renderer, &destTile);
@@ -240,14 +245,6 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             }
             default:
                 break;
-            }
-            // Player tile highlight (render last)
-            if (row == player_tile_y && column == player_tile_x) {
-                destTile.h = half_tile;
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                SDL_RenderRect(renderer, &destTile);
-                // TODO: make the isometric projection of player collision box
-                // just for debugging purposes, SDL_RenderDrawPoints might be useful
             }
         }
     }
