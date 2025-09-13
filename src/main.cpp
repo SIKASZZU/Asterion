@@ -11,6 +11,7 @@
 #include "collision.hpp"
 #include "raycast.hpp"
 #include "vision.hpp"
+#include "enemy.hpp"
 
 int main(int argc, char* argv[]) {
     Offset offset = { 0, 0 };
@@ -38,6 +39,8 @@ int main(int argc, char* argv[]) {
     Vision::create_darkness(renderer);
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
+
+    Enemy enemy(10, 10, tile_size);
 
     while (isRunning) {
         frame_start = SDL_GetTicks();
@@ -69,6 +72,12 @@ int main(int argc, char* argv[]) {
             tick_count++;
             tick_lag -= tick_delay;
 
+            SDL_Point enemyTarget = { 
+                static_cast<int>(player.x), 
+                static_cast<int>(player.y) 
+            };
+            enemy.update(map, enemyTarget);
+            
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
@@ -76,10 +85,10 @@ int main(int argc, char* argv[]) {
             update_offset(offset, player);
 
             update_player(map, offset, renderer);
+            enemy.render(renderer, offset);
+            
             Raycast::update(renderer, offset, map);
-
             Vision::update(renderer, offset);
-
             SDL_RenderPresent(renderer);
 
             if (SDL_GetTicks() - fps_timer >= 1000) {

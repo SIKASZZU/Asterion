@@ -34,7 +34,6 @@ namespace Maze {
         static std::mt19937 g(rd());
         std::shuffle(directions.begin(), directions.end(), g);
     }
-
     // Recursive maze generation using DFS
     void generate_maze(int map[map_size][map_size], int start_x, int start_y, std::string type) {
         std::vector<std::pair<int, int>> directions;
@@ -85,21 +84,13 @@ namespace Maze {
             }
         }
     }
-
+    bool is_walkable(int gridValue) {
+        return wall_values.find(gridValue) == wall_values.end();
+    }
     // BFS Pathfinding from (sx, sy) to (gx, gy)
-    bool find_path(int map[map_size][map_size], int sx, int sy, int gx, int gy) {
-        std::cout << "Starting pathfinder" << "\n";
+    bool find_path(const int map[map_size][map_size], int sx, int sy, int gx, int gy) {
 
         std::queue<std::pair<int, int>> q;
-
-        // TODO: before replacing found path with error cubes
-        // save the values of coordinates to an array and use that to restore the path
-        // currently not needed as this will only search path with Map::MAZE_GROUND_CUBE
-        for (const auto& p : path) {
-            // undo myself (path)
-            std::cout << "(" << p.first << "," << p.second << ") ";
-            map[p.first][p.second] = pathway;
-        }
         path.clear();
 
         std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> came_from;
@@ -110,7 +101,6 @@ namespace Maze {
 
         int dx[4] = { -1, 1, 0, 0 };
         int dy[4] = { 0, 0, -1, 1 };
-
         while (!q.empty()) {
             auto [x, y] = q.front(); q.pop();
 
@@ -124,12 +114,6 @@ namespace Maze {
                 }
                 path.push_back({ sx, sy });
                 std::reverse(path.begin(), path.end());
-
-                for (const auto& p : path) {
-                    std::cout << "(" << p.first << "," << p.second << ") ";
-                    map[p.first][p.second] = Map::ERROR_CUBE;
-                }
-                std::cout << "\npath found, lenght: " << path.size() << '\n';
                 return true;  // path found
             }
 
@@ -137,7 +121,7 @@ namespace Maze {
                 int nx = x + dx[i], ny = y + dy[i];
                 int grid_value = map[nx][ny];
                 if (nx >= 0 && ny >= 0 && nx < map_size && ny < map_size &&
-                    grid_value == Map::MAZE_GROUND_CUBE
+                    is_walkable(grid_value)
                     && !visited[nx][ny]) {
                     visited[nx][ny] = true;
                     came_from[{nx, ny}] = { x, y };
@@ -145,7 +129,6 @@ namespace Maze {
                 }
             }
         }
-        std::cout << "path failed" << "\n";
         return false;  // No path found
     }
 }
