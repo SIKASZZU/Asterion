@@ -43,6 +43,8 @@ int last_frame = 0;
 int row = 0;
 
 void load_textures(SDL_Renderer* renderer) {
+    texture_map[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
+    texture_map[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
     // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
     texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, Assets::Images::numbers);
     texture_map[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
@@ -61,7 +63,6 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::VINE_CUBE_HARD] = ImageTexture(renderer, Assets::Images::vine_cube_hard);
     texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, Assets::Images::vine_cube_medium);
     texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, Assets::Images::vine_cube_soft);
-    texture_map[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
     texture_map[Map::VINE_OVERHANG_SN] = ImageTexture(renderer, Assets::Images::vine_overhang_sn);
     texture_map[Map::VINE_OVERHANG_EW] = ImageTexture(renderer, Assets::Images::vine_overhang_ew);
     texture_map[Map::VINE_COVER_N] = ImageTexture(renderer, Assets::Images::vine_cover_n);

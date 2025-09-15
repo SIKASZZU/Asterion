@@ -9,6 +9,7 @@
 /// Some things do not have textures associated with them.
 enum Map {
     PLAYER,
+    SPIDER,
     LAND_CUBE,
     TREE_TRUNK,
     GROUND_CUBE,

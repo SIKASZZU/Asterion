@@ -4,6 +4,7 @@
 
 #include "player.hpp"
 #include "map.hpp"
+#include "enemy.hpp"
 
 // /* screen */
 extern int screen_width;

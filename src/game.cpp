@@ -5,6 +5,7 @@
 #include "maze.hpp"
 #include "raycast.hpp"
 #include "player.hpp"
+#include "enemy.hpp"
 
 #include "isometric_calc.hpp"
 
@@ -65,14 +66,22 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     case SDLK_F: {
         /* print information */
         std::cout << std::endl;
-        std::cout << "x, y: " << player.x << ", " << player.y << " grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
-            << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-
+        
+        std::cout << "----- SYSTEM -----" << "\n";
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
-
-        std::cout << "RECT x, y: " << player.rect.x << ", " << player.rect.y << "\n";
-        std::cout << "RECT + offset: " << player.rect.x + offset.x << " " << player.rect.y + offset.y << "\n";
-        std::cout << std::endl;
+        
+        std::cout << "----- PLAYER -----" << "\n";
+        std::cout << "x, y: " << player.x << ", " << player.y << "\n";
+        std::cout << "grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
+        << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
+        
+        std::cout << "----- ENEMY -----" << "\n";
+        for (const auto& e : enemyArray) {
+            SDL_FPoint pos = e.get_position();
+            std::cout << "x, y: " << pos.x << " " << pos.y << "\n";
+            std::cout << "grid: " << e.grid.x << " " << e.grid.y << "\n";
+            std::cout << "mVec: " << e.movementVector.x << " " << e.movementVector.y << "\n";
+        }
         break;
     }
     case SDLK_C: {

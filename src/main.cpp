@@ -3,6 +3,7 @@
 #include <ctime>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
+#include <array>
 
 #include "game.hpp"
 #include "player.hpp"
@@ -40,7 +41,8 @@ int main(int argc, char* argv[]) {
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
 
-    Enemy enemy(10, 10, tile_size);
+    Enemy enemy(162, 162, tile_size);
+    enemyArray.push_back(enemy);
 
     while (isRunning) {
         frame_start = SDL_GetTicks();
@@ -76,7 +78,9 @@ int main(int argc, char* argv[]) {
                 static_cast<int>(player.x), 
                 static_cast<int>(player.y) 
             };
-            enemy.update(map, enemyTarget);
+            for (auto& e : enemyArray) {
+                e.update(map, enemyTarget);
+            }
             
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
@@ -85,8 +89,9 @@ int main(int argc, char* argv[]) {
             update_offset(offset, player);
 
             update_player(map, offset, renderer);
-            enemy.render(renderer, offset);
-            
+            for (auto& e : enemyArray) {
+                e.render(renderer, offset);
+            }
             Raycast::update(renderer, offset, map);
             Vision::update(renderer, offset);
             SDL_RenderPresent(renderer);
