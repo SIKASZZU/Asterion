@@ -27,5 +27,7 @@ namespace Assets::Images {
   static const char* void_cube = "resources/void_cube.png";
   static const char* void_cube_tilemap = "resources/void_cube_tilemap.png";
   static const char* grass_cover = "resources/grass_cover.png";
+  static const char* grass_cover_tall = "resources/grass_cover_tall.png";
+  static const char* grass_cover_short = "resources/grass_cover_short.png";
   static const char* invisible_cube = "resources/invisible_cube.png";
 }

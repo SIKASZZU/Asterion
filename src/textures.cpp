@@ -69,6 +69,8 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::VOID_CUBE] = ImageTexture(renderer, Assets::Images::void_cube);
     texture_map[Map::VOID_CUBE_NEIGHBOUR] = ImageTexture(renderer, Assets::Images::void_cube_tilemap);
     texture_map[Map::GRASS_COVER] = ImageTexture(renderer, Assets::Images::grass_cover);
+    texture_map[Map::GRASS_COVER_SHORT] = ImageTexture(renderer, Assets::Images::grass_cover_short);
+    texture_map[Map::GRASS_COVER_TALL] = ImageTexture(renderer, Assets::Images::grass_cover_tall);
     texture_map[Map::INVISIBLE_CUBE] = ImageTexture(renderer, Assets::Images::invisible_cube);
 }
 

@@ -11,6 +11,7 @@
 #include "textures.hpp"
 
 extern std::set<std::pair<int, int>> grid_vine_checked;
+extern std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
 
 struct RenderQueueItem {
   int render_order;
@@ -35,6 +36,8 @@ void load_render(SDL_Renderer* renderer, struct Offset& offset, struct Player& p
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player);
 
 void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Player& player);
+
+int create_random_grass(std::pair<int, int> grid_pos, int grid_value);
 
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_walls;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_trees;
