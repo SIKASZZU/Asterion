@@ -23,20 +23,19 @@ extern bool isRunning;
 extern const Uint8* state;
 
 /* framerate */
-extern Uint32 frame_start;
-extern Uint32 frame_time;
-extern int frame_count;
+extern Uint32 frameStart;
+extern Uint32 frameTime;
+extern Uint32 frameCount;
 extern float fps;
-extern Uint32 fps_timer;
+extern Uint32 fpsTimer;
 
 /* tickrate */
 extern const int tickrate;
-extern const int tick_delay;
-extern Uint32 previous_tick;
-extern Uint32 tick_lag;
-extern int tick_count;
-extern float ticks_per_second;
-extern Uint32 tick_timer;
+extern const int tickDelay;
+extern Uint32 tickLag;
+extern int tickCount;
+extern float tps;
+extern Uint64 previousTick;
 
 /* render.hpp args */
 extern int render_radius;

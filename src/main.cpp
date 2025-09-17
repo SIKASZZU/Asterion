@@ -45,13 +45,8 @@ int main(int argc, char* argv[]) {
     enemyArray.push_back(enemy);
 
     while (isRunning) {
-        frame_start = SDL_GetTicks();
+        frameStart = SDL_GetTicks();
         SDL_GetMouseState(&mouse_x, &mouse_y);
-
-        Uint32 elapsed_ticks = frame_start - previous_tick;
-        previous_tick = frame_start;
-        tick_lag += elapsed_ticks;
-
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
                 isRunning = false;
@@ -66,13 +61,17 @@ int main(int argc, char* argv[]) {
                 react_to_keyboard_up(key, player);
             }
         }
-
         react_to_keyboard_state(state, player);
+        // frameTime = SDL_GetTicks() - frameStart;
+        // if (frameTime < 16) { SDL_Delay(16 - frameTime); }
+        Uint32 elapsedTicks = frameStart - previousTick;
+        tickLag += elapsedTicks;
+        previousTick = frameStart;
+        frameCount++;
 
-        frame_count++;
-        while (tick_lag > tick_delay) {
-            tick_count++;
-            tick_lag -= tick_delay;
+        while (tickLag > tickDelay) {
+            tickCount++;
+            tickLag -= tickDelay;
 
             SDL_Point enemyTarget = { 
                 static_cast<int>(player.x), 
@@ -96,19 +95,21 @@ int main(int argc, char* argv[]) {
             Vision::update(renderer, offset);
             SDL_RenderPresent(renderer);
 
-            if (SDL_GetTicks() - fps_timer >= 1000) {
-                fps = frame_count * 1000.0f / (frame_start - fps_timer);
-                ticks_per_second = tick_count * 1000.0f / (frame_start - tick_timer);
-
-                fps_timer = SDL_GetTicks();
-                tick_timer = SDL_GetTicks();
-                frame_count = 0;
-                tick_count = 0;
+            Uint32 now = SDL_GetTicks();
+            Uint32 elapsed = now - fpsTimer;
+            if (elapsed > 1000) {
+                fps = frameCount * 1000.0f / elapsed;
+                tps = tickCount * 1000.0f / elapsed;
+                std::cout << std::endl;
+                std::cout << "elapsed:    " << elapsed << '\n';
+                std::cout << "fps:        " << fps << "\n";
+                std::cout << "frameCount: " << frameCount << "\n";
+                std::cout << "tps:        " << tps << "\n";
+                fpsTimer  = now;
+                frameCount = 0;
+                tickCount  = 0;
             }
         }
-
-        frame_time = SDL_GetTicks() - frame_start;
-        if (frame_time < 16) { SDL_Delay(16 - frame_time); }
     }
 
     destroy_all_textures();

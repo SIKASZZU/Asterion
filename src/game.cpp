@@ -17,20 +17,19 @@ int screen_width = 0;
 int screen_height = 0;
 
 /* framerate */
-int frame_count = 0;
+Uint32 frameCount = 0;
 float fps = 0.0f;
-Uint32 fps_timer;
-Uint32 frame_start;
-Uint32 frame_time;
+Uint32 fpsTimer;
+Uint32 frameStart;
+Uint32 frameTime;
 
 /* tickrate */
-Uint32 previous_tick = SDL_GetTicks();
-Uint32 tick_lag = 0;
+Uint32 tickLag = 0;
 const int tickrate = 60;
-const int tick_delay = 1000 / tickrate;
-int tick_count = 0;
-float ticks_per_second = 0.0f;
-Uint32 tick_timer = SDL_GetTicks();
+const int tickDelay = 1000 / tickrate;
+int tickCount = 0;
+float tps = 0.0f;
+Uint64 previousTick = SDL_GetTicks();
 
 /* render.hpp args */
 int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
