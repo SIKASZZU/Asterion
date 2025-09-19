@@ -48,6 +48,10 @@ bool shift_pressed = false;
 bool r_pressed = false;
 bool v_pressed = false;
 
+bool isEmpty(const SDL_FRect &r) {
+    return r.w <= 0 || r.h <= 0;
+}
+
 void update_offset(struct Offset& offset, struct Player& player) {
 
     SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);

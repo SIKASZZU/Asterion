@@ -53,13 +53,15 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, Assets::Images::ground_cube);
     texture_map[Map::LAND_CUBE] = ImageTexture(renderer, Assets::Images::land);
     texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, Assets::Images::maze_ground_cube);
+    texture_map[Map::MAZE_GROUND_SPRITE] = ImageTexture(renderer, Assets::Images::maze_ground_spirte);
     // texture_map[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
     texture_map[Map::ERROR_CUBE] = ImageTexture(renderer, Assets::Images::error_cube);
     texture_map[Map::YELLOW_CUBE] = ImageTexture(renderer, Assets::Images::yellow_cube);
     texture_map[Map::BLUE_CUBE] = ImageTexture(renderer, Assets::Images::blue_cube);
     texture_map[Map::INGROWN_WALL_CUBE] = ImageTexture(renderer, Assets::Images::ingrown_wall_cube);
-    // this is also used as sector 1 and 3 walls
     texture_map[Map::WALL_CUBE] = ImageTexture(renderer, Assets::Images::wall_cube);
+    // this is used as sector 1,2,3 walls
+    texture_map[Map::WALL_CUBE_SPRITE] = ImageTexture(renderer, Assets::Images::wall_cube_sprite);
     texture_map[Map::VINE_CUBE_HARD] = ImageTexture(renderer, Assets::Images::vine_cube_hard);
     texture_map[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, Assets::Images::vine_cube_medium);
     texture_map[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, Assets::Images::vine_cube_soft);
@@ -72,6 +74,8 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::GRASS_COVER_SHORT] = ImageTexture(renderer, Assets::Images::grass_cover_short);
     texture_map[Map::GRASS_COVER_TALL] = ImageTexture(renderer, Assets::Images::grass_cover_tall);
     texture_map[Map::INVISIBLE_CUBE] = ImageTexture(renderer, Assets::Images::invisible_cube);
+    texture_map[Map::WALL_MARKINGS] = ImageTexture(renderer, Assets::Images::wall_markings);
+    texture_map[Map::MAZE_DECO] = ImageTexture(renderer, Assets::Images::maze_deco);
 }
 
 
@@ -223,7 +227,6 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
         }
     }
 }
-
 
 /* Texture method definitions*/
 

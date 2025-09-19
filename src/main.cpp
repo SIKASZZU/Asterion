@@ -18,6 +18,7 @@ int main(int argc, char* argv[]) {
     Offset offset = { 0, 0 };
 
     generate_map();
+    map[165][160] = Map::WALL_CUBE;
     srand(static_cast<unsigned int>(std::time(NULL)));
     static SDL_Window *window = NULL;
     static SDL_Renderer *renderer = NULL;

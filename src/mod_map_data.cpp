@@ -2,6 +2,7 @@
 #include "render.hpp"
 #include "mod_map_data.hpp"
 std::set<std::pair<int, int>> change_gP;
+// other walls from s3 have been removed, these are the ones to be rendered
 std::set<std::pair<int, int>> unchangable_walls_s3;
 std::pair<int, int> gP;
 int gV;

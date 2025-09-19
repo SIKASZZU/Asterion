@@ -18,10 +18,12 @@ enum Map {
     GRASS_COVER_TALL,
     TREE,
     MAZE_GROUND_CUBE,
+    MAZE_GROUND_SPRITE,
     YELLOW_CUBE,
     ERROR_CUBE,
     BLUE_CUBE,
     WALL_CUBE,
+    WALL_CUBE_SPRITE,
     INGROWN_WALL_CUBE,
     VINE_CUBE_HARD,
     VINE_CUBE_MEDIUM,
@@ -36,6 +38,8 @@ enum Map {
     VOID_CUBE,
     VOID_CUBE_NEIGHBOUR,
     INVISIBLE_CUBE,
+    WALL_MARKINGS,
+    MAZE_DECO,
 };
 
 static const std::unordered_set<int> wall_values = {

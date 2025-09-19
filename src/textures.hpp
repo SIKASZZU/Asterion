@@ -29,7 +29,7 @@ void load_textures(SDL_Renderer* renderer);
 void destroy_all_textures();
 void load_player_sprite(SDL_Renderer* renderer);
 void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
-  int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_FRect destTile);
+int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_FRect destTile);
 
 Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
 

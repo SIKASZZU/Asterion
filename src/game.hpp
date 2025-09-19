@@ -64,6 +64,7 @@ struct pair_hash {
 };
 
 /* functions */
+bool isEmpty(const SDL_FRect &r);
 void update_offset(struct Offset& offset, struct Player& player);
 void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]);
 void react_to_keyboard_up(SDL_Keycode key, struct Player& player);

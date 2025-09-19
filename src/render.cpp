@@ -19,6 +19,12 @@ RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* t
     this->dstrect = dstrect;
     this->texture = texture;
 }
+RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect srcrect, SDL_FRect dstrect, Texture* texture) {
+    this->render_order = render_order;
+    this->dstrect = dstrect;
+    this->srcrect = srcrect;
+    this->texture = texture;
+}
 RenderQueueItem::RenderQueueItem(int render_order, std::function<void(SDL_Renderer* renderer)> custom_render) {
     this->render_order = render_order;
     this->custom_render = custom_render;
@@ -26,7 +32,11 @@ RenderQueueItem::RenderQueueItem(int render_order, std::function<void(SDL_Render
 
 void RenderQueueItem::render(SDL_Renderer* renderer) {
     if (this->texture.has_value()) {
-        return this->texture.value()->render(renderer, &this->dstrect);
+        if (srcrect.h != 0 && srcrect.w != 0) {
+            return this->texture.value()->render(renderer, &this->srcrect, &this->dstrect);
+        } else {
+            return this->texture.value()->render(renderer, &this->dstrect);
+        }
     }
     if (this->custom_render.has_value()) {
         return this->custom_render.value()(renderer);
@@ -38,6 +48,8 @@ void RenderQueueItem::render(SDL_Renderer* renderer) {
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_walls;
 std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_trees;
 std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
+std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
+std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
 std::set<std::pair<int, int>> grid_vine_checked;
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& player) {
@@ -94,9 +106,9 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             if (wall_values.find(grid_value) != wall_values.end()) {
                 texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
             }
-            if (grid_value == Map::VINE_OVERHANG_SN 
-                || grid_value == Map::VINE_OVERHANG_EW) {
-                texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+            if (grid_value == Map::VINE_OVERHANG_SN || grid_value == Map::VINE_OVERHANG_EW) {
+                SDL_FRect srcRect = return_src_1x3(grid_pos, mazeGroundMap);
+                texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcRect, &destTile);
             }
             switch (grid_value) {
                 case Map::VOID_CUBE:
@@ -105,7 +117,15 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     break;
                 }
                 // simple textures that can be immediately rendered (no render_q)
-                case Map::MAZE_GROUND_CUBE:
+                case Map::MAZE_GROUND_CUBE: {
+                    SDL_FRect srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                    texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcFRect, &destTile);
+                    srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
+                    if (isEmpty(srcFRect)) break;
+                    destTile.y -= half_tile;
+                    texture_map[Map::MAZE_DECO].render(renderer, &srcFRect, &destTile);
+                    break;
+                }
                 case Map::YELLOW_CUBE:
                 case Map::ERROR_CUBE:
                 case Map::LAND_CUBE:
@@ -164,30 +184,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     );
                     break;
                 }
-                case Map::SECTOR_3_WALL_VAL: {
-                    if (unchangable_walls_s3.find(grid_pos) != unchangable_walls_s3.end()) {
-                        destTile.y -= half_tile;
-                        render_queue.push_back(
-                            RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
-                        );
-                        break;
-                    }
-                }
-                // these tree use the same texture atm
-                case Map::WALL_CUBE:
-                case Map::SECTOR_1_WALL_VAL: {
-                    destTile.y -= half_tile;
-                    // random block size code code
-                    // destTile.y += (tile_size / 9);
-                    // destTile.x += (tile_size / 16);
-                    // destTile.w -= (tile_size / 8);
-                    // destTile.h -= (tile_size / 8);
-                    render_queue.push_back(
-                        RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
-                    );
-                    break;
-                }
-                // section wall, thicker wall
+                // section seperating wall, thicker wall
                 case Map::INGROWN_WALL_CUBE: {
                     destTile.y -= half_tile;
                     destTile.y -= 5;
@@ -203,61 +200,83 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     );
                     break;
                 }
-                case Map::SECTOR_2_WALL_VAL: {
-                    // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
-                    int grid_below = map[row - 1][column];
-                    if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
-                        // add overhang vines VINE_OVERHANG_SN
-                        if (grid_below == Map::MAZE_GROUND_CUBE &&
-                            (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
-                            map[row - 1][column] = Map::VINE_OVERHANG_SN;
-                        }
-                        // add overhang vines VINE_OVERHANG_EW
-                        if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
-                            (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
-                            map[row][column + 1] = Map::VINE_OVERHANG_EW;
-                        }
+                case Map::WALL_CUBE:
+                case Map::SECTOR_1_WALL_VAL:
+                case Map::SECTOR_2_WALL_VAL:
+                case Map::SECTOR_3_WALL_VAL: {
+                    destTile.y -= half_tile;
+                    if (grid_value == Map::SECTOR_3_WALL_VAL 
+                        && unchangable_walls_s3.find(grid_pos) == unchangable_walls_s3.end()) return;
+                    SDL_FRect srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                    if (grid_value == Map::SECTOR_2_WALL_VAL) {
+                        int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 30)
+                            .first->second;
+                        destTile.y += (xr / 2.5);
+                        destTile.x += (xr / 4);
+                        destTile.w -= (xr / 2);
+                        destTile.h -= (xr / 2);
                     }
-                    if (rand() % 10 == 1 && !grid_vine_checked.count(grid_pos)) {
-                        // add VINE_COVER_N to wall's southern side
-                        if (grid_below == Map::MAZE_GROUND_CUBE ||
-                            grid_below == Map::VINE_OVERHANG_SN ||
-                            grid_below == Map::VINE_OVERHANG_EW) {
-                            map[row - 1][column] = Map::VINE_COVER_N;
-                            // expand vine to neighbouring blocks aswell.
-                            // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
-                            // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
-                            if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
-                                map[row][column + 1] == Map::VINE_OVERHANG_EW) {
-                                map[row - 1][column + 1] = Map::VINE_COVER_N;
-                            }
-                            if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
-                                map[row][column - 1] == Map::VINE_OVERHANG_EW) {
-                                map[row - 1][column - 1] = Map::VINE_COVER_N;
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                    );
+                    // create vines on top of SECTOR_2 walls
+                    if (grid_value == Map::SECTOR_2_WALL_VAL) {
+                        // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
+                        int grid_below = map[row - 1][column];
+                        if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
+                            // add overhang vines VINE_OVERHANG_SN
+                            if (grid_below == Map::MAZE_GROUND_CUBE &&
+                                (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
+                                    map[row - 1][column] = Map::VINE_OVERHANG_SN;
+                                }
+                                // add overhang vines VINE_OVERHANG_EW
+                                if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
+                                    (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                                map[row][column + 1] = Map::VINE_OVERHANG_EW;
                             }
                         }
+                        if (rand() % 10 == 1 && !grid_vine_checked.count(grid_pos)) {
+                            // add VINE_COVER_N to wall's southern side
+                            if (grid_below == Map::MAZE_GROUND_CUBE ||
+                                grid_below == Map::VINE_OVERHANG_SN ||
+                                grid_below == Map::VINE_OVERHANG_EW) {
+                                map[row - 1][column] = Map::VINE_COVER_N;
+                                // expand vine to neighbouring blocks aswell.
+                                // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
+                                // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
+                                if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
+                                    map[row][column + 1] == Map::VINE_OVERHANG_EW) {
+                                    map[row - 1][column + 1] = Map::VINE_COVER_N;
+                                }
+                                if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
+                                    map[row][column - 1] == Map::VINE_OVERHANG_EW) {
+                                    map[row - 1][column - 1] = Map::VINE_COVER_N;
+                                }
+                            }
+                        }
+                        grid_vine_checked.insert(grid_pos);
+                        // vine'il y += 1, et vine tekstuur oleks on top of wall
+                        auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
+                        if (cube_vine_tex == nullptr) break;
+                        render_queue.push_back(
+                            RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
+                        );
+                        break;
                     }
-                    grid_vine_checked.insert(grid_pos);
-                    // Only generate random offset once per block
-                    // see rand % number on kui palju px on maxist v2hem
-                    int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 30)
-                        .first->second;
-                    destTile.y -= half_tile - (xr / 2.5);
-                    destTile.x += (xr / 4);
-                    destTile.w -= (xr / 2);
-                    destTile.h -= (xr / 2);
-                    render_queue.push_back(
-                        RenderQueueItem(destTile.y, destTile, &texture_map[Map::WALL_CUBE])
-                    );
-                    // vine'il y += 1, et vine tekstuur oleks on top of wall
-                    auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
-                    if (cube_vine_tex == nullptr) break;
-                    render_queue.push_back(
-                        RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
-                    );
+                    // create maze deco into sector 3
+                    else if (grid_value == Map::SECTOR_3_WALL_VAL) {
+                        destTile.y -= half_tile;
+                        SDL_FRect srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
+                        if (isEmpty(srcFRect)) break;
+                        render_queue.push_back(
+                            RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::MAZE_DECO])
+                        );
+                        break;
+                    }
                     break;
                 }
-                default: break;
+                default:
+                    break;
             }
         }
     }
@@ -305,17 +324,38 @@ void render_map_numbers(SDL_Renderer* renderer, struct Offset& offset, struct Pl
 int create_random_grass(std::pair<int, int> grid_pos, int grid_value) {
     int varIndex = grassCoverGrids.try_emplace(grid_pos, rand() % 4)
         .first->second;
-    if (varIndex == 0) { 
-        return Map::GRASS_COVER_SHORT; 
+    if (varIndex == 0) {
+        return Map::GRASS_COVER_SHORT;
     }
-    else if (varIndex == 1) { 
-        return Map::GRASS_COVER_TALL; 
+    else if (varIndex == 1) {
+        return Map::GRASS_COVER_TALL;
     }
-    else if (varIndex == 2){ 
-        return Map::GRASS_COVER; 
+    else if (varIndex == 2) {
+        return Map::GRASS_COVER;
     }
     else {
         return -1;
+    }
+}
+
+SDL_FRect return_src_1x3(std::pair<int, int> grid_pos, 
+    std::unordered_map<std::pair<int, int>, int, pair_hash>& map) {
+    float sprite_width = 32;
+    float sprite_height = 32;
+    int varIndex = map.try_emplace(grid_pos, rand() % 4)
+        .first->second;
+    
+    if (varIndex == 0) {
+        return SDL_FRect{ 0, 0, sprite_width, sprite_height };
+    }
+    else if (varIndex == 1) {
+        return SDL_FRect{ 32, 0, sprite_width, sprite_height };
+    }
+    else if (varIndex == 2) {
+        return SDL_FRect{ 64, 0, sprite_width, sprite_height };
+    }
+    else {
+        return SDL_FRect{ 0, 0, sprite_width, sprite_height };
     }
 }
 
