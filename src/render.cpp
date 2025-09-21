@@ -118,8 +118,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 }
                 // simple textures that can be immediately rendered (no render_q)
                 case Map::MAZE_GROUND_CUBE: {
-                    SDL_FRect srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
-                    texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcFRect, &destTile);
+                    SDL_FRect srcFRect;
+                    srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                    if (isEmpty(srcFRect)) texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+                    else texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcFRect, &destTile);
                     srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
                     if (isEmpty(srcFRect)) break;
                     destTile.y -= half_tile;
@@ -173,11 +175,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     break;
                 }
                 // textures above ground i.e .y -= half_tile
-                case Map::VINE_COVER_N: {
-                    texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
-                }
+                case Map::VINE_COVER_N:
                 case Map::VINE_OVERHANG_SN:
                 case Map::VINE_OVERHANG_EW: {
+                    texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
                     destTile.y -= half_tile;
                     render_queue.push_back(
                         RenderQueueItem(destTile.y, destTile, &texture_map[grid_value])
@@ -216,9 +217,16 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                         destTile.w -= (xr / 2);
                         destTile.h -= (xr / 2);
                     }
-                    render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
-                    );
+                    if (!isEmpty(srcFRect)) {
+                        render_queue.push_back(
+                            RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                        );
+                    }
+                    else {
+                        render_queue.push_back(
+                            RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
+                        );
+                    }
                     // create vines on top of SECTOR_2 walls
                     if (grid_value == Map::SECTOR_2_WALL_VAL) {
                         // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
@@ -355,7 +363,7 @@ SDL_FRect return_src_1x3(std::pair<int, int> grid_pos,
         return SDL_FRect{ 64, 0, sprite_width, sprite_height };
     }
     else {
-        return SDL_FRect{ 0, 0, sprite_width, sprite_height };
+        return SDL_FRect{ 0, 0, 0, 0 };
     }
 }
 
