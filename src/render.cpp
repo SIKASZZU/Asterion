@@ -93,6 +93,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
             float row_coord = isometric_coordinates.x;
             float col_coord = isometric_coordinates.y;
             SDL_FRect destTile = { row_coord, col_coord, tile_size, tile_size };
+            SDL_FRect srcFRect;
             // Player tile highlight (render last)
             if (row == player_tile_y && column == player_tile_x) {
                 render_queue.push_back(
@@ -107,8 +108,8 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
             }
             if (grid_value == Map::VINE_OVERHANG_SN || grid_value == Map::VINE_OVERHANG_EW) {
-                SDL_FRect srcRect = return_src_1x3(grid_pos, mazeGroundMap);
-                texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcRect, &destTile);
+                srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcFRect, &destTile);
             }
             switch (grid_value) {
                 case Map::VOID_CUBE:
@@ -118,7 +119,6 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 }
                 // simple textures that can be immediately rendered (no render_q)
                 case Map::MAZE_GROUND_CUBE: {
-                    SDL_FRect srcFRect;
                     srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                     if (isEmpty(srcFRect)) texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
                     else texture_map[Map::MAZE_GROUND_SPRITE].render(renderer, &srcFRect, &destTile);
@@ -208,7 +208,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     destTile.y -= half_tile;
                     if (grid_value == Map::SECTOR_3_WALL_VAL 
                         && unchangable_walls_s3.find(grid_pos) == unchangable_walls_s3.end()) return;
-                    SDL_FRect srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                    srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                     if (grid_value == Map::SECTOR_2_WALL_VAL) {
                         int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 30)
                             .first->second;
@@ -273,8 +273,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     }
                     // create maze deco into sector 3
                     else if (grid_value == Map::SECTOR_3_WALL_VAL) {
+                        srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
+                        if (!isEmpty(srcFRect)) render_queue.push_back(
+                            RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                        );
                         destTile.y -= half_tile;
-                        SDL_FRect srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
+                        srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
                         if (isEmpty(srcFRect)) break;
                         render_queue.push_back(
                             RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::MAZE_DECO])
