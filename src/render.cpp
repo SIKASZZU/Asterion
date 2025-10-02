@@ -5,6 +5,7 @@
 #include "isometric_calc.hpp"
 #include "raycast.hpp"
 #include "mod_map_data.hpp"
+#include "animation.hpp"
 
 #include <iostream>
 #include <vector>
@@ -34,7 +35,8 @@ void RenderQueueItem::render(SDL_Renderer* renderer) {
     if (this->texture.has_value()) {
         if (srcrect.h != 0 && srcrect.w != 0) {
             return this->texture.value()->render(renderer, &this->srcrect, &this->dstrect);
-        } else {
+        }
+        else {
             return this->texture.value()->render(renderer, &this->dstrect);
         }
     }
@@ -117,7 +119,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     render_void_tilemap(renderer, offset, map, grid_pos, destTile);
                     break;
                 }
-                // simple textures that can be immediately rendered (no render_q)
+                                            // simple textures that can be immediately rendered (no render_q)
                 case Map::MAZE_GROUND_CUBE: {
                     srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                     if (isEmpty(srcFRect)) texture_map[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
@@ -149,7 +151,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
                     break;
                 }
-                // textures above ground, 1st floor (no render_q)
+                                    // textures above ground, 1st floor (no render_q)
                 case Map::GRASS_COVER: {
                     destTile.y -= half_tile;
                     int varIndex = grassCoverGrids.try_emplace(grid_pos, rand() % 3)
@@ -174,7 +176,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
                     break;
                 }
-                // textures above ground i.e .y -= half_tile
+                            // textures above ground i.e .y -= half_tile
                 case Map::VINE_COVER_N:
                 case Map::VINE_OVERHANG_SN:
                 case Map::VINE_OVERHANG_EW: {
@@ -185,7 +187,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                     );
                     break;
                 }
-                // section seperating wall, thicker wall
+                                        // section seperating wall, thicker wall
                 case Map::INGROWN_WALL_CUBE: {
                     destTile.y -= half_tile;
                     destTile.y -= 5;
@@ -206,7 +208,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                 case Map::SECTOR_2_WALL_VAL:
                 case Map::SECTOR_3_WALL_VAL: {
                     destTile.y -= half_tile;
-                    if (grid_value == Map::SECTOR_3_WALL_VAL 
+                    if (grid_value == Map::SECTOR_3_WALL_VAL
                         && unchangable_walls_s3.find(grid_pos) == unchangable_walls_s3.end()) return;
                     srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                     if (grid_value == Map::SECTOR_2_WALL_VAL) {
@@ -235,11 +237,11 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
                             // add overhang vines VINE_OVERHANG_SN
                             if (grid_below == Map::MAZE_GROUND_CUBE &&
                                 (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
-                                    map[row - 1][column] = Map::VINE_OVERHANG_SN;
-                                }
-                                // add overhang vines VINE_OVERHANG_EW
-                                if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
-                                    (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                                map[row - 1][column] = Map::VINE_OVERHANG_SN;
+                            }
+                            // add overhang vines VINE_OVERHANG_EW
+                            if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
+                                (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
                                 map[row][column + 1] = Map::VINE_OVERHANG_EW;
                             }
                         }
@@ -294,7 +296,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct Player& pl
     }
     float render_after = -(tile_size / 2);
     render_queue.push_back(
-        RenderQueueItem(static_cast<int>(player.rect.y + render_after), [](SDL_Renderer* renderer) { load_player_sprite(renderer); })
+        RenderQueueItem(static_cast<int>(player.rect.y + render_after), [](SDL_Renderer* renderer) { animation_player(renderer); })
     );
     std::sort(render_queue.begin(), render_queue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
         return a.render_order < b.render_order;
@@ -350,13 +352,13 @@ int create_random_grass(std::pair<int, int> grid_pos, int grid_value) {
     }
 }
 
-SDL_FRect return_src_1x3(std::pair<int, int> grid_pos, 
+SDL_FRect return_src_1x3(std::pair<int, int> grid_pos,
     std::unordered_map<std::pair<int, int>, int, pair_hash>& map) {
     float sprite_width = 32;
     float sprite_height = 32;
     int varIndex = map.try_emplace(grid_pos, rand() % 4)
         .first->second;
-    
+
     if (varIndex == 0) {
         return SDL_FRect{ 0, 0, sprite_width, sprite_height };
     }

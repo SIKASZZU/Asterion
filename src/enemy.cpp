@@ -21,10 +21,6 @@
 #include <algorithm>
 
 bool stopAllEnemies = true;
-Uint32 lastUpdate = SDL_GetTicks();
-int lastFrame = 0;
-int animRow = 0;
-int animCol = 0;
 std::vector<Enemy> enemyArray = {};
 
 Enemy::Enemy(int gx, int gy, int tile_size)
@@ -94,37 +90,4 @@ void Enemy::move_along_path(SDL_Point targetGrid) {
 
 bool Enemy::is_walkable(const int map[map_size][map_size], SDL_Point targetGrid) {
     return wall_values.find(map[targetGrid.x][targetGrid.y]) == wall_values.end();
-}
-
-void Enemy::animation(SDL_Renderer* renderer) {
-    const int sprite_width = 256;
-    const int sprite_height = 256;
-    SDL_FRect srcRect;
-    int animationSpeed = 18;
-    animCol = last_frame % 16;
-
-    if (movementVector.x == 1) { animRow = 1; }
-    if (movementVector.x == -1) { animRow = 3; }
-
-    if (movementVector.y == 1) { animRow = 2; }
-    if (movementVector.y == -1) { animRow = 0; }
-
-    srcRect.x = animCol * sprite_width;
-    srcRect.y = animRow * sprite_height;
-    srcRect.w = sprite_width;
-    srcRect.h = sprite_height;
-
-    SDL_FRect dstRect = rect;
-    float scaleFactor = 1.0f;
-    dstRect.w = sprite_width * scaleFactor;
-    dstRect.h = sprite_height * scaleFactor;
-    // center inside the original rect (e.g. tile)
-    dstRect.x = rect.x + (rect.w - dstRect.w) * 0.5f;
-    dstRect.y = rect.y + (rect.h - dstRect.h) * 0.5f;
-
-    if (SDL_GetTicks() - lastUpdate > animationSpeed) {
-        lastFrame++;
-        lastUpdate = SDL_GetTicks();
-    }
-    texture_map[Map::SPIDER].render(renderer, &srcRect, &dstRect);
 }

@@ -38,9 +38,6 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 
 const int texture_width = 16;
 const int texture_height = 16;
-Uint32 last_update = SDL_GetTicks();
-int last_frame = 0;
-int row = 0;
 
 void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
@@ -129,48 +126,6 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
         return &texture_map[Map::VINE_CUBE_SOFT];
     }
     return nullptr;
-}
-
-
-void load_player_sprite(SDL_Renderer* renderer) {
-    const int sprite_width = 64;
-    const int sprite_height = 64;
-    SDL_FRect srcRect;
-    int col;
-
-    // player standing
-    if ((player.velocity.x == 0 && player.velocity.y == 0)
-        || player.movement_speed == 0) {
-        
-        col = last_frame % 12;
-        player.animation_speed = 100;
-        if (player.last_movement_key == 'w' || player.last_movement_key == 'd') {
-            row = 2;
-        }
-        else if (player.last_movement_key == 's' || player.last_movement_key == 'a') {
-            row = 3;
-        }
-    }
-    // player moving
-    else {
-        col = last_frame % 8;
-        shift_pressed == true ? player.animation_speed = player.movement_speed * 1.5 : player.animation_speed = player.movement_speed * 3;
-        if (player.movement_vector.x == 1) { row = 0; }
-        if (player.movement_vector.x == -1) { row = 1; }
-        if (player.movement_vector.y == 1) { row = 1; }
-        if (player.movement_vector.y == -1) { row = 0; }
-    }
-
-    srcRect.x = col * sprite_width;
-    srcRect.y = row * sprite_height;
-    srcRect.w = sprite_width;
-    srcRect.h = sprite_height;
-
-    if (SDL_GetTicks() - last_update > player.animation_speed) {
-        last_frame++;
-        last_update = SDL_GetTicks();
-    }
-    texture_map[Map::PLAYER].render(renderer, &srcRect, &player.rect);
 }
 
 
