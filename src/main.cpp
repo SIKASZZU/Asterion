@@ -111,6 +111,8 @@ int main(int argc, char* argv[]) {
                 tickCount  = 0;
             }
         }
+        std::cout << "sped: " << player.movement_speed << "\n";
+        std::cout << "mVec: " << player.movement_vector.x << "  " << player.movement_vector.y << "\n";
     }
 
     destroy_all_textures();

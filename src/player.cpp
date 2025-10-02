@@ -77,4 +77,5 @@ void update_player(int map[map_size][map_size],
         player.size,
         player.size
     };
+    player.movement_vector = { 0.0f, 0.0f };
 }
