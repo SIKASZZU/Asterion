@@ -10,6 +10,7 @@
 #include "enemy.hpp"
 #include "isometric_calc.hpp"
 
+
 /* game state, screen */
 bool isRunning = true;
 float mouse_x = 0;
@@ -21,7 +22,6 @@ int screen_height = 0;
 Uint32 frameCount = 0;
 float fps = 0.0f;
 Uint32 fpsTimer;
-Uint32 frameStart;
 Uint32 frameTime;
 
 /* tickrate */
@@ -45,15 +45,14 @@ int pathStartX = -1;
 int pathStartY = -1;
 
 /* keys */
-bool shift_pressed = false;
 bool r_pressed = false;
 bool v_pressed = false;
 
-bool isEmpty(const SDL_FRect &r) {
+bool isEmpty(const SDL_FRect& r) {
     return r.w <= 0 || r.h <= 0;
 }
 
-void update_offset(struct Offset& offset, struct Player& player) {
+void update_offset(struct Offset& offset, struct PlayerData& player) {
 
     SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
 
@@ -64,21 +63,21 @@ void update_offset(struct Offset& offset, struct Player& player) {
     offset.y = screen_height / 2 - coords.y;
 }
 
-void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]) {
+void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[map_size][map_size]) {
     switch (key)
     {
     case SDLK_F: {
         /* print information */
         std::cout << std::endl;
-        
+
         std::cout << "----- SYSTEM -----" << "\n";
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
-        
+
         std::cout << "----- PLAYER -----" << "\n";
         std::cout << "x, y: " << player.x << ", " << player.y << "\n";
         std::cout << "grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
-        << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
-        
+            << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
+
         std::cout << "----- ENEMY -----" << "\n";
         for (const auto& e : enemyArray) {
             SDL_FPoint pos = e.get_position();
@@ -135,7 +134,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
         break;
     }
     case SDLK_LSHIFT: {
-        player.movement_speed = DEFAULT_MOVEMENT_SPEED / 4;
+        player.movement_speed = PlayerNS::DEFAULT_MOVEMENT_SPEED / 4;
         player.shifting = true;
         break;
     }
@@ -163,11 +162,11 @@ void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offse
     }
 }
 
-void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
+void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
     switch (key)
     {
     case SDLK_LSHIFT: {
-        player.movement_speed = DEFAULT_MOVEMENT_SPEED;
+        player.movement_speed = PlayerNS::DEFAULT_MOVEMENT_SPEED;
         player.shifting = false;
         break;
     }
@@ -184,23 +183,27 @@ void react_to_keyboard_up(SDL_Keycode key, struct Player& player) {
 /// as they use switch cases and react to events.
 /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
 /// @param player struct Player player
-void react_to_keyboard_state(const bool* state, struct Player& player) {
+void react_to_keyboard_state(const bool* state, struct PlayerData& player) {
     SDL_FPoint dir = player.movement_vector;
-    if (state[SDL_SCANCODE_W] && !collisionY) { 
-        dir.y = -1; 
+    if (state[SDL_SCANCODE_W] && !PlayerNS::collisionY) {
+        dir.y = -1;
         player.last_movement_key = 'w';
     }
-    if (state[SDL_SCANCODE_S] && !collisionY) { 
-        dir.y = 1; 
+    if (state[SDL_SCANCODE_S] && !PlayerNS::collisionY) {
+        dir.y = 1;
         player.last_movement_key = 's';
     }
-    if (state[SDL_SCANCODE_A] && !collisionX) { 
-        dir.x = -1; 
+    
+    if (state[SDL_SCANCODE_A] && !PlayerNS::collisionX) {
+        dir.x = -1;
         player.last_movement_key = 'a';
     }
-    if (state[SDL_SCANCODE_D] && !collisionX) { 
-        dir.x = 1; 
+    if (state[SDL_SCANCODE_D] && !PlayerNS::collisionX) {
+        dir.x = 1;
         player.last_movement_key = 'd';
     }
+    //reset mvector if poss
+    if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]) { dir.x = 0; }
+    if (!state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { dir.y = 0; }
     player.movement_vector = { dir.x, dir.y };
 }

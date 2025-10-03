@@ -18,7 +18,6 @@ extern bool isRunning;
 extern const Uint8* state;
 
 /* framerate */
-extern Uint32 frameStart;
 extern Uint32 frameTime;
 extern Uint32 frameCount;
 extern float fps;
@@ -45,7 +44,6 @@ extern int pathStartX;
 extern int pathStartY;
 
 /* keys */
-extern bool shift_pressed;
 extern bool r_pressed;
 extern bool v_pressed;
 
@@ -59,8 +57,8 @@ struct pair_hash {
 };
 
 /* functions */
-bool isEmpty(const SDL_FRect &r);
-void update_offset(struct Offset& offset, struct Player& player);
-void react_to_keyboard_down(SDL_Keycode key, struct Player& player, struct Offset& offset, int map[map_size][map_size]);
-void react_to_keyboard_up(SDL_Keycode key, struct Player& player);
-void react_to_keyboard_state(const bool* state, struct Player& player);
+bool isEmpty(const SDL_FRect& r);
+void update_offset(struct Offset& offset, struct PlayerData& player);
+void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[map_size][map_size]);
+void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
+void react_to_keyboard_state(const bool* state, struct PlayerData& player);
