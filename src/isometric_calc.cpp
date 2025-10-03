@@ -1,8 +1,9 @@
 
 #include <SDL3/SDL.h>
-#include "game.hpp"
 #include <iostream>
 
+#include "game.hpp"
+#include "offset.hpp"
 
 SDL_FPoint to_isometric_grid_coordinate(const struct Offset& offset, float x_grid, float y_grid) {
 

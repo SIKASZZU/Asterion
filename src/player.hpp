@@ -1,7 +1,9 @@
 #pragma once
+#include <vector>
+
 #include "game.hpp"
 #include "map.hpp"
-#include <vector>
+#include "offset.hpp"
 
 static const float DEFAULT_MOVEMENT_SPEED = 30.0f;
 

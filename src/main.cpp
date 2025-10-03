@@ -5,6 +5,7 @@
 #include <SDL3/SDL_image.h>
 #include <array>
 
+#include "offset.hpp"
 #include "game.hpp"
 #include "player.hpp"
 #include "textures.hpp"
@@ -15,7 +16,6 @@
 #include "enemy.hpp"
 
 int main(int argc, char* argv[]) {
-    Offset offset = { 0, 0 };
 
     generate_map();
     map[165][160] = Map::WALL_CUBE;

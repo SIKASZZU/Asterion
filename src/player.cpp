@@ -1,11 +1,12 @@
+#include <cmath>
+#include <iostream>
+
 #include "map.hpp"
 #include "game.hpp"
 #include "isometric_calc.hpp"
 #include "player.hpp"
 #include "collision.hpp"
-
-#include <cmath>
-#include <iostream>
+#include "offset.hpp"
 
 Player player = {
     movement_speed: DEFAULT_MOVEMENT_SPEED,

@@ -1,6 +1,7 @@
 #pragma once
 #include "map.hpp"
 #include "player.hpp"
+#include "offset.hpp"
 
 #include <iostream>
 #include <SDL3/SDL.h>

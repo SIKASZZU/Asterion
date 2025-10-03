@@ -7,6 +7,7 @@
 #include <utility>
 #include <set>
 
+#include "offset.hpp"
 #include "game.hpp"
 #include "textures.hpp"
 

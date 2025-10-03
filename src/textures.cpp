@@ -2,13 +2,14 @@
 #include "textures.hpp"
 #include "assets.hpp"
 #include "render.hpp"
+#include "offset.hpp"
 
 #include <vector>
 #include <iostream>
 #include <unordered_map>
-
 #include <SDL3/SDL_image.h>
 #include <SDL3/SDL.h>
+
 
 // Image textures that are loaded into the GPU memory, see IMG_LoadTexture
 class ImageTexture : public Texture {

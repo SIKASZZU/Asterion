@@ -8,6 +8,7 @@
 // if dir.x = 1; angle = 135
 // if dir.x = -1; angle = 315
 
+#include "offset.hpp"
 #include "enemy.hpp"
 #include "game.hpp"
 #include "player.hpp"

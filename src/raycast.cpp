@@ -4,6 +4,7 @@
 #include "isometric_calc.hpp"
 #include "game.hpp"
 #include "vision.hpp"
+#include "offset.hpp"
 
 #include <SDL3/SDL.h>
 #include <iostream>

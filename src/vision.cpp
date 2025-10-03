@@ -4,6 +4,7 @@
 #include <set>
 #include <algorithm>
 
+#include "offset.hpp"
 #include "game.hpp"
 #include "vision.hpp"
 #include "isometric_calc.hpp"

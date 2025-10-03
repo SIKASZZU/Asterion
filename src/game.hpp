@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <functional>
 
+#include "offset.hpp"
 #include "player.hpp"
 #include "map.hpp"
 #include "enemy.hpp"
@@ -11,12 +12,6 @@ extern int screen_width;
 extern int screen_height;
 extern float mouse_x;
 extern float mouse_y;
-
-/* camera offset */
-struct Offset {
-    float x;
-    float y;
-};
 
 /* game */
 extern bool isRunning;

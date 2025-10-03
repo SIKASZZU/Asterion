@@ -1,7 +1,8 @@
 #pragma once
-#include <SDL3/SDL.h>
 #include "game.hpp"
+#include "offset.hpp"
 
+#include <SDL3/SDL.h>
 #include <vector>
 #include <iostream>
 #include <unordered_map>

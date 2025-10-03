@@ -6,6 +6,7 @@
 #include "raycast.hpp"
 #include "mod_map_data.hpp"
 #include "animation.hpp"
+#include "offset.hpp"
 
 #include <iostream>
 #include <vector>

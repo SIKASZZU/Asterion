@@ -1,12 +1,13 @@
 #include <SDL3/SDL.h>
 #include <iostream>
+
+#include "offset.hpp"
 #include "game.hpp"
 #include "map.hpp"
 #include "maze.hpp"
 #include "raycast.hpp"
 #include "player.hpp"
 #include "enemy.hpp"
-
 #include "isometric_calc.hpp"
 
 /* game state, screen */

@@ -2,6 +2,7 @@
 #include <vector>
 #include <SDL3/SDL.h>
 
+#include "offset.hpp"
 #include "game.hpp"
 
 class Enemy {
