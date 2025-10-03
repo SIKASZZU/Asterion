@@ -6,8 +6,8 @@
 #include <array>
 
 #include "offset.hpp"
-#include "game.hpp"
 #include "player.hpp"
+#include "game.hpp"
 #include "textures.hpp"
 #include "render.hpp"
 #include "collision.hpp"
@@ -20,8 +20,8 @@ int main(int argc, char* argv[]) {
     generate_map();
     map[165][160] = Map::WALL_CUBE;
     srand(static_cast<unsigned int>(std::time(NULL)));
-    static SDL_Window *window = NULL;
-    static SDL_Renderer *renderer = NULL;
+    static SDL_Window* window = NULL;
+    static SDL_Renderer* renderer = NULL;
     // Initialize SDL video subsystem once, check error
     SDL_SetAppMetadata("Example Renderer Primitives", "1.0", "com.example.renderer-primitives");
 
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     enemyArray.push_back(enemy);
 
     while (isRunning) {
-        frameStart = SDL_GetTicks();
+        Uint64 frameStart = SDL_GetTicks();
         SDL_GetMouseState(&mouse_x, &mouse_y);
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
@@ -63,32 +63,36 @@ int main(int argc, char* argv[]) {
             }
         }
         react_to_keyboard_state(state, player);
+
         // frameTime = SDL_GetTicks() - frameStart;
         // if (frameTime < 16) { SDL_Delay(16 - frameTime); }
-        Uint32 elapsedTicks = frameStart - previousTick;
-        tickLag += elapsedTicks;
+
+        Uint64 elapsedTicks = frameStart - previousTick;
         previousTick = frameStart;
+        tickLag += elapsedTicks;
         frameCount++;
+
+        float deltaTime = elapsedTicks / 1000.0f;
+        PlayerNS::update(map, offset, renderer, deltaTime);
+        update_offset(offset, player);
 
         while (tickLag > tickDelay) {
             tickCount++;
             tickLag -= tickDelay;
 
-            SDL_Point enemyTarget = { 
-                static_cast<int>(player.x), 
-                static_cast<int>(player.y) 
+            SDL_Point enemyTarget = {
+                static_cast<int>(player.x),
+                static_cast<int>(player.y)
             };
             for (auto& e : enemyArray) {
                 e.update(map, enemyTarget);
             }
-            
+
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
             load_render(renderer, offset, player);
-            update_offset(offset, player);
 
-            update_player(map, offset, renderer);
             for (auto& e : enemyArray) {
                 e.render(renderer, offset);
             }
@@ -106,9 +110,10 @@ int main(int argc, char* argv[]) {
                 std::cout << "fps:        " << fps << "\n";
                 std::cout << "frameCount: " << frameCount << "\n";
                 std::cout << "tps:        " << tps << "\n";
-                fpsTimer  = now;
+                std::cout << "deltaTime: " << deltaTime << '\n';
+                fpsTimer = now;
                 frameCount = 0;
-                tickCount  = 0;
+                tickCount = 0;
             }
         }
     }

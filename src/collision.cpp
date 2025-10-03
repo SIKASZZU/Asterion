@@ -9,7 +9,7 @@
 // return boolean 0 or 1
 // 1 == collision detected
 // 0 == no collision detected  
-bool check_collision(int map[map_size][map_size], struct Player& player, SDL_FRect tempRect) {
+bool check_collision(int map[map_size][map_size], struct PlayerData& player, SDL_FRect tempRect) {
 
     // player collision on or off
     if (!player.collision) {

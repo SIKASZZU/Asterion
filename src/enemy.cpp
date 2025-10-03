@@ -25,18 +25,18 @@ bool stopAllEnemies = true;
 std::vector<Enemy> enemyArray = {};
 
 Enemy::Enemy(int gx, int gy, int tile_size)
-    : grid{gx, gy}, size(tile_size * 1), rect{pos.x, pos.y, size, size}, speed(player.movement_speed), color({ 255, 0, 0, 255 }),
-    currentPathIndex(0), movementVector{0,0}
+    : grid{ gx, gy }, size(tile_size * 1), rect{ pos.x, pos.y, size, size }, speed(player.movement_speed), color({ 255, 0, 0, 255 }),
+    currentPathIndex(0), movementVector{ 0,0 }
 {
     pos = { static_cast<float>(grid.x * tile_size), static_cast<float>(grid.y * tile_size) };
 }
 
 void Enemy::update(const int map[map_size][map_size], SDL_Point target) {
     SDL_Point targetGrid = { static_cast<int>(target.x / tile_size), static_cast<int>(target.y / tile_size) };
-    
+
     if (stopAllEnemies) return;
     if (path.empty()) {
-        if (!is_walkable(map, targetGrid)) {std::cout << "not walkable" << '\n'; return; };
+        if (!is_walkable(map, targetGrid)) { std::cout << "not walkable" << '\n'; return; };
         compute_path(map, targetGrid);
     }
     move_along_path(targetGrid);
@@ -59,6 +59,7 @@ void Enemy::compute_path(const int map[map_size][map_size], SDL_Point targetGrid
     path = Maze::path;
 }
 
+// needs deltaTime
 void Enemy::move_along_path(SDL_Point targetGrid) {
     if (path.empty()) {
         return;
@@ -68,14 +69,14 @@ void Enemy::move_along_path(SDL_Point targetGrid) {
     int nextX = nextGrid.first;
     int nextY = nextGrid.second;
 
-    SDL_FPoint nextPos {
+    SDL_FPoint nextPos{
         static_cast<float>((nextX * tile_size)),
         static_cast<float>((nextY * tile_size))
     };
     float dx = nextPos.x - pos.x;
     float dy = nextPos.y - pos.y;
     float dist = std::sqrt(dx * dx + dy * dy);
-    
+
     movementVector = { nextX - grid.x, nextY - grid.y };
 
     if (dist <= tile_size) {

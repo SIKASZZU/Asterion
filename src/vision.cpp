@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "offset.hpp"
+#include "player.hpp"
 #include "game.hpp"
 #include "vision.hpp"
 #include "isometric_calc.hpp"
@@ -39,7 +40,7 @@ namespace Vision {
             Uint8 alpha = t * 255.0f;
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
             SDL_RenderFillRect(renderer, &rect);
-        };
+            };
 
         // Draw decay grids (darker, farther away)
         for (const auto& [y, x] : Raycast::decayGrids) {

@@ -63,7 +63,8 @@ namespace Raycast {
         if (direction.x < 0) {
             step.x = -1;
             rayLength1D.x = (sourcePos.x - (gridX * tile_size)) / tile_size * rayUnitStep.x;
-        } else {
+        }
+        else {
             step.x = 1;
             rayLength1D.x = ((gridX + 1) * tile_size - sourcePos.x) / tile_size * rayUnitStep.x;
         }
@@ -71,7 +72,8 @@ namespace Raycast {
         if (direction.y < 0) {
             step.y = -1;
             rayLength1D.y = (sourcePos.y - (gridY * tile_size)) / tile_size * rayUnitStep.y;
-        } else {
+        }
+        else {
             step.y = 1;
             rayLength1D.y = ((gridY + 1) * tile_size - sourcePos.y) / tile_size * rayUnitStep.y;
         }
@@ -84,7 +86,8 @@ namespace Raycast {
                 gridX += step.x;
                 distance = rayLength1D.x * tile_size;
                 rayLength1D.x += rayUnitStep.x;
-            } else {
+            }
+            else {
                 gridY += step.y;
                 distance = rayLength1D.y * tile_size;
                 rayLength1D.y += rayUnitStep.y;

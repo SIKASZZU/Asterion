@@ -5,9 +5,7 @@
 #include "map.hpp"
 #include "offset.hpp"
 
-static const float DEFAULT_MOVEMENT_SPEED = 30.0f;
-
-struct Player {
+struct PlayerData {
     float movement_speed;
     float size;
     float x;
@@ -21,8 +19,12 @@ struct Player {
     bool shifting;  // has player pressed shift?
     char last_movement_key;
 };
+extern PlayerData player;
 
-extern Player player;
-extern bool collisionX;
-extern bool collisionY;
-void update_player(int map[map_size][map_size], struct Offset& offset, SDL_Renderer* renderer);
+namespace PlayerNS {
+    extern float tilesPerSecond;
+    extern float DEFAULT_MOVEMENT_SPEED;
+    extern bool collisionX;
+    extern bool collisionY;
+    void update(int map[map_size][map_size], struct Offset& offset, SDL_Renderer* renderer, float deltaTime);
+}

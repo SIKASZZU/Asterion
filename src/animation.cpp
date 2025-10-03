@@ -1,9 +1,9 @@
+#include "player.hpp"
 #include "enemy.hpp"
 #include "animation.hpp"
 #include "textures.hpp"
 
-
-Uint32 AnimEnemy::lastUpdate = SDL_GetTicks();
+Uint32 AnimEnemy::lastUpdate;
 int AnimEnemy::lastFrame = 0;
 int AnimEnemy::animRow = 0;
 int AnimEnemy::animCol = 0;
@@ -54,8 +54,7 @@ void animation_player(SDL_Renderer* renderer) {
     int col;
 
     // player standing
-    if ((player.velocity.x == 0 && player.velocity.y == 0)
-        || player.movement_speed == 0) {
+    if (player.movement_speed == 0) {
 
         col = lastFrame % 12;
         player.animation_speed = 100;
@@ -69,7 +68,8 @@ void animation_player(SDL_Renderer* renderer) {
     // player moving
     else {
         col = lastFrame % 8;
-        shift_pressed == true ? player.animation_speed = player.movement_speed * 1.5 : player.animation_speed = player.movement_speed * 3;
+        float loweredMovementSpeed = player.movement_speed / PlayerNS::tilesPerSecond;
+        player.shifting == true ? player.animation_speed = tile_size * 1.4 : player.animation_speed = tile_size * 0.8;
         if (player.movement_vector.x == 1) { lastRow = 0; }
         if (player.movement_vector.x == -1) { lastRow = 1; }
         if (player.movement_vector.y == 1) { lastRow = 1; }
@@ -80,7 +80,6 @@ void animation_player(SDL_Renderer* renderer) {
     srcRect.y = lastRow * sprite_height;
     srcRect.w = sprite_width;
     srcRect.h = sprite_height;
-
     if (SDL_GetTicks() - lastUpdate > player.animation_speed) {
         lastFrame++;
         lastUpdate = SDL_GetTicks();
