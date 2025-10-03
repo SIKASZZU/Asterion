@@ -53,6 +53,7 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> random_offsets_trees;
 std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
 std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
 std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
+std::unordered_map<std::pair<int, int>, int, pair_hash> groundMap;
 std::set<std::pair<int, int>> grid_vine_checked;
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData& player) {
@@ -131,9 +132,13 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 texture_map[Map::MAZE_DECO].render(renderer, &srcFRect, &destTile);
                 break;
             }
+            case Map::LAND_CUBE: {
+                srcFRect = return_src_1x3(grid_pos, groundMap);
+                texture_map[Map::GROUND_CUBE_SPRITE].render(renderer, &srcFRect, &destTile);
+                break;
+            }
             case Map::YELLOW_CUBE:
             case Map::ERROR_CUBE:
-            case Map::LAND_CUBE:
             case Map::BLUE_CUBE: {
                 texture_map[grid_value].render(renderer, &destTile);
                 break;
@@ -353,11 +358,10 @@ int create_random_grass(std::pair<int, int> grid_pos, int grid_value) {
     }
 }
 
-SDL_FRect return_src_1x3(std::pair<int, int> grid_pos,
-    std::unordered_map<std::pair<int, int>, int, pair_hash>& map) {
-    float sprite_width = 32;
-    float sprite_height = 32;
-    int varIndex = map.try_emplace(grid_pos, rand() % 4)
+SDL_FRect return_src_1x3(std::pair<int, int> grid_pos, std::unordered_map<std::pair<int, int>, int, pair_hash>& map) {
+    const float sprite_width = 32;
+    const float sprite_height = 32;
+    int varIndex = map.try_emplace(grid_pos, rand() % 3)
         .first->second;
 
     if (varIndex == 0) {

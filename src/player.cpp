@@ -26,7 +26,7 @@ PlayerData player = {
 namespace PlayerNS {
     bool collisionX = false;
     bool collisionY = false;
-    float tilesPerSecond = 5.0f;
+    float tilesPerSecond = 25.0f;
     float DEFAULT_MOVEMENT_SPEED = tile_size * tilesPerSecond;
 
     void update(int map[map_size][map_size], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {

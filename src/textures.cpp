@@ -49,6 +49,7 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::TREE_TRUNK] = ImageTexture(renderer, Assets::Images::tree_trunk);
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");
     texture_map[Map::GROUND_CUBE] = ImageTexture(renderer, Assets::Images::ground_cube);
+    texture_map[Map::GROUND_CUBE_SPRITE] = ImageTexture(renderer, Assets::Images::ground_cube_sprite);
     texture_map[Map::LAND_CUBE] = ImageTexture(renderer, Assets::Images::land);
     texture_map[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, Assets::Images::maze_ground_cube);
     texture_map[Map::MAZE_GROUND_SPRITE] = ImageTexture(renderer, Assets::Images::maze_ground_spirte);
