@@ -16,16 +16,19 @@
 #include <utility>
 #include <set>
 
-RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* texture) {
+
+RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* texture, float alpha=1.0f) {
     this->render_order = render_order;
     this->dstrect = dstrect;
     this->texture = texture;
+    this->alpha = alpha;
 }
-RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect srcrect, SDL_FRect dstrect, Texture* texture) {
+RenderQueueItem::RenderQueueItem(int render_order, SDL_FRect srcrect, SDL_FRect dstrect, Texture* texture, float alpha=1.0f) {
     this->render_order = render_order;
     this->dstrect = dstrect;
     this->srcrect = srcrect;
     this->texture = texture;
+    this->alpha = alpha;
 }
 RenderQueueItem::RenderQueueItem(int render_order, std::function<void(SDL_Renderer* renderer)> custom_render) {
     this->render_order = render_order;
@@ -34,17 +37,19 @@ RenderQueueItem::RenderQueueItem(int render_order, std::function<void(SDL_Render
 
 void RenderQueueItem::render(SDL_Renderer* renderer) {
     if (this->texture.has_value()) {
+        SDL_SetTextureAlphaMod((*texture)->get_texture(), static_cast<Uint8>(alpha * 255));
         if (srcrect.h != 0 && srcrect.w != 0) {
             return this->texture.value()->render(renderer, &this->srcrect, &this->dstrect);
         }
         else {
             return this->texture.value()->render(renderer, &this->dstrect);
         }
+        // reset alpha
+        SDL_SetTextureAlphaMod((*texture)->get_texture(), 255);
     }
     if (this->custom_render.has_value()) {
         return this->custom_render.value()(renderer);
     }
-
     throw std::logic_error("texture or render function needed for rendering");
 }
 
@@ -80,7 +85,17 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
 
             int grid_value = map[row][column];
             std::pair<int, int> grid_pos = { row, column };
-
+            
+            int maxDist = 3;
+            bool inFront = ((row > player_tile_y - 1 && row <= player_tile_y + maxDist)
+                            &&
+                            (column > player_tile_x - 1 && column <= player_tile_x + maxDist));
+            float alpha = 1.0f;
+            if (inFront ) {
+                int distY = row - player_tile_y;
+                float fadeStrength = 1.0f - (float)distY / (float)maxDist;
+                alpha = std::clamp(1.0f - fadeStrength * 0.6f, 0.7f, 1.0f);
+            }
             if (r_pressed == false) {
                 // pass through
             }
@@ -174,7 +189,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 tempTile.w -= (xr / 4);
                 tempTile.h -= (xr / 4);
                 render_queue.push_back(
-                    RenderQueueItem(tempTile.y, tempTile, &texture_map[grid_value])
+                    RenderQueueItem(tempTile.y, tempTile, &texture_map[grid_value], alpha)
                 );
                 int grassIndex = create_random_grass(grid_pos, grid_value);
                 if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
@@ -199,17 +214,17 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 destTile.w += 5;
                 destTile.h += 5;
                 render_queue.push_back(
-                    RenderQueueItem(destTile.y, destTile, &texture_map[grid_value])
+                    RenderQueueItem(destTile.y, destTile, &texture_map[grid_value], alpha)
                 );
                 destTile.y -= half_tile;
                 srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                 if (!isEmpty(srcFRect)) {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE], alpha)
                     );
                 } else {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y + half_tile + 1, destTile, &texture_map[Map::WALL_CUBE])
+                        RenderQueueItem(destTile.y + half_tile + 1, destTile, &texture_map[Map::WALL_CUBE], alpha)
                     );
                 }
                 break;
@@ -221,12 +236,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                 if (!isEmpty(srcFRect)) {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE], alpha)
                     );
                 }
                 else {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE], alpha)
                     );
                 }
                 // wall marking nr 1 (100 divided by % number, 20% chance)
@@ -235,7 +250,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                     if (varIndex == 4) {
                         srcFRect = { 0, 0, 32, 32 };
                         render_queue.push_back(
-                            RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                            RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS], alpha)
                         );
                     }
                 }
@@ -253,12 +268,12 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                 if (!isEmpty(srcFRect)) {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE], alpha)
                     );
                 }
                 else {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE], alpha)
                     );
                 }
 
@@ -267,7 +282,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 if (varIndex == 4) {
                     srcFRect = { 32, 0, 32, 32 };
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                        RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS], alpha)
                     );
                 }
 
@@ -310,7 +325,7 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
                 if (cube_vine_tex == nullptr) break;
                 render_queue.push_back(
-                    RenderQueueItem(destTile.y + 2, destTile, cube_vine_tex)
+                    RenderQueueItem(destTile.y + 2, destTile, cube_vine_tex, alpha)
                 );
                 break;
             }
@@ -321,32 +336,31 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                 if (!isEmpty(srcFRect)) {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE], alpha)
                     );
                 }
                 else {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE], alpha)
                     );
                 }
                 // create decoration
                 srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
                 if (!isEmpty(srcFRect)) render_queue.push_back(
-                    RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                    RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS], alpha)
                 );
                 destTile.y -= half_tile;
                 srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
                 if (isEmpty(srcFRect)) {
                     srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
                     if (!isEmpty(srcFRect)) render_queue.push_back(
-                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE
-                        ])
+                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE], alpha)
                     );
                     break;
                 }
                 else {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::MAZE_DECO])
+                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::MAZE_DECO], alpha)
                     );
                     break;
                 }

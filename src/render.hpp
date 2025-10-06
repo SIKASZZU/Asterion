@@ -17,6 +17,7 @@ extern std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> groundMap;
 
+
 struct RenderQueueItem {
   int render_order;
   SDL_FRect dstrect;
@@ -27,10 +28,11 @@ struct RenderQueueItem {
   // everything it needs, except the renderer
   // try not to use this as thousands of lambda functions 
   // will cause a performance hit
-  std::optional<std::function<void(SDL_Renderer* renderer)>> custom_render;
+  float alpha = 1.0f;
 
-  RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* texture);
-  RenderQueueItem(int render_order, SDL_FRect srcrect, SDL_FRect dstrect, Texture* texture);
+  std::optional<std::function<void(SDL_Renderer* renderer)>> custom_render;
+  RenderQueueItem(int render_order, SDL_FRect dstrect, Texture* texture, float alpha);
+  RenderQueueItem(int render_order, SDL_FRect srcrect, SDL_FRect dstrect, Texture* texture, float alpha);
   RenderQueueItem(int render_order, std::function<void(SDL_Renderer* renderer)> custom_render);
 
   void render(SDL_Renderer* renderer);
