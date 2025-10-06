@@ -52,16 +52,6 @@ bool isEmpty(const SDL_FRect& r) {
     return r.w <= 0 || r.h <= 0;
 }
 
-void update_offset(struct Offset& offset, struct PlayerData& player) {
-
-    SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
-
-    coords.x -= offset.x;
-    coords.y -= offset.y;
-
-    offset.x = screen_width / 2 - coords.x;
-    offset.y = screen_height / 2 - coords.y;
-}
 
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[map_size][map_size]) {
     switch (key)
@@ -161,6 +151,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         pathStartY = -1;
     }
 }
+
 
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
     switch (key)
