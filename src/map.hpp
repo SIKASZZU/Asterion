@@ -10,7 +10,6 @@
 enum Map {
     PLAYER,
     SPIDER,
-    LAND_CUBE,
     TREE_TRUNK,
     GROUND_CUBE,
     GROUND_CUBE_SPRITE,
