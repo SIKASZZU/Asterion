@@ -215,21 +215,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 break;
             }
             case Map::WALL_CUBE:
-            case Map::SECTOR_1_WALL_VAL:
-            case Map::SECTOR_2_WALL_VAL:
-            case Map::SECTOR_3_WALL_VAL: {
+            case Map::SECTOR_1_WALL_VAL: {
+                // create walls
                 destTile.y -= half_tile;
-                if (grid_value == Map::SECTOR_3_WALL_VAL
-                    && unchangable_walls_s3.find(grid_pos) == unchangable_walls_s3.end()) return;
                 srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
-                if (grid_value == Map::SECTOR_2_WALL_VAL) {
-                    int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 30)
-                        .first->second;
-                    destTile.y += (xr / 2.5);
-                    destTile.x += (xr / 4);
-                    destTile.w -= (xr / 2);
-                    destTile.h -= (xr / 2);
-                }
                 if (!isEmpty(srcFRect)) {
                     render_queue.push_back(
                         RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
@@ -240,72 +229,125 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                         RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
                     );
                 }
-                // create vines on top of SECTOR_2 walls
-                if (grid_value == Map::SECTOR_2_WALL_VAL) {
-                    // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
-                    int grid_below = map[row - 1][column];
-                    if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
-                        // add overhang vines VINE_OVERHANG_SN
-                        if (grid_below == Map::MAZE_GROUND_CUBE &&
-                            (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
-                            map[row - 1][column] = Map::VINE_OVERHANG_SN;
-                        }
-                        // add overhang vines VINE_OVERHANG_EW
-                        if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
-                            (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
-                            map[row][column + 1] = Map::VINE_OVERHANG_EW;
-                        }
+                // wall marking nr 1 (100 divided by % number, 20% chance)
+                if (grid_value == Map::SECTOR_1_WALL_VAL) {
+                    int varIndex = mazeDecoMap.try_emplace(grid_pos, rand() % 5).first->second;
+                    if (varIndex == 4) {
+                        srcFRect = { 0, 0, 32, 32 };
+                        render_queue.push_back(
+                            RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                        );
                     }
-                    if (rand() % 10 == 1 && !grid_vine_checked.count(grid_pos)) {
-                        // add VINE_COVER_N to wall's southern side
-                        if (grid_below == Map::MAZE_GROUND_CUBE ||
-                            grid_below == Map::VINE_OVERHANG_SN ||
-                            grid_below == Map::VINE_OVERHANG_EW) {
-                            map[row - 1][column] = Map::VINE_COVER_N;
-                            // expand vine to neighbouring blocks aswell.
-                            // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
-                            // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
-                            if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
-                                map[row][column + 1] == Map::VINE_OVERHANG_EW) {
-                                map[row - 1][column + 1] = Map::VINE_COVER_N;
-                            }
-                            if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
-                                map[row][column - 1] == Map::VINE_OVERHANG_EW) {
-                                map[row - 1][column - 1] = Map::VINE_COVER_N;
-                            }
-                        }
-                    }
-                    grid_vine_checked.insert(grid_pos);
-                    // vine'il y += 1, et vine tekstuur oleks on top of wall
-                    auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
-                    if (cube_vine_tex == nullptr) break;
+                }
+                break;
+            }
+            case Map::SECTOR_2_WALL_VAL: {
+                // create walls
+                destTile.y -= half_tile;
+                int xr = random_offsets_walls.try_emplace(grid_pos, rand() % 30)
+                    .first->second;
+                destTile.y += (xr / 2.5);
+                destTile.x += (xr / 4);
+                destTile.w -= (xr / 2);
+                destTile.h -= (xr / 2);
+                srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                if (!isEmpty(srcFRect)) {
                     render_queue.push_back(
-                        RenderQueueItem(destTile.y + 1, destTile, cube_vine_tex)
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                    );
+                }
+                else {
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
+                    );
+                }
+
+                // create wall markings nr2 (100 divided by % number, 20% chance)
+                int varIndex = mazeDecoMap.try_emplace(grid_pos, rand() % 5).first->second;
+                if (varIndex == 4) {
+                    srcFRect = { 32, 0, 32, 32 };
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                    );
+                }
+
+                // vines
+                // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
+                int grid_below = map[row - 1][column];
+                if (rand() % 4 == 1 && !grid_vine_checked.count(grid_pos)) {
+                    // add overhang vines VINE_OVERHANG_SN
+                    if (grid_below == Map::MAZE_GROUND_CUBE &&
+                        (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
+                        map[row - 1][column] = Map::VINE_OVERHANG_SN;
+                    }
+                    // add overhang vines VINE_OVERHANG_EW
+                    if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
+                        (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                        map[row][column + 1] = Map::VINE_OVERHANG_EW;
+                    }
+                }
+                if (rand() % 10 == 1 && !grid_vine_checked.count(grid_pos)) {
+                    // add VINE_COVER_N to wall's southern side
+                    if (grid_below == Map::MAZE_GROUND_CUBE ||
+                        grid_below == Map::VINE_OVERHANG_SN ||
+                        grid_below == Map::VINE_OVERHANG_EW) {
+                        map[row - 1][column] = Map::VINE_COVER_N;
+                        // expand vine to neighbouring blocks aswell.
+                        // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
+                        // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
+                        if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
+                            map[row][column + 1] == Map::VINE_OVERHANG_EW) {
+                            map[row - 1][column + 1] = Map::VINE_COVER_N;
+                        }
+                        if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
+                            map[row][column - 1] == Map::VINE_OVERHANG_EW) {
+                            map[row - 1][column - 1] = Map::VINE_COVER_N;
+                        }
+                    }
+                }
+                grid_vine_checked.insert(grid_pos);
+                // vine'il y += 1, et vine tekstuur oleks on top of wall
+                auto cube_vine_tex = choose_cube_vine_texture("", grid_pos);
+                if (cube_vine_tex == nullptr) break;
+                render_queue.push_back(
+                    RenderQueueItem(destTile.y + 2, destTile, cube_vine_tex)
+                );
+                break;
+            }
+            case Map::SECTOR_3_WALL_VAL: {
+                if (unchangable_walls_s3.find(grid_pos) == unchangable_walls_s3.end()) return;
+                // create walls
+                destTile.y -= half_tile;
+                srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                if (!isEmpty(srcFRect)) {
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE])
+                    );
+                }
+                else {
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y, srcFRect, destTile, &texture_map[Map::WALL_CUBE])
+                    );
+                }
+                // create decoration
+                srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
+                if (!isEmpty(srcFRect)) render_queue.push_back(
+                    RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                );
+                destTile.y -= half_tile;
+                srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
+                if (isEmpty(srcFRect)) {
+                    srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
+                    if (!isEmpty(srcFRect)) render_queue.push_back(
+                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE
+                        ])
                     );
                     break;
                 }
-                // create maze deco into sector 3
-                else if (grid_value == Map::SECTOR_3_WALL_VAL) {
-                    srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
-                    if (!isEmpty(srcFRect)) render_queue.push_back(
-                        RenderQueueItem(destTile.y + 1, srcFRect, destTile, &texture_map[Map::WALL_MARKINGS])
+                else {
+                    render_queue.push_back(
+                        RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::MAZE_DECO])
                     );
-                    destTile.y -= half_tile;
-                    srcFRect = return_src_1x3(grid_pos, mazeDecoMap);
-                    if (isEmpty(srcFRect)) {
-                        srcFRect = return_src_1x3(grid_pos, mazeGroundMap);
-                        if (!isEmpty(srcFRect)) render_queue.push_back(
-                            RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::WALL_CUBE_SPRITE
-                            ])
-                        );
-                        break;
-                    }
-                    else {
-                        render_queue.push_back(
-                            RenderQueueItem(destTile.y + half_tile + 1, srcFRect, destTile, &texture_map[Map::MAZE_DECO])
-                        );
-                        break;
-                    }
                     break;
                 }
                 break;
