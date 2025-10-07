@@ -59,6 +59,7 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
 std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
 std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
 std::unordered_map<std::pair<int, int>, int, pair_hash> groundMap;
+std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverMap;
 std::set<std::pair<int, int>> grid_vine_checked;
 
 void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData& player) {
@@ -161,8 +162,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                                 // textures above ground, 1st floor (no render_q)
             case Map::GROUND_CUBE: {
                 destTile.y -= half_tile;
-                int grassIndex = create_random_grass(grid_pos, grid_value);
-                if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
+                srcFRect = return_src_1x3(grid_pos, grassCoverMap);
+                if (!isEmpty(srcFRect)) texture_map[Map::GRASS_COVER_SPRITE].render(renderer, &srcFRect, &destTile);
+                // int grassIndex = create_random_grass(grid_pos, grid_value);
+                // if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
                 break;
             }
             case Map::TREE_TRUNK: {
@@ -175,8 +178,11 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 tempTile.h = (tile_size / 2) - xr;
                 tempTile.w = (tile_size / 2) - xr;
                 texture_map[grid_value].render(renderer, &tempTile);
-                int grassIndex = create_random_grass(grid_pos, grid_value);
-                if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
+                // create grass cover
+                srcFRect = return_src_1x3(grid_pos, grassCoverMap);
+                if (!isEmpty(srcFRect)) texture_map[Map::GRASS_COVER_SPRITE].render(renderer, &srcFRect, &destTile);
+                // int grassIndex = create_random_grass(grid_pos, grid_value);
+                // if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
                 break;
             }
             case Map::TREE: {
@@ -191,8 +197,10 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
                 render_queue.push_back(
                     RenderQueueItem(tempTile.y, tempTile, &texture_map[grid_value], alpha)
                 );
-                int grassIndex = create_random_grass(grid_pos, grid_value);
-                if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
+                srcFRect = return_src_1x3(grid_pos, grassCoverMap);
+                if (!isEmpty(srcFRect)) texture_map[Map::GRASS_COVER_SPRITE].render(renderer, &srcFRect, &destTile);
+                // int grassIndex = create_random_grass(grid_pos, grid_value);
+                // if (grassIndex != -1) texture_map[grassIndex].render(renderer, &destTile);
                 break;
             }
                           // textures above ground i.e .y -= half_tile

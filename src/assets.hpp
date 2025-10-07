@@ -28,6 +28,7 @@ namespace Assets::Images {
   static const char* vine_cover_n = "resources/vine_cover_N.png";
   static const char* void_cube = "resources/void_cube.png";
   static const char* void_cube_tilemap = "resources/void_cube_tilemap.png";
+  static const char* grass_cover_sprite = "resources/grass_cover_sprite_sheet.png";
   static const char* grass_cover = "resources/grass_cover.png";
   static const char* grass_cover_tall = "resources/grass_cover_tall.png";
   static const char* grass_cover_short = "resources/grass_cover_short.png";

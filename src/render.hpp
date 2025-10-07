@@ -16,6 +16,7 @@ extern std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> groundMap;
+extern std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverMap;
 
 
 struct RenderQueueItem {
