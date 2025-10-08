@@ -87,15 +87,13 @@ void render_map(SDL_Renderer* renderer, struct Offset& offset, struct PlayerData
             int grid_value = map[row][column];
             std::pair<int, int> grid_pos = { row, column };
             
-            int maxDist = 3;
+            int maxDist = 2;
             bool inFront = ((row > player_tile_y - 1 && row <= player_tile_y + maxDist)
                             &&
                             (column > player_tile_x - 1 && column <= player_tile_x + maxDist));
             float alpha = 1.0f;
             if (inFront ) {
-                int distY = row - player_tile_y;
-                float fadeStrength = 1.0f - (float)distY / (float)maxDist;
-                alpha = std::clamp(1.0f - fadeStrength * 0.6f, 0.7f, 1.0f);
+                alpha = 0.6f;
             }
             if (r_pressed == false) {
                 // pass through

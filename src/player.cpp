@@ -11,8 +11,8 @@
 PlayerData player = {
     movement_speed: PlayerNS::DEFAULT_MOVEMENT_SPEED,
     size : (tile_size / 2),
-    x : 300 , // map_size / 2 * tile_size
-    y : 300 , // map_size / 2 * tile_size
+    x : map_size / 2 * tile_size,
+    y : map_size / 2 * tile_size,
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
     collision_array : wall_values,
