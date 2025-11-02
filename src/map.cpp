@@ -259,10 +259,12 @@ void generate_voids(std::set<std::pair<int, int>> void_locations, const int max_
     std::mt19937 rng{ std::random_device{}() };
     std::uniform_int_distribution<size_t> dist(0, void_locations.size() - 1);
 
-    for (int i = 0; i <= max_voids; i++) {
-        auto it = void_locations.begin();
-        std::advance(it, dist(rng));
-        auto [y, x] = *it;
+    std::vector<std::pair<int, int>> locations(void_locations.begin(), void_locations.end());
+
+    if (locations.empty()) { std::cout << "Error turning set into vector in generate_voids. Returned."; return; }
+
+    for (int i = 0; i < max_voids; i++) {
+        auto [y, x] = locations[dist(rng)];
         std::cout << "Assigned void pair to map data: " << y << " " << x << '\n';
         map[y][x] = Map::VOID_CUBE;
     }

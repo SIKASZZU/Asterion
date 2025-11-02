@@ -14,6 +14,7 @@
 #include "raycast.hpp"
 #include "vision.hpp"
 #include "enemy.hpp"
+#include "end.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -88,6 +89,12 @@ int main(int argc, char* argv[]) {
                 e.update(map, enemyTarget);
             }
 
+            if (Ending::start) {
+                Ending::update(renderer);
+                SDL_RenderPresent(renderer);
+                break;
+            }
+
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
@@ -98,6 +105,7 @@ int main(int argc, char* argv[]) {
             }
             Raycast::update(renderer, offset, map);
             Vision::update(renderer, offset);
+            Portal::has_entered();
             SDL_RenderPresent(renderer);
 
             Uint32 now = SDL_GetTicks();

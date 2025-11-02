@@ -5,6 +5,13 @@ feat: vision, mis s6ltub kordidooridest.
 feat: tracki, kui Vision::cutout_rects l2heb miski maha, ss tee rect hallikamaks mitte kohe mustaks.
 feat: treede, trunkide all saab olla grass, see lihtsalt blendib kokku ja ongi bcjo
 
+end: must screen
+    "Where am I"
+    screenid, blue tint spawn
+    sounds elevatorist v maze muutusest.
+    buttonid et terminateida k6ik v alustada uut tsykklit
+
+
 debug: visuaalselt displayida world coordiga recte player ymber. 
 
 bug: player mazeis runnides clipib wallide sisse
