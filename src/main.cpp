@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
                 react_to_keyboard_up(key, player);
             }
         }
-        react_to_keyboard_state(state, player);
+        react_to_keyboard_state(state);
 
         // frameTime = SDL_GetTicks() - frameStart;
         // if (frameTime < 16) { SDL_Delay(16 - frameTime); }

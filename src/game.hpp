@@ -60,4 +60,4 @@ struct pair_hash {
 bool isEmpty(const SDL_FRect& r);
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[map_size][map_size]);
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
-void react_to_keyboard_state(const bool* state, struct PlayerData& player);
+void react_to_keyboard_state(const bool* state);

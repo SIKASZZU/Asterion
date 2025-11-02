@@ -174,27 +174,7 @@ void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
 /// as they use switch cases and react to events.
 /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
 /// @param player struct Player player
-void react_to_keyboard_state(const bool* state, struct PlayerData& player) {
-    SDL_FPoint dir = player.movement_vector;
-    if (state[SDL_SCANCODE_W] && !PlayerNS::collisionY) {
-        dir.y = -1;
-        player.last_movement_key = 'w';
-    }
-    if (state[SDL_SCANCODE_S] && !PlayerNS::collisionY) {
-        dir.y = 1;
-        player.last_movement_key = 's';
-    }
-    
-    if (state[SDL_SCANCODE_A] && !PlayerNS::collisionX) {
-        dir.x = -1;
-        player.last_movement_key = 'a';
-    }
-    if (state[SDL_SCANCODE_D] && !PlayerNS::collisionX) {
-        dir.x = 1;
-        player.last_movement_key = 'd';
-    }
-    //reset mvector if poss
-    if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]) { dir.x = 0; }
-    if (!state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { dir.y = 0; }
-    player.movement_vector = { dir.x, dir.y };
+void react_to_keyboard_state(const bool* state) {
+    PlayerNS::create_movement_vector(state);
 }
+

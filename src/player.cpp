@@ -21,6 +21,7 @@ PlayerData player = {
     animation_speed : 1,
     shifting : false,
     last_movement_key : 'a',
+    cartesianMovement : true,
 };
 
 namespace PlayerNS {
@@ -29,8 +30,47 @@ namespace PlayerNS {
     float tilesPerSecond = 25.0f;
     float DEFAULT_MOVEMENT_SPEED = tile_size * tilesPerSecond;
 
+    void create_movement_vector(const bool* state) {
+        SDL_FPoint dir = player.movement_vector;
+        if (state[SDL_SCANCODE_W] && !PlayerNS::collisionY) {
+            dir.y = -1;
+            player.last_movement_key = 'w';
+            if (player.cartesianMovement == true) {
+                dir.x = -1;
+            };
+        }
+        if (state[SDL_SCANCODE_S] && !PlayerNS::collisionY) {
+            dir.y = 1;
+            player.last_movement_key = 's';
+            if (player.cartesianMovement == true) {
+                dir.x = 1;
+            };
+        }
+        if (state[SDL_SCANCODE_A] && !PlayerNS::collisionX) {
+            dir.x = -1;
+            player.last_movement_key = 'a';
+            if (player.cartesianMovement == true) {
+                dir.y = 1;
+            };
+        }
+        if (state[SDL_SCANCODE_D] && !PlayerNS::collisionX) {
+            dir.x = 1;
+            player.last_movement_key = 'd';
+            if (player.cartesianMovement == true) {
+                dir.y = -1;
+            };
+        }
+        // reset mvector if poss
+        if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]
+            && !state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { 
+                dir.x = 0;
+                dir.y = 0; 
+            }
+        player.movement_vector = { dir.x, dir.y };
+        std::cout << "player.movement_vecotr: " << player.movement_vector.x << " " << player.movement_vector.y << "\n";
+    }
+
     void update(int map[map_size][map_size], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
-        // don't update player.movement_vector var in this func.
         SDL_FPoint dir = player.movement_vector;
         SDL_FPoint velocity = { 0.0f, 0.0f };
         collisionX = false;

@@ -18,6 +18,7 @@ struct PlayerData {
     int animation_speed;
     bool shifting;  // has player pressed shift?
     char last_movement_key;
+    bool cartesianMovement;
 };
 extern PlayerData player;
 
@@ -27,4 +28,5 @@ namespace PlayerNS {
     extern bool collisionX;
     extern bool collisionY;
     void update(int map[map_size][map_size], struct Offset& offset, SDL_Renderer* renderer, float deltaTime);
+    void create_movement_vector(const bool* state);
 }
