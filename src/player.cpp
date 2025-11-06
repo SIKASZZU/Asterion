@@ -21,7 +21,7 @@ PlayerData player = {
     animation_speed : 1,
     shifting : false,
     last_movement_key : 'a',
-    cartesianMovement : true,
+    cartesianMovement : false,
 };
 
 namespace PlayerNS {
@@ -60,14 +60,17 @@ namespace PlayerNS {
                 dir.y = -1;
             };
         }
-        // reset mvector if poss
-        if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]
-            && !state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { 
-                dir.x = 0;
-                dir.y = 0; 
-            }
+        if (player.cartesianMovement == true) {
+            if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]
+                && !state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { 
+                    dir.x = 0;
+                    dir.y = 0; 
+                }
+        } else {
+            if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]) { dir.x = 0; }
+            if (!state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { dir.y = 0; }
+        }
         player.movement_vector = { dir.x, dir.y };
-        std::cout << "player.movement_vecotr: " << player.movement_vector.x << " " << player.movement_vector.y << "\n";
     }
 
     void update(int map[map_size][map_size], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
