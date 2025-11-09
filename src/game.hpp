@@ -8,8 +8,8 @@
 #include "enemy.hpp"
 
 // /* screen */
-extern int screen_width;
-extern int screen_height;
+extern int screenWidth;
+extern int screenHeight;
 extern float mouse_x;
 extern float mouse_y;
 
@@ -32,10 +32,10 @@ extern float tps;
 extern Uint64 previousTick;
 
 /* render.hpp args */
-extern int render_radius;
+extern int renderRadius;
 
 /* map.hpp args */
-extern float tile_size;
+extern float tileSize;
 
 /* pathfinding */
 extern int pathEndX;
@@ -58,6 +58,6 @@ struct pair_hash {
 
 /* functions */
 bool isEmpty(const SDL_FRect& r);
-void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[map_size][map_size]);
+void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]);
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
 void react_to_keyboard_state(const bool* state);

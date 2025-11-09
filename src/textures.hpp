@@ -9,23 +9,24 @@
 
 class Texture {
 protected:
-  SDL_Texture* m_texture;
+  SDL_Texture* mTexture;
 public:
-  SDL_Texture* get_texture() { return m_texture; }
-
+  static constexpr float spriteWidth = 32;
+  static constexpr float spriteHeight = 32;
+  SDL_Texture* get_texture() { return mTexture; }
   void destroy_texture();
   void render(SDL_Renderer* renderer, const SDL_FRect* srcrect, const SDL_FRect* dstrect);
   void render(SDL_Renderer* renderer, const SDL_FRect* dstrect);
 };
 
-extern std::unordered_map<int, Texture> texture_map;
+extern std::unordered_map<int, Texture> textureMap;
 // igal id 8 gridil eraldi random vine
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
+extern std::unordered_map<std::pair<int, int>, int, pair_hash> gridVines;
 
 void load_textures(SDL_Renderer* renderer);
 void destroy_all_textures();
 void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
-int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_FRect destTile);
+  int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile);
 
-Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> grid_pos = { -1, -1 });
+Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> gridPos = { -1, -1 });
 

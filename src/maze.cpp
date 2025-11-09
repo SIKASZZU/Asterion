@@ -35,7 +35,7 @@ namespace Maze {
         std::shuffle(directions.begin(), directions.end(), g);
     }
     // Recursive maze generation using DFS
-    void generate_maze(int map[map_size][map_size], int start_x, int start_y, std::string type) {
+    void generate_maze(int map[mapSize][mapSize], int start_x, int start_y, std::string type) {
         std::vector<std::pair<int, int>> directions;
         int allowed_number;
 
@@ -65,7 +65,7 @@ namespace Maze {
                 continue;
             }
 
-            if (nx > 0 && ny > 0 && nx < map_size - 1 && ny < map_size - 1) {
+            if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
                 map[nx][ny] = pathway;
                 map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = pathway;
 
@@ -85,16 +85,16 @@ namespace Maze {
         }
     }
     bool is_walkable(int gridValue) {
-        return wall_values.find(gridValue) == wall_values.end();
+        return wallValues.find(gridValue) == wallValues.end();
     }
     // BFS Pathfinding from (sx, sy) to (gx, gy)
-    bool find_path(const int map[map_size][map_size], int sx, int sy, int gx, int gy) {
+    bool find_path(const int map[mapSize][mapSize], int sx, int sy, int gx, int gy) {
 
         std::queue<std::pair<int, int>> q;
         path.clear();
 
         std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> came_from;
-        bool visited[map_size][map_size] = { false };
+        bool visited[mapSize][mapSize] = { false };
 
         q.push({ sx, sy });
         visited[sx][sy] = true;
@@ -120,7 +120,7 @@ namespace Maze {
             for (int i = 0; i < 4; ++i) {
                 int nx = x + dx[i], ny = y + dy[i];
                 int grid_value = map[nx][ny];
-                if (nx >= 0 && ny >= 0 && nx < map_size && ny < map_size &&
+                if (nx >= 0 && ny >= 0 && nx < mapSize && ny < mapSize &&
                     is_walkable(grid_value)
                     && !visited[nx][ny]) {
                     visited[nx][ny] = true;

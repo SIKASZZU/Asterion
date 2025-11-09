@@ -36,14 +36,14 @@ int main(int argc, char* argv[]) {
         return SDL_APP_FAILURE;
     }
 
-    SDL_GetWindowSize(window, &screen_width, &screen_height);
+    SDL_GetWindowSize(window, &screenWidth, &screenHeight);
     load_textures(renderer);
     TerrainClass terrain;
     Vision::create_darkness(renderer);
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
 
-    Enemy enemy(162, 162, tile_size);
+    Enemy enemy(162, 162, tileSize);
     enemyArray.push_back(enemy);
 
     while (isRunning) {

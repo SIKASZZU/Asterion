@@ -6,19 +6,19 @@
 #include "player.hpp"
 #include "map.hpp"
 
-namespace Portal { 
+namespace Portal {
     bool has_entered() {
-        std::pair<int,int> player_grid = {
-            static_cast<int>((player.x + (player.size / 2)) / tile_size),
-            static_cast<int>((player.y + (player.size / 2)) / tile_size)
+        std::pair<int, int> player_grid = {
+            static_cast<int>((player.x + (player.size / 2)) / tileSize),
+            static_cast<int>((player.y + (player.size / 2)) / tileSize)
         };
 
-        if (map[player_grid.second][player_grid.first] == Map::VOID_CUBE 
+        if (map[player_grid.second][player_grid.first] == Map::VOID_CUBE
             || map[player_grid.second][player_grid.first] == VOID_CUBE_NEIGHBOUR) {
             std::cout << "Player entered the portal!" << '\n';
             Ending::start = true;
             return true;
-        } 
+        }
 
         return false;
     }

@@ -23,15 +23,15 @@
 bool stopAllEnemies = true;
 std::vector<Enemy> enemyArray = {};
 
-Enemy::Enemy(int gx, int gy, int tile_size)
-    : grid{ gx, gy }, size(tile_size * 1), rect{ pos.x, pos.y, size, size }, speed(player.movement_speed), color({ 255, 0, 0, 255 }),
+Enemy::Enemy(int gx, int gy, int tileSize)
+    : grid{ gx, gy }, size(tileSize * 1), rect{ pos.x, pos.y, size, size }, speed(player.movementSpeed), color({ 255, 0, 0, 255 }),
     currentPathIndex(0), movementVector{ 0,0 }
 {
-    pos = { static_cast<float>(grid.x * tile_size), static_cast<float>(grid.y * tile_size) };
+    pos = { static_cast<float>(grid.x * tileSize), static_cast<float>(grid.y * tileSize) };
 }
 
-void Enemy::update(const int map[map_size][map_size], SDL_Point target) {
-    SDL_Point targetGrid = { static_cast<int>(target.x / tile_size), static_cast<int>(target.y / tile_size) };
+void Enemy::update(const int map[mapSize][mapSize], SDL_Point target) {
+    SDL_Point targetGrid = { static_cast<int>(target.x / tileSize), static_cast<int>(target.y / tileSize) };
 
     if (stopAllEnemies) return;
     if (path.empty()) {
@@ -51,7 +51,7 @@ void Enemy::render(SDL_Renderer* renderer, struct Offset& offset) {
 
 // -------------------- Private ----------------------
 
-void Enemy::compute_path(const int map[map_size][map_size], SDL_Point targetGrid) {
+void Enemy::compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid) {
     path.clear();
     currentPathIndex = 0;
     Maze::find_path(map, grid.x, grid.y, targetGrid.x, targetGrid.y);
@@ -69,8 +69,8 @@ void Enemy::move_along_path(SDL_Point targetGrid) {
     int nextY = nextGrid.second;
 
     SDL_FPoint nextPos{
-        static_cast<float>((nextX * tile_size)),
-        static_cast<float>((nextY * tile_size))
+        static_cast<float>((nextX * tileSize)),
+        static_cast<float>((nextY * tileSize))
     };
     float dx = nextPos.x - pos.x;
     float dy = nextPos.y - pos.y;
@@ -78,7 +78,7 @@ void Enemy::move_along_path(SDL_Point targetGrid) {
 
     movementVector = { nextX - grid.x, nextY - grid.y };
 
-    if (dist <= tile_size) {
+    if (dist <= tileSize) {
         grid.x = nextX;
         grid.y = nextY;
         path.erase(path.begin());
@@ -89,6 +89,6 @@ void Enemy::move_along_path(SDL_Point targetGrid) {
     }
 }
 
-bool Enemy::is_walkable(const int map[map_size][map_size], SDL_Point targetGrid) {
-    return wall_values.find(map[targetGrid.x][targetGrid.y]) == wall_values.end();
+bool Enemy::is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid) {
+    return wallValues.find(map[targetGrid.x][targetGrid.y]) == wallValues.end();
 }

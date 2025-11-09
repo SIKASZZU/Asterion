@@ -18,7 +18,7 @@ namespace Vision {
         darkness = SDL_CreateTexture(
             renderer, SDL_PIXELFORMAT_RGBA8888,
             SDL_TEXTUREACCESS_TARGET,
-            screen_width, screen_height
+            screenWidth, screenHeight
         );
         SDL_SetTextureBlendMode(darkness, SDL_BLENDMODE_BLEND);
     }
@@ -31,12 +31,12 @@ namespace Vision {
 
         auto draw_fade_rect = [&](int gridX, int gridY) {
             SDL_FPoint coords = to_isometric_grid_coordinate(gridX, gridY);
-            coords.y -= tile_size / 2;
-            SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
-            float dx = (gridX * tile_size + tile_size / 2) - (player.x);
-            float dy = (gridY * tile_size + tile_size / 2) - (player.y);
-            float dist = std::sqrt(dx * dx + dy * dy) / (tile_size * 4);
-            float t = std::clamp(dist / (render_radius), 0.0f, 1.0f);
+            coords.y -= tileSize / 2;
+            SDL_FRect rect = { coords.x, coords.y, tileSize, tileSize };
+            float dx = (gridX * tileSize + tileSize / 2) - (player.x);
+            float dy = (gridY * tileSize + tileSize / 2) - (player.y);
+            float dist = std::sqrt(dx * dx + dy * dy) / (tileSize * 4);
+            float t = std::clamp(dist / (renderRadius), 0.0f, 1.0f);
             Uint8 alpha = t * 255.0f;
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
             SDL_RenderFillRect(renderer, &rect);

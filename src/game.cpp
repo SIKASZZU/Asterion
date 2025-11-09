@@ -15,8 +15,8 @@
 bool isRunning = true;
 float mouse_x = 0;
 float mouse_y = 0;
-int screen_width = 0;
-int screen_height = 0;
+int screenWidth = 0;
+int screenHeight = 0;
 
 /* framerate */
 Uint32 frameCount = 0;
@@ -33,10 +33,10 @@ float tps = 0.0f;
 Uint64 previousTick = SDL_GetTicks();
 
 /* render.hpp args */
-int render_radius = 20; // perfectse rad -> (win_width / 2) / tile_size //*NOTE win_widthil pole siin veel v22rtust vaid
+int renderRadius = 20; // perfectse rad -> (win_width / 2) / tileSize //*NOTE win_widthil pole siin veel v22rtust vaid
 
 /* map.hpp args */
-float tile_size = 100.0f;
+float tileSize = 100.0f;
 
 /* pathfinding */
 int pathEndX = -1;
@@ -53,7 +53,7 @@ bool isEmpty(const SDL_FRect& r) {
 }
 
 
-void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[map_size][map_size]) {
+void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]) {
     switch (key)
     {
     case SDLK_F: {
@@ -65,8 +65,8 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
 
         std::cout << "----- PLAYER -----" << "\n";
         std::cout << "x, y: " << player.x << ", " << player.y << "\n";
-        std::cout << "grid: " << static_cast<int>(player.x / tile_size) << ' ' << static_cast<int>(player.y / tile_size) \
-            << " = value: " << map[static_cast<int>(player.y / tile_size)][static_cast<int>(player.x / tile_size)] << '\n';
+        std::cout << "grid: " << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) \
+            << " = value: " << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
 
         std::cout << "----- ENEMY -----" << "\n";
         for (const auto& e : enemyArray) {
@@ -83,48 +83,48 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_KP_PLUS: case SDLK_PLUS: {
-        render_radius += 5;
-        Raycast::maxRayLength = render_radius * (tile_size * 0.75);
+        renderRadius += 5;
+        Raycast::maxRayLength = renderRadius * (tileSize * 0.75);
         Raycast::updateMaxGridSize = true;
-        std::cout << "render_radius = " << render_radius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
+        std::cout << "renderRadius = " << renderRadius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
         break;
     }
     case SDLK_KP_MINUS: case SDLK_MINUS: {
         // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
-        render_radius > 5 ? render_radius -= 5 : render_radius;
-        Raycast::maxRayLength = render_radius * (tile_size * 0.75);
+        renderRadius > 5 ? renderRadius -= 5 : renderRadius;
+        Raycast::maxRayLength = renderRadius * (tileSize * 0.75);
         Raycast::updateMaxGridSize = true;
-        std::cout << "render_radius = " << render_radius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
+        std::cout << "renderRadius = " << renderRadius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
         break;
     }
     case SDLK_PERIOD: {
-        tile_size += 5;
-        std::cout << "tile_size = " << tile_size << "\n";
-        player.size = tile_size / 2;
+        tileSize += 5;
+        std::cout << "tileSize = " << tileSize << "\n";
+        player.size = tileSize / 2;
         Raycast::updateMaxGridSize = true;
         break;
     }
     case SDLK_COMMA: {
-        tile_size > 5 ? tile_size -= 5 : tile_size;
-        std::cout << "tile_size = " << tile_size << "\n";
-        player.size = tile_size / 2;
+        tileSize > 5 ? tileSize -= 5 : tileSize;
+        std::cout << "tileSize = " << tileSize << "\n";
+        player.size = tileSize / 2;
         Raycast::updateMaxGridSize = true;
         break;
     }
     case SDLK_PAGEDOWN: {
-        pathStartX = static_cast<int>(player.x / tile_size);
-        pathStartY = static_cast<int>(player.y / tile_size);
+        pathStartX = static_cast<int>(player.x / tileSize);
+        pathStartY = static_cast<int>(player.y / tileSize);
         std::cout << "Start point set: " << pathStartX << " " << pathStartY << "\n";
         break;
     }
     case SDLK_PAGEUP: {
-        pathEndX = static_cast<int>(player.x / tile_size);
-        pathEndY = static_cast<int>(player.y / tile_size);
+        pathEndX = static_cast<int>(player.x / tileSize);
+        pathEndY = static_cast<int>(player.y / tileSize);
         std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
         break;
     }
     case SDLK_LSHIFT: {
-        player.movement_speed = PlayerNS::DEFAULT_MOVEMENT_SPEED / 4;
+        player.movementSpeed = PlayerNS::defaultMovementSpeed / 4;
         player.shifting = true;
         break;
     }
@@ -162,7 +162,7 @@ void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
     switch (key)
     {
     case SDLK_LSHIFT: {
-        player.movement_speed = PlayerNS::DEFAULT_MOVEMENT_SPEED;
+        player.movementSpeed = PlayerNS::defaultMovementSpeed;
         player.shifting = false;
         break;
     }
@@ -180,6 +180,6 @@ void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
 /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
 /// @param player struct Player player
 void react_to_keyboard_state(const bool* state) {
-    PlayerNS::create_movement_vector(state);
+    PlayerNS::create_movementVector(state);
 }
 

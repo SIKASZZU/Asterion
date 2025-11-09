@@ -11,6 +11,6 @@ void update_offset(struct PlayerData& player) {
     coords.x -= offset.x;
     coords.y -= offset.y;
 
-    offset.x = screen_width / 2 - coords.x;
-    offset.y = screen_height / 2 - coords.y;
+    offset.x = screenWidth / 2 - coords.x;
+    offset.y = screenHeight / 2 - coords.y;
 }

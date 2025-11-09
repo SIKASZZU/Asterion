@@ -10,8 +10,8 @@ int AnimEnemy::animCol = 0;
 
 void Enemy::animation(SDL_Renderer* renderer) {
     using namespace AnimEnemy;
-    const int sprite_width = 256;
-    const int sprite_height = 256;
+    const int spriteWidth = 256;
+    const int spriteHeight = 256;
     SDL_FRect srcRect;
     int animationSpeed = 25;
     animCol = lastFrame % 16;
@@ -22,15 +22,15 @@ void Enemy::animation(SDL_Renderer* renderer) {
     if (movementVector.y == 1) { animRow = 2; }
     if (movementVector.y == -1) { animRow = 0; }
 
-    srcRect.x = animCol * sprite_width;
-    srcRect.y = animRow * sprite_height;
-    srcRect.w = sprite_width;
-    srcRect.h = sprite_height;
+    srcRect.x = animCol * spriteWidth;
+    srcRect.y = animRow * spriteHeight;
+    srcRect.w = spriteWidth;
+    srcRect.h = spriteHeight;
 
     SDL_FRect dstRect = rect;
     float scaleFactor = 1.0f;
-    dstRect.w = sprite_width * scaleFactor;
-    dstRect.h = sprite_height * scaleFactor;
+    dstRect.w = spriteWidth * scaleFactor;
+    dstRect.h = spriteHeight * scaleFactor;
     // center inside the original rect (e.g. tile)
     dstRect.x = rect.x + (rect.w - dstRect.w) * 0.5f;
     dstRect.y = rect.y + (rect.h - dstRect.h) * 0.5f;
@@ -38,7 +38,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
         lastFrame++;
         lastUpdate = SDL_GetTicks();
     }
-    texture_map[Map::SPIDER].render(renderer, &srcRect, &dstRect);
+    textureMap[Map::SPIDER].render(renderer, &srcRect, &dstRect);
 }
 
 
@@ -48,41 +48,41 @@ int AnimPlayer::lastRow = 0;
 
 void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
-    const int sprite_width = 64;
-    const int sprite_height = 64;
+    const int spriteWidth = 64;
+    const int spriteHeight = 64;
     SDL_FRect srcRect;
     int col;
 
     // player standing
-    if (player.movement_speed == 0) {
+    if (player.movementSpeed == 0) {
 
         col = lastFrame % 12;
-        player.animation_speed = 100;
-        if (player.last_movement_key == 'w' || player.last_movement_key == 'd') {
+        player.animationSpeed = 100;
+        if (player.lastMovementKey == 'w' || player.lastMovementKey == 'd') {
             lastRow = 2;
         }
-        else if (player.last_movement_key == 's' || player.last_movement_key == 'a') {
+        else if (player.lastMovementKey == 's' || player.lastMovementKey == 'a') {
             lastRow = 3;
         }
     }
     // player moving
     else {
         col = lastFrame % 8;
-        float loweredMovementSpeed = player.movement_speed / PlayerNS::tilesPerSecond;
-        player.shifting == true ? player.animation_speed = tile_size * 1.4 : player.animation_speed = tile_size * 0.8;
-        if (player.movement_vector.x == 1) { lastRow = 0; }
-        if (player.movement_vector.x == -1) { lastRow = 1; }
-        if (player.movement_vector.y == 1) { lastRow = 1; }
-        if (player.movement_vector.y == -1) { lastRow = 0; }
+        float loweredMovementSpeed = player.movementSpeed / PlayerNS::tilesPerSecond;
+        player.shifting == true ? player.animationSpeed = tileSize * 1.4 : player.animationSpeed = tileSize * 0.8;
+        if (player.movementVector.x == 1) { lastRow = 0; }
+        if (player.movementVector.x == -1) { lastRow = 1; }
+        if (player.movementVector.y == 1) { lastRow = 1; }
+        if (player.movementVector.y == -1) { lastRow = 0; }
     }
 
-    srcRect.x = col * sprite_width;
-    srcRect.y = lastRow * sprite_height;
-    srcRect.w = sprite_width;
-    srcRect.h = sprite_height;
-    if (SDL_GetTicks() - lastUpdate > player.animation_speed) {
+    srcRect.x = col * spriteWidth;
+    srcRect.y = lastRow * spriteHeight;
+    srcRect.w = spriteWidth;
+    srcRect.h = spriteHeight;
+    if (SDL_GetTicks() - lastUpdate > player.animationSpeed) {
         lastFrame++;
         lastUpdate = SDL_GetTicks();
     }
-    texture_map[Map::PLAYER].render(renderer, &srcRect, &player.rect);
+    textureMap[Map::PLAYER].render(renderer, &srcRect, &player.rect);
 }

@@ -9,18 +9,18 @@
 #include "offset.hpp"
 
 PlayerData player = {
-    movement_speed: PlayerNS::DEFAULT_MOVEMENT_SPEED,
-    size : (tile_size / 2),
-    x : map_size / 2 * tile_size,
-    y : map_size / 2 * tile_size,
+    movementSpeed: PlayerNS::defaultMovementSpeed,
+    size : (tileSize / 2),
+    x : mapSize / 2 * tileSize,
+    y : mapSize / 2 * tileSize,
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
-    collision_array : wall_values,
-    movement_vector : {0, 0},
+    collision_array : wallValues,
+    movementVector : {0, 0},
     velocity : {0, 0},
-    animation_speed : 1,
+    animationSpeed : 1,
     shifting : false,
-    last_movement_key : 'a',
+    lastMovementKey : 'a',
     cartesianMovement : false,
 };
 
@@ -28,65 +28,66 @@ namespace PlayerNS {
     bool collisionX = false;
     bool collisionY = false;
     float tilesPerSecond = 25.0f;
-    float DEFAULT_MOVEMENT_SPEED = tile_size * tilesPerSecond;
+    float defaultMovementSpeed = tileSize * tilesPerSecond;
 
-    void create_movement_vector(const bool* state) {
-        SDL_FPoint dir = player.movement_vector;
+    void create_movementVector(const bool* state) {
+        SDL_FPoint dir = player.movementVector;
         if (state[SDL_SCANCODE_W] && !PlayerNS::collisionY) {
             dir.y = -1;
-            player.last_movement_key = 'w';
+            player.lastMovementKey = 'w';
             if (player.cartesianMovement == true) {
                 dir.x = -1;
             };
         }
         if (state[SDL_SCANCODE_S] && !PlayerNS::collisionY) {
             dir.y = 1;
-            player.last_movement_key = 's';
+            player.lastMovementKey = 's';
             if (player.cartesianMovement == true) {
                 dir.x = 1;
             };
         }
         if (state[SDL_SCANCODE_A] && !PlayerNS::collisionX) {
             dir.x = -1;
-            player.last_movement_key = 'a';
+            player.lastMovementKey = 'a';
             if (player.cartesianMovement == true) {
                 dir.y = 1;
             };
         }
         if (state[SDL_SCANCODE_D] && !PlayerNS::collisionX) {
             dir.x = 1;
-            player.last_movement_key = 'd';
+            player.lastMovementKey = 'd';
             if (player.cartesianMovement == true) {
                 dir.y = -1;
             };
         }
         if (player.cartesianMovement == true) {
             if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]
-                && !state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { 
-                    dir.x = 0;
-                    dir.y = 0; 
-                }
-        } else {
+                && !state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) {
+                dir.x = 0;
+                dir.y = 0;
+            }
+        }
+        else {
             if (!state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A]) { dir.x = 0; }
             if (!state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { dir.y = 0; }
         }
-        player.movement_vector = { dir.x, dir.y };
+        player.movementVector = { dir.x, dir.y };
     }
 
-    void update(int map[map_size][map_size], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
-        SDL_FPoint dir = player.movement_vector;
+    void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
+        SDL_FPoint dir = player.movementVector;
         SDL_FPoint velocity = { 0.0f, 0.0f };
         collisionX = false;
         collisionY = false;
         if (dir.x != 0 || dir.y != 0) {
             // if player presses movement key then reset the sliding with giga hard speed
             if (abs(dir.x) == 1 || abs(dir.y) == 1) {
-                if (!player.shifting) { player.movement_speed = DEFAULT_MOVEMENT_SPEED; }
-                else { player.movement_speed = DEFAULT_MOVEMENT_SPEED / 4; }
+                if (!player.shifting) { player.movementSpeed = defaultMovementSpeed; }
+                else { player.movementSpeed = defaultMovementSpeed / 4; }
             }
-            velocity.x = dir.x * player.movement_speed * deltaTime;
-            velocity.y = dir.y * player.movement_speed * deltaTime;
-            SDL_FRect templatePlayerRect = { 
+            velocity.x = dir.x * player.movementSpeed * deltaTime;
+            velocity.y = dir.y * player.movementSpeed * deltaTime;
+            SDL_FRect templatePlayerRect = {
                 player.x,
                 player.y,
                 player.rect.w,
@@ -100,18 +101,18 @@ namespace PlayerNS {
             rectY.y += velocity.y;
             collisionY = check_collision(map, player, rectY);
 
-            if (collisionX) { 
-                velocity.x = 0; 
+            if (collisionX) {
+                velocity.x = 0;
             }
-            if (collisionY) { 
-                velocity.y = 0; 
+            if (collisionY) {
+                velocity.y = 0;
             }
             player.x += velocity.x;
             player.y += velocity.y;
         }
         else {
             // muidu player seisab aga variable ytleb, et speed == 20
-            player.movement_speed = 0;
+            player.movementSpeed = 0;
         }
         SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
         player.rect = { coords.x + player.size / 2,

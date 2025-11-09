@@ -9,7 +9,7 @@
 // return boolean 0 or 1
 // 1 == collision detected
 // 0 == no collision detected  
-bool check_collision(int map[map_size][map_size], struct PlayerData& player, SDL_FRect tempRect) {
+bool check_collision(int map[mapSize][mapSize], struct PlayerData& player, SDL_FRect tempRect) {
 
     // player collision on or off
     if (!player.collision) {
@@ -17,10 +17,10 @@ bool check_collision(int map[map_size][map_size], struct PlayerData& player, SDL
     }
 
     // Calculate grid indices for all four corners
-    int grid_x_left = static_cast<int>(tempRect.x / tile_size);
-    int grid_x_right = static_cast<int>((tempRect.x + tempRect.w) / tile_size);
-    int grid_y_top = static_cast<int>(tempRect.y / tile_size);
-    int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tile_size);
+    int grid_x_left = static_cast<int>(tempRect.x / tileSize);
+    int grid_x_right = static_cast<int>((tempRect.x + tempRect.w) / tileSize);
+    int grid_y_top = static_cast<int>(tempRect.y / tileSize);
+    int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tileSize);
 
     if (std::find(player.collision_array.begin(), player.collision_array.end(),
         map[grid_y_top][grid_x_left]) != player.collision_array.end()) {

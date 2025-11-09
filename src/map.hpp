@@ -42,21 +42,21 @@ enum Map {
     MAZE_DECO,
 };
 
-static const std::unordered_set<int> wall_values = {
+static const std::unordered_set<int> wallValues = {
     Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
     Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
 };
 
-static const std::unordered_set<int> ground_values = {
+static const std::unordered_set<int> groundValues = {
     Map::GROUND_CUBE, Map::TREE, Map::GRASS_COVER, Map::TREE_TRUNK
 };
 
 /* map */
-const int map_size = 325;
-extern int map[map_size][map_size];
+const int mapSize = 325;
+extern int map[mapSize][mapSize];
 
 void generate_map();
-void print_map(int map[map_size][map_size]);
-void generate_random_map(int map[map_size][map_size], int min_val, int max_val);
-void generate_maze_runner_map(int map[map_size][map_size]);
-void generate_voids(std::set<std::pair<int,int>> void_locations, const int max_voids);
+void print_map(int map[mapSize][mapSize]);
+void generate_random_map(int map[mapSize][mapSize], int min_val, int max_val);
+void generate_maze_runner_map(int map[mapSize][mapSize]);
+void generate_voids(std::set<std::pair<int, int>> void_locations, const int max_voids);
