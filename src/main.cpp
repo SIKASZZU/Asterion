@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
         return SDL_APP_FAILURE;
     }
     // 1280	720, https://en.wikipedia.org/wiki/16:9_aspect_ratio
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/primitives", 1600, 900, 0, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Asterion", 1600, 900, 0, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
