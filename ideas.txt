@@ -4,6 +4,15 @@ feat: day/night cycle
 feat: vision, mis s6ltub kordidooridest.
 feat: tracki, kui Vision::cutout_rects l2heb miski maha, ss tee rect hallikamaks mitte kohe mustaks.
 feat: treede, trunkide all saab olla grass, see lihtsalt blendib kokku ja ongi bcjo
+feat:Player saab klikkida darknessisse, et meelde tuletada, mis seal oli?
+    Kui hakkkad jooksma seal, kus juuba varem jooksnud oled, ss tulevad nurgad n2htavaks, ss tulevad koridorid n2htavaks
+
+bug: void cube tex fixi 2ra
+bug: player mazeis runnides clipib wallide sisse
+bug: raycast on sellep perses i think
+bug (mis kedagi ei koti): kui tile size on spetsnaz ja Vision, raycastiga m2ngida, ss m6nikord m6ni tile ei satu Vision::rect setti ja mappi tekivad augud. (tilesize 100 no problem? bueno)
+
+debug: visuaalselt displayida world coordiga recte player ymber. 
 
 end: must screen
     "Where am I"
@@ -11,12 +20,3 @@ end: must screen
     sounds elevatorist v maze muutusest.
     buttonid et terminateida k6ik v alustada uut tsykklit
 
-
-debug: visuaalselt displayida world coordiga recte player ymber. 
-
-bug: player mazeis runnides clipib wallide sisse
-bug: raycast on sellep perses i think
-bug (mis kedagi ei koti): kui tile size on spetsnaz ja Vision, raycastiga m2ngida, ss m6nikord m6ni tile ei satu Vision::rect setti ja mappi tekivad augud. (tilesize 100 no problem? bueno)
-
-Player saab klikkida darknessisse, et meelde tuletada, mis seal oli?
-    Kui hakkkad jooksma seal, kus juuba varem jooksnud oled, ss tulevad nurgad n2htavaks, ss tulevad koridorid n2htavaks
