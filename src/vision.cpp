@@ -30,7 +30,7 @@ namespace Vision {
         SDL_RenderClear(renderer);
 
         auto draw_fade_rect = [&](int gridX, int gridY) {
-            SDL_FPoint coords = to_isometric_grid_coordinate(offset, gridX, gridY);
+            SDL_FPoint coords = to_isometric_grid_coordinate(gridX, gridY);
             coords.y -= tile_size / 2;
             SDL_FRect rect = { coords.x, coords.y, tile_size, tile_size };
             float dx = (gridX * tile_size + tile_size / 2) - (player.x);

@@ -6,4 +6,4 @@ struct Offset {
 };
 extern Offset offset;
 
-void update_offset(struct Offset& offset, struct PlayerData& player);
+void update_offset(struct PlayerData& player);

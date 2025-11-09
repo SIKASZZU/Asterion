@@ -32,7 +32,6 @@ enum Map {
     SECTOR_1_WALL_VAL, // no texture
     SECTOR_2_WALL_VAL, // no texture
     SECTOR_3_WALL_VAL, // no texture
-    NUMBER_ATLAS,
     VINE_OVERHANG_SN,
     VINE_OVERHANG_EW,
     VINE_COVER_N,

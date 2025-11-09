@@ -4,9 +4,9 @@
 /* camera offset */
 Offset offset = { 0, 0 };
 
-void update_offset(struct Offset& offset, struct PlayerData& player) {
+void update_offset(struct PlayerData& player) {
 
-    SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
+    SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
 
     coords.x -= offset.x;
     coords.y -= offset.y;

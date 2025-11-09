@@ -113,7 +113,7 @@ namespace PlayerNS {
             // muidu player seisab aga variable ytleb, et speed == 20
             player.movement_speed = 0;
         }
-        SDL_FPoint coords = to_isometric_coordinate(offset, player.x, player.y);
+        SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
         player.rect = { coords.x + player.size / 2,
             coords.y - player.size / 2,
             player.size,

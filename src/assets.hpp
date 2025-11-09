@@ -4,7 +4,6 @@
 // NB: All resource paths should be from the root of the workspace
 
 namespace Assets::Images {
-  static const char* numbers = "resources/numbers.png";
   static const char* tree = "resources/tree.png";
   static const char* tree_trunk = "resources/tree_trunk.png";
   static const char* ground_cube = "resources/ground_cube.png";

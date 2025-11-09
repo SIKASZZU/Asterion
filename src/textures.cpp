@@ -43,8 +43,6 @@ const int texture_height = 16;
 void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
     texture_map[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
-    // only used in render_map_numbers, sprite sheed (0-9, each 16px wide)
-    texture_map[Map::NUMBER_ATLAS] = ImageTexture(renderer, Assets::Images::numbers);
     texture_map[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
     texture_map[Map::TREE_TRUNK] = ImageTexture(renderer, Assets::Images::tree_trunk);
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");
@@ -77,38 +75,12 @@ void load_textures(SDL_Renderer* renderer) {
     texture_map[Map::MAZE_DECO] = ImageTexture(renderer, Assets::Images::maze_deco);
 }
 
-
 void destroy_all_textures() {
     for (auto& pair : texture_map) {
         pair.second.destroy_texture();
     }
     texture_map.clear();
 }
-
-
-/// @brief Will render an image for numbers between [0-9] (inclusive)
-///
-/// If the number is outside 0-9, it is ignored, will not be rendered
-/// @param renderer 
-/// @param number 
-/// @param at_tile 
-void load_specific_number(SDL_Renderer* renderer, int number, SDL_FRect dstrect) {
-    // this function could be replaced by rendering text
-    // instead of a picture of
-    if (number < 0 || number > 9) {
-        return;
-    }
-
-    // used to select a specific number from atlas
-    SDL_FRect number_rect = {
-        static_cast<float>(number * texture_width),
-        0,
-        texture_width,
-        texture_height
-    };
-    texture_map[Map::NUMBER_ATLAS].render(renderer, &number_rect, &dstrect);
-}
-
 
 Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos) {
     if (grid_pos == std::pair{ -1,-1 }) {
@@ -129,7 +101,6 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> grid_pos
     }
     return nullptr;
 }
-
 
 void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
     int map[map_size][map_size], std::pair<int, int> grid_pos, SDL_FRect destTile) {

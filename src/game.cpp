@@ -138,6 +138,11 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "Vision is: " << v_pressed << '\n';
         break;
     }
+    case SDLK_Q: {
+        std::cout << "Forced exit " << std::endl;
+        isRunning = false;
+        break;
+    }
     default:
         break;
     }

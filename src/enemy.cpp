@@ -8,7 +8,6 @@
 // if dir.x = 1; angle = 135
 // if dir.x = -1; angle = 315
 
-#include "offset.hpp"
 #include "enemy.hpp"
 #include "game.hpp"
 #include "player.hpp"
@@ -43,7 +42,7 @@ void Enemy::update(const int map[map_size][map_size], SDL_Point target) {
 }
 
 void Enemy::render(SDL_Renderer* renderer, struct Offset& offset) {
-    SDL_FPoint isoPos = to_isometric_coordinate(offset, pos.x, pos.y);
+    SDL_FPoint isoPos = to_isometric_coordinate(pos.x, pos.y);
     rect = { isoPos.x, isoPos.y - size / 4, size, size };
     animation(renderer);
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);

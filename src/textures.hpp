@@ -22,7 +22,6 @@ extern std::unordered_map<int, Texture> texture_map;
 // igal id 8 gridil eraldi random vine
 extern std::unordered_map<std::pair<int, int>, int, pair_hash> grid_vines;
 
-void load_specific_number(SDL_Renderer* renderer, int number, SDL_FRect destTile);
 void load_textures(SDL_Renderer* renderer);
 void destroy_all_textures();
 void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,

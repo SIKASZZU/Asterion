@@ -37,8 +37,8 @@ int main(int argc, char* argv[]) {
     }
 
     SDL_GetWindowSize(window, &screen_width, &screen_height);
-
     load_textures(renderer);
+    TerrainClass terrain;
     Vision::create_darkness(renderer);
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
@@ -75,11 +75,14 @@ int main(int argc, char* argv[]) {
 
         float deltaTime = elapsedTicks / 1000.0f;
         PlayerNS::update(map, offset, renderer, deltaTime);
-        update_offset(offset, player);
+        update_offset(player);
 
         while (tickLag > tickDelay) {
             tickCount++;
             tickLag -= tickDelay;
+
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
 
             SDL_Point enemyTarget = {
                 static_cast<int>(player.x),
@@ -95,17 +98,16 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderClear(renderer);
-
-            load_render(renderer, offset, player);
+            terrain.render(renderer);
 
             for (auto& e : enemyArray) {
                 e.render(renderer, offset);
             }
+
             Raycast::update(renderer, offset, map);
             Vision::update(renderer, offset);
             Portal::has_entered();
+
             SDL_RenderPresent(renderer);
 
             Uint32 now = SDL_GetTicks();

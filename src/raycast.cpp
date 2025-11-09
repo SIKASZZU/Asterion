@@ -110,8 +110,8 @@ namespace Raycast {
                     sourcePos.x + direction.x * calculated_length,
                     sourcePos.y + direction.y * calculated_length
                 };
-                SDL_FPoint iso_start = to_isometric_coordinate(offset, sourcePos.x, sourcePos.y);
-                SDL_FPoint iso_end = to_isometric_coordinate(offset, end.x, end.y);
+                SDL_FPoint iso_start = to_isometric_coordinate(sourcePos.x, sourcePos.y);
+                SDL_FPoint iso_end = to_isometric_coordinate(end.x, end.y);
                 SDL_RenderLine(
                     renderer, iso_start.x + (tile_size / 2), iso_start.y, iso_end.x + (tile_size / 2), iso_end.y
                 );
