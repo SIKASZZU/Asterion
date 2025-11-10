@@ -108,23 +108,17 @@ int main(int argc, char* argv[]) {
             Vision::update(renderer, offset);
             Portal::has_entered();
 
-            SDL_RenderPresent(renderer);
-
             Uint32 now = SDL_GetTicks();
             Uint32 elapsed = now - fpsTimer;
-            if (elapsed > 1000) {
+            if (elapsed > 400) {
                 fps = frameCount * 1000.0f / elapsed;
-                tps = tickCount * 1000.0f / elapsed;
-                std::cout << std::endl;
-                std::cout << "elapsed:    " << elapsed << '\n';
-                std::cout << "fps:        " << fps << "\n";
-                std::cout << "frameCount: " << frameCount << "\n";
-                std::cout << "tps:        " << tps << "\n";
-                std::cout << "deltaTime: " << deltaTime << '\n';
-                fpsTimer = now;
                 frameCount = 0;
-                tickCount = 0;
+                fpsTimer = now;
             }
+            SDL_RenderDebugText(renderer, 10, 10, (std::string("FPS: ") + std::to_string(static_cast<int>(fps))).c_str());
+            SDL_RenderDebugText(renderer, 10, 30, (std::string("X:   ") + std::to_string(static_cast<int>(player.x))).c_str());
+            SDL_RenderDebugText(renderer, 10, 50, (std::string("Y:   ") + std::to_string(static_cast<int>(player.y))).c_str());
+            SDL_RenderPresent(renderer);
         }
     }
 
