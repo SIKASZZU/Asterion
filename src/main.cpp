@@ -15,6 +15,7 @@
 #include "vision.hpp"
 #include "enemy.hpp"
 #include "end.hpp"
+#include "memory.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -115,9 +116,11 @@ int main(int argc, char* argv[]) {
                 frameCount = 0;
                 fpsTimer = now;
             }
-            SDL_RenderDebugText(renderer, 10, 10, (std::string("FPS: ") + std::to_string(static_cast<int>(fps))).c_str());
-            SDL_RenderDebugText(renderer, 10, 30, (std::string("X:   ") + std::to_string(static_cast<int>(player.x))).c_str());
-            SDL_RenderDebugText(renderer, 10, 50, (std::string("Y:   ") + std::to_string(static_cast<int>(player.y))).c_str());
+            
+            SDL_RenderDebugText(renderer, 50, 110, (std::string("FPS: ") + std::to_string(static_cast<int>(fps))).c_str());
+            SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+            SDL_RenderDebugText(renderer, 50, 150, (std::string("X:   ") + std::to_string(static_cast<int>(player.x))).c_str());
+            SDL_RenderDebugText(renderer, 50, 170, (std::string("Y:   ") + std::to_string(static_cast<int>(player.y))).c_str());
             SDL_RenderPresent(renderer);
         }
     }
