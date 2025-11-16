@@ -116,7 +116,8 @@ int main(int argc, char* argv[]) {
                 frameCount = 0;
                 fpsTimer = now;
             }
-            
+
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             SDL_RenderDebugText(renderer, 50, 110, (std::string("FPS: ") + std::to_string(static_cast<int>(fps))).c_str());
             SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
             SDL_RenderDebugText(renderer, 50, 150, (std::string("X:   ") + std::to_string(static_cast<int>(player.x))).c_str());
