@@ -78,13 +78,11 @@ float TerrainClass::determine_alpha(std::pair<int, int> gridPos) {
     int row = gridPos.first;
     int column = gridPos.second;
     int maxDist = 2;
-    bool inFront = ((row > playerTileY - 1 && row <= playerTileY + maxDist)
-        &&
-        (column > playerTileX - 1 && column <= playerTileX + maxDist));
-    float alpha = 1.0f;
-    if (inFront) {
-        alpha = 1.0f;
-    }
+    bool inFront = (
+        (row > playerTileY - 1 && row <= playerTileY + maxDist) && (column > playerTileX - 1 && column <= playerTileX + maxDist)
+    );
+    alpha = 1.0f;
+    if (inFront) { alpha *= 0.6f; }
     return alpha;
 }
 int TerrainClass::create_random_grass(std::pair<int, int> gridPos, int gridValue) {
