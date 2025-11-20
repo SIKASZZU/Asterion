@@ -1,7 +1,3 @@
-# Uncomment the next two lines if you run make from cmd.exe and want bash utilities (find, etc)
-# SHELL := /usr/bin/env bash
-# .SHELLFLAGS := -c
-
 TARGET_EXEC ?= main
 SRC_DIR ?= src
 BUILD_DIR ?= bld
@@ -38,10 +34,9 @@ build: $(TARGET) copy_resources
 run: build
 	cd $(dir $(TARGET)) && ./$(TARGET_EXEC)
 
-# final link step: link all objects; add -lmingw32 before SDL libs on MinGW if necessary
 $(TARGET): $(OBJECTS)
 	mkdir -p $(dir $@)
-	$(CXX) $(OBJECTS) -o $@ -lmingw32 $(LDFLAGS) -Wl,-subsystem,console
+	$(CXX) $(OBJECTS) -o $@  $(LDFLAGS)
 
 # compile rule: preserve src/ subdirs into bld/ subdirs
 # example: src/logic/foo.cpp -> bld/logic/foo.o
