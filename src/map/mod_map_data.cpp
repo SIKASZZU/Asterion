@@ -1,9 +1,11 @@
 #include "map.hpp"
 #include "render.hpp"
 #include "mod_map_data.hpp"
+
 std::set<std::pair<int, int>> change_gP;
 // other walls from s3 have been removed, these are the ones to be rendered
 std::set<std::pair<int, int>> unchangableWalls_S3;
+std::vector<std::pair<int, int>> diagonalGrids;
 std::pair<int, int> gP;
 int gV;
 
@@ -50,5 +52,15 @@ void mod_map_sector_3() {
     }
     for (const auto [x, y] : change_gP) {
         map[x][y] = Map::MAZE_GROUND_CUBE;
+    }
+}
+
+void seperate_4_sections() {
+    if (empty(diagonalGrids)) {
+        std::cout << "Error creating section seperation walls!: empty(diagonalGrids)==true ";
+    }
+
+    for (auto& p : diagonalGrids) {
+        map[p.first][p.second] = Map::INGROWN_WALL_CUBE;
     }
 }

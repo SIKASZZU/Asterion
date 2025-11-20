@@ -61,6 +61,7 @@ void generate_map() {
     bool sector_status = find_start_sectors();
 
     mod_map_sector_3();
+    seperate_4_sections();
     // print_map(map);
     // save_map_locally(map);
 }
@@ -124,8 +125,8 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
     for (int y = 0; y < mapSize; y++) {
         for (int x = 0; x < mapSize; x++) {
 
-            float dx = x - halfMapSize;
-            float dy = y - halfMapSize;
+            int dx = static_cast<int>(std::abs(x - halfMapSize));
+            int dy = static_cast<int>(std::abs(y - halfMapSize));
 
             float distance_sq = dx * dx + dy * dy;
             float distance = std::sqrt(distance_sq);
@@ -195,11 +196,6 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
                             map[y][x] = Map::MAZE_GROUND_CUBE;
                         }
                     }
-                    if (distance <= mazeOuterRadius) {
-                        if (y == x) map[y][x] = Map::BLUE_CUBE;
-                        if (x == mapSize - y) map[y][x] = Map::BLUE_CUBE;
-                    }
-
                 }
                 // pathwayd suunas kell 12, 3, 6, 9, et player gladeist minema saaks.
                 else if (sector % 2 == 0 && distance <= (mazeSecondSector / 2.5)) {
@@ -238,11 +234,11 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
             }
             // Glade (square) and Ingrown walls around glade
             int thicknessGladeWall = 1;
-            if (std::abs(dx) <= gladeRadius + thicknessGladeWall
-                && std::abs(dy) <= gladeRadius + thicknessGladeWall) {
+            if (dx <= gladeRadius + thicknessGladeWall
+                && dy <= gladeRadius + thicknessGladeWall) {
                 // walls outside of glade radius
-                if (static_cast<int>(std::abs(dx)) == gladeRadius + 1
-                    || static_cast<int>(std::abs(dy)) == gladeRadius + 1) {
+                if (dx == gladeRadius + 1
+                    || dy == gladeRadius + 1) {
                     if (x != halfMapSize && y != halfMapSize) {
                         map[y][x] = Map::INGROWN_WALL_CUBE;
                     }
@@ -251,7 +247,11 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
                 else {
                     map[y][x] = Map::GROUND_CUBE;
                 }
-
+            }
+            if (distance <= mazeOuterRadius
+                && dx > gladeRadius + 1
+                && dy > gladeRadius + 1) {
+                if (y == x || x == mapSize - y - 1) diagonalGrids.push_back(std::make_pair(y, x));
             }
         }
     }
