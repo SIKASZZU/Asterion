@@ -51,7 +51,7 @@ private:
     SDL_FRect return_src_1x3(std::pair<int, int> gridPos, std::unordered_map<std::pair<int, int>, int, pair_hash>& map);
     int create_random_grass(std::pair<int, int> gridPos, int gridValue);
     void calculate_miscellaneous();
-    void render_ground(SDL_Renderer* renderer);
+    void render_ground(SDL_Renderer* renderer, SDL_Texture* groundTexture);
     void render_walls();
     void render_decoration(SDL_Renderer* renderer);
     void render_items(SDL_Renderer* renderer);
@@ -67,6 +67,7 @@ private:
     // TODO: igal render catil oleks eraldi renderQ, et wallid v6istlevad oma enda vahel jne.
     // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
     float alpha = 1.0f;
+
 public:
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer, SDL_Texture* groundTexture);
 };

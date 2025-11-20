@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
     SDL_GetWindowSize(window, &screenWidth, &screenHeight);
     load_textures(renderer);
     TerrainClass terrain;
+    SDL_Texture* groundTexture = SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight );
     Vision::create_darkness(renderer);
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
@@ -99,7 +100,7 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            terrain.render(renderer);
+            terrain.render(renderer, groundTexture);
 
             for (auto& e : enemyArray) {
                 e.render(renderer, offset);
@@ -125,7 +126,7 @@ int main(int argc, char* argv[]) {
             SDL_RenderPresent(renderer);
         }
     }
-
+    SDL_DestroyTexture(groundTexture);
     destroy_all_textures();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

@@ -131,7 +131,18 @@ void TerrainClass::calculate_miscellaneous() {
     mapIndexBottom = std::min(mapSize - 1, playerTileY + renderRadius);
 
 }
-void TerrainClass::render_ground(SDL_Renderer* renderer) {
+void TerrainClass::render_ground(SDL_Renderer* renderer, SDL_Texture* groundTexture) {
+    // when not update
+    if (player.movementSpeed == 0) {
+        SDL_RenderTexture(renderer, groundTexture, nullptr, nullptr);
+        return;
+    }
+    SDL_SetRenderTarget(renderer, groundTexture);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 120);
+    SDL_RenderClear(renderer);
+
+    
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
             SDL_FRect destTile = return_destTile(row, column);
@@ -172,6 +183,8 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
             }
         }
     }
+    SDL_SetRenderTarget(renderer, nullptr);
+    SDL_RenderTexture(renderer, groundTexture, nullptr, nullptr);
 }
 void TerrainClass::render_walls() {
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
@@ -460,10 +473,10 @@ void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
     for (auto& r : renderQueue) { r.call_render(renderer); }
     renderQueue.clear();
 }
-void TerrainClass::render(SDL_Renderer* renderer) {
+void TerrainClass::render(SDL_Renderer* renderer, SDL_Texture* groundTexture) {
     calculate_miscellaneous();
     
-    render_ground(renderer);
+    render_ground(renderer, groundTexture);
     render_items(renderer);
     render_walls();
     render_colored_cubes(renderer);
