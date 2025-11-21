@@ -310,6 +310,8 @@ void TerrainClass::render_decoration(SDL_Renderer* renderer) {
             }
             case Map::SECTOR_1_WALL_VAL:
             case Map::SECTOR_2_WALL_VAL: {
+                break;
+
                 if (gridValue == Map::SECTOR_2_WALL_VAL) { srcFRect = { 32, 0, 32, 32 }; }
                 else { srcFRect = { 0, 0, 32, 32 }; };
                 // create wall markings nr2 (100 divided by % number, 20% chance)
@@ -359,7 +361,7 @@ void TerrainClass::render_decoration(SDL_Renderer* renderer) {
                 auto cubeVineTex = choose_cube_vine_texture("", gridPos);
                 if (cubeVineTex != nullptr) {
                     renderQueue.push_back(
-                        RenderQueueItem(destTile.y + 2, destTile, cubeVineTex, alpha)
+                        RenderQueueItem(destTile.y + halfTile + 2, destTile, cubeVineTex, alpha)
                     );
                 }
                 break;
