@@ -44,7 +44,10 @@ int main(int argc, char* argv[]) {
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
 
-    Enemy enemy(162, 162, tileSize);
+    Enemy enemy(162, 162);
+    enemy.set_speed(5);
+    enemy.set_size(tileSize);
+
     enemyArray.push_back(enemy);
 
     while (isRunning) {
@@ -77,7 +80,7 @@ int main(int argc, char* argv[]) {
         float deltaTime = elapsedTicks / 1000.0f;
         PlayerNS::update(map, offset, renderer, deltaTime);
         update_offset(player);
-
+        float tickDeltaSec = tickDelay/1000.0f;
         while (tickLag > tickDelay) {
             tickCount++;
             tickLag -= tickDelay;
@@ -85,12 +88,12 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
-            SDL_Point enemyTarget = {
-                static_cast<int>(player.x),
-                static_cast<int>(player.y)
+            SDL_Point enemyTargetGrid = {
+                static_cast<int>(player.x / tileSize),
+                static_cast<int>(player.y / tileSize)
             };
             for (auto& e : enemyArray) {
-                e.update(map, enemyTarget);
+                e.update(map, enemyTargetGrid, deltaTime);
             }
 
             if (Ending::start) {

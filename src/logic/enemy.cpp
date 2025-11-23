@@ -20,25 +20,31 @@
 #include <cmath>
 #include <algorithm>
 
-bool stopAllEnemies = true;
+bool stopAllEnemies = false;
 std::vector<Enemy> enemyArray = {};
 
-Enemy::Enemy(int gx, int gy, int tileSize)
-    : grid{ gx, gy }, size(tileSize * 1), rect{ pos.x, pos.y, size, size }, speed(player.movementSpeed), color({ 255, 0, 0, 255 }),
-    currentPathIndex(0), movementVector{ 0,0 }
-{
-    pos = { static_cast<float>(grid.x * tileSize), static_cast<float>(grid.y * tileSize) };
-}
+Enemy::Enemy(int gx, int gy)
+    :   grid{ gx, gy },
+        size(tileSize),
+        color({ 255, 0, 0, 255 }),
+        currentPathIndex(0),
+        movementVector{ 0, 0 },
+        speed(player.movementSpeed),
+        pos {
+            static_cast<float>(grid.x * tileSize),
+            static_cast<float>(grid.y * tileSize)
+        },
+        rect{ pos.x, pos.y, size, size }
+{ }
 
-void Enemy::update(const int map[mapSize][mapSize], SDL_Point target) {
-    SDL_Point targetGrid = { static_cast<int>(target.x / tileSize), static_cast<int>(target.y / tileSize) };
+void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT) {
 
     if (stopAllEnemies) return;
-    if (path.empty()) {
+    if (path.empty() || currentPathIndex >= path.size()) {
         if (!is_walkable(map, targetGrid)) { std::cout << "not walkable" << '\n'; return; };
         compute_path(map, targetGrid);
     }
-    move_along_path(targetGrid);
+    move_along_path(dT);
 }
 
 void Enemy::render(SDL_Renderer* renderer, struct Offset& offset) {
@@ -58,35 +64,35 @@ void Enemy::compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid) 
     path = Maze::path;
 }
 
-// needs deltaTime
-void Enemy::move_along_path(SDL_Point targetGrid) {
+void Enemy::move_along_path(float dT) {
     if (path.empty()) {
         return;
     }
 
-    const auto& nextGrid = path.front();
+    const auto& nextGrid = path[currentPathIndex];
     int nextX = nextGrid.first;
     int nextY = nextGrid.second;
-
     SDL_FPoint nextPos{
-        static_cast<float>((nextX * tileSize)),
-        static_cast<float>((nextY * tileSize))
+        static_cast<float>((nextX * tileSize + tileSize / 2)),
+        static_cast<float>((nextY * tileSize + tileSize / 2))
     };
     float dx = nextPos.x - pos.x;
     float dy = nextPos.y - pos.y;
-    float dist = std::sqrt(dx * dx + dy * dy);
+    float dist = std::hypot(dx, dy);
 
+    // Update movement direction for animation (45°, 135°, etc.)
+    // todo: see sitt ei lenda, kui tahan koordinaatidega tegema hakata? mingi skalaarvektor vmdgi playeri suunas, j2rgmise pathi ja korras?
     movementVector = { nextX - grid.x, nextY - grid.y };
+    if (dist <= 4.0f) {
+        pos = nextPos;
+        grid = { nextX, nextY };
+        currentPathIndex++;
+        return;
+    }
 
-    if (dist <= tileSize) {
-        grid.x = nextX;
-        grid.y = nextY;
-        path.erase(path.begin());
-    }
-    else {
-        pos.x += (dx / dist) * speed;
-        pos.y += (dy / dist) * speed;
-    }
+    float moveAmount = speed; // * dT
+    pos.x += (dx / dist) * moveAmount;
+    pos.y += (dy / dist) * moveAmount;
 }
 
 bool Enemy::is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid) {

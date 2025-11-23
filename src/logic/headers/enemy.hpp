@@ -7,26 +7,32 @@
 
 class Enemy {
 public:
-    Enemy(int gridX, int gridY, int size);
-    void update(const int map[mapSize][mapSize], SDL_Point targetGrid);
+    Enemy(int gridX, int gridY);
+    SDL_FPoint get_position() const { return pos; }
+    SDL_Point get_movementVector() const { return movementVector; }
+    SDL_Point grid;
+    
+    void animation(SDL_Renderer* renderer);
+    void update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT);
     void render(SDL_Renderer* renderer, struct Offset& offset);
     void set_speed(float s) { speed = s; }
-    void set_color(SDL_Color c) { color = c; }
-    SDL_FPoint get_position() const { return pos; }
-    SDL_Point grid;
-    SDL_Point movementVector;
-    void animation(SDL_Renderer* renderer);
+    void set_size(float sz) { size = sz; }
+
 private:
-    SDL_FRect rect;
-    SDL_Color color;
     float size;
     float speed;
-    SDL_FPoint pos;
     std::vector<std::pair<int, int>> path;
-    int currentPathIndex;
-    void move_along_path(SDL_Point targetGrid);
+    SDL_FPoint pos;
+    SDL_FRect rect;
+    SDL_Color color;
+    size_t currentPathIndex;
+    SDL_Point movementVector;
+
+    void move_along_path(float dT);
     void compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid);
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
+
+
 };
 
 extern bool stopAllEnemies;

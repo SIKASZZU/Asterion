@@ -73,7 +73,8 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
             SDL_FPoint pos = e.get_position();
             std::cout << "x, y: " << pos.x << " " << pos.y << "\n";
             std::cout << "grid: " << e.grid.x << " " << e.grid.y << "\n";
-            std::cout << "mVec: " << e.movementVector.x << " " << e.movementVector.y << "\n";
+            SDL_Point mV = e.get_movementVector(); 
+            std::cout << "mVec: " << mV.x << " " << mV.y << "\n";
         }
         break;
     }
