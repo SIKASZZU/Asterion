@@ -27,7 +27,6 @@ Uint32 frameTime;
 /* tickrate */
 Uint32 tickLag = 0;
 const int tickrate = 60;
-const int tickDelay = 1000 / tickrate;
 int tickCount = 0;
 float tps = 0.0f;
 Uint64 previousTick = SDL_GetTicks();
@@ -67,6 +66,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "x, y: " << player.x << ", " << player.y << "\n";
         std::cout << "grid: " << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) \
             << " = value: " << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
+        std::cout << "movementSpeed: " << player.movementSpeed << "\n";
 
         std::cout << "----- ENEMY -----" << "\n";
         for (const auto& e : enemyArray) {

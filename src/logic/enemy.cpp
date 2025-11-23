@@ -90,7 +90,7 @@ void Enemy::move_along_path(float dT) {
         return;
     }
 
-    float moveAmount = speed; // * dT
+    float moveAmount = speed * dT;
     pos.x += (dx / dist) * moveAmount;
     pos.y += (dy / dist) * moveAmount;
 }

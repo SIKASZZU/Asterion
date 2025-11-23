@@ -30,6 +30,8 @@ extern Uint32 tickLag;
 extern int tickCount;
 extern float tps;
 extern Uint64 previousTick;
+const Uint64 TICK_DELAY_MS = 16;  // 60 ticks per second
+const float fixedDeltaTime = TICK_DELAY_MS / 1000.0f;  // 0.016
 
 /* render.hpp args */
 extern int renderRadius;

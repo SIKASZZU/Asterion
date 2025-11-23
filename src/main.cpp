@@ -45,88 +45,75 @@ int main(int argc, char* argv[]) {
     const bool* state = SDL_GetKeyboardState(nullptr);
 
     Enemy enemy(162, 162);
-    enemy.set_speed(5);
+    enemy.set_speed(250);
     enemy.set_size(tileSize);
 
     enemyArray.push_back(enemy);
 
     while (isRunning) {
-        Uint64 frameStart = SDL_GetTicks();
-        SDL_GetMouseState(&mouse_x, &mouse_y);
+        Uint64 now = SDL_GetTicks();
+        Uint64 elapsedMS = now - previousTick;
+        previousTick = now;
+        tickLag += elapsedMS;
+
+        // Input (always real-time)
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                isRunning = false;
-                break;
-            }
-            else if (event.type == SDL_EVENT_KEY_DOWN) {
-                SDL_Keycode key = event.key.key;
-                react_to_keyboard_down(key, player, offset, map);
-            }
-            else if (event.type == SDL_EVENT_KEY_UP) {
-                SDL_Keycode key = event.key.key;
-                react_to_keyboard_up(key, player);
-            }
+            if (event.type == SDL_EVENT_QUIT) isRunning = false;
+            else if (event.type == SDL_EVENT_KEY_DOWN)
+                react_to_keyboard_down(event.key.key, player, offset, map);
+            else if (event.type == SDL_EVENT_KEY_UP)
+                react_to_keyboard_up(event.key.key, player);
         }
         react_to_keyboard_state(state);
 
-        // frameTime = SDL_GetTicks() - frameStart;
-        // if (frameTime < 16) { SDL_Delay(16 - frameTime); }
-
-        Uint64 elapsedTicks = frameStart - previousTick;
-        previousTick = frameStart;
-        tickLag += elapsedTicks;
-        frameCount++;
-
-        float deltaTime = elapsedTicks / 1000.0f;
-        PlayerNS::update(map, offset, renderer, deltaTime);
-        update_offset(player);
-        float tickDeltaSec = tickDelay/1000.0f;
-        while (tickLag > tickDelay) {
+        // tickrate specific
+        while (tickLag >= TICK_DELAY_MS) {
+            tickLag -= TICK_DELAY_MS;
             tickCount++;
-            tickLag -= tickDelay;
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderClear(renderer);
-
+            // (use fixedDeltaTime!)
             SDL_Point enemyTargetGrid = {
                 static_cast<int>(player.x / tileSize),
                 static_cast<int>(player.y / tileSize)
             };
-            for (auto& e : enemyArray) {
-                e.update(map, enemyTargetGrid, deltaTime);
-            }
 
-            if (Ending::start) {
-                Ending::update(renderer);
-                SDL_RenderPresent(renderer);
-                break;
-            }
-
-            terrain.render(renderer);
+            PlayerNS::update(map, offset, renderer, fixedDeltaTime);
 
             for (auto& e : enemyArray) {
-                e.render(renderer, offset);
+                e.update(map, enemyTargetGrid, fixedDeltaTime);
             }
 
-            Raycast::update(renderer, offset, map);
-            Vision::update(renderer, offset);
+            update_offset(player);
             Portal::has_entered();
 
-            Uint32 now = SDL_GetTicks();
-            Uint32 elapsed = now - fpsTimer;
-            if (elapsed > 400) {
-                fps = frameCount * 1000.0f / elapsed;
-                frameCount = 0;
-                fpsTimer = now;
-            }
-
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_RenderDebugText(renderer, 50, 110, (std::string("FPS: ") + std::to_string(static_cast<int>(fps))).c_str());
-            SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
-            SDL_RenderDebugText(renderer, 50, 150, (std::string("X:   ") + std::to_string(static_cast<int>(player.x))).c_str());
-            SDL_RenderDebugText(renderer, 50, 170, (std::string("Y:   ") + std::to_string(static_cast<int>(player.y))).c_str());
-            SDL_RenderPresent(renderer);
         }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        terrain.render(renderer);
+
+        for (auto& e : enemyArray) {
+            e.render(renderer, offset);
+        }
+
+        Raycast::update(renderer, offset, map);
+        Vision::update(renderer, offset);
+
+        if (Ending::start) Ending::update(renderer);
+
+        // FPS counter
+        Uint32 fpsNow = SDL_GetTicks();
+        if (fpsNow - fpsTimer > 400) {
+            fps = frameCount * 1000.0f / (fpsNow - fpsTimer);
+            frameCount = 0;
+            fpsTimer = fpsNow;
+        }
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
+        SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+        SDL_RenderPresent(renderer);
+        frameCount++;
     }
 
     destroy_all_textures();
