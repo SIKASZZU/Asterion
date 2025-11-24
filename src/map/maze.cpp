@@ -35,7 +35,7 @@ namespace Maze {
         std::shuffle(directions.begin(), directions.end(), g);
     }
     // Recursive maze generation using DFS
-    void generate_maze(int map[mapSize][mapSize], int start_x, int start_y, std::string type) {
+    void generate_maze(int map[mapSize][mapSize], int start_row, int start_col, std::string type) {
         std::vector<std::pair<int, int>> directions;
         int allowed_number;
 
@@ -55,33 +55,34 @@ namespace Maze {
         shuffle_directions(directions);
 
         for (const auto& dir : directions) {
-            int nx = start_x + dir.first;
-            int ny = start_y + dir.second;
+                // start_row/start_col correspond to map[row][col]
+                int nx = start_col + dir.first; // next x (column)
+                int ny = start_row + dir.second; // next y (row)
 
-            if (map[nx][ny] != allowed_number) {
-                if (map[nx][ny] == pathway && type != "one") {
+                if (map[ny][nx] != allowed_number) {
+                    if (map[ny][nx] == pathway && type != "one") {
+                        continue;
+                    }
                     continue;
                 }
-                continue;
-            }
 
-            if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
-                map[nx][ny] = pathway;
-                map[start_x + (dir.first != 0 ? dir.first / 2 : dir.first)][start_y + (dir.second != 0 ? dir.second / 2 : dir.second)] = pathway;
+                if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
+                    map[ny][nx] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second / 2 : dir.second)][start_col + (dir.first != 0 ? dir.first / 2 : dir.first)] = pathway;
 
-                if (type == "two" || type == "three") {
-                    map[start_x + (dir.first != 0 ? dir.first + 2 : dir.first)][start_y + (dir.second != 0 ? dir.second + 2 : dir.second)] = pathway;
-                    map[start_x + (dir.first != 0 ? dir.first + 3 : dir.first)][start_y + (dir.second != 0 ? dir.second + 3 : dir.second)] = pathway;
-                    map[start_x + (dir.first != 0 ? dir.first + 1 : dir.first)][start_y + (dir.second != 0 ? dir.second + 1 : dir.second)] = pathway;
+                    if (type == "two" || type == "three") {
+                        map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
+                        map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
+                        map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
+                    }
+
+                    if (type == "three") {
+                        map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
+                        map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
+                    }
+
+                    generate_maze(map, ny, nx, type);
                 }
-
-                if (type == "three") {
-                    map[start_x + (dir.first != 0 ? dir.first - 3 : dir.first)][start_y + (dir.second != 0 ? dir.second - 3 : dir.second)] = pathway;
-                    map[start_x + (dir.first != 0 ? dir.first - 1 : dir.first)][start_y + (dir.second != 0 ? dir.second - 1 : dir.second)] = pathway;
-                }
-
-                generate_maze(map, nx, ny, type);
-            }
         }
     }
     bool is_walkable(int gridValue) {
@@ -97,7 +98,8 @@ namespace Maze {
         bool visited[mapSize][mapSize] = { false };
 
         q.push({ sx, sy });
-        visited[sx][sy] = true;
+        // visited is [row][col] -> [y][x]
+        visited[sy][sx] = true;
 
         int dx[4] = { -1, 1, 0, 0 };
         int dy[4] = { 0, 0, -1, 1 };
@@ -119,13 +121,14 @@ namespace Maze {
 
             for (int i = 0; i < 4; ++i) {
                 int nx = x + dx[i], ny = y + dy[i];
-                int grid_value = map[nx][ny];
-                if (nx >= 0 && ny >= 0 && nx < mapSize && ny < mapSize &&
-                    is_walkable(grid_value)
-                    && !visited[nx][ny]) {
-                    visited[nx][ny] = true;
-                    came_from[{nx, ny}] = { x, y };
-                    q.push({ nx, ny });
+                // map is map[row][col] -> map[y][x]
+                if (nx >= 0 && ny >= 0 && nx < mapSize && ny < mapSize) {
+                    int grid_value = map[ny][nx];
+                    if (is_walkable(grid_value) && !visited[ny][nx]) {
+                        visited[ny][nx] = true;
+                        came_from[{nx, ny}] = { x, y };
+                        q.push({ nx, ny });
+                    }
                 }
             }
         }

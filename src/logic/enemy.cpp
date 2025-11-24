@@ -37,6 +37,13 @@ Enemy::Enemy(int gx, int gy)
         rect{ pos.x, pos.y, size, size }
 { }
 
+void Enemy::draw_path(const std::vector<std::pair<int, int>>& path) {
+    // drawing path doesnt reset so it just stacks up error cubes :)
+    for (const auto& p : path) {
+        map[p.second][p.first] = Map::ERROR_CUBE;
+    }
+}
+
 void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT) {
 
     if (stopAllEnemies) return;
@@ -44,6 +51,7 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float 
         (path.back().first != targetGrid.x || path.back().second != targetGrid.y) && player.movementSpeed == 0) {
         if (!is_walkable(map, targetGrid)) { std::cout << "not walkable" << '\n'; return; };
         compute_path(map, targetGrid);
+        // draw_path(path);
     }
     move_along_path(dT);
 }
@@ -97,5 +105,6 @@ void Enemy::move_along_path(float dT) {
 }
 
 bool Enemy::is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid) {
-    return wallValues.find(map[targetGrid.x][targetGrid.y]) == wallValues.end();
+    if (targetGrid.y < 0 || targetGrid.y >= mapSize || targetGrid.x < 0 || targetGrid.x >= mapSize) return false;
+    return wallValues.find(map[targetGrid.y][targetGrid.x]) == wallValues.end();
 }

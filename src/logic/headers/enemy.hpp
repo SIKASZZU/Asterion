@@ -33,7 +33,7 @@ private:
     void move_along_path(float dT);
     void compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid);
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
-
+    void draw_path(const std::vector<std::pair<int, int>>& path);
 
 };
 
