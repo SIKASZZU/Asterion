@@ -63,3 +63,4 @@ bool isEmpty(const SDL_FRect& r);
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]);
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
 void react_to_keyboard_state(const bool* state);
+void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize);

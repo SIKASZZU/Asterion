@@ -51,6 +51,27 @@ bool isEmpty(const SDL_FRect& r) {
     return r.w <= 0 || r.h <= 0;
 }
 
+// Recalculate world-space positions after `tileSize` changes.
+// oldTileSize: previous tile size; newTileSize: current `tileSize` global
+void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
+    // Player: compute grid from old pixel coords and reproject to new tileSize
+    int playerGX = static_cast<int>((player.x + player.size / 2.0f) / oldTileSize);
+    int playerGY = static_cast<int>((player.y + player.size / 2.0f) / oldTileSize);
+    player.x = playerGX * newTileSize;
+    player.y = playerGY * newTileSize;
+    player.size = newTileSize / 2.0f;
+    player.gridX = playerGX;
+    player.gridY = playerGY;
+    SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
+    player.rect.x = coords.x + player.size / 2.0f;
+    player.rect.y = coords.y - player.size / 2.0f;
+
+    for (auto &e : enemyArray) {
+        SDL_FPoint newPos = {static_cast<float>(e.grid.x) * newTileSize, static_cast<float>(e.grid.y) * newTileSize};
+        e.set_position(newPos);
+    }
+}
+
 
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]) {
     switch (key)
@@ -99,17 +120,24 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_PERIOD: {
-        tileSize += 5;
-        std::cout << "tileSize = " << tileSize << "\n";
-        player.size = tileSize / 2;
-        Raycast::updateMaxGridSize = true;
+        {
+            float oldTs = tileSize;
+            tileSize += 5;
+            std::cout << "tileSize = " << tileSize << "\n";
+            Raycast::updateMaxGridSize = true;
+            // rescale world to keep logical positions
+            rescale_world_after_tilesize_change(oldTs, tileSize);
+        }
         break;
     }
     case SDLK_COMMA: {
-        tileSize > 5 ? tileSize -= 5 : tileSize;
-        std::cout << "tileSize = " << tileSize << "\n";
-        player.size = tileSize / 2;
-        Raycast::updateMaxGridSize = true;
+        {
+            float oldTs = tileSize;
+            tileSize > 5 ? tileSize -= 5 : tileSize;
+            std::cout << "tileSize = " << tileSize << "\n";
+            Raycast::updateMaxGridSize = true;
+            rescale_world_after_tilesize_change(oldTs, tileSize);
+        }
         break;
     }
     case SDLK_PAGEDOWN: {

@@ -8,11 +8,15 @@
 #include "collision.hpp"
 #include "offset.hpp"
 
+const SDL_Point spawnpointGrid = { x: mapSize / 2, y: mapSize / 2 };
+
 PlayerData player = {
     movementSpeed: PlayerNS::defaultMovementSpeed,
     size : (tileSize / 2),
-    x : mapSize / 2 * tileSize,
-    y : mapSize / 2 * tileSize,
+    gridX : spawnpointGrid.x,
+    gridY : spawnpointGrid.y,
+    x : static_cast<float>(spawnpointGrid.x * tileSize),
+    y : static_cast<float>(spawnpointGrid.y * tileSize),
     rect : {0.0, 0.0, 0.0, 0.0},
     collision : false,
     collision_array : wallValues,
@@ -109,14 +113,17 @@ namespace PlayerNS {
             }
             player.x += velocity.x;
             player.y += velocity.y;
+            // update logical grid coordinates after motion
+            player.gridX = static_cast<int>((player.x + player.size / 2.0f) / tileSize);
+            player.gridY = static_cast<int>((player.y + player.size / 2.0f) / tileSize);
         }
         else {
             // muidu player seisab aga variable ytleb, et speed == 20
             player.movementSpeed = 0;
         }
         SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
-        player.rect = { coords.x + player.size / 2,
-            coords.y - player.size / 2,
+        player.rect = { coords.x + player.size / 2.0f,
+            coords.y - player.size / 2.0f,
             player.size,
             player.size
         };

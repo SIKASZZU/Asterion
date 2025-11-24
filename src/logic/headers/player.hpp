@@ -8,6 +8,8 @@
 struct PlayerData {
     float movementSpeed;
     float size;
+    int gridX;
+    int gridY;
     float x;
     float y;
     SDL_FRect rect;

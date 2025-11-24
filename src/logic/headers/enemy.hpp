@@ -15,6 +15,7 @@ public:
     void render(SDL_Renderer* renderer);
     void set_speed(float s) { speed = s; };
     void set_size(float sz) { size = sz; };
+    void set_position(SDL_FPoint p) { pos = p; };
     SDL_FPoint get_position() const { return pos; };
     SDL_Point get_movementVector() const { return movementVector; };
     SDL_FRect get_rect() const {return rect; };
