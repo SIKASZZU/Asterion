@@ -45,8 +45,9 @@ int main(int argc, char* argv[]) {
     const bool* state = SDL_GetKeyboardState(nullptr);
 
     Enemy enemy(162, 162);
+    map[162][162] = Map::ERROR_CUBE;
     enemy.set_speed(250);
-    enemy.set_size(tileSize);
+    enemy.set_size(tileSize * 0.75f);
 
     enemyArray.push_back(enemy);
 

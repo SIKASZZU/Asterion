@@ -40,7 +40,8 @@ Enemy::Enemy(int gx, int gy)
 void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT) {
 
     if (stopAllEnemies) return;
-    if (path.empty() || currentPathIndex >= path.size()) {
+    if (path.empty() || currentPathIndex >= path.size() ||
+        (path.back().first != targetGrid.x || path.back().second != targetGrid.y) && player.movementSpeed == 0) {
         if (!is_walkable(map, targetGrid)) { std::cout << "not walkable" << '\n'; return; };
         compute_path(map, targetGrid);
     }
@@ -49,7 +50,7 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float 
 
 void Enemy::render(SDL_Renderer* renderer) {
     SDL_FPoint isoPos = to_isometric_coordinate(pos.x, pos.y);
-    rect = { isoPos.x, isoPos.y, size, size };
+    rect = { isoPos.x, isoPos.y - (tileSize / 4), size, size };
     animation(renderer);
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderRect(renderer, &rect);
