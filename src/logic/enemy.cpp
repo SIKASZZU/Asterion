@@ -47,9 +47,9 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float 
     move_along_path(dT);
 }
 
-void Enemy::render(SDL_Renderer* renderer, struct Offset& offset) {
+void Enemy::render(SDL_Renderer* renderer) {
     SDL_FPoint isoPos = to_isometric_coordinate(pos.x, pos.y);
-    rect = { isoPos.x, isoPos.y - size / 4, size, size };
+    rect = { isoPos.x, isoPos.y, size, size };
     animation(renderer);
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderRect(renderer, &rect);

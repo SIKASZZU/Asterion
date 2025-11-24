@@ -456,8 +456,17 @@ void TerrainClass::render_items(SDL_Renderer* renderer) {
         }
     }
 }
-void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
+void TerrainClass::render_entities() {
+    // player
     renderQueue.push_back(RenderQueueItem(static_cast<int>(player.rect.y - (tileSize / 2)), [](SDL_Renderer* renderer) { animation_player(renderer); }));
+    // add enemies to renderQ
+
+    for (auto& e : enemyArray) {
+        int yPos = static_cast<int>(e.get_rect().y - tileSize / 2);
+        renderQueue.push_back(RenderQueueItem(yPos, [&e](SDL_Renderer* renderer) { e.render(renderer); }));
+    }
+}
+void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
     std::sort(renderQueue.begin(), renderQueue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) { return a.renderOrder < b.renderOrder; });
     for (auto& r : renderQueue) { r.call_render(renderer); }
     renderQueue.clear();
@@ -470,5 +479,6 @@ void TerrainClass::render(SDL_Renderer* renderer) {
     render_walls();
     render_colored_cubes(renderer);
     render_decoration(renderer);
+    render_entities();
     render_renderQ(renderer);
 }

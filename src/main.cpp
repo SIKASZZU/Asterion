@@ -93,10 +93,6 @@ int main(int argc, char* argv[]) {
 
         terrain.render(renderer);
 
-        for (auto& e : enemyArray) {
-            e.render(renderer, offset);
-        }
-
         Raycast::update(renderer, offset, map);
         Vision::update(renderer, offset);
 

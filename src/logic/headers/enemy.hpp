@@ -8,15 +8,17 @@
 class Enemy {
 public:
     Enemy(int gridX, int gridY);
-    SDL_FPoint get_position() const { return pos; }
-    SDL_Point get_movementVector() const { return movementVector; }
     SDL_Point grid;
     
     void animation(SDL_Renderer* renderer);
     void update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT);
-    void render(SDL_Renderer* renderer, struct Offset& offset);
-    void set_speed(float s) { speed = s; }
-    void set_size(float sz) { size = sz; }
+    void render(SDL_Renderer* renderer);
+    void set_speed(float s) { speed = s; };
+    void set_size(float sz) { size = sz; };
+    SDL_FPoint get_position() const { return pos; };
+    SDL_Point get_movementVector() const { return movementVector; };
+    SDL_FRect get_rect() const {return rect; };
+    int get_size() const {return size; };
 
 private:
     float size;

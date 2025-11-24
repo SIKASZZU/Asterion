@@ -57,6 +57,7 @@ private:
     void render_items(SDL_Renderer* renderer);
     void render_renderQ(SDL_Renderer* renderer);
     void render_colored_cubes(SDL_Renderer* renderer);
+    void render_entities();
     int mapIndexLeft;
     int mapIndexRight;
     int mapIndexTop;
