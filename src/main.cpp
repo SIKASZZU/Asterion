@@ -1,6 +1,7 @@
 #define SDL_MAIN_HANDLED
 
 #include <ctime>
+#include <cmath>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <array>
@@ -57,6 +58,9 @@ int main(int argc, char* argv[]) {
         previousTick = now;
         tickLag += elapsedMS;
 
+        // advance day/night clock (visual effect)
+        update_daynight(elapsedMS);
+
         // Input (always real-time)
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) isRunning = false;
@@ -99,6 +103,24 @@ int main(int argc, char* argv[]) {
 
         if (Ending::start) Ending::update(renderer);
 
+        // Draw day/night overlay: tint the final framebuffer according to timeOfDay
+        if (dayNightEnabled) {
+            // brightness oscillates with cosine: 1.0 = full day, 0.0 = full night
+            // get centralized brightness (1=day,0=night), respects inversion
+            float brightness = get_day_brightness();
+            // compute alpha for night tint (0..maxAlpha)
+            const float maxNightAlpha = 200.0f; // how dark the night can get
+            float nightAlpha = (1.0f - brightness) * maxNightAlpha;
+            if (nightAlpha > 0.5f) {
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                // bluish night tint
+                Uint8 a = static_cast<Uint8>(std::clamp(nightAlpha, 0.0f, 255.0f));
+                SDL_SetRenderDrawColor(renderer, 12, 24, 64, a);
+                SDL_FRect full = { 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) };
+                SDL_RenderFillRect(renderer, &full);
+            }
+        }
+
         // FPS counter
         Uint32 fpsNow = SDL_GetTicks();
         if (fpsNow - fpsTimer > 400) {
@@ -109,6 +131,20 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
         SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+        // Day/night debug status
+        {
+            int hours = static_cast<int>(timeOfDay * 24.0f) % 24;
+            int minutes = static_cast<int>((timeOfDay * 24.0f - hours) * 60.0f);
+            char buf[96];
+            snprintf(buf, sizeof(buf), "DayNight: %s  Time: %02d:%02d  Cycle: %.0fs",
+                dayNightEnabled ? "On" : "Off",
+                hours, minutes, dayLengthSeconds);
+            SDL_RenderDebugText(renderer, 50, 150, buf);
+            float brightness = dayNightEnabled ? 0.5f * (1.0f + cos(2.0 * PI * timeOfDay)) : 1.0f;
+            char buf2[64];
+            snprintf(buf2, sizeof(buf2), "Brightness: %.2f", brightness);
+            SDL_RenderDebugText(renderer, 50, 170, buf2);
+        }
         SDL_RenderPresent(renderer);
         frameCount++;
     }
