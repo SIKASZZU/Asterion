@@ -9,6 +9,7 @@ class Enemy {
 public:
     Enemy(int gridX, int gridY);
     SDL_Point grid;
+    SDL_Point lastDirection;
     
     void animation(SDL_Renderer* renderer);
     void update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT);

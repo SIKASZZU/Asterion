@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         return SDL_APP_FAILURE;
     }
     // 1280	720, https://en.wikipedia.org/wiki/16:9_aspect_ratio
-    if (!SDL_CreateWindowAndRenderer("Asterion", 1600, 900, 0, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Asterion", 1024, 768, 0, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     Enemy enemy(162, 162);
     map[162][162] = Map::ERROR_CUBE;
-    enemy.set_speed(250);
+    enemy.set_speed(320);
     enemy.set_size(tileSize * 0.75f);
 
     enemyArray.push_back(enemy);
@@ -74,8 +74,8 @@ int main(int argc, char* argv[]) {
 
             // (use fixedDeltaTime!)
             SDL_Point enemyTargetGrid = {
-                static_cast<int>(player.x / tileSize),
-                static_cast<int>(player.y / tileSize)
+                static_cast<int>((player.x + player.size / 2) / tileSize),
+                static_cast<int>((player.y + player.size / 2) / tileSize)
             };
 
             PlayerNS::update(map, offset, renderer, fixedDeltaTime);

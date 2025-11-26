@@ -39,7 +39,17 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> gridVines;
 
 void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
-    textureMap[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
+    // spider
+    // textureMap[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
+    textureMap[Map::spider_run45_animation] = ImageTexture(renderer, Assets::Images::spider_run45_animation);
+    textureMap[Map::spider_run135_animation] = ImageTexture(renderer, Assets::Images::spider_run135_animation);
+    textureMap[Map::spider_run225_animation] = ImageTexture(renderer, Assets::Images::spider_run225_animation);
+    textureMap[Map::spider_run315_animation] = ImageTexture(renderer, Assets::Images::spider_run315_animation);
+    textureMap[Map::spider_idle45_animation ] = ImageTexture(renderer, Assets::Images::spider_idle45_animation);
+    textureMap[Map::spider_idle135_animation] = ImageTexture(renderer, Assets::Images::spider_idle135_animation);
+    textureMap[Map::spider_idle225_animation] = ImageTexture(renderer, Assets::Images::spider_idle225_animation);
+    textureMap[Map::spider_idle315_animation] = ImageTexture(renderer, Assets::Images::spider_idle315_animation);
+
     textureMap[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
     textureMap[Map::TREE_TRUNK] = ImageTexture(renderer, Assets::Images::tree_trunk);
     // notused = ImageTexture(renderer, "resources/snowy_tree.png");

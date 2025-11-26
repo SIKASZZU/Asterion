@@ -77,7 +77,9 @@ void Enemy::move_along_path(float dT) {
     if (path.empty()) {
         return;
     }
-
+    // for (auto& p : path) {
+    //     map[p.second][p.first] = Map::ERROR_CUBE;
+    // }
     const auto& nextGrid = path[currentPathIndex];
     int nextX = nextGrid.first;
     int nextY = nextGrid.second;

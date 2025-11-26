@@ -2,26 +2,33 @@
 #include "enemy.hpp"
 #include "animation.hpp"
 #include "textures.hpp"
+#include <vector>
 
 Uint32 AnimEnemy::lastUpdate;
-int AnimEnemy::lastFrame = 0;
-int AnimEnemy::animRow = 0;
-int AnimEnemy::animCol = 0;
+int AnimEnemy::animRow = 1;
+int AnimEnemy::animCol = 1;
+int AnimEnemy::spriteEnum = 1;
 
 void Enemy::animation(SDL_Renderer* renderer) {
     using namespace AnimEnemy;
-    const int spriteWidth = 256;
-    const int spriteHeight = 256;
+
     SDL_FRect srcRect;
-    int animationSpeed = 25;
-    animCol = lastFrame % 16;
+    int animationSpeed = 32;
+    const char* action = (movementVector.x==0 && movementVector.y==0) ? "idle" : "run";
 
-    if (movementVector.x == 1) { animRow = 1; }
-    if (movementVector.x == -1) { animRow = 3; }
-
-    if (movementVector.y == 1) { animRow = 2; }
-    if (movementVector.y == -1) { animRow = 0; }
-
+    // select spriteEnum based on movement direction
+    if (action == "run") {
+        lastDirection = movementVector;
+        if (movementVector.x == 1) { spriteEnum = Map::spider_run135_animation; }
+        if (movementVector.x == -1) { spriteEnum = Map::spider_run315_animation; }
+        if (movementVector.y == 1) { spriteEnum = Map::spider_run225_animation; }
+        if (movementVector.y == -1) { spriteEnum = Map::spider_run45_animation; }
+    } else {
+        if (lastDirection.x == 1) { spriteEnum = Map::spider_idle135_animation; }
+        if (lastDirection.x == -1) { spriteEnum = Map::spider_idle315_animation; }
+        if (lastDirection.y == 1) { spriteEnum = Map::spider_idle225_animation; }
+        if (lastDirection.y == -1) { spriteEnum = Map::spider_idle45_animation; }
+    }
     srcRect.x = animCol * spriteWidth;
     srcRect.y = animRow * spriteHeight;
     srcRect.w = spriteWidth;
@@ -35,10 +42,28 @@ void Enemy::animation(SDL_Renderer* renderer) {
     dstRect.x = rect.x + (rect.w - dstRect.w) * 0.5f;
     dstRect.y = rect.y + (rect.h - dstRect.h) * 0.5f;
     if (SDL_GetTicks() - lastUpdate > animationSpeed) {
-        lastFrame++;
         lastUpdate = SDL_GetTicks();
+        animCol++;
+        // action
+        if (action == "run") {
+            if (animCol >= 4) {
+                animRow++;
+                animCol = 0;
+            }
+            if (animRow >= 4) {
+                animRow = 0;
+            }
+        } else {
+            if (animCol >= 6) {
+                animRow++;
+                animCol = 0;
+            }
+            if (animRow >= 4) {
+                animRow = 0;
+            }
+        }
     }
-    textureMap[Map::SPIDER].render(renderer, &srcRect, &dstRect);
+    textureMap[spriteEnum].render(renderer, &srcRect, &dstRect);
 }
 
 

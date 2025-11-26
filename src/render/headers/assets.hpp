@@ -21,7 +21,6 @@ namespace Assets::Images {
   static const char* vine_cube_medium = "resources/vine_cube_medium.png";
   static const char* vine_cube_soft = "resources/vine_cube_soft.png";
   static const char* player_animation = "resources/player_sprite_sheet.png";
-  static const char* spider_animation = "resources/spider/run_sprite_sheet.png";
   static const char* vine_overhang_sn = "resources/vine_overhang_SN.png";
   static const char* vine_overhang_ew = "resources/vine_overhang_EW.png";
   static const char* vine_cover_n = "resources/vine_cover_N.png";
@@ -34,4 +33,24 @@ namespace Assets::Images {
   static const char* invisible_cube = "resources/invisible_cube.png";
   static const char* wall_markings = "resources/cube_markings.png";
   static const char* maze_deco = "resources/maze_deco.png";
+  // spider
+  static const char* spider_run45_animation = "resources/spider/Run/Run_Body_045.png";
+  static const char* spider_run135_animation = "resources/spider/Run/Run_Body_135.png";
+  static const char* spider_run225_animation = "resources/spider/Run/Run_Body_225.png";
+  static const char* spider_run315_animation = "resources/spider/Run/Run_Body_315.png";
+
+  static const char* spider_idle45_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_045.png";
+  static const char* spider_idle135_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_135.png";
+  static const char* spider_idle225_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_225.png";
+  static const char* spider_idle315_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_315.png";
+
+  // static const char* spider_run45_animation = "resources/spider/Run/Run_Body_045.png";
+  // static const char* spider_run135_animation = "resources/spider/Run/Run_Body_135.png";
+  // static const char* spider_run225_animation = "resources/spider/Run/Run_Body_225.png";
+  // static const char* spider_run315_animation = "resources/spider/Run/Run_Body_315.png";
+  
+  // static const char* spider_run45_animation = "resources/spider/Run/Run_Body_045.png";
+  // static const char* spider_run135_animation = "resources/spider/Run/Run_Body_135.png";
+  // static const char* spider_run225_animation = "resources/spider/Run/Run_Body_225.png";
+  // static const char* spider_run315_animation = "resources/spider/Run/Run_Body_315.png";
 }
