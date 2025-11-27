@@ -24,18 +24,19 @@ bool stopAllEnemies = false;
 std::vector<Enemy> enemyArray = {};
 
 Enemy::Enemy(int gx, int gy)
-    :   grid{ gx, gy },
-        size(tileSize),
-        color({ 255, 0, 0, 255 }),
-        currentPathIndex(0),
-        movementVector{ 0, 0 },
-        speed(player.movementSpeed),
-        pos {
-            static_cast<float>(grid.x * tileSize),
-            static_cast<float>(grid.y * tileSize)
-        },
-        rect{ pos.x, pos.y, size, size }
-{ }
+    : grid{ gx, gy },
+    size(tileSize),
+    color({ 255, 0, 0, 255 }),
+    currentPathIndex(0),
+    movementVector{ 0, 0 },
+    speed(player.movementSpeed),
+    pos{
+        static_cast<float>(grid.x * tileSize),
+        static_cast<float>(grid.y * tileSize)
+    },
+    rect{ pos.x, pos.y, size, size }
+{
+}
 
 void Enemy::draw_path(const std::vector<std::pair<int, int>>& path) {
     // drawing path doesnt reset so it just stacks up error cubes :)
@@ -91,9 +92,31 @@ void Enemy::move_along_path(float dT) {
     float dy = nextPos.y - pos.y;
     float dist = std::hypot(dx, dy);
 
-    // Update movement direction for animation (45°, 135°, etc.)
-    // todo: see sitt ei lenda, kui tahan koordinaatidega tegema hakata? mingi skalaarvektor vmdgi playeri suunas, j2rgmise pathi ja korras?
     movementVector = { nextX - grid.x, nextY - grid.y };
+    {
+        // use the grid delta so discrete movement aligns with path steps
+        float nx = static_cast<float>(nextX - grid.x);
+        float ny = static_cast<float>(nextY - grid.y);
+        int qx = 0, qy = 0;
+        if (nx != 0.0f || ny != 0.0f) {
+            // invert ny for screen/grid orientation so "up" becomes negative y in mapping
+            float angle = std::atan2(-ny, nx); // angle in radians
+            // map angle to closest 45° sector (8-way)
+            int sector = static_cast<int>(std::round(angle / (PI / 4.0f)));
+            sector = (sector % 8 + 8) % 8; // normalize to [0,7]
+            switch (sector) {
+            case 0: qx = 1; qy = 0; break; // E
+            case 1: qx = 1; qy = -1; break; // NE
+            case 2: qx = 0; qy = -1; break; // N
+            case 3: qx = -1; qy = -1; break; // NW
+            case 4: qx = -1; qy = 0; break; // W
+            case 5: qx = -1; qy = 1; break; // SW
+            case 6: qx = 0; qy = 1; break; // S
+            case 7: qx = 1; qy = 1; break; // SE
+            }
+        }
+        movementVector = { qx, qy };
+    }
     if (dist <= 4.0f) {
         pos = nextPos;
         grid = { nextX, nextY };

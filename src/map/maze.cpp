@@ -88,51 +88,75 @@ namespace Maze {
     bool is_walkable(int gridValue) {
         return wallValues.find(gridValue) == wallValues.end();
     }
-    // BFS Pathfinding from (sx, sy) to (gx, gy)
+    // A* Pathfinding from (sx, sy) to (gx, gy) with 8-way movement
     bool find_path(const int map[mapSize][mapSize], int sx, int sy, int gx, int gy) {
 
-        std::queue<std::pair<int, int>> q;
         path.clear();
 
-        std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> came_from;
-        bool visited[mapSize][mapSize] = { false };
+        using pii = std::pair<int, int>;
+        std::unordered_map<pii, pii, pair_hash> came_from;
 
-        q.push({ sx, sy });
-        // visited is [row][col] -> [y][x]
-        visited[sy][sx] = true;
+        // g-score: cost from start to this node
+        const double INF = 1e12;
+        static double g_score[mapSize][mapSize];
+        for (int y = 0; y < mapSize; ++y)
+            for (int x = 0; x < mapSize; ++x)
+                g_score[y][x] = INF;
 
-        int dx[4] = { -1, 1, 0, 0 };
-        int dy[4] = { 0, 0, -1, 1 };
-        while (!q.empty()) {
-            auto [x, y] = q.front(); q.pop();
+        auto heuristic = [&](int x, int y) {
+            double dx = double(gx - x);
+            double dy = double(gy - y);
+            return std::sqrt(dx*dx + dy*dy);
+        };
 
-            // end found
+        // 8 neighbors: 4 cardinal + 4 diagonals
+        int dxs[8] = { -1, 1, 0, 0, -1, -1, 1, 1 };
+        int dys[8] = { 0, 0, -1, 1, -1, 1, -1, 1 };
+
+        // Priority queue ordered by f = g + h (min-heap via greater)
+        using PQElem = std::pair<double, pii>;
+        std::priority_queue<PQElem, std::vector<PQElem>, std::greater<PQElem>> open;
+
+        g_score[sy][sx] = 0.0;
+        open.push({ heuristic(sx, sy), { sx, sx } });
+
+        while (!open.empty()) {
+            auto [f, coord] = open.top(); open.pop();
+            int x = coord.first, y = coord.second;
+
+            // If we reached the goal, reconstruct path
             if (x == gx && y == gy) {
-                // Reconstruct path
-                std::pair<int, int> curr = { gx, gy };
-                while (curr != std::make_pair(sx, sy)) {
+                pii curr = { gx, gy };
+                while (!(curr.first == sx && curr.second == sy)) {
                     path.push_back(curr);
                     curr = came_from[curr];
                 }
                 path.push_back({ sx, sy });
                 std::reverse(path.begin(), path.end());
-                return true;  // path found
+                return true;
             }
 
-            for (int i = 0; i < 4; ++i) {
-                int nx = x + dx[i], ny = y + dy[i];
-                // map is map[row][col] -> map[y][x]
-                if (nx >= 0 && ny >= 0 && nx < mapSize && ny < mapSize) {
-                    int grid_value = map[ny][nx];
-                    if (is_walkable(grid_value) && !visited[ny][nx]) {
-                        visited[ny][nx] = true;
-                        came_from[{nx, ny}] = { x, y };
-                        q.push({ nx, ny });
-                    }
+            for (int i = 0; i < 8; ++i) {
+                int nx = x + dxs[i];
+                int ny = y + dys[i];
+                if (nx < 0 || ny < 0 || nx >= mapSize || ny >= mapSize) continue;
+                int grid_value = map[ny][nx];
+                if (!is_walkable(grid_value)) continue;
+
+                // diagonal moves cost slightly more
+                double move_cost = (dxs[i] == 0 || dys[i] == 0) ? 1.0 : 1.41421356237;
+                double tentative_g = g_score[y][x] + move_cost;
+
+                if (tentative_g < g_score[ny][nx]) {
+                    came_from[{nx, ny}] = { x, y };
+                    g_score[ny][nx] = tentative_g;
+                    double fscore = tentative_g + heuristic(nx, ny);
+                    open.push({ fscore, { nx, ny } });
                 }
             }
         }
-        return false;  // No path found
+
+        return false; // no path
     }
 }
 
