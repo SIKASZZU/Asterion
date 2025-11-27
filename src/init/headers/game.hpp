@@ -64,17 +64,3 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
 void react_to_keyboard_state(const bool* state);
 void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize);
-// Day/night system
-extern bool dayNightEnabled;
-extern float timeOfDay; // 0.0 - 1.0
-extern float dayLengthSeconds; // seconds for a full day cycle
-void update_daynight(Uint64 elapsedMS);
-// Game settings struct (runtime-configurable and easy to serialize)
-struct GameSettings {
-    bool enableDayNight = true;
-    float defaultDayLengthSeconds = 120.0f;
-    bool invertDayNight = false;
-};
-extern GameSettings gameSettings;
-// returns brightness 0..1 where 1 = day (bright), 0 = night (dark)
-float get_day_brightness();

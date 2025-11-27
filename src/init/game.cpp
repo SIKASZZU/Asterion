@@ -9,7 +9,7 @@
 #include "player.hpp"
 #include "enemy.hpp"
 #include "isometric_calc.hpp"
-
+#include "daylight.hpp"
 
 /* game state, screen */
 bool isRunning = true;
@@ -43,60 +43,12 @@ int pathEndY = -1;
 int pathStartX = -1;
 int pathStartY = -1;
 
-/* day/night */
-// Game settings instance (runtime-configurable)
-GameSettings gameSettings;
-
-bool dayNightEnabled = gameSettings.enableDayNight;
-float timeOfDay = 0.0f; // 0..1
-float dayLengthSeconds = gameSettings.defaultDayLengthSeconds; // full day in seconds
-bool dayNightInverted = gameSettings.invertDayNight;
-
 /* keys */
 bool r_pressed = false;
 bool v_pressed = false;
 
 bool isEmpty(const SDL_FRect& r) {
     return r.w <= 0 || r.h <= 0;
-}
-
-void update_daynight(Uint64 elapsedMS) {
-    if (!dayNightEnabled) return;
-    if (dayLengthSeconds <= 0.0f) return;
-    // advance time by elapsedMS relative to full day length
-    timeOfDay += static_cast<float>(elapsedMS) / (dayLengthSeconds * 1000.0f);
-    if (timeOfDay >= 1.0f) timeOfDay = fmod(timeOfDay, 1.0f);
-}
-
-float get_day_brightness() {
-    // Map timeOfDay (0..1) to hours (0..24)
-    float hours = fmod(timeOfDay * 24.0f, 24.0f);
-    // Night transition window: from 21:00 to 08:00 (next day) -> length 11 hours
-    // Compute hours elapsed since 21:00 in range [0,24)
-    float since21 = hours - 21.0f;
-    if (since21 < 0.0f) since21 += 24.0f;
-    float brightness = 1.0f;
-    const float nightWindow = 11.0f;
-    const float halfWindow = nightWindow / 2.0f; // 5.5h
-    if (since21 < nightWindow) {
-        // within darkness transition: from 21 -> dimming to minimum at 21+halfWindow,
-        // then brightening to full by 08:00
-        if (since21 <= halfWindow) {
-            // dimming from 1.0 -> 0.0
-            brightness = 1.0f - (since21 / halfWindow);
-        } else {
-            // brightening from 0.0 -> 1.0
-            brightness = (since21 - halfWindow) / halfWindow;
-        }
-    } else {
-        // daytime between 08:00 and 21:00
-        brightness = 1.0f;
-    }
-    // clamp
-    if (brightness < 0.0f) brightness = 0.0f;
-    if (brightness > 1.0f) brightness = 1.0f;
-    if (dayNightInverted) brightness = 1.0f - brightness;
-    return brightness;
 }
 
 // Recalculate world-space positions after `tileSize` changes.
@@ -211,25 +163,21 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_Y: {
-        dayNightEnabled = !dayNightEnabled;
-        std::cout << "Day/Night enabled: " << dayNightEnabled << " timeOfDay: " << timeOfDay << '\n';
-        break;
-    }
-    case SDLK_H: {
-        dayNightInverted = !dayNightInverted;
-        std::cout << "Day/Night inverted: " << dayNightInverted << '\n';
+        // enable day
+        daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
+        std::cout << "Day/Night enabled: " << daylightSettings.daylightEnabled << " timeOfDay: " << DaylightNS::timeOfDay << '\n';
         break;
     }
     case SDLK_U: {
         // shorten day
-        dayLengthSeconds = std::max(5.0f, dayLengthSeconds - 10.0f);
-        std::cout << "dayLengthSeconds = " << dayLengthSeconds << '\n';
+        daylightSettings.dayLengthSeconds = std::max(5.0f, daylightSettings.dayLengthSeconds - 10.0f);
+        std::cout << "dayLengthSeconds = " << daylightSettings.dayLengthSeconds << '\n';
         break;
     }
     case SDLK_I: {
         // lengthen day
-        dayLengthSeconds += 10.0f;
-        std::cout << "dayLengthSeconds = " << dayLengthSeconds << '\n';
+        daylightSettings.dayLengthSeconds += 10.0f;
+        std::cout << "dayLengthSeconds = " << daylightSettings.dayLengthSeconds << '\n';
         break;
     }
     case SDLK_V: {

@@ -10,6 +10,7 @@
 #include "vision.hpp"
 #include "isometric_calc.hpp"
 #include "raycast.hpp"
+#include "daylight.hpp"
 
 namespace Vision {
     SDL_Texture* darkness = nullptr;
@@ -26,9 +27,8 @@ namespace Vision {
         // Render darkness to texture
         SDL_SetRenderTarget(renderer, darkness);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        // Compute day/night brightness through central helper: 1.0 = day, 0.0 = night
-        float brightness = dayNightEnabled ? get_day_brightness() : 1.0f;
-        float dayFactor = 1.0f - brightness; // 0 at day, 1 at night
+        float brightness = daylightSettings.daylightEnabled ? DaylightNS::get_day_brightness() : 1.0f;
+        float dayFactor = 1.0f - brightness;
         Uint8 baseClearAlpha = static_cast<Uint8>(120.0f * dayFactor);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, baseClearAlpha);
         SDL_RenderClear(renderer);
