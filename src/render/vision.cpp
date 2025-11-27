@@ -26,7 +26,11 @@ namespace Vision {
         // Render darkness to texture
         SDL_SetRenderTarget(renderer, darkness);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 120);
+        // Compute day/night brightness through central helper: 1.0 = day, 0.0 = night
+        float brightness = dayNightEnabled ? get_day_brightness() : 1.0f;
+        float dayFactor = 1.0f - brightness; // 0 at day, 1 at night
+        Uint8 baseClearAlpha = static_cast<Uint8>(120.0f * dayFactor);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, baseClearAlpha);
         SDL_RenderClear(renderer);
 
         auto draw_fade_rect = [&](int gridX, int gridY) {
@@ -37,7 +41,8 @@ namespace Vision {
             float dy = (gridY * tileSize + tileSize / 2) - (player.y);
             float dist = std::sqrt(dx * dx + dy * dy) / (tileSize * 4);
             float t = std::clamp(dist / (renderRadius), 0.0f, 1.0f);
-            Uint8 alpha = t * 255.0f;
+            // tile alpha scaled by dayFactor so at day it's transparent
+            Uint8 alpha = static_cast<Uint8>(t * 255.0f * dayFactor);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
             SDL_RenderFillRect(renderer, &rect);
             };
