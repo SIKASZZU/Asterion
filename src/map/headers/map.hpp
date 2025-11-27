@@ -9,16 +9,25 @@
 /// Some things do not have textures associated with them.
 enum Map {
     PLAYER,
-    // spider
     SPIDER,
+    // spider run
     spider_run45_animation,
     spider_run135_animation,
     spider_run225_animation,
     spider_run315_animation,
-    spider_idle45_animation ,
+    spider_run90_animation,
+    spider_run180_animation,
+    spider_run270_animation,
+    spider_run0_animation,
+    // spider idle
+    spider_idle45_animation,
     spider_idle135_animation,
     spider_idle225_animation,
     spider_idle315_animation,
+    spider_idle90_animation,
+    spider_idle180_animation,
+    spider_idle270_animation,
+    spider_idle0_animation,
 
     TREE_TRUNK,
     GROUND_CUBE,

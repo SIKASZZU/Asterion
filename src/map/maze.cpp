@@ -55,34 +55,34 @@ namespace Maze {
         shuffle_directions(directions);
 
         for (const auto& dir : directions) {
-                // start_row/start_col correspond to map[row][col]
-                int nx = start_col + dir.first; // next x (column)
-                int ny = start_row + dir.second; // next y (row)
+            // start_row/start_col correspond to map[row][col]
+            int nx = start_col + dir.first; // next x (column)
+            int ny = start_row + dir.second; // next y (row)
 
-                if (map[ny][nx] != allowed_number) {
-                    if (map[ny][nx] == pathway && type != "one") {
-                        continue;
-                    }
+            if (map[ny][nx] != allowed_number) {
+                if (map[ny][nx] == pathway && type != "one") {
                     continue;
                 }
+                continue;
+            }
 
-                if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
-                    map[ny][nx] = pathway;
-                    map[start_row + (dir.second != 0 ? dir.second / 2 : dir.second)][start_col + (dir.first != 0 ? dir.first / 2 : dir.first)] = pathway;
+            if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
+                map[ny][nx] = pathway;
+                map[start_row + (dir.second != 0 ? dir.second / 2 : dir.second)][start_col + (dir.first != 0 ? dir.first / 2 : dir.first)] = pathway;
 
-                    if (type == "two" || type == "three") {
-                        map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
-                        map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
-                        map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
-                    }
-
-                    if (type == "three") {
-                        map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
-                        map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
-                    }
-
-                    generate_maze(map, ny, nx, type);
+                if (type == "two" || type == "three") {
+                    map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
                 }
+
+                if (type == "three") {
+                    map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
+                }
+
+                generate_maze(map, ny, nx, type);
+            }
         }
     }
     bool is_walkable(int gridValue) {
@@ -106,8 +106,8 @@ namespace Maze {
         auto heuristic = [&](int x, int y) {
             double dx = double(gx - x);
             double dy = double(gy - y);
-            return std::sqrt(dx*dx + dy*dy);
-        };
+            return std::sqrt(dx * dx + dy * dy);
+            };
 
         // 8 neighbors: 4 cardinal + 4 diagonals
         int dxs[8] = { -1, 1, 0, 0, -1, -1, 1, 1 };
@@ -118,7 +118,7 @@ namespace Maze {
         std::priority_queue<PQElem, std::vector<PQElem>, std::greater<PQElem>> open;
 
         g_score[sy][sx] = 0.0;
-        open.push({ heuristic(sx, sy), { sx, sx } });
+        open.push({ heuristic(sx, sy), { sx, sy } });
 
         while (!open.empty()) {
             auto [f, coord] = open.top(); open.pop();

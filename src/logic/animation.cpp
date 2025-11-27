@@ -19,15 +19,25 @@ void Enemy::animation(SDL_Renderer* renderer) {
     // select spriteEnum based on movement direction
     if (action == "run") {
         lastDirection = movementVector;
-        if (movementVector.x == 1) { spriteEnum = Map::spider_run135_animation; }
-        if (movementVector.x == -1) { spriteEnum = Map::spider_run315_animation; }
-        if (movementVector.y == 1) { spriteEnum = Map::spider_run225_animation; }
-        if (movementVector.y == -1) { spriteEnum = Map::spider_run45_animation; }
+        if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_run135_animation; }
+        if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_run315_animation; }
+        if (movementVector.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_run225_animation; }
+        if (movementVector.y == -1 && movementVector.x == 0) { spriteEnum = Map::spider_run45_animation; }
+
+        if (movementVector.y == -1 && movementVector.x == 1) { spriteEnum = Map::spider_run90_animation; }
+        if (movementVector.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_run180_animation; }
+        if (movementVector.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_run270_animation; }
+        if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_run0_animation; }
     } else {
-        if (lastDirection.x == 1) { spriteEnum = Map::spider_idle135_animation; }
-        if (lastDirection.x == -1) { spriteEnum = Map::spider_idle315_animation; }
-        if (lastDirection.y == 1) { spriteEnum = Map::spider_idle225_animation; }
-        if (lastDirection.y == -1) { spriteEnum = Map::spider_idle45_animation; }
+        if (lastDirection.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_idle135_animation; }
+        if (lastDirection.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_idle315_animation; }
+        if (lastDirection.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_idle225_animation; }
+        if (lastDirection.y == -1 && movementVector.x == 0) { spriteEnum = Map::spider_idle45_animation; }
+
+        if (lastDirection.y == -1 && movementVector.x == 1) { spriteEnum = Map::spider_idle90_animation; }
+        if (lastDirection.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_idle180_animation; }
+        if (lastDirection.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_idle270_animation; }
+        if (lastDirection.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_idle0_animation; }
     }
     srcRect.x = animCol * spriteWidth;
     srcRect.y = animRow * spriteHeight;
