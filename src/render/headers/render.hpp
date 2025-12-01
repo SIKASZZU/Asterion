@@ -67,7 +67,8 @@ private:
     int halfTile;
     // TODO: igal render catil oleks eraldi renderQ, et wallid v6istlevad oma enda vahel jne.
     // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
-    float alpha = 1.0f;
+    const float alpha = 1.0f;
+    const float inFrontAlpha = alpha * 0.6f;
 public:
     void render(SDL_Renderer* renderer);
 };

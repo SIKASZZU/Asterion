@@ -81,8 +81,7 @@ float TerrainClass::determine_alpha(std::pair<int, int> gridPos) {
     bool inFront = (
         (row > playerTileY - 1 && row <= playerTileY + maxDist) && (column > playerTileX - 1 && column <= playerTileX + maxDist)
     );
-    alpha = 1.0f;
-    if (inFront) { alpha *= 0.6f; }
+    if (inFront) { return inFrontAlpha; }
     return alpha;
 }
 int TerrainClass::create_random_grass(std::pair<int, int> gridPos, int gridValue) {
@@ -229,7 +228,7 @@ void TerrainClass::render_walls() {
 
             int gridValue = map[row][column];
             std::pair<int, int> gridPos = { row, column };
-            alpha = determine_alpha(gridPos);
+            float alpha = determine_alpha(gridPos);
             if (is_grid_not_renderable(gridPos)) continue;
             switch (gridValue) {
                 case Map::INGROWN_WALL_CUBE: {
@@ -258,11 +257,9 @@ void TerrainClass::render_walls() {
             case Map::WALL_CUBE:
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= halfTile;
-
                 if (shiftedWalls.find(gridPos) != shiftedWalls.end()) {
-                    alpha = 0.5f;
+                    alpha = inFrontAlpha;
                 }
-
                 srcFRect = return_src_1x3(gridPos, mazeGroundMap);
                 if (!isEmpty(srcFRect)) {
                     renderQueue.push_back(
