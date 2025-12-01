@@ -151,7 +151,7 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
                 }
             }
             if (wallValues.find(gridValue) != wallValues.end()) {
-                textureMap[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+                textureMap[Map::WALL_CUBE_GROUND].render(renderer, &destTile);
             }
             if (gridValue == Map::VINE_OVERHANG_SN || gridValue == Map::VINE_OVERHANG_EW) {
                 SDL_FRect srcFRect = return_src_1x3(gridPos, mazeGroundMap);
@@ -174,6 +174,54 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
     }
 }
 void TerrainClass::render_walls() {
+    // Precompute which wall tiles should be shifted upwards when fading.
+    std::unordered_set<std::pair<int,int>, pair_hash> shiftedWalls;
+    for (int prow = mapIndexTop; prow <= mapIndexBottom; ++prow) {
+        for (int pcol = mapIndexLeft; pcol <= mapIndexRight; ++pcol) {
+            int pval = map[prow][pcol];
+            if (wallValues.find(pval) == wallValues.end()) continue;
+            if (determine_alpha({prow, pcol}) == 1.0f) continue;
+
+            // check vertical run (up and down) whether a pathway exists beyond the run
+            bool foundPathVert = false;
+            std::vector<std::pair<int,int>> vertRun;
+            // expand up
+            for (int r = prow; r >= mapIndexTop; --r) {
+                if (map[r][pcol] == Map::MAZE_GROUND_CUBE) { foundPathVert = true; break; }
+                if (wallValues.find(map[r][pcol]) == wallValues.end()) break;
+                vertRun.emplace_back(r, pcol);
+            }
+            // expand down
+            for (int r = prow + 1; r <= mapIndexBottom; ++r) {
+                if (map[r][pcol] == Map::MAZE_GROUND_CUBE) { foundPathVert = true; break; }
+                if (wallValues.find(map[r][pcol]) == wallValues.end()) break;
+                vertRun.emplace_back(r, pcol);
+            }
+            if (foundPathVert) {
+                for (auto &p : vertRun) shiftedWalls.insert(p);
+            }
+
+            // check horizontal run (left and right)
+            bool foundPathHorz = false;
+            std::vector<std::pair<int,int>> horzRun;
+            // expand left
+            for (int c = pcol; c >= mapIndexLeft; --c) {
+                if (map[prow][c] == Map::MAZE_GROUND_CUBE) { foundPathHorz = true; break; }
+                if (wallValues.find(map[prow][c]) == wallValues.end()) break;
+                horzRun.emplace_back(prow, c);
+            }
+            // expand right
+            for (int c = pcol + 1; c <= mapIndexRight; ++c) {
+                if (map[prow][c] == Map::MAZE_GROUND_CUBE) { foundPathHorz = true; break; }
+                if (wallValues.find(map[prow][c]) == wallValues.end()) break;
+                horzRun.emplace_back(prow, c);
+            }
+            if (foundPathHorz) {
+                for (auto &p : horzRun) shiftedWalls.insert(p);
+            }
+        }
+    }
+
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
             SDL_FRect destTile = return_destTile(row, column);
@@ -210,6 +258,11 @@ void TerrainClass::render_walls() {
             case Map::WALL_CUBE:
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= halfTile;
+
+                if (shiftedWalls.find(gridPos) != shiftedWalls.end()) {
+                    alpha = 0.5f;
+                }
+
                 srcFRect = return_src_1x3(gridPos, mazeGroundMap);
                 if (!isEmpty(srcFRect)) {
                     renderQueue.push_back(

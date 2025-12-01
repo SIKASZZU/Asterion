@@ -16,6 +16,7 @@ namespace Assets::Images {
     static const char* blue_cube = "resources/blue_cube.png";
     static const char* ingrown_wall_cube = "resources/ingrown_wall_cube.png";
     static const char* wall_cube = "resources/wall_cube.png";
+    static const char* wall_cube_ground = "resources/wall_cube_ground.png";
     static const char* wall_cube_sprite = "resources/wall_cube_sprite_sheet.png";
     static const char* vine_cube_hard = "resources/vine_cube_hard.png";
     static const char* vine_cube_medium = "resources/vine_cube_medium.png";

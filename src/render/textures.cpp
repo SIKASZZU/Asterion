@@ -71,6 +71,7 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::BLUE_CUBE] = ImageTexture(renderer, Assets::Images::blue_cube);
     textureMap[Map::INGROWN_WALL_CUBE] = ImageTexture(renderer, Assets::Images::ingrown_wall_cube);
     textureMap[Map::WALL_CUBE] = ImageTexture(renderer, Assets::Images::wall_cube);
+    textureMap[Map::WALL_CUBE_GROUND] = ImageTexture(renderer, Assets::Images::wall_cube_ground);
     // this is used as sector 1,2,3 walls
     textureMap[Map::WALL_CUBE_SPRITE] = ImageTexture(renderer, Assets::Images::wall_cube_sprite);
     textureMap[Map::VINE_CUBE_HARD] = ImageTexture(renderer, Assets::Images::vine_cube_hard);
