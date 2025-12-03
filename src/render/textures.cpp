@@ -38,6 +38,7 @@ std::unordered_map<int, Texture> textureMap;
 std::unordered_map<std::pair<int, int>, int, pair_hash> gridVines;
 
 void load_textures(SDL_Renderer* renderer) {
+    textureMap[Map::SPRITESHEET] = ImageTexture(renderer, Assets::Images::spritesheet);
     textureMap[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
     // textureMap[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
     // spider run 8-way

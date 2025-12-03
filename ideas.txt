@@ -7,6 +7,7 @@ feat:Player saab klikkida darknessisse, et meelde tuletada, mis seal oli?
     Kui hakkkad jooksma seal, kus juuba varem jooksnud oled, ss tulevad nurgad n2htavaks, ss tulevad koridorid n2htavaks
 feat: Vineide sisse peitmine
 
+bug: see fucking spider 8way k6nnib l2bi seinte. Tee 8 way mingi vektor, mis extendib nii kaugele, et kui vektori ots ei hiti walli, ss see spider hakkab p66rama
 bug: void cube tex fixi 2ra
 bug: player mazeis runnides clipib wallide sisse
 bug: raycast on sellep perses i think
