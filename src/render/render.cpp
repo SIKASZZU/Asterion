@@ -14,6 +14,7 @@
 #include <unordered_set>
 #include <utility>
 #include <set>
+#include <cstdint>
 
 
 RenderQueueItem::RenderQueueItem(int renderOrder, SDL_FRect dstrect, Texture* texture, float alpha = 1.0f) {
@@ -50,16 +51,16 @@ void RenderQueueItem::call_render(SDL_Renderer* renderer) {
     throw std::logic_error("texture or render function needed for rendering");
 }
 
-std::unordered_map<std::pair<int, int>, int, pair_hash> randomOffsetsWalls;
-std::unordered_map<std::pair<int, int>, int, pair_hash> randomOffsetsTrees;
-std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
-std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
-std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
-std::unordered_map<std::pair<int, int>, int, pair_hash> groundMap;
-std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverMap;
+std::unordered_map<uint32_t, int> randomOffsetsWalls;
+std::unordered_map<uint32_t, int> randomOffsetsTrees;
+std::unordered_map<uint32_t, int> grassCoverGrids;
+std::unordered_map<uint32_t, int> mazeDecoMap;
+std::unordered_map<uint32_t, int> mazeGroundMap;
+std::unordered_map<uint32_t, int> groundMap;
+std::unordered_map<uint32_t, int> grassCoverMap;
 
 // Per-tile, per-row random spritesheet frame index to avoid cross-category leakage.
-static std::unordered_map<std::pair<int, int>, std::array<int, 11>, pair_hash> spritesheetIndexMap;
+static std::unordered_map<uint32_t, std::array<int, 11>> spritesheetIndexMap;
 // Cache of source rects for spritesheet frames (keyed by (row<<8)|index)
 static std::unordered_map<int, SDL_FRect> spritesheetCacheMap;
 
@@ -112,7 +113,7 @@ namespace ssi {
 /// @param maxCol From what index of col on the spritesheet the search has to end, NOT IMPLEMENTED, wraps around to new row if bigger then spritesheet col size.
 /// @return Return the integar of index for that col and row position
 static int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, int row, int minCol, int maxCol) {
-    auto [it, inserted] = spritesheetIndexMap.try_emplace(gridPos, std::array<int, 11>{});
+    auto [it, inserted] = spritesheetIndexMap.try_emplace(make_grid_key(gridPos.first, gridPos.second), std::array<int, 11>{});
     if (inserted) it->second.fill(-1);
     int r = std::max(0, std::min(row, 10));
     int& stored = it->second[r];
@@ -152,7 +153,7 @@ float TerrainClass::determine_alpha(std::pair<int, int> gridPos) {
     return alpha;
 }
 int TerrainClass::create_random_grass(std::pair<int, int> gridPos, int gridValue) {
-    int varIndex = grassCoverGrids.try_emplace(gridPos, rand() % 4)
+    int varIndex = grassCoverGrids.try_emplace(make_grid_key(gridPos.first, gridPos.second), rand() % 4)
         .first->second;
     if (varIndex == 0) {
         return Map::GRASS_COVER_SHORT;
@@ -167,8 +168,8 @@ int TerrainClass::create_random_grass(std::pair<int, int> gridPos, int gridValue
         return -1;
     }
 }
-SDL_FRect TerrainClass::return_src_1x3(std::pair<int, int> gridPos, std::unordered_map<std::pair<int, int>, int, pair_hash>& map) {
-    int varIndex = map.try_emplace(gridPos, rand() % 4)
+SDL_FRect TerrainClass::return_src_1x3(std::pair<int, int> gridPos, std::unordered_map<uint32_t, int>& map) {
+    int varIndex = map.try_emplace(make_grid_key(gridPos.first, gridPos.second), rand() % 4)
         .first->second;
 
     if (varIndex == 0) {
@@ -241,7 +242,7 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
 }
 void TerrainClass::render_walls() {
     // Precompute which wall tiles should be shifted upwards when fading.
-    std::unordered_set<std::pair<int, int>, pair_hash> shiftedWalls;
+    std::unordered_set<uint32_t> shiftedWalls;
     for (int prow = mapIndexTop; prow <= mapIndexBottom; ++prow) {
         for (int pcol = mapIndexLeft; pcol <= mapIndexRight; ++pcol) {
             int pval = map[prow][pcol];
@@ -264,7 +265,7 @@ void TerrainClass::render_walls() {
                 vertRun.emplace_back(r, pcol);
             }
             if (foundPathVert) {
-                for (auto& p : vertRun) shiftedWalls.insert(p);
+                for (auto& p : vertRun) shiftedWalls.insert(make_grid_key(p.first, p.second));
             }
 
             // check horizontal run (left and right)
@@ -283,7 +284,7 @@ void TerrainClass::render_walls() {
                 horzRun.emplace_back(prow, c);
             }
             if (foundPathHorz) {
-                for (auto& p : horzRun) shiftedWalls.insert(p);
+                for (auto& p : horzRun) shiftedWalls.insert(make_grid_key(p.first, p.second));
             }
         }
     }
@@ -323,7 +324,7 @@ void TerrainClass::render_walls() {
             }
             case Map::WALL_CUBE: {
                 destTile.y -= halfTile;
-                if (shiftedWalls.find(gridPos) != shiftedWalls.end()) {
+                if (shiftedWalls.find(make_grid_key(row, column)) != shiftedWalls.end()) {
                     alpha = inFrontAlpha;
                 }
                 srcFRect = return_src_1x3(gridPos, mazeGroundMap);
@@ -345,7 +346,7 @@ void TerrainClass::render_walls() {
                 int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
 
-                if (shiftedWalls.find(gridPos) != shiftedWalls.end()) { alpha = inFrontAlpha; }
+                if (shiftedWalls.find(make_grid_key(row, column)) != shiftedWalls.end()) { alpha = inFrontAlpha; }
                 renderQueue.push_back(
                     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
                 );
@@ -354,7 +355,7 @@ void TerrainClass::render_walls() {
             case Map::SECTOR_2_WALL_VAL: {
                 // create walls
                 destTile.y -= halfTile;
-                int xr = randomOffsetsWalls.try_emplace(gridPos, rand() % 30)
+                int xr = randomOffsetsWalls.try_emplace(make_grid_key(row, column), rand() % 30)
                     .first->second;
                 destTile.y += (xr / 2.5);
                 destTile.x += (xr / 4);
@@ -443,7 +444,7 @@ void TerrainClass::render_decoration(SDL_Renderer* renderer) {
                 if (gridValue == Map::SECTOR_2_WALL_VAL) { srcFRect = { 32, 0, 32, 32 }; }
                 else { srcFRect = { 0, 0, 32, 32 }; };
                 // create wall markings nr2 (100 divided by % number, 20% chance)
-                int varIndex = mazeDecoMap.try_emplace(gridPos, rand() % 5).first->second;
+                int varIndex = mazeDecoMap.try_emplace(make_grid_key(row, column), rand() % 5).first->second;
                 if (varIndex == 4) {
                     renderQueue.push_back(
                         RenderQueueItem(destTile.y + 1, srcFRect, destTile, &textureMap[Map::WALL_MARKINGS], alpha)
@@ -556,7 +557,7 @@ void TerrainClass::render_items(SDL_Renderer* renderer) {
             switch (gridValue) {
             case Map::TREE_TRUNK: {
                 destTile.y -= halfTile;
-                int xr = randomOffsetsTrees.try_emplace(gridPos, rand() % 20)
+                int xr = randomOffsetsTrees.try_emplace(make_grid_key(row, column), rand() % 20)
                     .first->second;
                 SDL_FRect tempTile = destTile;
                 tempTile.x += (tileSize / 5) + xr;
@@ -568,7 +569,7 @@ void TerrainClass::render_items(SDL_Renderer* renderer) {
             }
             case Map::TREE: {
                 destTile.y -= halfTile;
-                int xr = randomOffsetsTrees.try_emplace(gridPos, rand() % 125)
+                int xr = randomOffsetsTrees.try_emplace(make_grid_key(row, column), rand() % 125)
                     .first->second;
                 SDL_FRect tempTile = destTile;
                 tempTile.y += (xr / 5);

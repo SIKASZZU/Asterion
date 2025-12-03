@@ -12,14 +12,14 @@
 #include "textures.hpp"
 
 extern std::set<std::pair<int, int>> gridVineChecked;
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverGrids;
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> mazeDecoMap;
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> mazeGroundMap;
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> groundMap;
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> grassCoverMap;
+extern std::unordered_map<uint32_t, int> randomOffsetsWalls;
+extern std::unordered_map<uint32_t, int> randomOffsetsTrees;
+extern std::unordered_map<uint32_t, int> grassCoverGrids;
+extern std::unordered_map<uint32_t, int> mazeDecoMap;
+extern std::unordered_map<uint32_t, int> mazeGroundMap;
 
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> randomOffsetsTrees;
-extern std::unordered_map<std::pair<int, int>, int, pair_hash> randomOffsetsWalls;
+extern std::unordered_map<uint32_t, int> groundMap;
+extern std::unordered_map<uint32_t, int> grassCoverMap;
 
 
 struct RenderQueueItem {
@@ -48,7 +48,7 @@ private:
     SDL_FRect return_destTile(int row, int column);
     bool is_grid_not_renderable(std::pair<int, int> gridPos);
     float determine_alpha(std::pair<int, int> gridPos);
-    SDL_FRect return_src_1x3(std::pair<int, int> gridPos, std::unordered_map<std::pair<int, int>, int, pair_hash>& map);
+    SDL_FRect return_src_1x3(std::pair<int, int> gridPos, std::unordered_map<uint32_t, int>& map);
     int create_random_grass(std::pair<int, int> gridPos, int gridValue);
     void calculate_miscellaneous();
     void render_ground(SDL_Renderer* renderer);

@@ -144,7 +144,7 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
                     if (ny >= 0 && ny < mapSize &&
                         nx >= 0 && nx < mapSize) {
                         if (map[ny][nx] == Map::TREE) {
-                            randomOffsetsTrees.erase({ ny, nx });
+                            randomOffsetsTrees.erase(make_grid_key(ny, nx));
                             map[ny][nx] = Map::TREE_TRUNK;
                         }
                     }
