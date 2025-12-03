@@ -48,7 +48,6 @@ private:
     SDL_FRect return_destTile(int row, int column);
     bool is_grid_not_renderable(std::pair<int, int> gridPos);
     float determine_alpha(std::pair<int, int> gridPos);
-    SDL_FRect return_src_1x3(std::pair<int, int> gridPos, std::unordered_map<uint32_t, int>& map);
     int create_random_grass(std::pair<int, int> gridPos, int gridValue);
     void calculate_miscellaneous();
     void render_ground(SDL_Renderer* renderer);

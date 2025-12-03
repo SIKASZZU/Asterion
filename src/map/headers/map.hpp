@@ -8,7 +8,6 @@
 ///
 /// Some things do not have textures associated with them.
 enum Map {
-    // 32x32px 11x11 set
     SPRITESHEET,
     PLAYER,
     SPIDER,
