@@ -68,12 +68,12 @@ int main(int argc, char* argv[]) {
                 react_to_keyboard_up(event.key.key, player);
         }
         react_to_keyboard_state(state);
-
+        
         // tickrate specific
         while (tickLag >= TICK_DELAY_MS) {
             tickLag -= TICK_DELAY_MS;
             tickCount++;
-
+            
             // (use fixedDeltaTime!)
             SDL_Point enemyTargetGrid = {
                 static_cast<int>((player.x + player.size / 2) / tileSize),
@@ -85,12 +85,12 @@ int main(int argc, char* argv[]) {
             }
             update_offset(player);
             Portal::has_entered();
+            terrain.calculate_miscellaneous(fixedDeltaTime);
         }
-
         DaylightNS::update_daynight(elapsedMS);
+        
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
         terrain.render(renderer);
         Raycast::update(renderer, offset, map);
         Vision::update(renderer, offset);

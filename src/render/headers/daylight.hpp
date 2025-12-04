@@ -15,6 +15,7 @@ namespace DaylightNS {
 
 // Game settings struct (runtime-configurable and easy to serialize)
 struct Daylight {
+    bool day = true;
     bool daylightEnabled = true;
     float dayLengthSeconds = 120.0f;
 };

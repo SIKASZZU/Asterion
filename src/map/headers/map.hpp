@@ -61,6 +61,8 @@ enum Map {
     INVISIBLE_CUBE,
     WALL_MARKINGS,
     MAZE_DECO,
+    MAZE_NS_DOOR,
+    MAZE_WE_DOOR,
 };
 
 static const std::unordered_set<int> wallValues = {

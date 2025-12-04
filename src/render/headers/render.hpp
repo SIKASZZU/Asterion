@@ -49,7 +49,6 @@ private:
     bool is_grid_not_renderable(std::pair<int, int> gridPos);
     float determine_alpha(std::pair<int, int> gridPos);
     int create_random_grass(std::pair<int, int> gridPos, int gridValue);
-    void calculate_miscellaneous();
     void render_ground(SDL_Renderer* renderer);
     void render_walls();
     void render_decoration(SDL_Renderer* renderer);
@@ -68,6 +67,10 @@ private:
     // render q's ei ole groundi pildid ehk id 1, 4, 5. V6ib lisanduda!
     const float alpha = 1.0f;
     const float inFrontAlpha = alpha * 0.6f;
+    float savedDoorY = 0;
+    float elapsedDistance = 0;
+    const float doorMovingSpeed = 2.0f;
 public:
+    void calculate_miscellaneous(float dT);
     void render(SDL_Renderer* renderer);
 };

@@ -5,6 +5,7 @@
 #include "raycast.hpp"
 #include "mod_map_data.hpp"
 #include "animation.hpp"
+#include "daylight.hpp"
 
 #include <iostream>
 #include <vector>
@@ -78,7 +79,10 @@ namespace ssi {
     constexpr SpritesheetConfig wallCubes{11, 0, 3};
     constexpr SpritesheetConfig wallMarkings{12, 6, 8};
     constexpr SpritesheetConfig ground{2, 0, 10};
+    // constexpr SpritesheetConfig groundDecoration{3, 8, 14}; //  needs wrap shit
     constexpr SpritesheetConfig mazeGround{0, 0, 10};
+    constexpr SpritesheetConfig sec2Ground{1, 0, 5};
+    constexpr SpritesheetConfig sec3Ground{1, 0, 10};
     constexpr SpritesheetConfig coverGround{12, 0, 2};
     constexpr SpritesheetConfig coverMaze{12, 3, 5};
     constexpr SpritesheetConfig empty{0, 0, 0};
@@ -173,7 +177,8 @@ int TerrainClass::create_random_grass(std::pair<int, int> gridPos, int gridValue
     }
 }
 
-void TerrainClass::calculate_miscellaneous() {
+void TerrainClass::calculate_miscellaneous(float dT) {
+    elapsedDistance += doorMovingSpeed * dT;
     halfTile = tileSize / 2;
     renderQueue.reserve(4 * (renderRadius * renderRadius));
     playerTileX = static_cast<int>((player.x + player.size / 2) / tileSize);
@@ -212,6 +217,7 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
             }
             switch (gridValue) {
             case Map::MAZE_GROUND_CUBE: {
+                // if 4 sides are sec walls, return sec ground
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
                 destTile.y -= 16;
@@ -543,6 +549,37 @@ void TerrainClass::render_items(SDL_Renderer* renderer) {
                 );
                 break;
             }
+            case Map::MAZE_WE_DOOR:
+            case Map::MAZE_NS_DOOR: {
+                SDL_FRect renderTile = destTile;
+                float relativeTargetClosed = -halfTile;
+                bool gladeDoorsClosed = daylightSettings.day;
+                if (gladeDoorsClosed) {
+                    relativeTargetClosed -= halfTile;
+                }
+                if (savedDoorY == 0) {
+                    savedDoorY = relativeTargetClosed;
+                }
+                if (savedDoorY < relativeTargetClosed) {
+                    savedDoorY = std::min(savedDoorY + elapsedDistance, relativeTargetClosed);
+                } else if (savedDoorY > relativeTargetClosed) {
+                    savedDoorY = std::max(savedDoorY - elapsedDistance, relativeTargetClosed);
+                }
+                elapsedDistance = 0;
+                renderTile.y = destTile.y + savedDoorY;
+                destTile.y -= halfTile;
+                int row = 11;
+                int minCol = 5; int maxCol = 5;
+                if (gridValue == MAZE_WE_DOOR) {
+                    minCol = 6; maxCol = 6;
+                }
+                int idx = ensure_spritesheet_index_for_row(gridPos, row, minCol, maxCol);
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, row);
+                renderQueue.push_back(
+                    RenderQueueItem(destTile.y, src, renderTile, &textureMap[Map::SPRITESHEET], alpha)
+                );
+                break;
+            }
             }
         }
     }
@@ -563,8 +600,6 @@ void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
     renderQueue.clear();
 }
 void TerrainClass::render(SDL_Renderer* renderer) {
-    calculate_miscellaneous();
-
     render_ground(renderer);
     render_items(renderer);
     render_walls();

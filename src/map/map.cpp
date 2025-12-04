@@ -242,6 +242,12 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
                     if (x != halfMapSize && y != halfMapSize) {
                         map[y][x] = Map::INGROWN_WALL_CUBE;
                     }
+                    if (dx == 0) {
+                        map[y][x] = Map::MAZE_NS_DOOR;
+                    }
+                    if (dy == 0) {
+                        map[y][x] = Map::MAZE_WE_DOOR;
+                    }
                 }
                 // inner glade
                 else {

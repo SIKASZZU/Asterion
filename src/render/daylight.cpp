@@ -17,6 +17,7 @@ namespace DaylightNS {
         // advance time by elapsedMS relative to full day length
         timeOfDay += static_cast<float>(elapsedMS) / (daylightSettings.dayLengthSeconds * 1000.0f);
         if (timeOfDay >= 1.0f) timeOfDay = fmod(timeOfDay, 1.0f);
+        daylightSettings.day = (get_day_brightness() >= 0.5f);
     }
 
     float get_day_brightness() {
@@ -35,11 +36,13 @@ namespace DaylightNS {
             if (since21 <= halfWindow) {
                 // dimming from 1.0 -> 0.0
                 brightness = 1.0f - (since21 / halfWindow);
-            } else {
+            }
+            else {
                 // brightening from 0.0 -> 1.0
                 brightness = (since21 - halfWindow) / halfWindow;
             }
-        } else {
+        }
+        else {
             // daytime between 08:00 and 21:00
             brightness = 1.0f;
         }
@@ -58,6 +61,9 @@ namespace DaylightNS {
         char buf2[64];
         snprintf(buf2, sizeof(buf2), "Brightness: %.2f", DaylightNS::get_day_brightness());
         SDL_RenderDebugText(renderer, 50, 170, buf2);
+        char bufDay[32];
+        snprintf(bufDay, sizeof(bufDay), "day: %s", daylightSettings.day ? "true" : "false");
+        SDL_RenderDebugText(renderer, 50, 190, bufDay);
     }
 
     void draw(SDL_Renderer* renderer) {
