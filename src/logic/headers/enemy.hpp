@@ -10,8 +10,8 @@ public:
     Enemy(int gridX, int gridY);
     SDL_Point grid;
     SDL_Point lastDirection;
-    
-    void animation(SDL_Renderer* renderer);
+
+    void animation(SDL_Renderer* renderer, const char* activity);
     void update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT);
     void render(SDL_Renderer* renderer);
     void set_speed(float s) { speed = s; };
@@ -19,8 +19,10 @@ public:
     void set_position(SDL_FPoint p) { pos = p; };
     SDL_FPoint get_position() const { return pos; };
     SDL_Point get_movementVector() const { return movementVector; };
-    SDL_FRect get_rect() const {return rect; };
-    int get_size() const {return size; };
+    SDL_FRect get_rect() const { return rect; };
+    int get_size() const { return size; };
+    // chasing, roaming
+    const char* activity;
 
 private:
     float size;
@@ -31,12 +33,17 @@ private:
     SDL_Color color;
     size_t currentPathIndex;
     SDL_Point movementVector;
+    SDL_Point lastKnownPlayerGrid;
+    SDL_Point targetGrid;
+    float roamingDistanceTraveled;
+    bool hasRoamingTarget;
 
     void move_along_path(float dT);
     void compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid);
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
     void draw_path(const std::vector<std::pair<int, int>>& path);
-
+    void choose_target(const int map[mapSize][mapSize], SDL_Point playerGrid);
+    bool has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, SDL_Point to);
 };
 
 extern bool stopAllEnemies;

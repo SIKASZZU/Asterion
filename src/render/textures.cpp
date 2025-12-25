@@ -50,6 +50,15 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::spider_run180_animation] = ImageTexture(renderer, Assets::Images::spider_run180_animation);
     textureMap[Map::spider_run270_animation] = ImageTexture(renderer, Assets::Images::spider_run270_animation);
     textureMap[Map::spider_run0_animation] = ImageTexture(renderer, Assets::Images::spider_run0_animation);
+    // spider walk 8-way
+    textureMap[Map::spider_walk45_animation] = ImageTexture(renderer, Assets::Images::spider_walk45_animation);
+    textureMap[Map::spider_walk135_animation] = ImageTexture(renderer, Assets::Images::spider_walk135_animation);
+    textureMap[Map::spider_walk225_animation] = ImageTexture(renderer, Assets::Images::spider_walk225_animation);
+    textureMap[Map::spider_walk315_animation] = ImageTexture(renderer, Assets::Images::spider_walk315_animation);
+    textureMap[Map::spider_walk90_animation] = ImageTexture(renderer, Assets::Images::spider_walk90_animation);
+    textureMap[Map::spider_walk180_animation] = ImageTexture(renderer, Assets::Images::spider_walk180_animation);
+    textureMap[Map::spider_walk270_animation] = ImageTexture(renderer, Assets::Images::spider_walk270_animation);
+    textureMap[Map::spider_walk0_animation] = ImageTexture(renderer, Assets::Images::spider_walk0_animation);
     // spider idle 8-way
     textureMap[Map::spider_idle45_animation] = ImageTexture(renderer, Assets::Images::spider_idle45_animation);
     textureMap[Map::spider_idle135_animation] = ImageTexture(renderer, Assets::Images::spider_idle135_animation);

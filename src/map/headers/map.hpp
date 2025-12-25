@@ -20,6 +20,15 @@ enum Map {
     spider_run180_animation,
     spider_run270_animation,
     spider_run0_animation,
+    // spider walk
+    spider_walk45_animation,
+    spider_walk135_animation,
+    spider_walk225_animation,
+    spider_walk315_animation,
+    spider_walk90_animation,
+    spider_walk180_animation,
+    spider_walk270_animation,
+    spider_walk0_animation,
     // spider idle
     spider_idle45_animation,
     spider_idle135_animation,

@@ -2,6 +2,7 @@
 #include "enemy.hpp"
 #include "animation.hpp"
 #include "textures.hpp"
+#include <cstring>
 #include <vector>
 
 Uint32 AnimEnemy::lastUpdate;
@@ -9,15 +10,13 @@ int AnimEnemy::animRow = 1;
 int AnimEnemy::animCol = 1;
 int AnimEnemy::spriteEnum = 1;
 
-void Enemy::animation(SDL_Renderer* renderer) {
+void Enemy::animation(SDL_Renderer* renderer, const char* activity) {
     using namespace AnimEnemy;
 
     SDL_FRect srcRect;
-    int animationSpeed = 32;
-    const char* action = (movementVector.x==0 && movementVector.y==0) ? "idle" : "run";
+    int animationSpeed = 48;
 
-    // select spriteEnum based on movement direction
-    if (action == "run") {
+    if (strcmp(activity, "chasing") == 0) {
         lastDirection = movementVector;
         if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_run135_animation; }
         if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_run315_animation; }
@@ -28,7 +27,23 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (movementVector.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_run180_animation; }
         if (movementVector.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_run270_animation; }
         if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_run0_animation; }
-    } else {
+    }
+    else if (strcmp(activity, "roaming") == 0) {
+        lastDirection = movementVector;
+        animationSpeed = 48;
+        std::cout << "Enemy roaming animation" << '\n';
+        if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_walk135_animation; }
+        if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_walk315_animation; }
+        if (movementVector.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_walk225_animation; }
+        if (movementVector.y == -1 && movementVector.x == 0) { spriteEnum = Map::spider_walk45_animation; }
+
+        if (movementVector.y == -1 && movementVector.x == 1) { spriteEnum = Map::spider_walk90_animation; }
+        if (movementVector.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_walk180_animation; }
+        if (movementVector.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_walk270_animation; }
+        if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_walk0_animation; }
+    }
+    else {
+        animationSpeed = 72;
         if (lastDirection.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_idle135_animation; }
         if (lastDirection.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_idle315_animation; }
         if (lastDirection.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_idle225_animation; }
@@ -54,16 +69,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
     if (SDL_GetTicks() - lastUpdate > animationSpeed) {
         lastUpdate = SDL_GetTicks();
         animCol++;
-        // action
-        if (action == "run") {
-            if (animCol >= 4) {
-                animRow++;
-                animCol = 0;
-            }
-            if (animRow >= 4) {
-                animRow = 0;
-            }
-        } else {
+        if (strcmp(activity, "idle") == 0) {
             if (animCol >= 6) {
                 animRow++;
                 animCol = 0;
@@ -72,7 +78,17 @@ void Enemy::animation(SDL_Renderer* renderer) {
                 animRow = 0;
             }
         }
+        else {
+            if (animCol >= 4) {
+                animRow++;
+                animCol = 0;
+            }
+            if (animRow >= 4) {
+                animRow = 0;
+            }
+        }
     }
+    std::cout << "spriteEnum: " << spriteEnum << '\n';
     textureMap[spriteEnum].render(renderer, &srcRect, &dstRect);
 }
 

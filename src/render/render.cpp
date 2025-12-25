@@ -216,7 +216,9 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
                 textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
             }
             switch (gridValue) {
-            case Map::MAZE_GROUND_CUBE: {
+            case Map::MAZE_GROUND_CUBE:
+            case Map::MAZE_WE_DOOR:
+            case Map::MAZE_NS_DOOR: {
                 // if 4 sides are sec walls, return sec ground
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);

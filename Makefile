@@ -4,7 +4,7 @@ BUILD_DIR ?= bld
 BIN_DIR ?= bin
 
 CXX ?= g++
-CXXFLAGS ?= -std=c++17
+# CXXFLAGS ?= -std=c++17
 
 TARGET := $(BIN_DIR)/$(TARGET_EXEC)
 

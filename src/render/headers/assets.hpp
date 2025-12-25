@@ -44,6 +44,15 @@ namespace Assets::Images {
     static const char* spider_run180_animation = "resources/spider/Run/Run_Body_180.png";
     static const char* spider_run270_animation = "resources/spider/Run/Run_Body_270.png";
     static const char* spider_run0_animation = "resources/spider/Run/Run_Body_0.png";
+    // spider walk 8-way
+    static const char* spider_walk45_animation = "resources/spider/Walk/Walk_Body_045.png";
+    static const char* spider_walk135_animation = "resources/spider/Walk/Walk_Body_135.png";
+    static const char* spider_walk225_animation = "resources/spider/Walk/Walk_Body_225.png";
+    static const char* spider_walk315_animation = "resources/spider/Walk/Walk_Body_315.png";
+    static const char* spider_walk90_animation = "resources/spider/Walk/Walk_Body_090.png";
+    static const char* spider_walk180_animation = "resources/spider/Walk/Walk_Body_180.png";
+    static const char* spider_walk270_animation = "resources/spider/Walk/Walk_Body_270.png";
+    static const char* spider_walk0_animation = "resources/spider/Walk/Walk_Body_0.png";
     // spider idle 8-way
     static const char* spider_idle45_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_045.png";
     static const char* spider_idle135_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_135.png";
