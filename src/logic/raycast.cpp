@@ -44,20 +44,28 @@ namespace Raycast {
             sinf(angleRad)
         };
     }
-    float calculate_line_length(int map[mapSize][mapSize], SDL_FPoint direction) {
-        // Idea from javidx9 https://www.youtube.com/watch?v=NbSee-XM7WA
+    // Precomputed direction & step cache for fixed-angle fans
+    struct PrecompDir { SDL_FPoint dir; SDL_FPoint unitStep; };
+    static std::vector<PrecompDir> dirCache;
+    static void ensure_dir_cache() {
+        if (!dirCache.empty()) return;
+        int entries = 360 / angleStep;
+        dirCache.reserve(entries + 1);
+        for (int a = 0; a < 360; a += angleStep) {
+            SDL_FPoint d = angle_to_direction(static_cast<float>(a));
+            SDL_FPoint us;
+            // avoid division by zero by using very large step value
+            us.x = (d.x == 0.0f) ? 1e30f : fabsf(1.0f / d.x);
+            us.y = (d.y == 0.0f) ? 1e30f : fabsf(1.0f / d.y);
+            dirCache.push_back({ d, us });
+        }
+    }
 
-        // Current grid cell
+    // Trace ray with provided precomputed unit steps (fast path)
+    static float trace_ray(int map[mapSize][mapSize], const SDL_FPoint& direction, const SDL_FPoint& rayUnitStep) {
         int gridX = static_cast<int>(sourcePos.x / tileSize);
         int gridY = static_cast<int>(sourcePos.y / tileSize);
 
-        // Length of ray from one x or y side to next
-        SDL_FPoint rayUnitStep = {
-            std::sqrt(1 + (direction.y / direction.x) * (direction.y / direction.x)),
-            std::sqrt(1 + (direction.x / direction.y) * (direction.x / direction.y))
-        };
-
-        // Step direction (+1 or -1) and initial distances
         SDL_Point step;
         SDL_FPoint rayLength1D;
         if (direction.x < 0) {
@@ -78,7 +86,6 @@ namespace Raycast {
             rayLength1D.y = ((gridY + 1) * tileSize - sourcePos.y) / tileSize * rayUnitStep.y;
         }
 
-        // Ray walk // borderline fucked
         float distance = 0.0f;
         while (distance < maxRayLength) {
             endpointActiveGrids.insert(std::make_pair(gridY, gridX));
@@ -92,7 +99,6 @@ namespace Raycast {
                 distance = rayLength1D.y * tileSize;
                 rayLength1D.y += rayUnitStep.y;
             }
-            // Hit wall?
             if (wallValues.find(map[gridY][gridX]) != wallValues.end()) {
                 endpointActiveGrids.insert(std::make_pair(gridY, gridX));
                 break;
@@ -102,9 +108,12 @@ namespace Raycast {
     }
     void calculate_active_grids(SDL_Renderer* renderer, struct Offset& offset, int map[mapSize][mapSize]) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
+        ensure_dir_cache();
+        int idx = 0;
         for (int angle = 0; angle < 360; angle += angleStep) {
-            SDL_FPoint direction = angle_to_direction(static_cast<float>(angle));
-            float calculated_length = calculate_line_length(map, direction);
+            const SDL_FPoint& direction = dirCache[idx].dir;
+            const SDL_FPoint& unitStep = dirCache[idx].unitStep;
+            float calculated_length = trace_ray(map, direction, unitStep);
             if (showRays == true) {
                 SDL_FPoint end = {
                     sourcePos.x + direction.x * calculated_length,
@@ -116,6 +125,7 @@ namespace Raycast {
                     renderer, isoStart.x + (tileSize / 2), isoStart.y, isoEnd.x + (tileSize / 2), isoEnd.y
                 );
             }
+            ++idx;
         }
     }
     void calculate_decay_grids() {

@@ -26,7 +26,6 @@ namespace Raycast {
     void update_sourcePos();
     float to_radians(float degrees);
     SDL_FPoint angle_to_direction(float angle_deg);
-    float calculate_line_length(int map[mapSize][mapSize], SDL_FPoint direction);
     void calculate_active_grids(SDL_Renderer* renderer, struct Offset& offset, int map[mapSize][mapSize]);
     void calculate_decay_grids();
     void clear_arrays();
