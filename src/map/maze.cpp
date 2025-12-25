@@ -69,7 +69,17 @@ namespace Maze {
             if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
                 map[ny][nx] = pathway;
                 map[start_row + (dir.second != 0 ? dir.second / 2 : dir.second)][start_col + (dir.first != 0 ? dir.first / 2 : dir.first)] = pathway;
-
+                // For sector type "one" widen the carved corridor by also
+                // opening the orthogonal neighbours of the midpoint. This
+                // makes pathways visibly wider without changing the step size.
+                if (type == "one") {
+                    int mid_r = start_row + (dir.second != 0 ? dir.second / 2 : dir.second);
+                    int mid_c = start_col + (dir.first != 0 ? dir.first / 2 : dir.first);
+                    // if (mid_r - 1 >= 0) map[mid_r - 1][mid_c] = Map::INGROWN_WALL_CUBE;
+                    if (mid_r + 1 < mapSize && map[mid_r + 1][mid_c] != Map::INGROWN_WALL_CUBE) map[mid_r + 1][mid_c] = pathway;
+                    // if (mid_c - 1 >= 0) map[mid_r][mid_c - 1] = Map::INGROWN_WALL_CUBE;
+                    if (mid_c + 1 < mapSize && map[mid_r][mid_c + 1] != Map::INGROWN_WALL_CUBE) map[mid_r][mid_c + 1] = pathway;
+                }
                 if (type == "two" || type == "three") {
                     map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
                     map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;

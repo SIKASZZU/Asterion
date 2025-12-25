@@ -31,7 +31,6 @@ void Enemy::animation(SDL_Renderer* renderer, const char* activity) {
     else if (strcmp(activity, "roaming") == 0) {
         lastDirection = movementVector;
         animationSpeed = 48;
-        std::cout << "Enemy roaming animation" << '\n';
         if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_walk135_animation; }
         if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_walk315_animation; }
         if (movementVector.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_walk225_animation; }
@@ -88,7 +87,6 @@ void Enemy::animation(SDL_Renderer* renderer, const char* activity) {
             }
         }
     }
-    std::cout << "spriteEnum: " << spriteEnum << '\n';
     textureMap[spriteEnum].render(renderer, &srcRect, &dstRect);
 }
 

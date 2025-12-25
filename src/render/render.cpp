@@ -6,6 +6,7 @@
 #include "mod_map_data.hpp"
 #include "animation.hpp"
 #include "daylight.hpp"
+#include "minimap.hpp"
 
 #include <iostream>
 #include <vector>
@@ -609,4 +610,6 @@ void TerrainClass::render(SDL_Renderer* renderer) {
     // render_decoration(renderer);
     render_entities();
     render_renderQ(renderer);
+    // overlay minimap on top-right
+    render_minimap(renderer);
 }
