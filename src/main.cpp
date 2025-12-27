@@ -18,6 +18,8 @@
 #include "end.hpp"
 #include "memory.hpp"
 #include "daylight.hpp"
+#include <thread>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
 
@@ -43,6 +45,12 @@ int main(int argc, char* argv[]) {
     load_textures(renderer);
     TerrainClass terrain;
     Vision::create_darkness(renderer);
+
+    // Start raycast worker thread (background computations)
+    Raycast::start_worker();
+    std::cout << "Main thread id: " << std::this_thread::get_id() << "\n";
+    std::cout << "Raycast worker thread id: " << Raycast::get_worker_id() << "\n";
+
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);
 
@@ -68,12 +76,12 @@ int main(int argc, char* argv[]) {
                 react_to_keyboard_up(event.key.key, player);
         }
         react_to_keyboard_state(state);
-        
+
         // tickrate specific
         while (tickLag >= TICK_DELAY_MS) {
             tickLag -= TICK_DELAY_MS;
             tickCount++;
-            
+
             // (use fixedDeltaTime!)
             SDL_Point enemyTargetGrid = {
                 static_cast<int>((player.x + player.size / 2) / tileSize),
@@ -88,7 +96,7 @@ int main(int argc, char* argv[]) {
             terrain.calculate_miscellaneous(fixedDeltaTime);
         }
         DaylightNS::update_daynight(elapsedMS);
-        
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         terrain.render(renderer);
@@ -111,6 +119,8 @@ int main(int argc, char* argv[]) {
         frameCount++;
     }
 
+    // stop background raycast worker
+    Raycast::stop_worker();
     destroy_all_textures();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

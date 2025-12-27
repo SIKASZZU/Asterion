@@ -9,6 +9,9 @@
 #include <deque>
 #include <set>
 #include <utility>
+#include <thread>
+#include <vector>
+#include <condition_variable>
 
 namespace Raycast {
     extern SDL_FPoint sourcePos;
@@ -23,10 +26,19 @@ namespace Raycast {
     extern std::set<std::pair<int, int>> activeGridsMaxSize;
     extern std::deque<std::pair<int, int>> decayGrids;
 
+    // Threading API: start/stop worker, request calculation, render results
+    void start_worker();
+    void stop_worker();
+    void request_calculation();
+    bool is_ready();
+    void wait_until_ready();
+    std::thread::id get_worker_id();
+    void render_rays(SDL_Renderer* renderer, struct Offset& offset);
+
     void update_sourcePos();
     float to_radians(float degrees);
     SDL_FPoint angle_to_direction(float angle_deg);
-    void calculate_active_grids(SDL_Renderer* renderer, struct Offset& offset, int map[mapSize][mapSize]);
+    void calculate_active_grids(const SDL_FPoint& srcPos, int map[mapSize][mapSize]);
     void calculate_decay_grids();
     void clear_arrays();
     void update_max_grid_size();
