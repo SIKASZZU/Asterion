@@ -5,6 +5,7 @@
 #include <SDL3/SDL_image.h>
 #include <algorithm>
 #include <array>
+#include <thread>
 
 #include "offset.hpp"
 #include "player.hpp"
@@ -25,10 +26,10 @@ int main(int argc, char* argv[]) {
 
     std::cout << "\n201103L => C++11\n201402L => C++14\n201703L => C++17\n202002L => C++20\n202302L => C++23\nCPP VERSION: " << __cplusplus << std::endl;
 
+    std::cout << "Main thread id: " << std::this_thread::get_id() << '\n';
     // Start raycast worker thread (background computations)
-    Raycast::start_worker();
-    std::cout << "Main thread id:    " << std::this_thread::get_id() << "\n";
-    std::cout << "Raycast thread id: " << Raycast::get_worker_id() << "\n";
+    std::jthread::id threadID = Raycast::start_worker();
+    std::cout << "Raycast thread id: " << threadID << '\n';
 
     static SDL_Window* window = NULL;
     static SDL_Renderer* renderer = NULL;
@@ -105,7 +106,7 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         terrain.render(renderer);
-        Raycast::update(renderer, offset, map);
+        Raycast::update(renderer, offset);
         Vision::update(renderer, offset);
         if (Ending::start) Ending::update(renderer);
         DaylightNS::draw(renderer);

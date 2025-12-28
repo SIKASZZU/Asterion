@@ -39,10 +39,13 @@ namespace Minimap {
                 if (haveEndpoints && raycastEnabled) {
                     // only render tiles that are in the visible endpoint set
                     if (Raycast::endpointActiveGrids.find({gy, gx}) == Raycast::endpointActiveGrids.end()) {
-                        // unseen / out of vision
-                        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
-                        SDL_RenderFillRect(renderer, &cellRect);
-                        continue;
+                        if (std::find(Raycast::decayGrids.begin(), Raycast::decayGrids.end(), std::make_pair(gy, gx)) == Raycast::decayGrids.end()) {
+
+                            // unseen / out of vision
+                            SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+                            SDL_RenderFillRect(renderer, &cellRect);
+                            continue;
+                        }
                     }
                 }
 

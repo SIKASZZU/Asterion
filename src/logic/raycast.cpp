@@ -29,15 +29,12 @@ namespace Raycast {
     signed int maxDecaySize = maxActiveSize / 2;
     float maxRayLength = renderRadius * (tileSize * 0.75);
     bool updateMaxGridSize = true;
-    /// endpointActiveGrids.size() >= maxActiveSize
     std::set<std::pair<int, int>> endpointActiveGrids;
-    // CONSTEXPRES activeGridsMaxSize.size() == maxActiveSize
     std::set<std::pair<int, int>> activeGridsMaxSize;
     std::deque<std::pair<int, int>> decayGrids;
 
-    // Worker thread primitives (use jthread)
+    // Worker thread primitives
     static std::jthread workerThread;
-    static std::thread::id workerThreadId;
     static std::mutex workerMutex;
     static std::condition_variable workerCv;
     static std::atomic<bool> computeRequested{ false };
@@ -45,40 +42,36 @@ namespace Raycast {
     static std::vector<SDL_FPoint> rayEndpoints;
 
     void update_sourcePos() {
-        sourcePos = {
-            player.x,
-            player.y
-        };
+        sourcePos = { player.x, player.y };
     }
+
     float to_radians(float degrees) {
         return degrees * (PI / 180.0f);
     }
-    // Computes direction vector from an angle
+
     SDL_FPoint angle_to_direction(float angleDeg) {
-        float angleRad = to_radians(angleDeg);
-        return {
-            cosf(angleRad),
-            sinf(angleRad)
-        };
+        const float angleRad = to_radians(angleDeg);
+        return { cosf(angleRad), sinf(angleRad) };
     }
+
     // Precomputed direction & step cache for fixed-angle fans
     struct PrecompDir { SDL_FPoint dir; SDL_FPoint unitStep; };
     static std::vector<PrecompDir> dirCache;
+
     static void ensure_dir_cache() {
         if (!dirCache.empty()) return;
-        int entries = 360 / angleStep;
+        const int entries = 360 / angleStep;
         dirCache.reserve(entries + 1);
         for (int a = 0; a < 360; a += angleStep) {
-            SDL_FPoint d = angle_to_direction(static_cast<float>(a));
+            const SDL_FPoint d = angle_to_direction(static_cast<float>(a));
             SDL_FPoint us;
-            // avoid division by zero by using very large step value
             us.x = (d.x == 0.0f) ? 1e30f : fabsf(1.0f / d.x);
             us.y = (d.y == 0.0f) ? 1e30f : fabsf(1.0f / d.y);
             dirCache.push_back({ d, us });
         }
     }
 
-    // Trace ray with provided precomputed unit steps (fast path)
+    // Trace ray with provided precomputed unit steps
     static float trace_ray(const SDL_FPoint& srcPos, int map[mapSize][mapSize], const SDL_FPoint& direction, const SDL_FPoint& rayUnitStep, std::set<std::pair<int, int>>& localEndpoints) {
         int gridX = static_cast<int>(srcPos.x / tileSize);
         int gridY = static_cast<int>(srcPos.y / tileSize);
@@ -105,7 +98,7 @@ namespace Raycast {
 
         float distance = 0.0f;
         while (distance < maxRayLength) {
-            localEndpoints.insert(std::make_pair(gridY, gridX));
+            localEndpoints.insert({ gridY, gridX });
             if (rayLength1D.x < rayLength1D.y) {
                 gridX += step.x;
                 distance = rayLength1D.x * tileSize;
@@ -117,127 +110,142 @@ namespace Raycast {
                 rayLength1D.y += rayUnitStep.y;
             }
             if (wallValues.find(map[gridY][gridX]) != wallValues.end()) {
-                localEndpoints.insert(std::make_pair(gridY, gridX));
+                localEndpoints.insert({ gridY, gridX });
                 break;
             }
         }
         return distance;
     }
-    // Compute ray endpoints and endpointActiveGrids without any rendering (worker thread)
-    void calculate_active_grids(const SDL_FPoint& srcPos, int map[mapSize][mapSize]) {
+
+    // Compute ray endpoints and endpointActiveGrids (worker thread)
+    void calculate_active_grids(const SDL_FPoint& srcPos) {
         ensure_dir_cache();
         std::set<std::pair<int, int>> localEndpoints;
         std::vector<SDL_FPoint> localEnds;
         localEnds.reserve(dirCache.size() + 1);
-        int idx = 0;
+        size_t idx = 0;
         for (int angle = 0; angle < 360; angle += angleStep) {
-            const SDL_FPoint& direction = dirCache[idx].dir;
-            const SDL_FPoint& unitStep = dirCache[idx].unitStep;
-            float calculated_length = trace_ray(srcPos, map, direction, unitStep, localEndpoints);
-            SDL_FPoint end = {
+            const auto& [direction, unitStep] = dirCache[idx];
+            const float calculated_length = trace_ray(srcPos, map, direction, unitStep, localEndpoints);
+            const SDL_FPoint end = {
                 srcPos.x + direction.x * calculated_length,
                 srcPos.y + direction.y * calculated_length
             };
             localEnds.push_back(end);
             ++idx;
         }
-        // swap into shared structures under lock
+        // Swap into shared structures under lock
         {
             std::lock_guard<std::mutex> lk(workerMutex);
             endpointActiveGrids.swap(localEndpoints);
-            lastComputedSource = srcPos;
             rayEndpoints.swap(localEnds);
+            lastComputedSource = srcPos;
         }
     }
+
     void calculate_decay_grids() {
-        // todo: decay grids setist ei removei mingeid random v22rtusi 2ra, just mazeis olles
-        // Testi sedasi, et visionis renderi valged "active" rectid enne "decay" recte ning ss mine mazei.
-        // hetkel ongi nii, et renderib decay ss active ehk active overwritib. Fix the overlap!
-        std::set_difference(
-            activeGridsMaxSize.begin(), activeGridsMaxSize.end(),
-            endpointActiveGrids.begin(), endpointActiveGrids.end(),
-            std::inserter(decayGrids, decayGrids.begin())
-        );
-        activeGridsMaxSize = endpointActiveGrids;
+
+        // see func fucking laagab raigelt, ilmselt
+        // 1. maxDecaySize too big?
+        // 2. retarded arvutused?
+        return;
+
+        std::vector<std::pair<int, int>> added;
+        {
+            std::lock_guard<std::mutex> lk(workerMutex);
+            added.reserve(activeGridsMaxSize.size());
+            std::set_difference(
+                activeGridsMaxSize.begin(), activeGridsMaxSize.end(),
+                endpointActiveGrids.begin(), endpointActiveGrids.end(),
+                std::back_inserter(added)
+            );
+            activeGridsMaxSize.swap(endpointActiveGrids);  // O(1) swap instead of O(N) copy
+        }
+        // Append to decay queue (newest at front)
+        for (auto& p : added) {
+            decayGrids.push_front(p);
+        }
+        // Trim
+        while (static_cast<int>(decayGrids.size()) > maxDecaySize) {
+            decayGrids.pop_back();
+        }
     }
+
     void clear_arrays() {
         std::lock_guard<std::mutex> lk(workerMutex);
         endpointActiveGrids.clear();
         rayEndpoints.clear();
-        while (decayGrids.size() >= maxDecaySize) {
+        while (static_cast<int>(decayGrids.size()) > maxDecaySize) {
             decayGrids.pop_back();
         }
     }
+
     void update_max_grid_size() {
         if (!updateMaxGridSize) return;
         updateMaxGridSize = false;
         maxActiveSize = (renderRadius * renderRadius * PI);
         maxDecaySize = maxActiveSize / 2;
     }
-    void update(SDL_Renderer* renderer, struct Offset& offset, int map[mapSize][mapSize]) {
+
+    void update(SDL_Renderer* renderer, struct Offset& Offset) {
         if (!enabled) return;
-        // light source position is published to worker inside request_calculation()
         update_max_grid_size();
-
-        // Ask worker to compute; do not block unless we need to render
-        request_calculation();
-
-        if (showRays) {
-            // wait for worker result to be ready, then render on main thread
+        SDL_FPoint currentPos = { player.x, player.y };
+        float distMoved = hypotf(currentPos.x - lastComputedSource.x, currentPos.y - lastComputedSource.y);
+        if (distMoved > tileSize * 0.5f) {  // Adjust threshold as needed
+            request_calculation();
             wait_until_ready();
-            render_rays(renderer, offset);
             calculate_decay_grids();
+        }
+        if (showRays) {
+            render_rays(renderer, offset);
         }
     }
 
     // Worker loop
     static void worker_loop(std::stop_token st) {
         while (!st.stop_requested()) {
-            // wait for request or stop
             std::unique_lock<std::mutex> lock(workerMutex);
             workerCv.wait(lock, [&] { return computeRequested.load() || st.stop_requested(); });
             if (st.stop_requested()) break;
-            // take the request (clear the flag) and capture sourcePos under lock
             computeRequested.store(false);
-            SDL_FPoint localSrc = sourcePos;
+            const SDL_FPoint localSrc = sourcePos;
             lock.unlock();
 
-            // compute
+            // Compute
             update_max_grid_size();
-            // compute into local containers and swap inside calculate_active_grids
-            calculate_active_grids(localSrc, map);
+            calculate_active_grids(localSrc);
 
-            // signal ready
-            std::lock_guard<std::mutex> lock2(workerMutex);
-            computeReady.store(true);
+            // Signal ready
+            {
+                std::lock_guard<std::mutex> lock2(workerMutex);
+                computeReady.store(true);
+            }
             workerCv.notify_all();
         }
     }
 
-    void start_worker() {
+    std::jthread::id start_worker() {
         computeRequested.store(false);
         computeReady.store(false);
         workerThread = std::jthread(worker_loop);
-        workerThreadId = workerThread.get_id();
+        return workerThread.get_id();
     }
 
     void stop_worker() {
-        workerThread.request_stop();
-        workerCv.notify_all();
-        if (workerThread.joinable()) workerThread.join();
+        if (workerThread.joinable()) {
+            workerThread.request_stop();
+            workerCv.notify_all();
+            workerThread.join();
+        }
     }
 
     void request_calculation() {
         std::lock_guard<std::mutex> lk(workerMutex);
-        // publish the current player position for the worker and request recompute
         sourcePos = { player.x, player.y };
         computeReady.store(false);
         computeRequested.store(true);
         workerCv.notify_one();
-    }
-
-    bool is_ready() {
-        return computeReady.load();
     }
 
     void wait_until_ready() {
@@ -245,16 +253,18 @@ namespace Raycast {
         workerCv.wait(lk, [] { return computeReady.load(); });
     }
 
-    std::thread::id get_worker_id() {
-        return workerThreadId;
-    }
-
     void render_rays(SDL_Renderer* renderer, struct Offset& offset) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
-        std::lock_guard<std::mutex> lk(workerMutex);
-        SDL_FPoint isoStart = to_isometric_coordinate(lastComputedSource.x, lastComputedSource.y);
-        for (const auto& end : rayEndpoints) {
-            SDL_FPoint isoEnd = to_isometric_coordinate(end.x, end.y);
+        std::vector<SDL_FPoint> localEndpoints;
+        SDL_FPoint localSource;
+        {
+            std::lock_guard<std::mutex> lk(workerMutex);  // Protect read
+            localEndpoints = rayEndpoints;  // Copy to avoid holding lock during render
+            localSource = lastComputedSource;
+        }
+        const SDL_FPoint isoStart = to_isometric_coordinate(localSource.x, localSource.y);
+        for (const auto& end : localEndpoints) {
+            const SDL_FPoint isoEnd = to_isometric_coordinate(end.x, end.y);
             SDL_RenderLine(renderer, isoStart.x + (tileSize / 2), isoStart.y, isoEnd.x + (tileSize / 2), isoEnd.y);
         }
     }
