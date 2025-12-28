@@ -26,7 +26,7 @@ namespace Maze {
     };
 
     std::vector<std::pair<int, int>> path;
-    int pathway = Map::MAZE_GROUND_CUBE;
+    int pathway = Map::ERROR_CUBE;
 
     // Shuffle directions
     void shuffle_directions(std::vector<std::pair<int, int>>& directions) {
@@ -42,14 +42,17 @@ namespace Maze {
         if (type == "one") {
             directions = directions_sec_1;
             allowed_number = Map::SECTOR_1_WALL_VAL;
+            pathway = Map::SECTOR_1_PATHWAY;
         }
         else if (type == "two") {
             directions = directions_sec_2;
             allowed_number = Map::SECTOR_2_WALL_VAL;
+            pathway = Map::SECTOR_2_PATHWAY;
         }
         else if (type == "three") {
             directions = directions_sec_3;
             allowed_number = Map::SECTOR_3_WALL_VAL;
+            pathway = Map::SECTOR_3_PATHWAY;
         }
 
         shuffle_directions(directions);

@@ -51,7 +51,7 @@ void mod_map_sector_3() {
         }
     }
     for (const auto [x, y] : change_gP) {
-        map[x][y] = Map::MAZE_GROUND_CUBE;
+        map[x][y] = Map::GROUND_CUBE;
     }
 }
 

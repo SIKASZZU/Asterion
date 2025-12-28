@@ -218,7 +218,6 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
                 textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
             }
             switch (gridValue) {
-            case Map::MAZE_GROUND_CUBE:
             case Map::MAZE_WE_DOOR:
             case Map::MAZE_NS_DOOR: {
                 // if 4 sides are sec walls, return sec ground
@@ -231,6 +230,19 @@ void TerrainClass::render_ground(SDL_Renderer* renderer) {
             case Map::VOID_CUBE:
             case Map::VOID_CUBE_NEIGHBOUR: {
                 render_void_tilemap(renderer, offset, map, gridPos, destTile);
+                break;
+            }
+            case Map::SECTOR_1_PATHWAY: {
+                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
+                destTile.y -= 16;
+                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+                break;
+            }
+            case Map::MAZE_GROUND_CUBE:
+            case Map::SECTOR_2_PATHWAY:
+            case Map::SECTOR_3_PATHWAY: {
+                textureMap[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
                 break;
             }
             }

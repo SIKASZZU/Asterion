@@ -38,7 +38,9 @@ enum Map {
     spider_idle180_animation,
     spider_idle270_animation,
     spider_idle0_animation,
-
+    SECTOR_1_PATHWAY,
+    SECTOR_2_PATHWAY,
+    SECTOR_3_PATHWAY,
     TREE_TRUNK,
     GROUND_CUBE,
     GROUND_CUBE_SPRITE,

@@ -154,7 +154,7 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
             // maze ala full maze_ground, section overwritib oma enda dataga.
             if (distance >= mazeInnerRadius
                 && distance <= mazeOuterRadius) {
-                map[y][x] = Map::MAZE_GROUND_CUBE;
+                map[y][x] = Map::SECTOR_1_PATHWAY;
             }
             int drawbackBuffer = 3;
             if (distance >= mazeInnerRadius
@@ -195,14 +195,14 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
                     if (distance <= (mazeSecondSector * 0.7)
                         && (distance >= mazeInnerRadius * 3.3)) {
                         if (std::fabs(delta) < 0.5) {  // kontrollib section wallide thicknessi.
-                            map[y][x] = Map::MAZE_GROUND_CUBE;
+                            map[y][x] = Map::SECTOR_1_PATHWAY;
                         }
                     }
                 }
                 // pathwayd suunas kell 12, 3, 6, 9, et player gladeist minema saaks.
                 else if (sector % 2 == 0 && distance <= (mazeSecondSector / 2.5)) {
                     if (std::fabs(delta) < 0.08) {  // kontrollib section wallide thicknessi.
-                        map[y][x] = Map::MAZE_GROUND_CUBE;
+                        map[y][x] = Map::SECTOR_1_PATHWAY;
                     }
                 }
                 // walls between sector 1/2 
@@ -218,7 +218,7 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
                 && distance <= mazeOuterRadius + 2) {
                 if (distance >= mazeOuterRadius + 1
                     && distance <= mazeOuterRadius + 2) {
-                    map[y][x] = Map::MAZE_GROUND_CUBE;
+                    map[y][x] = Map::SECTOR_1_PATHWAY;
                 }
                 else {
                     map[y][x] = Map::INGROWN_WALL_CUBE;
