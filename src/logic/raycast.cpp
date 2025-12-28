@@ -14,15 +14,17 @@
 #include <cmath>
 #include <algorithm>
 #include <thread>
+#include <stop_token>
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
 #include <vector>
 
 namespace Raycast {
+    bool enabled = false;
+    bool showRays = false;
     SDL_FPoint sourcePos = {};
     SDL_FPoint lastComputedSource = {};
-    bool showRays = false;
     signed int maxActiveSize = ((renderRadius / tileSize) * (renderRadius / tileSize) * PI);
     signed int maxDecaySize = maxActiveSize / 2;
     float maxRayLength = renderRadius * (tileSize * 0.75);
@@ -33,14 +35,13 @@ namespace Raycast {
     std::set<std::pair<int, int>> activeGridsMaxSize;
     std::deque<std::pair<int, int>> decayGrids;
 
-    // Worker thread primitives
-    static std::thread workerThread;
+    // Worker thread primitives (use jthread)
+    static std::jthread workerThread;
     static std::thread::id workerThreadId;
     static std::mutex workerMutex;
     static std::condition_variable workerCv;
     static std::atomic<bool> computeRequested{ false };
     static std::atomic<bool> computeReady{ false };
-    static std::atomic<bool> stopWorker{ false };
     static std::vector<SDL_FPoint> rayEndpoints;
 
     void update_sourcePos() {
@@ -174,7 +175,7 @@ namespace Raycast {
         maxDecaySize = maxActiveSize / 2;
     }
     void update(SDL_Renderer* renderer, struct Offset& offset, int map[mapSize][mapSize]) {
-        if (!r_pressed) return;
+        if (!enabled) return;
         // light source position is published to worker inside request_calculation()
         update_max_grid_size();
 
@@ -190,16 +191,16 @@ namespace Raycast {
     }
 
     // Worker loop
-    static void worker_loop() {
-        while (!stopWorker.load()) {
-            // wait for request
-            std::unique_lock<std::mutex> lk(workerMutex);
-            workerCv.wait(lk, [] { return computeRequested.load() || stopWorker.load(); });
-            if (stopWorker.load()) break;
+    static void worker_loop(std::stop_token st) {
+        while (!st.stop_requested()) {
+            // wait for request or stop
+            std::unique_lock<std::mutex> lock(workerMutex);
+            workerCv.wait(lock, [&] { return computeRequested.load() || st.stop_requested(); });
+            if (st.stop_requested()) break;
             // take the request (clear the flag) and capture sourcePos under lock
             computeRequested.store(false);
             SDL_FPoint localSrc = sourcePos;
-            lk.unlock();
+            lock.unlock();
 
             // compute
             update_max_grid_size();
@@ -207,24 +208,21 @@ namespace Raycast {
             calculate_active_grids(localSrc, map);
 
             // signal ready
-            {
-                std::lock_guard<std::mutex> lk2(workerMutex);
-                computeReady.store(true);
-            }
+            std::lock_guard<std::mutex> lock2(workerMutex);
+            computeReady.store(true);
             workerCv.notify_all();
         }
     }
 
     void start_worker() {
-        stopWorker.store(false);
         computeRequested.store(false);
         computeReady.store(false);
-        workerThread = std::thread(worker_loop);
+        workerThread = std::jthread(worker_loop);
         workerThreadId = workerThread.get_id();
     }
 
     void stop_worker() {
-        stopWorker.store(true);
+        workerThread.request_stop();
         workerCv.notify_all();
         if (workerThread.joinable()) workerThread.join();
     }
@@ -244,7 +242,7 @@ namespace Raycast {
 
     void wait_until_ready() {
         std::unique_lock<std::mutex> lk(workerMutex);
-        workerCv.wait(lk, [] { return computeReady.load() || stopWorker.load(); });
+        workerCv.wait(lk, [] { return computeReady.load(); });
     }
 
     std::thread::id get_worker_id() {

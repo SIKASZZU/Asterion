@@ -23,9 +23,13 @@
 
 int main(int argc, char* argv[]) {
 
-    generate_map();
-    map[165][160] = Map::WALL_CUBE;
-    srand(static_cast<unsigned int>(std::time(NULL)));
+    std::cout << "\n201103L => C++11\n201402L => C++14\n201703L => C++17\n202002L => C++20\n202302L => C++23\nCPP VERSION: " << __cplusplus << std::endl;
+
+    // Start raycast worker thread (background computations)
+    Raycast::start_worker();
+    std::cout << "Main thread id:    " << std::this_thread::get_id() << "\n";
+    std::cout << "Raycast thread id: " << Raycast::get_worker_id() << "\n";
+
     static SDL_Window* window = NULL;
     static SDL_Renderer* renderer = NULL;
     // Initialize SDL video subsystem once, check error
@@ -42,14 +46,15 @@ int main(int argc, char* argv[]) {
     }
 
     SDL_GetWindowSize(window, &screenWidth, &screenHeight);
+
     load_textures(renderer);
+
+    srand(static_cast<unsigned int>(std::time(NULL)));
+    generate_map();
+    map[165][160] = Map::WALL_CUBE;
+
     TerrainClass terrain;
     Vision::create_darkness(renderer);
-
-    // Start raycast worker thread (background computations)
-    Raycast::start_worker();
-    std::cout << "Main thread id: " << std::this_thread::get_id() << "\n";
-    std::cout << "Raycast worker thread id: " << Raycast::get_worker_id() << "\n";
 
     SDL_Event event;
     const bool* state = SDL_GetKeyboardState(nullptr);

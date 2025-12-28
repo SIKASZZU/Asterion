@@ -23,6 +23,7 @@ void print_map(int map[mapSize][mapSize]) {
 
 
 void generate_map() {
+    std::cout << "Map generation starting...\n";
     /* try to load from file */
     // load_map_from_file(map);  // return boolean mapLoaded
 
@@ -64,6 +65,7 @@ void generate_map() {
     seperate_4_sections();
     // print_map(map);
     // save_map_locally(map);
+    std::cout << "Map generation done.\n";
 }
 
 // this is not used anywhere and most likely out of date with recent changes

@@ -5,6 +5,7 @@
 #include "map.hpp"
 #include "player.hpp"
 #include "minimap.hpp"
+#include "raycast.hpp"
 
 namespace Minimap {
     // Draw a simple top-right minimap of size 200x200px showing nearby tiles.
@@ -25,14 +26,25 @@ namespace Minimap {
         int startX = player.gridX - renderRadius;
         int startY = player.gridY - renderRadius;
 
+        bool haveEndpoints = !Raycast::endpointActiveGrids.empty();
+        bool raycastEnabled = Raycast::enabled;
         for (int ry = 0; ry < tiles; ++ry) {
             for (int rx = 0; rx < tiles; ++rx) {
                 int gx = startX + rx;
                 int gy = startY + ry;
                 if (gx < 0 || gy < 0 || gx >= mapSize || gy >= mapSize) continue;
+                SDL_FRect cellRect = { bg.x + rx * cell, bg.y + ry * cell, cell, cell };
 
                 int gridValue = map[gy][gx];
-                SDL_FRect cellRect = { bg.x + rx * cell, bg.y + ry * cell, cell, cell };
+                if (haveEndpoints && raycastEnabled) {
+                    // only render tiles that are in the visible endpoint set
+                    if (Raycast::endpointActiveGrids.find({gy, gx}) == Raycast::endpointActiveGrids.end()) {
+                        // unseen / out of vision
+                        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+                        SDL_RenderFillRect(renderer, &cellRect);
+                        continue;
+                    }
+                }
 
                 if (wallValues.find(gridValue) != wallValues.end()) {
                     SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255); // walls

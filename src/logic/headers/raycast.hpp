@@ -14,8 +14,9 @@
 #include <condition_variable>
 
 namespace Raycast {
-    extern SDL_FPoint sourcePos;
+    extern bool enabled;
     extern bool showRays;
+    extern SDL_FPoint sourcePos;
     const int increment = 3;
     const int angleStep = 1;
     extern signed int maxActiveSize;

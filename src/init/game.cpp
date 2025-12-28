@@ -44,7 +44,6 @@ int pathStartX = -1;
 int pathStartY = -1;
 
 /* keys */
-bool r_pressed = false;
 bool v_pressed = false;
 
 bool isEmpty(const SDL_FRect& r) {
@@ -159,8 +158,8 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_R: {
-        r_pressed = !r_pressed;
-        std::cout << "Raycast is: " << r_pressed << '\n';
+        Raycast::enabled = !Raycast::enabled;
+        std::cout << "Raycast::enabled: " << Raycast::enabled << '\n';
         break;
     }
     case SDLK_Y: {

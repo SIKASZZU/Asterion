@@ -7,6 +7,7 @@
 #include "animation.hpp"
 #include "daylight.hpp"
 #include "minimap.hpp"
+#include "raycast.hpp"
 
 #include <iostream>
 #include <vector>
@@ -143,7 +144,7 @@ SDL_FRect TerrainClass::return_destTile(int row, int column) {
     return SDL_FRect{ isometricCoordinates.x, isometricCoordinates.y, tileSize, tileSize };
 }
 bool TerrainClass::is_grid_not_renderable(std::pair<int, int> gridPos) {
-    if (r_pressed == false) {}
+    if (Raycast::enabled == false) {}
     else if (Raycast::endpointActiveGrids.find(gridPos) == Raycast::endpointActiveGrids.end()) {
         if (std::find(Raycast::decayGrids.begin(), Raycast::decayGrids.end(), gridPos)
             == Raycast::decayGrids.end()) {

@@ -46,7 +46,6 @@ extern int pathStartX;
 extern int pathStartY;
 
 /* keys */
-extern bool r_pressed;
 extern bool v_pressed;
 
 /* constants */
