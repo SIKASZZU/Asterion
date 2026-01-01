@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "maze.hpp"
 #include "mod_map_data.hpp"
+#include "render.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -63,6 +64,7 @@ void generate_map() {
 
     mod_map_sector_3();
     seperate_4_sections();
+    generate_decorations();
     // print_map(map);
     // save_map_locally(map);
     std::cout << "Map generation done.\n";
@@ -267,7 +269,6 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
     generate_voids(voidSpawnpoints, maxVoids);
 }
 
-
 void generate_voids(std::set<std::pair<int, int>> voidLocations, const int maxVoids) {
     if (voidLocations.empty()) std::cout << "Alert: No voids spawned! voidLocations.empty()";
 
@@ -284,3 +285,116 @@ void generate_voids(std::set<std::pair<int, int>> voidLocations, const int maxVo
         map[y][x] = Map::VOID_CUBE;
     }
 }
+
+void generate_decorations() {
+    // Precompute decoration indices so renderer can just render.
+
+    decorationIndexMap.clear();
+
+    for (int row = 0; row < mapSize; row++) {
+        for (int column = 0; column < mapSize; column++) {
+
+            uint32_t key = make_grid_key(row, column);
+            int gridValue = map[row][column];
+            std::pair<int, int> gridPos = { row, column };
+
+            switch (gridValue) {
+            case Map::VINE_COVER_N:
+            case Map::VINE_OVERHANG_SN:
+            case Map::VINE_OVERHANG_EW: {
+                break;
+            }
+                                      // case Map::MAZE_GROUND_CUBE: {
+            case Map::SECTOR_3_WALL_VAL:
+            case Map::SECTOR_2_PATHWAY:
+            case Map::SECTOR_3_PATHWAY: {
+                if (rand() % mazeDecoMod == 0) {
+                    // save to spritesheetIndexMap
+                    int idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverMaze);
+                    decorationIndexMap.try_emplace(key, idx);
+                }
+                break;
+            }
+            case Map::GROUND_CUBE: {
+                if (rand() % groundDecoMod == 0) {
+                    // save to spritesheetIndexMap
+                    int idx = ensure_spritesheet_index_for_row(gridPos, ssi::groundDecoration);
+                    decorationIndexMap.try_emplace(key, idx);
+                }
+                break;
+            }
+            case Map::SECTOR_2_WALL_VAL: {
+
+                // if (gridValue == Map::SECTOR_2_WALL_VAL) { srcFRect = { 32, 0, 32, 32 }; }
+                // else { srcFRect = { 0, 0, 32, 32 }; };
+                // // create wall markings nr2 (100 divided by % number, 20% chance)
+                // int varIndex = vineDecorationIndexMap.try_emplace(make_grid_key(row, column), rand() % 5).first->second;
+                // if (varIndex == 4) {
+                //     renderQueue.push_back(
+                //         RenderQueueItem(destTile.y + 1, srcFRect, destTile, &textureMap[Map::WALL_MARKINGS], alpha)
+                //     );
+                // }
+
+                // if (gridValue != Map::SECTOR_2_WALL_VAL) break;
+                // // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
+                // // create hanging vines from wall to wall
+                // int grid_below = map[row - 1][column];
+                // if ((rand() % vinesDecoMod == 0) && !gridVineChecked.count(gridPos)) {
+                //     // add overhang vines VINE_OVERHANG_SN
+                //     if (grid_below == Map::MAZE_GROUND_CUBE &&
+                //         (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
+                //         map[row - 1][column] = Map::VINE_OVERHANG_SN;
+
+                //         int idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverMaze);
+                //         decorationIndexMap.try_emplace(key, idx);
+                //     }
+                //     // add overhang vines VINE_OVERHANG_EW
+                //     if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
+                //         (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
+                //         map[row][column + 1] = Map::VINE_OVERHANG_EW;
+                //     }
+                // }
+
+                // // create vines on the sides of walls
+                // if (rand() % 10 == 1 && !gridVineChecked.count(gridPos)) {
+                //     // add VINE_COVER_N to wall's southern side
+                //     if (grid_below == Map::MAZE_GROUND_CUBE ||
+                //         grid_below == Map::VINE_OVERHANG_SN ||
+                //         grid_below == Map::VINE_OVERHANG_EW) {
+                //         map[row - 1][column] = Map::VINE_COVER_N;
+                //         // expand vine to neighbouring blocks aswell.
+                //         // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
+                //         // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
+                //         if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
+                //             map[row][column + 1] == Map::VINE_OVERHANG_EW) {
+                //             map[row - 1][column + 1] = Map::VINE_COVER_N;
+                //         }
+                //         if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
+                //             map[row][column - 1] == Map::VINE_OVERHANG_EW) {
+                //             map[row - 1][column - 1] = Map::VINE_COVER_N;
+                //         }
+                //     }
+                // }
+                // gridVineChecked.insert(gridPos);
+                // auto cubeVineTex = choose_cube_vine_texture("", gridPos);
+                // if (cubeVineTex != nullptr) {
+                //     renderQueue.push_back(
+                //         RenderQueueItem(destTile.y + halfTile + 2, destTile, cubeVineTex, alpha)
+                //     );
+                // }
+                break;
+            }
+                                       // case Map::SECTOR_3_WALL_VAL: {
+                                       //     // create wall markings
+
+                                       //     // if (!isEmpty(srcFRect)) renderQueue.push_back(RenderQueueItem(destTile.y + 1, srcFRect, destTile, &textureMap[Map::WALL_MARKINGS], alpha));
+
+                                       //     // 3rd sector decorations on top of walls
+                                       //     // if (rand() % 3 != 1) break;
+                                       //     break;
+                                       // }
+            }
+        }
+    }
+}
+

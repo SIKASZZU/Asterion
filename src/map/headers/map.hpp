@@ -89,7 +89,14 @@ static const std::unordered_set<int> groundValues = {
 const int mapSize = 325;
 extern int map[mapSize][mapSize];
 
+// how often should some decorations spawn
+const int mazeDecoMod = 4;
+const int groundDecoMod = 4;
+const int vinesDecoMod = 4;
+const int groundMod = 12;
+
 void generate_map();
+void generate_decorations();
 void print_map(int map[mapSize][mapSize]);
 void generate_random_map(int map[mapSize][mapSize], int min_val, int max_val);
 void generate_maze_runner_map(int map[mapSize][mapSize]);

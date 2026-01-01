@@ -83,9 +83,9 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
 
         std::cout << "----- PLAYER -----" << "\n";
-        std::cout << "x, y: " << player.x << ", " << player.y << "\n";
-        std::cout << "grid: " << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) \
-            << " = value: " << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
+        std::cout << "x, y:  " << player.x << ", " << player.y << "\n";
+        std::cout << "grid:  " << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) << '\n';
+        std::cout << "value: " << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
         std::cout << "movementSpeed: " << player.movementSpeed << std::endl;
 
         std::cout << "----- ENEMY -----" << "\n";

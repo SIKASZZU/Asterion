@@ -8,6 +8,7 @@
 #include "daylight.hpp"
 #include "minimap.hpp"
 #include "raycast.hpp"
+#include "renderQueue.hpp"
 
 #include <iostream>
 #include <vector>
@@ -19,77 +20,13 @@
 #include <set>
 #include <cstdint>
 
-
-RenderQueueItem::RenderQueueItem(int renderOrder, SDL_FRect dstrect, Texture* texture, float alpha = 1.0f) {
-    this->renderOrder = renderOrder;
-    this->dstrect = dstrect;
-    this->texture = texture;
-    this->alpha = alpha;
-}
-RenderQueueItem::RenderQueueItem(int renderOrder, SDL_FRect srcrect, SDL_FRect dstrect, Texture* texture, float alpha = 1.0f) {
-    this->renderOrder = renderOrder;
-    this->dstrect = dstrect;
-    this->srcrect = srcrect;
-    this->texture = texture;
-    this->alpha = alpha;
-}
-RenderQueueItem::RenderQueueItem(int renderOrder, std::function<void(SDL_Renderer* renderer)> customRender) {
-    this->renderOrder = renderOrder;
-    this->customRender = customRender;
-}
-
-void RenderQueueItem::call_render(SDL_Renderer* renderer) {
-    if (this->texture.has_value()) {
-        SDL_SetTextureAlphaMod((*texture)->get_texture(), static_cast<Uint8>(alpha * 255));
-        if (srcrect.h != 0 && srcrect.w != 0) {
-            return this->texture.value()->render(renderer, &this->srcrect, &this->dstrect);
-        }
-        else {
-            return this->texture.value()->render(renderer, &this->dstrect);
-        }
-    }
-    if (this->customRender.has_value()) {
-        return this->customRender.value()(renderer);
-    }
-    throw std::logic_error("texture or render function needed for rendering");
-}
-
+std::set<std::pair<int, int>> gridVineChecked;
 std::unordered_map<uint32_t, int> randomOffsetsWalls;
 std::unordered_map<uint32_t, int> randomOffsetsTrees;
-std::unordered_map<uint32_t, int> grassCoverGrids;
-std::unordered_map<uint32_t, int> mazeDecoMap;
-std::unordered_map<uint32_t, int> mazeGroundMap;
-std::unordered_map<uint32_t, int> groundMap;
-std::unordered_map<uint32_t, int> grassCoverMap;
-std::set<std::pair<int, int>> gridVineChecked;
-std::vector<RenderQueueItem> renderQueue;
-
-// spritesheet indexes
-namespace ssi {
-    // wrapper if maxCol >= sizeOfSpritesheet, warp to next row.
-    const int maxCols = 11;
-    const int maxRows = 13;
-    constexpr int maxSideLength = std::max(maxCols, maxRows);
-
-    struct SpritesheetConfig {
-        const int row;
-        const int minColumn;
-        const int maxColumn;
-    };
-
-    constexpr SpritesheetConfig wall{5, 0, 5};
-    constexpr SpritesheetConfig wallCubes{11, 0, 3};
-    constexpr SpritesheetConfig wallMarkings{12, 6, 8};
-    constexpr SpritesheetConfig ground{2, 0, 10};
-    // constexpr SpritesheetConfig groundDecoration{3, 8, 14}; //  needs wrap shit
-    constexpr SpritesheetConfig mazeGround{0, 0, 10};
-    constexpr SpritesheetConfig sec2Ground{1, 0, 5};
-    constexpr SpritesheetConfig sec3Ground{1, 0, 10};
-    constexpr SpritesheetConfig coverGround{12, 0, 2};
-    constexpr SpritesheetConfig coverMaze{12, 3, 5};
-    constexpr SpritesheetConfig empty{0, 0, 0};
-}
-
+std::unordered_map<uint32_t, int> randomOffsetsGround;
+// key, index of decoration. You need to know key to SpritesheetConfig. Else wrong texture, jsut random index of spritesheet.
+std::unordered_map<uint32_t, int> decorationIndexMap;
+// std::unordered_map<uint32_t, int> vineDecorationIndexMap;
 // Per-tile, per-row random spritesheet frame index to avoid cross-category leakage.
 static std::unordered_map<uint32_t, std::array<int, ssi::maxSideLength>> spritesheetIndexMap;
 // Cache of source rects for spritesheet frames (keyed by (row<<8)|index)
@@ -97,13 +34,14 @@ static std::unordered_map<int, SDL_FRect> spritesheetCacheMap;
 
 /// @brief
 /// Return cached src rect for spritesheet col and row (both zero-based). Initializes cache lazily.
+/// If doesn't exist, creates a src based on pos.
 /// @param col Image indexes from left to right NOT IMPLEMENTED! If col > spritesheet col then wraps around to the next row.
 /// @param row Image indexes from top to bottom
 /// @return Returns caches/gets-from-cache SDL_FRect for the col, row paramaters.
 static const SDL_FRect& get_cached_spritesheet_src(int col, int row) {
     int c = std::max(0, std::min(col, ssi::maxCols));
     int r = std::max(0, std::min(row, ssi::maxRows));
-    int key = (r << 8) | c;  // Unique key: row in high bits, col in low bits
+    uint32_t key = make_grid_key(r, c);
     auto it = spritesheetCacheMap.find(key);
     if (it != spritesheetCacheMap.end()) return it->second;
     auto [insertedIt, _] = spritesheetCacheMap.emplace(key, SDL_FRect{
@@ -111,18 +49,19 @@ static const SDL_FRect& get_cached_spritesheet_src(int col, int row) {
         static_cast<float>(r * Texture::spriteHeight),
         static_cast<float>(Texture::spriteWidth),
         static_cast<float>(Texture::spriteHeight)
-    });
+        });
     return insertedIt->second;
 }
 
 /// @brief
 /// Return index of image of grid pos.
+/// If doesn't exist, assigns that pos.
 /// @param gridPos 
 /// @param row 
 /// @param minCol From what index of col on the spritesheet the search has to start
 /// @param maxCol From what index of col on the spritesheet the search has to end, NOT IMPLEMENTED, wraps around to new row if bigger then spritesheet col size.
 /// @return Return the integar of index for that col and row position
-static int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, int row, int minCol, int maxCol) {
+int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, int row, int minCol, int maxCol) {
     auto [it, inserted] = spritesheetIndexMap.try_emplace(make_grid_key(gridPos.first, gridPos.second), std::array<int, ssi::maxSideLength>{});
     if (inserted) it->second.fill(-1);
     int r = std::max(0, std::min(row, ssi::maxRows));
@@ -134,7 +73,7 @@ static int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, int row
 }
 
 // Overload with const SpritesheetConfig& config instead
-static int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, const ssi::SpritesheetConfig& config) {
+int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, const ssi::SpritesheetConfig& config) {
     return ensure_spritesheet_index_for_row(gridPos, config.row, config.minColumn, config.maxColumn);
 }
 
@@ -162,23 +101,6 @@ float TerrainClass::determine_alpha(std::pair<int, int> gridPos) {
     if (inFront) { return inFrontAlpha; }
     return alpha;
 }
-int TerrainClass::create_random_grass(std::pair<int, int> gridPos, int gridValue) {
-    int varIndex = grassCoverGrids.try_emplace(make_grid_key(gridPos.first, gridPos.second), rand() % 4)
-        .first->second;
-    if (varIndex == 0) {
-        return Map::GRASS_COVER_SHORT;
-    }
-    else if (varIndex == 1) {
-        return Map::GRASS_COVER_TALL;
-    }
-    else if (varIndex == 2) {
-        return Map::GRASS_COVER;
-    }
-    else {
-        return -1;
-    }
-}
-
 void TerrainClass::calculate_miscellaneous(float dT) {
     elapsedDistance += doorMovingSpeed * dT;
     halfTile = tileSize / 2;
@@ -192,64 +114,70 @@ void TerrainClass::calculate_miscellaneous(float dT) {
     mapIndexBottom = std::min(mapSize - 1, playerTileY + renderRadius);
 
 }
-void TerrainClass::render_ground(SDL_Renderer* renderer) {
+void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
-            SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
-            
-            int gridValue = map[row][column];
             std::pair<int, int> gridPos = { row, column };
             if (is_grid_not_renderable(gridPos)) continue;
 
+            SDL_FRect destTile = return_destTile(row, column);
+            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            int gridValue = map[row][column];
+
             if (groundValues.find(gridValue) != groundValues.end()) {
+                int xr = randomOffsetsGround.try_emplace(make_grid_key(row, column), rand() % groundMod)
+                    .first->second;
+                destTile.y += (xr);
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::ground);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::ground.row);
-                destTile.y -= 16;
+                destTile.y -= imageShift;
                 textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
-
             }
             if (wallValues.find(gridValue) != wallValues.end()
-                || gridValue == Map::VINE_OVERHANG_SN 
+                || gridValue == Map::VINE_OVERHANG_SN
                 || gridValue == Map::VINE_OVERHANG_EW) {
+                int xr = randomOffsetsGround.try_emplace(make_grid_key(row, column), rand() % groundMod)
+                    .first->second;
+                xr = std::max(4, xr);
+                destTile.y += (xr);
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
-                destTile.y -= 16;
+                destTile.y -= imageShift;
                 textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
             }
             switch (gridValue) {
-            case Map::MAZE_WE_DOOR:
-            case Map::MAZE_NS_DOOR: {
-                // if 4 sides are sec walls, return sec ground
-                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
-                destTile.y -= 16;
-                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
-                break;
-            }
             case Map::VOID_CUBE:
             case Map::VOID_CUBE_NEIGHBOUR: {
                 render_void_tilemap(renderer, offset, map, gridPos, destTile);
                 break;
             }
+            case Map::MAZE_WE_DOOR:
+            case Map::MAZE_NS_DOOR:
             case Map::SECTOR_1_PATHWAY: {
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
-                destTile.y -= 16;
+                destTile.y -= imageShift;
                 textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
                 break;
             }
             case Map::MAZE_GROUND_CUBE:
             case Map::SECTOR_2_PATHWAY:
             case Map::SECTOR_3_PATHWAY: {
-                textureMap[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+                int xr = randomOffsetsGround.try_emplace(make_grid_key(row, column), rand() % groundMod)
+                    .first->second;
+                xr = std::max(4, xr);
+                destTile.y += (xr);
+                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazePathway);
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazePathway.row);
+                destTile.y -= imageShift;
+                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
                 break;
             }
             }
         }
     }
 }
-void TerrainClass::render_walls() {
+void TerrainClass::create_renderQ_walls() {
     // Precompute which wall tiles should be shifted upwards when fading.
     std::unordered_set<uint32_t> shiftedWalls;
     for (int prow = mapIndexTop; prow <= mapIndexBottom; ++prow) {
@@ -300,12 +228,19 @@ void TerrainClass::render_walls() {
 
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
-            SDL_FRect destTile = return_destTile(row, column);
-
-            int gridValue = map[row][column];
             std::pair<int, int> gridPos = { row, column };
-            float alpha = determine_alpha(gridPos);
             if (is_grid_not_renderable(gridPos)) continue;
+            int gridValue = map[row][column];
+
+            SDL_FRect destTile = return_destTile(row, column);
+            uint32_t key = make_grid_key(row, column);
+            float alpha = determine_alpha(gridPos);
+
+            auto it = randomOffsetsGround.find(key);
+            if (it != randomOffsetsGround.end()) {
+                destTile.y += it->second;
+            }
+
             switch (gridValue) {
             case Map::INGROWN_WALL_CUBE: {
                 destTile.y -= halfTile;
@@ -328,10 +263,10 @@ void TerrainClass::render_walls() {
             }
             case Map::WALL_CUBE: {
                 destTile.y -= halfTile;
-                // if (shiftedWalls.find(make_grid_key(row, column)) != shiftedWalls.end()) {
+                // if (shiftedWalls.find(key) != shiftedWalls.end()) {
                 //     alpha = inFrontAlpha;
                 // }
-                shiftedWalls.find(make_grid_key(row, column)) == shiftedWalls.end() ?: alpha = inFrontAlpha;
+                shiftedWalls.find(key) == shiftedWalls.end() ? : alpha = inFrontAlpha;
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::wallCubes);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::wallCubes.row);
                 renderQueue.push_back(
@@ -344,8 +279,8 @@ void TerrainClass::render_walls() {
 
                 int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
-                // if (shiftedWalls.find(make_grid_key(row, column)) != shiftedWalls.end()) { alpha = inFrontAlpha; }
-                shiftedWalls.find(make_grid_key(row, column)) == shiftedWalls.end() ?: alpha = inFrontAlpha;
+                // if (shiftedWalls.find(key) != shiftedWalls.end()) { alpha = inFrontAlpha; }
+                shiftedWalls.find(key) == shiftedWalls.end() ? : alpha = inFrontAlpha;
                 renderQueue.push_back(
                     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
                 );
@@ -354,7 +289,7 @@ void TerrainClass::render_walls() {
             case Map::SECTOR_2_WALL_VAL: {
                 // create walls
                 destTile.y -= halfTile;
-                int xr = randomOffsetsWalls.try_emplace(make_grid_key(row, column), rand() % 30)
+                int xr = randomOffsetsWalls.try_emplace(key, rand() % 30)
                     .first->second;
                 destTile.y += (xr / 2.5);
                 destTile.x += (xr / 4);
@@ -391,131 +326,74 @@ void TerrainClass::render_walls() {
         }
     }
 }
-void TerrainClass::render_decoration(SDL_Renderer* renderer) {
+void TerrainClass::create_renderQ_decoration(SDL_Renderer* renderer) {
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
-            SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
-
-            int gridValue = map[row][column];
             std::pair<int, int> gridPos = { row, column };
             if (is_grid_not_renderable(gridPos)) continue;
 
+            SDL_FRect destTile = return_destTile(row, column);
+            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            int gridValue = map[row][column];
+            uint32_t key = make_grid_key(row, column);
+
             destTile.y -= halfTile;
+
+            auto it = randomOffsetsGround.find(key);
+            if (it != randomOffsetsGround.end()) {
+                destTile.y += it->second;
+            }
 
             switch (gridValue) {
             case Map::VINE_COVER_N:
             case Map::VINE_OVERHANG_SN:
             case Map::VINE_OVERHANG_EW: {
-                textureMap[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
-                renderQueue.push_back(
-                    RenderQueueItem(destTile.y, destTile, &textureMap[gridValue])
-                );
+                // textureMap[Map::MAZE_GROUND_CUBE].render(renderer, &destTile);
+                // renderQueue.push_back(
+                //     RenderQueueItem(destTile.y, destTile, &textureMap[gridValue])
+                // );
                 break;
             }
-            case Map::MAZE_GROUND_CUBE: {
-                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverMaze);
+                                      // case Map::MAZE_GROUND_CUBE: {
+                                      // case Map::SECTOR_2_PATHWAY:
+            case Map::SECTOR_3_PATHWAY: {
+                auto it = decorationIndexMap.find(key);
+                if (it == decorationIndexMap.end()) break; // no decoration for this tile
+                int idx = it->second;
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::coverMaze.row);
                 textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
                 break;
             }
             case Map::GROUND_CUBE: {
-                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverGround);
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::coverGround.row);
-                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
-                break;
-            }
-            case Map::SECTOR_1_WALL_VAL:
-            case Map::SECTOR_2_WALL_VAL: {
-                break;
-
-                if (gridValue == Map::SECTOR_2_WALL_VAL) { srcFRect = { 32, 0, 32, 32 }; }
-                else { srcFRect = { 0, 0, 32, 32 }; };
-                // create wall markings nr2 (100 divided by % number, 20% chance)
-                int varIndex = mazeDecoMap.try_emplace(make_grid_key(row, column), rand() % 5).first->second;
-                if (varIndex == 4) {
-                    renderQueue.push_back(
-                        RenderQueueItem(destTile.y + 1, srcFRect, destTile, &textureMap[Map::WALL_MARKINGS], alpha)
-                    );
-                }
-                if (gridValue != Map::SECTOR_2_WALL_VAL) break;
-                // vaata grid_below, sest Vine tekstuur on vaid NS orientatsiooniga
-                // create hanging vines from wall to wall
-                int grid_below = map[row - 1][column];
-                if (rand() % 4 == 1 && !gridVineChecked.count(gridPos)) {
-                    // add overhang vines VINE_OVERHANG_SN
-                    if (grid_below == Map::MAZE_GROUND_CUBE &&
-                        (map[row - 2][column] == Map::SECTOR_2_WALL_VAL)) {
-                        map[row - 1][column] = Map::VINE_OVERHANG_SN;
-                    }
-                    // add overhang vines VINE_OVERHANG_EW
-                    if (map[row][column + 1] == Map::MAZE_GROUND_CUBE &&
-                        (map[row][column + 2] == Map::SECTOR_2_WALL_VAL)) {
-                        map[row][column + 1] = Map::VINE_OVERHANG_EW;
-                    }
-                }
-                // create vines on the sides of walls
-                if (rand() % 10 == 1 && !gridVineChecked.count(gridPos)) {
-                    // add VINE_COVER_N to wall's southern side
-                    if (grid_below == Map::MAZE_GROUND_CUBE ||
-                        grid_below == Map::VINE_OVERHANG_SN ||
-                        grid_below == Map::VINE_OVERHANG_EW) {
-                        map[row - 1][column] = Map::VINE_COVER_N;
-                        // expand vine to neighbouring blocks aswell.
-                        // FIXME: siin on bug. Kui vine on 6hus ss see ie ole feature. hetkel mitte.
-                        // Should be recursion but maze direction doesn't allow longer than 3 walls in sector2
-                        if (map[row][column + 1] == Map::VINE_OVERHANG_SN ||
-                            map[row][column + 1] == Map::VINE_OVERHANG_EW) {
-                            map[row - 1][column + 1] = Map::VINE_COVER_N;
-                        }
-                        if (map[row][column - 1] == Map::VINE_OVERHANG_SN ||
-                            map[row][column - 1] == Map::VINE_OVERHANG_EW) {
-                            map[row - 1][column - 1] = Map::VINE_COVER_N;
-                        }
-                    }
-                }
-                gridVineChecked.insert(gridPos);
-                auto cubeVineTex = choose_cube_vine_texture("", gridPos);
-                if (cubeVineTex != nullptr) {
-                    renderQueue.push_back(
-                        RenderQueueItem(destTile.y + halfTile + 2, destTile, cubeVineTex, alpha)
-                    );
-                }
+                auto it = decorationIndexMap.find(key);
+                if (it == decorationIndexMap.end()) break; // no decoration for this tile
+                int idx = it->second;
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::groundDecoration.row);
+                renderQueue.push_back(RenderQueueItem(destTile.y + 1, src, destTile, &textureMap[Map::SPRITESHEET], alpha));
                 break;
             }
             case Map::SECTOR_3_WALL_VAL: {
-                // create wall markings
-                SDL_FRect src;
-                int idx;
-                idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverMaze);
-                src = get_cached_spritesheet_src(idx, ssi::coverMaze.row);
-                if (!isEmpty(srcFRect)) renderQueue.push_back(RenderQueueItem(destTile.y + 1, srcFRect, destTile, &textureMap[Map::WALL_MARKINGS], alpha));
-
-                // 3rd sector decorations on top of walls
                 destTile.y -= halfTile;
-                // if (rand() % 3 != 1) break;
-                idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverMaze);
-                src = get_cached_spritesheet_src(idx, ssi::coverMaze.row);
+                auto it = decorationIndexMap.find(key);
+                if (it == decorationIndexMap.end()) break; // no decoration for this tile
+                int idx = it->second;
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::coverMaze.row);
                 renderQueue.push_back(RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::SPRITESHEET], alpha));
-                break;
-            }
-            case Map::TREE:
-            case Map::TREE_TRUNK: {
                 break;
             }
             }
         }
     }
 }
-void TerrainClass::render_colored_cubes(SDL_Renderer* renderer) {
+void TerrainClass::create_renderQ_colored_cubes(SDL_Renderer* renderer) {
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
-            SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
-
-            int gridValue = map[row][column];
             std::pair<int, int> gridPos = { row, column };
             if (is_grid_not_renderable(gridPos)) continue;
+
+            SDL_FRect destTile = return_destTile(row, column);
+            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            int gridValue = map[row][column];
 
             switch (gridValue) {
             case Map::YELLOW_CUBE:
@@ -528,15 +406,15 @@ void TerrainClass::render_colored_cubes(SDL_Renderer* renderer) {
         }
     }
 }
-void TerrainClass::render_items(SDL_Renderer* renderer) {
+void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
-            SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
-
-            int gridValue = map[row][column];
             std::pair<int, int> gridPos = { row, column };
             if (is_grid_not_renderable(gridPos)) continue;
+
+            SDL_FRect destTile = return_destTile(row, column);
+            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            int gridValue = map[row][column];
 
             switch (gridValue) {
             case Map::TREE_TRUNK: {
@@ -578,7 +456,8 @@ void TerrainClass::render_items(SDL_Renderer* renderer) {
                 }
                 if (savedDoorY < relativeTargetClosed) {
                     savedDoorY = std::min(savedDoorY + elapsedDistance, relativeTargetClosed);
-                } else if (savedDoorY > relativeTargetClosed) {
+                }
+                else if (savedDoorY > relativeTargetClosed) {
                     savedDoorY = std::max(savedDoorY - elapsedDistance, relativeTargetClosed);
                 }
                 elapsedDistance = 0;
@@ -600,11 +479,11 @@ void TerrainClass::render_items(SDL_Renderer* renderer) {
         }
     }
 }
-void TerrainClass::render_entities() {
+void TerrainClass::create_renderQ_entities() {
     // player
     renderQueue.push_back(RenderQueueItem(static_cast<int>(player.rect.y - (tileSize / 2)), [](SDL_Renderer* renderer) { animation_player(renderer); }));
-    // add enemies to renderQ
 
+    // add enemies to renderQ
     for (auto& e : enemyArray) {
         int yPos = static_cast<int>(e.get_rect().y - tileSize / 2);
         renderQueue.push_back(RenderQueueItem(yPos, [&e](SDL_Renderer* renderer) { e.render(renderer); }));
@@ -616,12 +495,12 @@ void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
     renderQueue.clear();
 }
 void TerrainClass::render(SDL_Renderer* renderer) {
-    render_ground(renderer);
-    render_items(renderer);
-    render_walls();
-    render_colored_cubes(renderer);
-    // render_decoration(renderer);
-    render_entities();
+    create_renderQ_ground(renderer);
+    create_renderQ_items(renderer);
+    create_renderQ_walls();
+    create_renderQ_colored_cubes(renderer);
+    create_renderQ_decoration(renderer);
+    create_renderQ_entities();
     render_renderQ(renderer);
     // overlay minimap on top-right
     render_minimap(renderer);
