@@ -355,7 +355,7 @@ void generate_decorations() {
             case Map::GROUND_CUBE: {
                 if (rand() % groundDecoMod == 0) {
                     // save to spritesheetIndexMap
-                    int idx = ensure_spritesheet_index_for_row(gridPos, ssi::groundDecoration);
+                    int idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverGround);
                     decorationIndexMap.try_emplace(key, idx);
                 }
                 break;

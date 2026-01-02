@@ -59,14 +59,16 @@ void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
     player.x = playerGX * newTileSize;
     player.y = playerGY * newTileSize;
     player.size = newTileSize; //  / 2.0f
-    player.gridX = playerGX;
-    player.gridY = playerGY;
+    player.grid = {
+        playerGX,
+        playerGY
+    };
     SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
     player.rect.x = coords.x; // player.size / 2.0f
     player.rect.y = coords.y; // player.size / 2.0f
 
-    for (auto &e : enemyArray) {
-        SDL_FPoint newPos = {static_cast<float>(e.grid.x) * newTileSize, static_cast<float>(e.grid.y) * newTileSize};
+    for (auto& e : enemyArray) {
+        SDL_FPoint newPos = { static_cast<float>(e.grid.x) * newTileSize, static_cast<float>(e.grid.y) * newTileSize };
         e.set_position(newPos);
     }
 }
@@ -87,6 +89,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "grid:     (x,y)" << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) << '\n';
         std::cout << "value:    (y,x)" << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
         std::cout << "mVec:     (x,y)" << player.movementVector.x << " " << player.movementVector.y << "\n";
+        std::cout << "lastKey:       " << player.lastMovementKey << std::endl;
         std::cout << "movementSpeed: " << player.movementSpeed << std::endl;
 
         std::cout << "----- ENEMY -----" << "\n";
@@ -95,7 +98,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
             std::cout << "x, y: " << pos.x << " " << pos.y << "\n";
             std::cout << "activity: " << e.activity << "\n";
             std::cout << "grid: " << e.grid.x << " " << e.grid.y << "\n";
-            SDL_Point mV = e.get_movementVector(); 
+            SDL_Point mV = e.get_movementVector();
             std::cout << "mVec: " << mV.x << " " << mV.y << std::endl;
         }
         break;
@@ -154,7 +157,6 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_LSHIFT: {
-        player.movementSpeed = PlayerNS::defaultMovementSpeed / 4;
         player.shifting = true;
         break;
     }

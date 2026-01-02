@@ -23,8 +23,8 @@ namespace Minimap {
         int tiles = std::max(1, renderRadius * 2 + 1);
         float cell = minimapSize / tiles;
 
-        int startX = player.gridX - renderRadius;
-        int startY = player.gridY - renderRadius;
+        int startX = player.grid.x - renderRadius;
+        int startY = player.grid.y - renderRadius;
 
         bool haveEndpoints = !Raycast::endpointActiveGrids.empty();
         bool raycastEnabled = Raycast::enabled;

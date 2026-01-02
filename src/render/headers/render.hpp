@@ -13,8 +13,10 @@
 
 extern std::unordered_map<uint32_t, int> randomOffsetsWalls;
 extern std::unordered_map<uint32_t, int> randomOffsetsTrees;
+extern std::unordered_map<uint32_t, int> randomOffsetsGround;
 extern std::set<std::pair<int, int>> gridVineChecked;
 extern std::unordered_map<uint32_t, int> decorationIndexMap;
+
 // extern std::unordered_map<uint32_t, int> vineDecorationIndexMap;
 
 
@@ -41,7 +43,7 @@ namespace ssi {
     constexpr SpritesheetConfig mazeGround{ 0, 0, 10 };
     constexpr SpritesheetConfig sec2Ground{ 1, 0, 5 };
     constexpr SpritesheetConfig sec3Ground{ 1, 0, 10 };
-    constexpr SpritesheetConfig coverGround{ 4, 0, 2 };
+    constexpr SpritesheetConfig coverGround{ 12, 0, 2 };
     constexpr SpritesheetConfig coverMaze{ 12, 3, 5 };
     constexpr SpritesheetConfig empty{ 0, 0, 0 };
 }
@@ -52,7 +54,7 @@ int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, const ssi::Spr
 class TerrainClass {
 private:
     SDL_FRect return_destTile(int row, int column);
-    bool is_grid_not_renderable(std::pair<int, int> gridPos);
+    bool is_grid_not_renderable(std::pair<int, int> gridPos, int gridValue);
     float determine_alpha(std::pair<int, int> gridPos);
     void create_renderQ_ground(SDL_Renderer* renderer);
     void create_renderQ_walls();
