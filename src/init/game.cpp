@@ -59,8 +59,10 @@ void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
     player.x = playerGX * newTileSize;
     player.y = playerGY * newTileSize;
     player.size = newTileSize / 2.0f;
-    player.gridX = playerGX;
-    player.gridY = playerGY;
+    player.grid = {
+        playerGX,
+        playerGY
+    } ;
     SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
     player.rect.x = coords.x + player.size / 2.0f;
     player.rect.y = coords.y - player.size / 2.0f;
@@ -83,10 +85,12 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
 
         std::cout << "----- PLAYER -----" << "\n";
-        std::cout << "x, y:  " << player.x << ", " << player.y << "\n";
-        std::cout << "grid:  " << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) << '\n';
-        std::cout << "value: " << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
+        std::cout << "x, y:    " << player.x << ", " << player.y << "\n";
+        std::cout << "grid:    " << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) << '\n';
+        std::cout << "value:   " << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
+        std::cout << "lastKey: " << player.lastMovementKey << std::endl;
         std::cout << "movementSpeed: " << player.movementSpeed << std::endl;
+        std::cout << "movementVec:   " << player.movementVector.x << ' ' << player.movementVector.y << std::endl;
 
         std::cout << "----- ENEMY -----" << "\n";
         for (const auto& e : enemyArray) {
@@ -153,7 +157,6 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_LSHIFT: {
-        player.movementSpeed = PlayerNS::defaultMovementSpeed / 4;
         player.shifting = true;
         break;
     }

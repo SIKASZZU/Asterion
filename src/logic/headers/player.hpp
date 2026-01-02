@@ -8,8 +8,7 @@
 struct PlayerData {
     float movementSpeed;
     float size;
-    int gridX;
-    int gridY;
+    SDL_Point grid;
     float x;
     float y;
     SDL_FRect rect;
@@ -27,6 +26,7 @@ extern PlayerData player;
 namespace PlayerNS {
     extern float tilesPerSecond;
     extern float defaultMovementSpeed;
+    extern float defaultMovementSpeedShifting;
     extern bool collisionX;
     extern bool collisionY;
     void update(int map[mapSize][mapSize], struct Offset& offset, SDL_Renderer* renderer, float deltaTime);
