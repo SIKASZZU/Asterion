@@ -92,6 +92,8 @@ void Enemy::animation(SDL_Renderer* renderer, const char* activity) {
 
 Uint32 AnimPlayer::lastUpdate = SDL_GetTicks();
 int AnimPlayer::animCol = 0;
+int AnimPlayer::animRow = 0;
+
 SDL_FPoint AnimPlayer::lastDirection = { 0.f, 0.f };
 int AnimPlayer::spriteEnum = 0;
 SDL_FRect AnimPlayer::lastSrcRect = { 0,0,0,0 };
@@ -125,14 +127,20 @@ void animation_player(SDL_Renderer* renderer) {
     else if (currentDir.y == 1 && currentDir.x == -1) { spriteEnum = Map::player_girl_animation_left; }
     else if (currentDir.x == -1 && currentDir.y == -1) { spriteEnum = Map::player_girl_animation_up; }
 
-    int animRow;
     float animationSpeed;
 
-    animRow = player.shifting ? 1 : 0;
-    animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 0.8f;
+    // animRow = player.shifting ? 1 : 0;
+    animationSpeed = 200;
     if (SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed)) {
         lastUpdate = SDL_GetTicks();
         animCol = (animCol + 1) % 4;
+        if (animCol == 0) {
+            animRow += 1;
+        }
+        if (animRow == 2 && animCol == 1) {
+            animRow = 0;
+            animCol = 0;
+        }
     }
     
     

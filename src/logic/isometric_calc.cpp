@@ -19,8 +19,8 @@ SDL_FPoint to_isometric_grid_coordinate(float xGrid, float yGrid) {
 /// @param yGrid Y-grid
 /// @return Returns coordinates.
 SDL_FPoint to_isometric_coordinate(float xGrid, float yGrid) {
-    float rowCoord = xGrid * (0.5) + yGrid * (-0.5) + offset.x;
-    float colCoord = xGrid * (0.25) + yGrid * (0.25) + offset.y;
+    float rowCoord = xGrid * (0.5) + yGrid * (-0.5);
+    float colCoord = xGrid * (0.25) + yGrid * (0.25);
     return { rowCoord, colCoord };
 
 }

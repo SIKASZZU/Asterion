@@ -96,8 +96,8 @@ int main(int argc, char* argv[]) {
             for (auto& e : enemyArray) {
                 e.update(map, enemyTargetGrid, fixedDeltaTime);
             }
-            PlayerNS::update(map, offset, renderer, fixedDeltaTime);
             update_offset(player);
+            PlayerNS::update(map, offset, renderer, fixedDeltaTime);
 
             Portal::has_entered();
             terrain.calculate_miscellaneous(fixedDeltaTime);

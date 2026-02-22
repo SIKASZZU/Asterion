@@ -19,6 +19,7 @@ namespace AnimPlayer {
     extern int lastFrame;      // Remember index of last player anim
     extern int lastRow;        // Used for accessing player anim texture
     extern int animCol;
+    extern int animRow;
     extern SDL_FPoint lastDirection;
     extern int spriteEnum;
     extern SDL_FRect lastSrcRect;
