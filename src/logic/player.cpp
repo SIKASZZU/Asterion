@@ -12,7 +12,7 @@ const SDL_Point spawnpointGrid = { x: mapSize / 2, y: mapSize / 2 };
 
 PlayerData player = {
     movementSpeed: PlayerNS::defaultMovementSpeed,
-    size : (tileSize / 2),
+    size : (tileSize),
     gridX : spawnpointGrid.x,
     gridY : spawnpointGrid.y,
     x : static_cast<float>(spawnpointGrid.x * tileSize),
@@ -122,8 +122,8 @@ namespace PlayerNS {
             player.movementSpeed = 0;
         }
         SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
-        player.rect = { coords.x + player.size / 2.0f,
-            coords.y - player.size / 2.0f,
+        player.rect = { coords.x + player.size / 4.0f, // + 
+            coords.y - player.size / 4.0f, //  
             player.size,
             player.size
         };

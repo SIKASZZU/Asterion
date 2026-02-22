@@ -22,7 +22,18 @@ namespace Assets::Images {
     static const char* vine_cube_hard = "resources/vine_cube_hard.png";
     static const char* vine_cube_medium = "resources/vine_cube_medium.png";
     static const char* vine_cube_soft = "resources/vine_cube_soft.png";
+    //player animation
     static const char* player_animation = "resources/player_sprite_sheet.png";
+    //player-girl
+    static const char* player_girl_animation_down = "resources/player/walk/GirlSample_Walk_Down.png";
+    static const char* player_girl_animation_down_left = "resources/player/walk/GirlSample_Walk_DownLeft.png";
+    static const char* player_girl_animation_down_right = "resources/player/walk/GirlSample_Walk_DownRight.png";
+    static const char* player_girl_animation_right = "resources/player/walk/GirlSample_Walk_Right.png";
+    static const char* player_girl_animation_left = "resources/player/walk/GirlSample_Walk_Left.png";
+    static const char* player_girl_animation_up = "resources/player/walk/GirlSample_Walk_Up.png";
+    static const char* player_girl_animation_up_left = "resources/player/walk/GirlSample_Walk_UpLeft.png";
+    static const char* player_girl_animation_up_right = "resources/player/walk/GirlSample_Walk_UpRight.png";
+
     static const char* vine_overhang_sn = "resources/vine_overhang_SN.png";
     static const char* vine_overhang_ew = "resources/vine_overhang_EW.png";
     static const char* vine_cover_n = "resources/vine_cover_N.png";

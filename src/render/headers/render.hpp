@@ -37,7 +37,7 @@ namespace ssi {
     constexpr SpritesheetConfig wallMarkings{ 12, 6, 8 };
     constexpr SpritesheetConfig ground{ 2, 0, 10 };
     // constexpr SpritesheetConfig groundDecoration{3, 8, 14}; //  needs wrap shit
-    constexpr SpritesheetConfig groundDecoration{4, 0, 8}; //  needs wrap shit
+    constexpr SpritesheetConfig groundDecoration{ 4, 0, 8 }; //  needs wrap shit
     constexpr SpritesheetConfig mazeGround{ 0, 0, 10 };
     constexpr SpritesheetConfig sec2Ground{ 1, 0, 5 };
     constexpr SpritesheetConfig sec3Ground{ 1, 0, 10 };
@@ -60,6 +60,7 @@ private:
     void create_renderQ_items(SDL_Renderer* renderer);
     void create_renderQ_colored_cubes(SDL_Renderer* renderer);
     void create_renderQ_entities();
+    void render_entity_grid_highlights(SDL_Renderer* renderer);
     void render_renderQ(SDL_Renderer* renderer);
     int mapIndexLeft;
     int mapIndexRight;

@@ -10,6 +10,17 @@
 enum Map {
     SPRITESHEET,
     PLAYER,
+    // player girl
+
+    player_girl_animation_down,
+    player_girl_animation_down_left,
+    player_girl_animation_down_right,
+    player_girl_animation_right,
+    player_girl_animation_left,
+    player_girl_animation_up,
+    player_girl_animation_up_left,
+    player_girl_animation_up_right,
+
     SPIDER,
     // spider run
     spider_run45_animation,
@@ -100,4 +111,5 @@ void generate_decorations();
 void print_map(int map[mapSize][mapSize]);
 void generate_random_map(int map[mapSize][mapSize], int min_val, int max_val);
 void generate_maze_runner_map(int map[mapSize][mapSize]);
+void generate_test_map(int map[mapSize][mapSize]);
 void generate_voids(std::set<std::pair<int, int>> void_locations, const int max_voids);

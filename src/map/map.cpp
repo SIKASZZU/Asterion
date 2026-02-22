@@ -32,7 +32,15 @@ void generate_map() {
     // generate_random_map(map, 2, 2);          // random ring, circular map
     // if (mapLoaded) { return; }
 
-    generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
+    bool test = true;
+
+    if (test) {
+        generate_test_map(map);
+        return;
+    }
+    else {
+        generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
+    }
 
     bool sector_1 = false, sector_2 = false, sector_3 = false;
 
@@ -267,6 +275,35 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
     }
     std::cout << "Possible void spawnpoints in set: " << voidSpawnpoints.size() << '\n';
     generate_voids(voidSpawnpoints, maxVoids);
+}
+
+void generate_test_map(int map[mapSize][mapSize]) {
+
+    int testIslandRadius = static_cast<int>(mapSize * 0.7);
+    int halfMapSize = mapSize / 2;
+    float maxDistance = std::sqrt(halfMapSize * halfMapSize + halfMapSize * halfMapSize);
+
+
+    for (int y = 0; y < mapSize; y++) {
+        for (int x = 0; x < mapSize; x++) {
+
+            int dx = static_cast<int>(std::abs(x - halfMapSize));
+            int dy = static_cast<int>(std::abs(y - halfMapSize));
+
+            float distance_sq = dx * dx + dy * dy;
+            float distance = std::sqrt(distance_sq);
+
+            if (distance <= testIslandRadius) {
+                map[y][x] = Map::GROUND_CUBE;
+                continue;
+            }
+            if (distance > testIslandRadius) {
+                map[y][x] = Map::ERROR_CUBE;
+                continue;
+            }
+        }
+    }
+
 }
 
 void generate_voids(std::set<std::pair<int, int>> voidLocations, const int maxVoids) {

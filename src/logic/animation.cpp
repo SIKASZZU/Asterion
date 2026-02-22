@@ -90,48 +90,60 @@ void Enemy::animation(SDL_Renderer* renderer, const char* activity) {
     textureMap[spriteEnum].render(renderer, &srcRect, &dstRect);
 }
 
-
 Uint32 AnimPlayer::lastUpdate = SDL_GetTicks();
-int AnimPlayer::lastFrame = 0;
-int AnimPlayer::lastRow = 0;
+int AnimPlayer::animCol = 0;
+SDL_FPoint AnimPlayer::lastDirection = { 0.f, 0.f };
+int AnimPlayer::spriteEnum = 0;
+SDL_FRect AnimPlayer::lastSrcRect = { 0,0,0,0 };
 
 void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
-    const int spriteWidth = 64;
-    const int spriteHeight = 64;
-    SDL_FRect srcRect;
-    int col;
-
-    // player standing
-    if (player.movementSpeed == 0) {
-
-        col = lastFrame % 12;
-        player.animationSpeed = 100;
-        if (player.lastMovementKey == 'w' || player.lastMovementKey == 'd') {
-            lastRow = 2;
-        }
-        else if (player.lastMovementKey == 's' || player.lastMovementKey == 'a') {
-            lastRow = 3;
-        }
-    }
-    // player moving
-    else {
-        col = lastFrame % 8;
-        float loweredMovementSpeed = player.movementSpeed / PlayerNS::tilesPerSecond;
-        player.shifting == true ? player.animationSpeed = tileSize * 1.4 : player.animationSpeed = tileSize * 0.8;
-        if (player.movementVector.x == 1) { lastRow = 0; }
-        if (player.movementVector.x == -1) { lastRow = 1; }
-        if (player.movementVector.y == 1) { lastRow = 1; }
-        if (player.movementVector.y == -1) { lastRow = 0; }
+    bool isMoving = (player.movementSpeed != 0);
+    if (!isMoving) {
+        textureMap[spriteEnum].render(renderer, &lastSrcRect, &player.rect);
+        return;
     }
 
-    srcRect.x = col * spriteWidth;
-    srcRect.y = lastRow * spriteHeight;
-    srcRect.w = spriteWidth;
-    srcRect.h = spriteHeight;
-    if (SDL_GetTicks() - lastUpdate > player.animationSpeed) {
-        lastFrame++;
+
+    SDL_FPoint currentDir = isMoving ? player.movementVector : lastDirection;
+    if (isMoving) {
+        lastDirection = player.movementVector;
+    }
+
+    if (lastDirection.x == 0 && lastDirection.y == 0) {
+        // isMoving seems broken, not reset fast enough?
+        // spriteEnum = Map::player_girl_animation_down;
+    }
+
+    if (currentDir.x == 1 && currentDir.y == 0) { spriteEnum = Map::player_girl_animation_down_right; }
+    else if (currentDir.x == -1 && currentDir.y == 0) { spriteEnum = Map::player_girl_animation_up_left; }
+    else if (currentDir.y == 1 && currentDir.x == 0) { spriteEnum = Map::player_girl_animation_down_left; }
+    else if (currentDir.y == -1 && currentDir.x == 0) { spriteEnum = Map::player_girl_animation_up_right; }
+
+    else if (currentDir.y == -1 && currentDir.x == 1) { spriteEnum = Map::player_girl_animation_right; }
+    else if (currentDir.x == 1 && currentDir.y == 1) { spriteEnum = Map::player_girl_animation_down; }
+    else if (currentDir.y == 1 && currentDir.x == -1) { spriteEnum = Map::player_girl_animation_left; }
+    else if (currentDir.x == -1 && currentDir.y == -1) { spriteEnum = Map::player_girl_animation_up; }
+
+    int animRow;
+    float animationSpeed;
+
+    animRow = player.shifting ? 1 : 0;
+    animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 0.8f;
+    if (SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed)) {
         lastUpdate = SDL_GetTicks();
+        animCol = (animCol + 1) % 4;
     }
-    textureMap[Map::PLAYER].render(renderer, &srcRect, &player.rect);
+    
+    
+    SDL_FRect srcRect = {
+        static_cast<float>(animCol * spriteWidth),
+        static_cast<float>(animRow * spriteHeight),
+        static_cast<float>(spriteWidth),
+        static_cast<float>(spriteHeight)
+    };
+
+    lastSrcRect = srcRect;
+
+    textureMap[spriteEnum].render(renderer, &srcRect, &player.rect);
 }

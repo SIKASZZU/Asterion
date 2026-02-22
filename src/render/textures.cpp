@@ -41,6 +41,15 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::SPRITESHEET] = ImageTexture(renderer, Assets::Images::spritesheet);
     textureMap[Map::PLAYER] = ImageTexture(renderer, Assets::Images::player_animation);
     // textureMap[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
+    // player-girl walk 8-way
+    textureMap[Map::player_girl_animation_down] = ImageTexture(renderer, Assets::Images::player_girl_animation_down);
+    textureMap[Map::player_girl_animation_down_left] = ImageTexture(renderer, Assets::Images::player_girl_animation_down_left);
+    textureMap[Map::player_girl_animation_down_right] = ImageTexture(renderer, Assets::Images::player_girl_animation_down_right);
+    textureMap[Map::player_girl_animation_right] = ImageTexture(renderer, Assets::Images::player_girl_animation_right);
+    textureMap[Map::player_girl_animation_left] = ImageTexture(renderer, Assets::Images::player_girl_animation_left);
+    textureMap[Map::player_girl_animation_up] = ImageTexture(renderer, Assets::Images::player_girl_animation_up);
+    textureMap[Map::player_girl_animation_up_left] = ImageTexture(renderer, Assets::Images::player_girl_animation_up_left);
+    textureMap[Map::player_girl_animation_up_right] = ImageTexture(renderer, Assets::Images::player_girl_animation_up_right);
     // spider run 8-way
     textureMap[Map::spider_run45_animation] = ImageTexture(renderer, Assets::Images::spider_run45_animation);
     textureMap[Map::spider_run135_animation] = ImageTexture(renderer, Assets::Images::spider_run135_animation);

@@ -1,0 +1,1530 @@
+[33mcommit 4b71385a235a5afd994be79caf1380839e30e74b[m[33m ([m[1;36mHEAD[m[33m)[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jan 1 19:28:42 2026 +0200
+
+    fixing render, decoration. Block Elevation
+    
+    --amend
+    
+    --amend
+    
+    --amend
+
+[33mcommit 3f200e7157afc717415d2929bd67c9386ad4e6f7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Dec 28 05:06:41 2025 +0200
+
+    pathway_1,2,3
+
+[33mcommit 059b959342aa518bc79a25c65a6ff3088fc428c0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Dec 28 04:29:46 2025 +0200
+
+    calculate_decay_grids is broken laggy, disabled
+
+[33mcommit 8b1179ed011cd31f8f3ade3ba520f2980771de58[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Dec 28 03:20:36 2025 +0200
+
+    C++20, jthread, map based on raycast endpoint active grids.
+
+[33mcommit 8da585afcdd69f0df0632ef5f976d92b82a2d1f4[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Dec 27 22:07:36 2025 +0200
+
+    thread
+
+[33mcommit f5fca57ef62685589f491d1faec0a40d13a7f97e[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Dec 26 01:19:22 2025 +0200
+
+    revert? raycast stuff chagned to precomputed
+
+[33mcommit 89fc6699d61dea7190e25740fb4e14d9e8a961d0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Dec 26 00:50:30 2025 +0200
+
+    random maze s1 changes, +minimap
+
+[33mcommit 76f0ae4bbeebc8e6477953c3561d6f28e3e9ad0a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Dec 25 23:50:59 2025 +0200
+
+    Enemy roaming=walk, chasing=run, idle
+
+[33mcommit 305df396b9593abe437c55efae65dc4fd0c4062d[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Dec 4 06:45:54 2025 +0200
+
+    add:glade doors -> open day, closed nightly
+
+[33mcommit 2e14f3c61ec01bb2e00443d2b74f9fba6e272778[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Dec 3 21:02:04 2025 +0200
+
+    Replacing saving, caching methods in render. Removed return_src_1x3
+
+[33mcommit 9f93a6f7caf86ef5972f54f37a7cc8d603e4772f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Dec 3 19:24:23 2025 +0200
+
+    64bit helper shrunk to 32bit
+
+[33mcommit 7757f5f92d2361c24872b080567b64d70154807c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Dec 3 17:31:51 2025 +0200
+
+    New spritesheet
+
+[33mcommit 94cb0623db9263bcff42e8a464727b1a65282000[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Dec 1 21:42:11 2025 +0200
+
+    alpha var changes -> now const
+
+[33mcommit ba9b7a14d9253872a517556ad7588e5555ae0c87[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Dec 1 21:16:10 2025 +0200
+
+    wall transparency changes->+wall_cube_ground
+
+[33mcommit 42f8dd62a80e4833dc34018d8461b48068bc509a[m[33m ([m[1;32m==remote[m[33m)[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 27 04:12:41 2025 +0200
+
+    Added 8way assets into MapEnum + implemented, assets work! Index bug fixed @ find_path
+
+[33mcommit 7c5bac30d61284b4dc686a01c093793c4fd24c72[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 27 03:56:26 2025 +0200
+
+    8-way find_path + enemy 8-way, no images yet for &e
+
+[33mcommit 254cbec6390e4b53dcbca62b81e2a3989bd027f9[m[33m ([m[1;31morigin/daylight[m[33m, [m[1;32mdaylight[m[33m)[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 27 03:24:32 2025 +0200
+
+    Daylight refactor done
+
+[33mcommit a75b0602f9be3bf4a795cdef77b7f7750e6b60b1[m
+Merge: 809e21f e9a7613
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 27 02:33:34 2025 +0200
+
+    Merge branch 'daylight' of https://github.com/SIKASZZU/Asterion into daylight
+
+[33mcommit 809e21f7b109a391b4da9c35f98116f548522892[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Nov 26 21:56:36 2025 +0200
+
+    enemy idle, running in same func using init spider/ folder
+
+[33mcommit e9a7613d0dd4ad7145e6826fafeedcd495bd0ca8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Nov 25 02:12:07 2025 +0200
+
+    Daylight stuff, needs to be looked over before pushed to main-> random inversion and shit
+
+[33mcommit a0dc44020cad8b91cd7d69199a6998ff2d18a9ae[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Nov 25 01:59:46 2025 +0200
+
+    resizing tileSize readjust Player to be on the same spot
+
+[33mcommit d0086cb83ccbfa3eb4fa71e6b7fc8324307c7ca8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Nov 25 01:23:47 2025 +0200
+
+    mingi random index bug tundub fixed, et mazeis olles arvas is_walkable et seal on sein
+
+[33mcommit 7694592f7c23bcf1577a07d6432aadd42fcf2152[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Nov 25 00:42:45 2025 +0200
+
+    recalculate enemy path when player moves -> buggy
+
+[33mcommit 993ec544dc397e24f084d7ce18262c0d672a59c7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Nov 25 00:33:49 2025 +0200
+
+    enemy walks behind walls o_o
+
+[33mcommit ddd52c24d9188e1e043a136754a68f928843f40b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Nov 24 00:07:10 2025 +0200
+
+    main tickrate loop fix
+
+[33mcommit 03fd205a648468728452f3fa812c30e9898ff6d2[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 23 23:49:31 2025 +0200
+
+    Enemy moving again!
+
+[33mcommit 4f73d2d99c0cd4e5d2aeb8a313d113c2e999c04c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Nov 22 00:06:26 2025 +0200
+
+    break added to vines -> varem renderis based on wall destTile , nyyd broken ja wall markingute settimine on flickering s2-es.
+
+[33mcommit c6da2660995a6a08e6a7087a24a580aed9ed1229[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 20 18:15:05 2025 +0200
+
+    quad section seperation
+
+[33mcommit d2d1be121e47da2c2942403089dcec4b060a2808[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 20 15:05:14 2025 +0200
+
+    Makefile correction -> linux works.
+
+[33mcommit 20ccf9ca0da652eeea19d4a9407257a1c34d347d[m[33m ([m[1;31morigin/file-folders[m[33m, [m[1;32mfile-folders[m[33m)[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Nov 19 22:50:42 2025 +0200
+
+    Files are seperated into folders. Test on linux before running. Use mysys mingw64 to make, beacuse cmd doenst have functions
+
+[33mcommit 1e396fbde9fb603e80e94597baebc8737e394b31[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Nov 19 21:46:04 2025 +0200
+
+    fixed alpha, spacing in render.hpp file
+
+[33mcommit 1d4fd98c21957afdcf7b4abed32a61fd7ef131f5[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 16 21:05:55 2025 +0200
+
+    TerrainClass::render t66tab, aga teise sectori seinad j2lle v6itlevad omavahel. idk
+
+[33mcommit 8aafaacf1f531c25a79a2320dcbe8959f18edd45[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Nov 19 01:13:27 2025 +0200
+
+    Diagonal walls in maze to create 4 sectors of the maze
+
+[33mcommit ca9ca0f8ee47584184d58a99838db496d45252b4[m[33m ([m[1;32mground-to-1-texture[m[33m)[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Nov 10 23:13:14 2025 +0200
+
+    files for the previous commit xD
+
+[33mcommit a02b5dc5ca2f853fe00ed2dd7ae89d62b7ba30bc[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Nov 10 22:39:46 2025 +0200
+
+    display memory usage -> memory just doesnt delete iteslf lol
+
+[33mcommit 85872e87c2d60f8e79a1b77917085da3771a6e84[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Nov 10 20:51:22 2025 +0200
+
+    fps on screen
+
+[33mcommit 684583ff8a2d334afe828401f80e3145bd15b5b0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 9 23:58:49 2025 +0200
+
+    variable refactor -> variable naming scheme change
+
+[33mcommit ef69984b8df8056d5818cf3f64af28fd9c23ef9b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 9 23:57:18 2025 +0200
+
+    ++ voidCube tex vastu lage, koodis oli varem -1 px, see fixis 2ra
+
+[33mcommit 977ea60ea89f79ef17f20001fb62180372210fc0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 9 23:17:21 2025 +0200
+
+    changed window name
+
+[33mcommit 0ca1b10318658709f5b68794aa315022bafda4ee[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 9 23:08:04 2025 +0200
+
+    Stuff renders finally
+
+[33mcommit 53dfdc25a04f6dc37ed91b23b551e2ebafc82e1e[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Nov 6 13:28:15 2025 +0200
+
+    cartesian pole nii lihtne kui alguses tundus. Peab muutma offset kalki ka, kui tahta seda kasutada.
+
+[33mcommit 42db6ec6fab539baeef3895406d282b8b99cc2fb[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 2 17:14:59 2025 +0200
+
+    cartesian movement boolean for player
+
+[33mcommit 12fb5c45703da45289a5f807c4f4bef79b93f55f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Nov 2 16:26:32 2025 +0200
+
+    Lambi vanad muudatused nyyd siin. +end file
+
+[33mcommit 0a544e60957fab1027041f32bb03c45a06f5cbf4[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Oct 8 13:56:14 2025 +0300
+
+    Player spawn center, fix: alpha levels fixed to 0.6f when blocks are <=2
+
+[33mcommit 3d62e04a0a08bc2016bed3304111379b67e3f759[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Oct 7 18:12:20 2025 +0300
+
+    add: grass cover sprite sheet implemented
+
+[33mcommit 95c85217526c78507d2c08fe86597d10b94ccad8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Oct 6 21:50:23 2025 +0300
+
+    feat: transparent blocks infront of player so behind wall you see yourself!
+
+[33mcommit fb360ea345f9cfbf7a441d426c15eb9fcda0c302[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Oct 6 20:38:48 2025 +0300
+
+    fix: moved offset udpate fuction to offset file
+
+[33mcommit 3f8e16eb63f520a9c63c5146aacc6f8e4d937a51[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Oct 6 16:07:35 2025 +0300
+
+    add: wall markings with 20% chance on sec1, sec2 walls respective numbering!. pulled apart big wall case statement!
+
+[33mcommit e78d0d3a7edda45d8a3ed84cb1fb44e25e140bae[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Oct 6 15:01:43 2025 +0300
+
+    s3 double walls randomly based on mazeGroundMap + tex changes
+
+[33mcommit 85c4e3bd8841351cbd42c8a1b57de99373f3c259[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Oct 3 17:26:19 2025 +0300
+
+    added: grass sprite
+
+[33mcommit bb86d7efd442326dbc3d6c602ebb6012620ed947[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Oct 3 15:57:05 2025 +0300
+
+    removed random files
+
+[33mcommit ebed80b9a7998074d3a5e72dc626398b94c05333[m[33m ([m[1;31morigin/wip[m[33m, [m[1;32mwip[m[33m)[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Oct 3 15:54:04 2025 +0300
+
+    add: PlayerNameSpace. Player animation related to tile_size now
+
+[33mcommit 1af517bec66839acb961d0d20244dd4592a795ba[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Oct 3 15:53:11 2025 +0300
+
+    removed shift_pressed ( already player.shifting), movementVector resetting happens @ same place where setting
+
+[33mcommit 9dbaee04d49a283cfa965c2f704b44db00f05c01[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Oct 3 14:17:52 2025 +0300
+
+    offset file
+
+[33mcommit 251557d2eed14c78ea6207d61d1871a526c32ea9[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Oct 2 19:35:20 2025 +0300
+
+    animation file
+
+[33mcommit 473c3071f76bd7506ee5eb78cd5de4acf0d17f31[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Oct 2 15:51:09 2025 +0300
+
+    removed some fading movement stuff from player, snappier movement but chunky
+
+[33mcommit e0261d587018584dbb825a85560baaf046464d41[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Oct 2 15:37:56 2025 +0300
+
+    feat: added wallmarkings for 3rd section
+
+[33mcommit f4a54b70d1de4aa85358f9856eecaecbe0130f9f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Sep 21 20:13:08 2025 +0300
+
+    fixed, return_src_1x3-ga korras. Peab ymber tegema soliidsemaks
+
+[33mcommit cec8348b15e5d3483df78d7e6ad82fff33d55ac0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Sep 19 22:51:50 2025 +0300
+
+    +textures, maze deco, diff walls
+
+[33mcommit 23287c770bce1d0922a0bd439d89083964703c76[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Sep 17 15:18:27 2025 +0300
+
+    main loop fps , tick variable refactor
+
+[33mcommit 2321db569c95028f9aa4e6b910c90f36cf0d8619[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Sep 17 00:14:21 2025 +0300
+
+    add: tall, short grass tex, implemented! Trees, trunks have grass underneath
+
+[33mcommit 252c908f62550aa6ebd730a21faf281939ee6bfb[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Sep 17 00:13:47 2025 +0300
+
+    updated tree, grass textures. New tall,short grass tex
+
+[33mcommit d220959de6fefd12025977e48799ef46af00c103[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 15 21:29:22 2025 +0300
+
+    add: spider running anim, +print statements under key F
+
+[33mcommit 258d19ab46492ce99349b251cd25896598dc96c6[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Sep 13 18:14:47 2025 +0300
+
+    add: enemy pathfinding, no texture, just boilerplate
+
+[33mcommit a9e7cb4cf6d7da424172fb4f999166141476c90d[m
+Merge: b5c7328 786205d
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Sep 13 17:42:35 2025 +0300
+
+    Merge branch 'main' of https://github.com/SIKASZZU/Asterion
+
+[33mcommit b5c7328d58b8e415405ab23250a02c1fa012fc8a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Sep 13 17:42:08 2025 +0300
+
+    +spider, changed inv cube to be 1 dim
+
+[33mcommit 786205da0b95391446b53023d5e51fbb7e637d1e[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Sep 10 22:45:33 2025 +0300
+
+    added: player idle animation
+
+[33mcommit 16f393ed573fac2e56d13375520409f355fb5eba[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Sep 10 22:13:37 2025 +0300
+
+    add: player.last_movement_key pressed
+
+[33mcommit 1b4073b0498df9d4d3f40305e8b113e1a806d50b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Sep 10 21:12:00 2025 +0300
+
+    add: new player model, player movement_speed & animation_speed changed
+
+[33mcommit 9cb73872d49e33d03a42696a171590d2f0adca95[m
+Merge: d86cbae f61114b
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 8 19:20:55 2025 +0300
+
+    Merge branch 'main' of https://github.com/SIKASZZU/Asterion
+
+[33mcommit d86cbaec5ba173abded5ce6c7b15e7aa19c373f1[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 8 19:20:22 2025 +0300
+
+    add: section 2 has no vine walls & are less flexible in size
+
+[33mcommit f61114b041086a5af7822c2d906a3b792fb8200e[m
+Author: SIKASZZU <109911099+SIKASZZU@users.noreply.github.com>
+Date:   Mon Sep 8 19:14:18 2025 +0300
+
+    Update README.md
+
+[33mcommit 018cac2197d5bfb5e343dfc911b60814a9b65296[m
+Author: SIKASZZU <109911099+SIKASZZU@users.noreply.github.com>
+Date:   Mon Sep 8 19:12:59 2025 +0300
+
+    Update README.md
+
+[33mcommit 936b98f7e3842392441723f74f8c102fdfe150ca[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 8 18:30:37 2025 +0300
+
+    removed: VINE_WALL, not used. Refactor player.collison_array is now set and is not hard-coded
+
+[33mcommit 3a2727e666ffd0cd321c2490291dfceb2233c5db[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 8 18:16:27 2025 +0300
+
+    refactoring, removed asset
+
+[33mcommit cbe220326f20554e72320f9cc1fd9575ec1a751f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 8 18:14:35 2025 +0300
+
+    updated resources: vines, cube edges more smooth. Cubes have only top face, edges black
+
+[33mcommit 5805d32f44deefb04589581a2eb983728574a2ba[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Sep 8 18:13:40 2025 +0300
+
+    add: fading vision + fixme: o(n) comparing active, decay grids
+
+[33mcommit 74b59342d0ec845b0c5e1fac5534005e18665fbf[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Sep 7 18:37:54 2025 +0300
+
+    touchups
+
+[33mcommit 78b26b99eeba43310d7274d29daeca6d23dbe9ec[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Sep 5 20:52:09 2025 +0300
+
+    func calculate_line_length optimization
+
+[33mcommit 8e8878ca9b4f8b6d31a17cadfe8dcb13b5c55291[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Sep 4 23:37:11 2025 +0300
+
+    removed prints
+
+[33mcommit 7aaece4d1c60d95fba57e27f09ddccf426ea4601[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Aug 31 00:04:07 2025 +0300
+
+    Player movement changes, doesnt stop before wall and moves closer if poss
+
+[33mcommit 8bf65add9d4a3c33c2cc6393b880e32765a640a7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Aug 31 00:03:24 2025 +0300
+
+    changed render order + bigger window
+
+[33mcommit 69aacc0ecc37eb6a6405ce57b6db1dc6037e962e[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Aug 29 14:17:44 2025 +0300
+
+    new way to calculate raycast, more optimised
+
+[33mcommit 7eb0ee17434389be51320b75abca62d3db2da5d0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Aug 27 13:21:18 2025 +0300
+
+    add: player spawn middle of the map
+
+[33mcommit 03760d42e55cddc969983324035f482c6a97f618[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Aug 27 13:01:22 2025 +0300
+
+    fix: player centered on tile
+
+[33mcommit a3f589c1e84aa698c18d9d2716eb6f7f8096ef81[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Aug 6 23:10:11 2025 +0300
+
+    added: mod_map file, func for changing s3, s3 changed 2-3 wide pathway
+
+[33mcommit c08e8d3ca36237ccb191dc785bff648716b5fe4e[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Aug 5 15:38:23 2025 +0300
+
+    added: texture ground_under_wall_cube
+
+[33mcommit 2158853e2c0fa00490f1799ec5ff01027f24c8d8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Aug 4 13:26:34 2025 +0300
+
+    fixed: void spawning, indexing problem
+
+[33mcommit 095bad789088d6cf5b07bf4317835771b6d74fae[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Aug 2 17:49:13 2025 +0300
+
+    changed: maxDecaySize same as maxActiveSize
+
+[33mcommit bccbdc4d105df2c0339b97bc03a7773fb3211d17[m
+Merge: 76988e3 0c954dd
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Aug 2 17:47:17 2025 +0300
+
+    Merge branch 'main' of https://github.com/SIKASZZU/Asterion
+
+[33mcommit 76988e30db2fcb27d64e9965494bc8acbf366685[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Aug 2 17:46:27 2025 +0300
+
+        cstring: cpp,
+
+[33mcommit 655a2fb21a3ef4b581f913035a37b324033690ca[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Aug 2 17:46:06 2025 +0300
+
+    add: decay rects render out. maxRayLength moved to Raycast namespace.
+
+[33mcommit c6ea62852354ba9c219de001f042c0de6a457af0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Aug 2 15:48:08 2025 +0300
+
+    feat: decay & active rect code complete in vision and raycast
+
+[33mcommit 0c954dd33d211754618e9445999cd0eff05154a1[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 31 23:25:06 2025 +0300
+
+    +V key for Vision toggle, R for Raycast toggle
+
+[33mcommit 7d0ba4f8de358713eb415abacd3a772837d9d3ba[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 31 23:24:11 2025 +0300
+
+    reverted back to d222939, because unstable and not favorable design.
+
+[33mcommit 2e32d5477a391b62b2ed9e92916f7429260f8f8f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 30 18:28:51 2025 +0300
+
+    Vision polygon centered on ray source. add: int last_ray_length to skip some raylen computation
+
+[33mcommit d84434730f2d9468db841e7dd562f765c9aa245b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 29 20:03:54 2025 +0300
+
+    add: vision kasutab polygonil light tekstuuri, et darknessi polygon sisse l6igata.
+
+[33mcommit fbf4525a38ef776056cfe2e3c464ee47642771c6[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 29 18:10:12 2025 +0300
+
+    change: rays same length as map radius
+
+[33mcommit d22293915b0777171b233c13591cdc30d3caba79[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 29 16:51:04 2025 +0300
+
+    SDL2 replaced with SDL3
+
+[33mcommit 5b662911defde3e097bfcc4cbdd7347b4c95b0a6[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 29 16:50:23 2025 +0300
+
+    replaced SDL2, SDL2_image with SDL3, SDL3_image
+
+[33mcommit f772596bae218b8a932f4f49dd00fd9e02c0bbbc[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 29 16:49:52 2025 +0300
+
+    Introductions for SDL3, SDL3_image installation. add: Game/key-functionality section
+
+[33mcommit 66b51ce5fd2777678da7a513a638986a9cf9db5c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 29 12:52:08 2025 +0300
+
+    Little code refactor. add: bool draw_rays, raycast update function
+
+[33mcommit 03c2f92c5963d8d2ae2b707f40101bc6d70db79b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 28 22:28:52 2025 +0300
+
+    add: vision, unoptimized. game.cpp +prints and +global variables
+
+[33mcommit 9ab7bba623b3dd0d841d111fb51842b12c3b405b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 28 22:27:16 2025 +0300
+
+    +section about functioning keys
+
+[33mcommit a2b72cee5f672212b54422e94e4e7f0381400bcb[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 26 06:24:07 2025 +0300
+
+    fix: r pressed print, feat:screen_w,h game.hpp variable!
+
+[33mcommit 24b3fac10d18d45568d93d2baf15b7be4a3c3a37[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 26 05:33:40 2025 +0300
+
+    fix: merge tekitas lampi topelt variableid. Sorry, et selleks ekstra commit tuli. /facepalm
+
+[33mcommit 2ef9f7d3ca4b4ef85babe9d44a97fa2c46d3e44d[m
+Merge: 4d4222e 77d24e9
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 26 05:29:21 2025 +0300
+
+    merged
+
+[33mcommit 4d4222e5f640e69d3f8c17a3da142391fc56467b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 26 05:26:54 2025 +0300
+
+    fix: player x,y  updateib nyyd 6igel ajal. feat: r - toggle raycast. Raycast on chuncki vajab optimeerimist
+
+[33mcommit 77d24e9ea5d5b47beabd781964da42d4a56de51f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 25 22:30:26 2025 +0300
+
+    feat: raycasting. Rays 100px around player, not reactive to env.
+
+[33mcommit 583811d15ca31b707fd4af98c458e61c5fa4509a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 25 02:22:30 2025 +0300
+
+    added: LAND_CUBE as glade ground tex
+
+[33mcommit 6e2f71678f49ce687bd74a25d2f398193594e5b7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 25 02:21:59 2025 +0300
+
+    section walls 5px bigger, +LAND_CUBE
+
+[33mcommit 63d73c5a27abe86887efa91120ad21b69ccdb08a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 25 01:51:56 2025 +0300
+
+    tree trunk, tree sizes random!
+
+[33mcommit cb751c56a56190c77fe7bd5f1f05934ec5cbc5d8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 24 20:16:10 2025 +0300
+
+    fix: animation stop when speed 0; player speed code cleanup
+
+[33mcommit e6dccf396c1ec78013101b77cb2e4b9faefea7a0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 24 19:45:52 2025 +0300
+
+    fix: collision wallidega lubab teistes suunades liikuda
+
+[33mcommit 4a9013ba3151c3ac2e280b4268a9c3053724dd62[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 22 03:51:06 2025 +0300
+
+    section alienating walls
+
+[33mcommit 79777105138b616cab2b2f0c34f6cc866b024a52[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 22 03:48:49 2025 +0300
+
+    +invisible cube available in Map enum
+
+[33mcommit 9a7df39d38812e00a05e802e5bf84ffae17fb7e1[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 21 22:59:08 2025 +0300
+
+    feat: trunks, voids, render_void_tilemap()
+
+[33mcommit 10fb249068ef4e28c00c28bced4c08d9eb4fb772[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 21 22:45:07 2025 +0300
+
+    +tree_trunk, finalized void_cube_tilemap
+
+[33mcommit 2240367f65f5c78ab6f0b43599fed572d93e73d5[m
+Merge: eeb0d50 2b3b007
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 21 19:57:54 2025 +0300
+
+    Merge branch 'main' of https://github.com/SIKASZZU/shenanigans
+
+[33mcommit eeb0d500403672e3d01284fb267b1a6a636b3d85[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 21 19:57:23 2025 +0300
+
+    +VOID_CUBE +GRASS_COVER. Added: buffer peale maze_outer_radiust, map corner forests!, generate_voids()
+
+[33mcommit 5859f96a62925aeb0c4815cf9d6345c9c51f6a30[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 21 19:56:41 2025 +0300
+
+    +VOID_CUBE +GRASS_COVER
+
+[33mcommit 2b3b00757e6eaf64277cdcd8ea65c9383902b5d2[m
+Merge: 941235c 1befe14
+Author: SIKASZZU <109911099+SIKASZZU@users.noreply.github.com>
+Date:   Mon Jul 21 03:32:04 2025 +0300
+
+    Merge pull request #4 from GetUsernameFromDatabase/ryan_help
+    
+    makefile to take into account object dependencies and readme env path as list
+
+[33mcommit 1befe14655505d2793db23ec58075df59868ae3e[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Sun Jul 20 20:52:35 2025 +0300
+
+    feat: include preprocessor dependencies
+    
+    This forces makefile to properly take into account the dependencies of c++ objects
+
+[33mcommit 464c837032eabc39a93d2f063de910619a7c779b[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Sun Jul 20 20:33:29 2025 +0300
+
+    docs: env path example as a list
+
+[33mcommit 941235c7230885774f9c1faf5709b05cc4dbbddb[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 20 16:34:19 2025 +0300
+
+    +added 'map' & 'set'
+
+[33mcommit 33c940b02f13766b6065ccc5d5e3a3e1f3dbfc9b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 20 16:33:09 2025 +0300
+
+    +bug: vine_cover_N lampi 6hus. New textures + sector 2 addition
+
+[33mcommit 70f242af959806abe58a50eb875e821abdcd0c01[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 20 00:20:40 2025 +0300
+
+    fixed: Sector 2,3 walls are centered on their tiles. Added: Sector 3 wall size changed
+
+[33mcommit 8b249c69152ad7739b17d281c724665cc86b2365[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 20 00:18:51 2025 +0300
+
+    darkened maze ground
+
+[33mcommit d0fcd1ee3049813f22f63e020d4031cdc0619a5b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 19 15:45:57 2025 +0300
+
+    + env variables
+
+[33mcommit 83bd0cc01b6777a0236068de067bda01c66576e1[m
+Merge: 9b57bac 6f05a3f
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 19 15:41:10 2025 +0300
+
+    Merge branch 'GetUsernameFromDatabase-ryan_help'
+
+[33mcommit 6f05a3f61c55bcaf587abd4d54115e94d542f2cc[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Sat Jul 19 04:44:35 2025 +0300
+
+    feat: proper makefile
+    
+    MakeFile that:
+    - only compiles cpp files that were changed
+    - copies resources that are *needed* by the game executable
+    - allows for easy cleanup by having bin and bld folders
+    
+    game can be easily packaged by just zipping the bin folder
+
+[33mcommit 9b57bac05a532da091f62aca87272f7b11ddc614[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 18 14:40:27 2025 +0300
+
+    +player.size reacts to tile size. +player.rect_collision for calculating collision, +int render after in render.cpp for player appear behind w_objects.
+
+[33mcommit 73424bdb8b0f6543aee1ac4141c7c155a7eb56e5[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 18 03:02:25 2025 +0300
+
+    display player rect, resize player to tile size
+
+[33mcommit a9aad3f9bc1f210e1a01c05c0e4387cf3ff6549f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 18 02:42:32 2025 +0300
+
+    +player animation
+
+[33mcommit 8efd61019f4121320a112f750b8464f7707f1706[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 18 02:42:14 2025 +0300
+
+    Player doesnt stop instantly - having inertia. +player animation
+
+[33mcommit b7485ca6d4c7c0069ab728932755f1b83555bba7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 17 02:39:34 2025 +0300
+
+    It was nice having you.
+
+[33mcommit 596ebc0db974dad6612d3984b36a358a37b96761[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Thu Jul 17 00:19:38 2025 +0300
+
+    refactor: tile identifiers
+    
+    added everything that is used to identify tiles into an enum for developer readability
+
+[33mcommit 5bf9da84fc1afda4a4ee2105c8967022f9a1cc64[m
+Merge: ff18b1d ac784e0
+Author: Ryan Murulo <49920260+GetUsernameFromDatabase@users.noreply.github.com>
+Date:   Wed Jul 16 23:05:44 2025 +0300
+
+    Merge branch 'main' into ryan_help
+
+[33mcommit ac784e06e6a4318b0f4f2cd9b30d926fe99252a3[m
+Merge: ca0bdce 2a22679
+Author: Ryan Murulo <49920260+GetUsernameFromDatabase@users.noreply.github.com>
+Date:   Wed Jul 16 23:03:11 2025 +0300
+
+    Merge branch 'SIKASZZU:main' into main
+
+[33mcommit 2a226793bc64f9f94d20197d114ca62e3095763a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 22:48:16 2025 +0300
+
+    refactor collision_array
+
+[33mcommit ff18b1d9ed5dff7754872b9380f09fff73e065d4[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 22:37:52 2025 +0300
+
+    refactor: z_index name to render_order
+
+[33mcommit 0937e5c5ab90ed999542f0ea58c7a57b26e03a9d[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 22:20:14 2025 +0300
+
+    change: h files to hpp
+
+[33mcommit 82d2543a8cd1e45f9b7aaeb5379af7dd84e35cc1[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 22:02:40 2025 +0300
+
+    fix: merge conflict issues
+
+[33mcommit ca0bdce7031f23282eb73541c4327f6c3a830b3c[m
+Merge: e5d95f1 9249591
+Author: Ryan Murulo <49920260+GetUsernameFromDatabase@users.noreply.github.com>
+Date:   Wed Jul 16 21:52:33 2025 +0300
+
+    Merge pull request #1 from GetUsernameFromDatabase/ryan_help
+    
+    changes to rendering
+
+[33mcommit 9249591ac152ffd22d24766061929f4a7e3d5ce9[m
+Merge: 476e8a2 e5d95f1
+Author: Ryan Murulo <49920260+GetUsernameFromDatabase@users.noreply.github.com>
+Date:   Wed Jul 16 21:52:19 2025 +0300
+
+    Merge branch 'main' into ryan_help
+
+[33mcommit 476e8a2d4cf5bc56412054f921ca6731deede156[m
+Merge: 9e40c60 377b94f
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 21:38:07 2025 +0300
+
+    Merge branch 'ryan_help' of https://github.com/GetUsernameFromDatabase/Asterion into ryan_help
+
+[33mcommit 9e40c6083adaf3178006270195701452abeb1741[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 21:38:02 2025 +0300
+
+    refactor: rendering system
+    
+    A class for basic texture rendering
+    standardised render calls
+    load render happens after offsset and player have been updated
+
+[33mcommit 79d1e775e724cde85b08e8b09bf0a996da70b80c[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 21:31:53 2025 +0300
+
+    change: remove unused parameter in player
+
+[33mcommit 1a2471e3f969a5832c8479aa59377604f5802faf[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Wed Jul 16 21:29:18 2025 +0300
+
+    change: remove unused lib
+
+[33mcommit e5d95f1dc596e7bfdd2bc36c1be2d6332d4f06bc[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:25:59 2025 +0300
+
+    fixed sprite size px -> ma olen stupid
+
+[33mcommit 76aecfbb56d2c035b247a018e2478898dbd759cd[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:22:52 2025 +0300
+
+    +player animation switch timer, +load_player_sprite -> draws player now in render func.
+
+[33mcommit 77b073425c77a6427ad2ab36a21da907a1f80885[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:22:08 2025 +0300
+
+    removed abilities
+
+[33mcommit ce8a625067ee33f925db8fa8891a3fe858d94f69[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:21:44 2025 +0300
+
+    removed/edited player variables, removed draw_player,
+
+[33mcommit 08030b5b95b695599b8048601f81b0d811f38775[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:19:46 2025 +0300
+
+    idk
+
+[33mcommit 693695cde0036dc18c1be81aef99c8bfdb2e96e8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:19:36 2025 +0300
+
+    *. all cpps
+
+[33mcommit 376f914d175796c76abce79731ad705b1424f984[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:19:18 2025 +0300
+
+    removed
+
+[33mcommit cbb0a28e784fc5e41b9f91ea81eb1bd1dc901817[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 16 21:18:31 2025 +0300
+
+    player anim 4x4
+
+[33mcommit 827783adadad5e38cbdba059f4f6a975af3d179f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 15 21:55:47 2025 +0300
+
+    player animation progress continues
+
+[33mcommit 377b94f3971db9c90ae199bb3883e6348bcf6255[m
+Merge: 6f065f8 6a5fd62
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 15 11:02:46 2025 +0300
+
+    Merge branch 'GetUsernameFromDatabase-ryan_help'
+    Helpful refactors, explaining comments and code cleanups.
+
+[33mcommit 6a5fd62062fe0070aa3559b5b55ba62c26b4871e[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 06:17:41 2025 +0300
+
+    fix: key_pressed should just be key
+    
+    this is especially weird when event type is SDL_KEYUP
+    mistake made by yours truly ;P
+
+[33mcommit 39ec6cf9b10660d897c1492a51384377a31c0e23[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 06:10:58 2025 +0300
+
+    chore: quick formatting
+
+[33mcommit 9f9972cfd88073e7a91aec432305eaf994fcaff6[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 06:06:13 2025 +0300
+
+    refactor: keyboard event handling
+
+[33mcommit 72e62d03f287b3eaaf93667642710b2b03588088[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 04:23:19 2025 +0300
+
+    refactor: render if statements into switch case
+
+[33mcommit 8cecfd86d2214c86092b4bea6e81e178b32fb9ef[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 03:09:17 2025 +0300
+
+    feat: preliminary readme
+
+[33mcommit 06820dfea2516595000c25a4b60f15a3eaef2711[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 03:03:50 2025 +0300
+
+    feat: vscode tasks and settings
+
+[33mcommit a30ce005128d1978d19ac8ef92771b1b17d80bb1[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 03:03:25 2025 +0300
+
+    chore: remove unnecessary files
+
+[33mcommit 04e9b6a0b25241c5860d68f951b98b9856663fe6[m
+Author: Ryan Murulo <rkruberg@gmail.com>
+Date:   Tue Jul 15 03:02:27 2025 +0300
+
+    feat: more comprehensive gitignore
+
+[33mcommit 6f065f8a5f26c76a57b981f36fa34936cebafb29[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 15 01:12:30 2025 +0300
+
+    refactor
+
+[33mcommit 3489206d58d195ad8ac3ee6034c9baea30d01e87[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 14 21:55:42 2025 +0300
+
+    correct sectioin
+
+[33mcommit 3d92eb15fa3f5c646264889bdbf9d9a2d8d8f540[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 14 19:26:08 2025 +0300
+
+    + ingrown, mazeground
+
+[33mcommit 8c3855d0cc80055e9de37d7eab169fa991857cde[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jul 14 19:25:50 2025 +0300
+
+    sectorid ok
+
+[33mcommit 245f2a052f15c642dd23230d1f8fad1295880258[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 13 15:56:03 2025 +0300
+
+    hacked sector walls. Nyyd tundub korras. V6iks olla alternatiivne soliidsem lahendus
+
+[33mcommit cd2dc1415713f2462de7654cf712ac9ff9be28c5[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 13 15:24:48 2025 +0300
+
+    3 sectors
+
+[33mcommit 4fc36f1716521d2f014fbf52c4c337546f23233a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 13 01:14:33 2025 +0300
+
+    sector 3 progress!
+
+[33mcommit 558d2f42e2a511994f3c21ae4b1d48f0b4dcf497[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 12 23:46:22 2025 +0300
+
+    push push push
+
+[33mcommit d48b70a4205fb1b850b10ed794e414fa2c9567cf[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 12 00:04:41 2025 +0300
+
+    3 main sectors, pref 8 sections!, +blue,yellow tex
+
+[33mcommit a398efe51b96f8862c06f1039062dbdea3d43274[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 11 22:52:04 2025 +0300
+
+    sector 2, outer sector
+
+[33mcommit c2a7702a00e0c870ff3fe1585694a23407118e7d[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 10 22:23:56 2025 +0300
+
+    lahe
+
+[33mcommit b494febdf34236498abd76955a8415a6ddd917d0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 10 03:24:23 2025 +0300
+
+    labyrinth
+
+[33mcommit 53b589e651c381b658341d18fa1c4c264c89605a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 10 03:24:09 2025 +0300
+
+    progress -> maze labyrinth
+
+[33mcommit 3547bed70c665464f55b84770f94b60094f6c75f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 9 21:37:50 2025 +0300
+
+    +- affect render_radius. ., affect tile_size
+
+[33mcommit 397523d6b1412d8ba8b134c36dc6408fa9314702[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 9 20:47:01 2025 +0300
+
+    ranodm vines
+
+[33mcommit 41bcb940318a8e7ba7cd54201499d38f973e732c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 9 01:25:59 2025 +0300
+
+    progress
+
+[33mcommit 91ee54deb600306892cb237e30e324e7991a0a75[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 6 18:02:12 2025 +0300
+
+    random setter in main and once
+
+[33mcommit 624a5e1d942d8e31a94742c4941c36370e92c8d8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 6 17:47:06 2025 +0300
+
+    WHERE YOU ARE DATA
+
+[33mcommit 97c2a7f9ef1218e5c113d082740ca84e7401f772[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 6 17:46:39 2025 +0300
+
+    progress in progressing the progress
+
+[33mcommit d93ae45ce646c2846aad1b4897180e9f830239ca[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 6 17:34:35 2025 +0300
+
+    + saved_map.txt
+
+[33mcommit cac7b413104de68772adc86b298bf4d39e7ae2e3[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jul 6 02:57:37 2025 +0300
+
+    imeline. render seq on tehtud, tundub soliidne. Offset peab lambist const olema yhes kohas, vb peab rohkem syvenema et miks
+
+[33mcommit 76aa6f37f40f2d2a588189bae34d8f0c8f7ab0ec[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jul 5 00:20:15 2025 +0300
+
+    render seq ok?
+
+[33mcommit 7278153e9f24eebcc55c147e7adfe4bef898c90c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 4 20:54:25 2025 +0300
+
+    random notes, comments, trees
+
+[33mcommit 8ba8f8acdb26e7e97f69e1c2e7cfabe012f5e8b7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 4 16:31:14 2025 +0300
+
+    random notes, comments, trees
+
+[33mcommit 495b6cdf04b1c7cc22df6aa0ec504e5002e8e506[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 4 16:30:50 2025 +0300
+
+    error cube
+
+[33mcommit e0487bfdef0d1af28043240170559add11001f59[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 4 01:05:10 2025 +0300
+
+    player collision is switchable mid-game, walls are above ground correct position!
+
+[33mcommit 7b742d1a1d41ff8586c707af07e74f93fe693ba9[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 4 00:11:25 2025 +0300
+
+    render ok
+
+[33mcommit 116d2f35e6371b54273fff18a68dd7d124843a0b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jul 4 00:09:22 2025 +0300
+
+    render on katki muu ok
+
+[33mcommit d523a3ec0f865e86ff652f35da1735dff834442b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 3 21:30:12 2025 +0300
+
+    player peaaegu centered
+
+[33mcommit 8091c5952f8c6cbdb3d094d04eb660449b3d2dd4[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu Jul 3 21:11:33 2025 +0300
+
+    corrected
+
+[33mcommit 4ffc5c54957a6c875c64c7f3447e0d8049eebb4c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jul 2 23:55:11 2025 +0300
+
+    wip collision pc
+
+[33mcommit a3b7d3b03d6ccc77cb8d7730ced454a434f7e19a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 1 23:20:16 2025 +0300
+
+    refactor: compile time <5sec
+
+[33mcommit 8c7b87b3328c2ae52acfbaccf3044b39b2acaf6b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 1 22:56:25 2025 +0300
+
+    compile timer
+
+[33mcommit 3552b3b7b8e7627da05465580c6defdc76feb7de[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Tue Jul 1 14:52:24 2025 +0300
+
+    collision!
+
+[33mcommit 0ec42e8233ee765c6f2de679ac032094093b44b4[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 30 19:08:56 2025 +0300
+
+    number overlay fix
+
+[33mcommit eacbfd49d99bd444e6a9e354649479ce99d92181[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 30 19:08:46 2025 +0300
+
+    normalized movement diagnoally
+
+[33mcommit dcbaed8b0594eb26af6e933c8ae3ec52d71dfee9[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 30 17:12:42 2025 +0300
+
+    render_radius works
+
+[33mcommit b5b04ef0d61a3d2beaecc57f8da9492daa7cd061[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 30 17:09:03 2025 +0300
+
+    refactor
+
+[33mcommit 73a7ac9d9de5dda344a39b66f2ebca80e0ea5fc0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 30 16:53:05 2025 +0300
+
+    player moved to player.h file
+
+[33mcommit c743d6383c195bdc66f9cb566bca2eeac99601a7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 30 15:04:02 2025 +0300
+
+    movement fixed, indexing fixed
+
+[33mcommit 306a775c152f820cf9175bd80cc6b89b6ed6fb19[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jun 27 20:51:49 2025 +0300
+
+    Fucking broken shit but i dont care.
+
+[33mcommit 6182254606f09b734b50ea3f33dd156cabee3e08[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jun 25 01:28:47 2025 +0300
+
+    Tegin grid-to-screen ja iso coordinaatide asja korda. Nyyd teab, kus player actually asub. K6ik muu on katki.
+
+[33mcommit c671f0ae6c5c8b31941b19a0b53216fd7bf4592c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 23 19:22:26 2025 +0300
+
+    +SDL_Point iso_to_world(int iso_x, int iso_y)
+
+[33mcommit 70363dc9512b48d19f16bcc71b33bcdc923d2951[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 23 19:15:02 2025 +0300
+
+    ISOMETRIC!
+
+[33mcommit 27cb5e4255d63c3c113abdaa537b7abe0311bab6[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Mon Jun 23 12:28:31 2025 +0300
+
+    prog
+
+[33mcommit 257b3bcf38669484bf6f2f68f794d32dd66969a0[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 22 21:15:36 2025 +0300
+
+    walls file transparent = doesnt matter but flex
+
+[33mcommit 787b66a1d8cb188650d7c606486548526790f377[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 22 19:24:41 2025 +0300
+
+    wallid tilemap tehtud
+
+[33mcommit 48116333e5939ae7147c7c0dc45dc13ebcf35587[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 22 19:24:21 2025 +0300
+
+    wall imageid on peaaegu head - l6imumine vahel veider kuid k2ib kah rn.
+
+[33mcommit 742e28085c5ba5030060a529485627c4f4a371f2[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jun 21 17:57:28 2025 +0300
+
+    0 ei olnud fucking symmeeritilne
+
+[33mcommit 9520ff43b6787f4fbe66a21769f3cb701b829c87[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jun 21 17:53:43 2025 +0300
+
+    kohendamine +walls
+
+[33mcommit a1408ec11c31abf777f6fb00f7423beb634f87ee[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jun 21 15:16:58 2025 +0300
+
+    fake dumb variable, iam stupid. Sad emoji
+
+[33mcommit d99e268dc127cbd266d27d418cb8d03421a29e5f[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat Jun 21 00:34:43 2025 +0300
+
+    Ring of walls around the glade!
+
+[33mcommit a49dc80c290a83c9c81ffc72fd476824f566ceaa[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jun 20 20:21:34 2025 +0300
+
+    texure destroy func added
+
+[33mcommit 95b8cfa6225944cf6ba41d55dc800d93664162ca[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jun 20 20:17:07 2025 +0300
+
+    progress: Numbers over terrain overlay!
+
+[33mcommit 973aabe4513d9782575bb6d82999a62d576b47f9[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jun 20 16:42:29 2025 +0300
+
+    progress
+
+[33mcommit 21baae45c70d4e82b109aa54e094cd5c2e795653[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Fri Jun 20 14:12:36 2025 +0300
+
+    Windowsil saan compilida!
+
+[33mcommit 4162751ad2613fd11bfc98abca331e93a71ef8d7[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jun 18 20:44:03 2025 +0300
+
+    updated
+
+[33mcommit 0cab7adb9de02a569f4aeafbca709ec3ca861e0b[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jun 18 20:43:52 2025 +0300
+
+    moved sdl files ot lib and include folder
+
+[33mcommit 060ece44356f14d88109028f9186c8760a5bac02[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jun 18 20:40:03 2025 +0300
+
+    removed linux-only server stuff
+
+[33mcommit adefd481d13339f2113818bc5bfb44efa3be00ef[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Wed Jun 18 20:39:04 2025 +0300
+
+    proov saada windowsil ja linuxil sama Makefile
+
+[33mcommit a5f1276e8c9ba2200d6cad4446032d88dc8d20e2[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 1 13:05:57 2025 +0300
+
+    mida sa nussid, fixed
+
+[33mcommit f03843f026ac8aeac9a1d6ac8a1c50724ccbeba8[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 1 13:02:26 2025 +0300
+
+    ..
+
+[33mcommit 0b5072bd5c5a3d9643b72a96445dc87801aed51d[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 1 12:58:39 2025 +0300
+
+    ..
+
+[33mcommit 6248f8ea52ea8e9688350c0c8e913bc8e0cbe7cf[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 1 11:27:36 2025 +0300
+
+    server code
+
+[33mcommit 51dcb479354c4faa35fb8837f6f81cee36d022ff[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun Jun 1 11:27:15 2025 +0300
+
+    server stuff added
+
+[33mcommit 275045fa6a32743c415b23f1707cae1e8a5478f1[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 16:09:18 2025 +0300
+
+    abilities work
+
+[33mcommit cb832570b01dd279c0a35da8d2779991bd430d44[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 15:43:19 2025 +0300
+
+    player direcion correct
+
+[33mcommit 2c1584cec690c976a39a2b52d3e53129d78cdd5e[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 15:42:48 2025 +0300
+
+    player direcion correct
+
+[33mcommit 45f06d9b74b80087cefac10ee77c0c713043ad90[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 15:41:10 2025 +0300
+
+    + abilities.cpp, player.cpp
+
+[33mcommit f10745e71eaab9a2da05918c40fb8aa5e754b409[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 13:24:07 2025 +0300
+
+    +files
+
+[33mcommit a9d6652582b9acf7e2c4ffb1e9a50e1c89e86a1c[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 13:23:25 2025 +0300
+
+    keypressing detection // using SDL_Keycode sest ss teravam detection ja allhoidmisega ka mingi case
+
+[33mcommit cf80f47c03c1c6effce1d4e646d5a0c0de084d4d[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 13:16:03 2025 +0300
+
+    trees centered
+
+[33mcommit a5bb836bd2828548acadea8cec048ddcdcf24284[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 13:07:29 2025 +0300
+
+    fixed movement. player.x,y correct
+
+[33mcommit 6b1d59a026af64e770e4a5be3a911ce6b3603355[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 25 12:33:25 2025 +0300
+
+    player,x,y on perses. Vaja camera lisada probably
+
+[33mcommit b84f4a44172e0c71b9edeef078596f296b6f7bb1[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 18 19:08:16 2025 +0300
+
+    Ok, hear me out. See k2ib kah praegu, kuniks ma m6tlen valja kuidas mapping tootab
+
+[33mcommit ef514aa7e8ac0f25fe123fc417ad198e7cf43e7a[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 18 15:50:02 2025 +0300
+
+    tree centered
+
+[33mcommit 442afb9a2a2f2a8625cf61e919c3891d6b1b04fb[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sun May 18 00:04:28 2025 +0300
+
+    prog
+
+[33mcommit 50a80ebe67c23c7f1c09c9c2a37baadd76ab69fd[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat May 17 20:02:49 2025 +0300
+
+    +tree, ground
+
+[33mcommit 0a63b1abc2c32f6db6bef54a88c3464ab90aae93[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat May 17 15:10:33 2025 +0300
+
+    player diagonal movement capped
+
+[33mcommit 353c9e273df2cd70db356bfaa665683f7fe44006[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Sat May 17 14:56:22 2025 +0300
+
+    render on screen done
+
+[33mcommit 383d4bfd2e90cb2708a4ce917ecb43b477f45469[m
+Author: SIKASZZU <soots.sigvrid@gmail.com>
+Date:   Thu May 15 21:46:21 2025 +0300
+
+    algus

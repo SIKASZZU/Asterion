@@ -494,12 +494,21 @@ void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
     for (auto& r : renderQueue) { r.call_render(renderer); }
     renderQueue.clear();
 }
+void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
+
+    SDL_FRect destTile = return_destTile(player.gridY, player.gridX);
+    // destTile.y -= halfTile;
+    textureMap[Map::INVISIBLE_CUBE].render(renderer, &destTile);
+}
+
 void TerrainClass::render(SDL_Renderer* renderer) {
     create_renderQ_ground(renderer);
     create_renderQ_items(renderer);
     create_renderQ_walls();
     create_renderQ_colored_cubes(renderer);
     create_renderQ_decoration(renderer);
+
+    render_entity_grid_highlights(renderer);
     create_renderQ_entities();
     render_renderQ(renderer);
     // overlay minimap on top-right
