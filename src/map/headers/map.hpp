@@ -10,17 +10,28 @@
 enum Map {
     SPRITESHEET,
     PLAYER,
+
+    // todo: player enum
     // player girl
+    player_girl_walk_down,
+    player_girl_walk_down_left,
+    player_girl_walk_down_right,
+    player_girl_walk_right,
+    player_girl_walk_left,
+    player_girl_walk_up,
+    player_girl_walk_up_left,
+    player_girl_walk_up_right,
 
-    player_girl_animation_down,
-    player_girl_animation_down_left,
-    player_girl_animation_down_right,
-    player_girl_animation_right,
-    player_girl_animation_left,
-    player_girl_animation_up,
-    player_girl_animation_up_left,
-    player_girl_animation_up_right,
+    player_girl_run_down,
+    player_girl_run_down_left,
+    player_girl_run_down_right,
+    player_girl_run_right,
+    player_girl_run_left,
+    player_girl_run_up,
+    player_girl_run_up_left,
+    player_girl_run_up_right,
 
+    // todo: spider enum.
     SPIDER,
     // spider run
     spider_run45_animation,
