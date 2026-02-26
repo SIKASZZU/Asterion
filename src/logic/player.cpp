@@ -159,7 +159,6 @@ namespace PlayerNS {
         auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
         if (it != randomOffsetsGround.end()) {
             groundOffsetAmount = it->second;
-            std::cout << it->second << " amount of moment" << '\n';
         }
         else {
             groundOffsetAmount = 0;

@@ -136,11 +136,13 @@ void animation_player(SDL_Renderer* renderer) {
     if (SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed)) {
         lastUpdate = SDL_GetTicks();
         animCol = (animCol + 1) % 4;
-        if (walking) {
+        std::cout << "x" << animRow << ' ' << animCol << '\n';
+
+        if (walking == 1) {
             if (animCol == 0) {
                 animRow += 1;
             }
-            if (animRow == 2 && animCol == 1) {
+            if (animRow >= 2 && animCol >= 1) {
                 animRow = 0;
                 animCol = 0;
             }
@@ -148,7 +150,7 @@ void animation_player(SDL_Renderer* renderer) {
             if (animCol == 0) {
                 animRow += 1;
             }
-            if (animRow == 1 && animCol == 1) {
+            if (animRow >= 1 && animCol >= 1) {
                 animRow = 0;
                 animCol = 0;
             }
