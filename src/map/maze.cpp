@@ -41,7 +41,7 @@ namespace Maze {
 
         if (type == "one") {
             directions = directions_sec_1;
-            allowed_number = Map::SECTOR_1_WALL_VAL;
+            allowed_number = testMapEnvironment ? Map::GROUND_CUBE : Map::SECTOR_1_WALL_VAL;
             pathway = Map::SECTOR_1_PATHWAY;
         }
         else if (type == "two") {
@@ -72,16 +72,39 @@ namespace Maze {
             if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
                 map[ny][nx] = pathway;
                 map[start_row + (dir.second != 0 ? dir.second / 2 : dir.second)][start_col + (dir.first != 0 ? dir.first / 2 : dir.first)] = pathway;
-                // For sector type "one" widen the carved corridor by also
-                // opening the orthogonal neighbours of the midpoint. This
-                // makes pathways visibly wider without changing the step size.
                 if (type == "one") {
                     int mid_r = start_row + (dir.second != 0 ? dir.second / 2 : dir.second);
                     int mid_c = start_col + (dir.first != 0 ? dir.first / 2 : dir.first);
-                    // if (mid_r - 1 >= 0) map[mid_r - 1][mid_c] = Map::INGROWN_WALL_CUBE;
-                    if (mid_r + 1 < mapSize && map[mid_r + 1][mid_c] != Map::INGROWN_WALL_CUBE) map[mid_r + 1][mid_c] = pathway;
-                    // if (mid_c - 1 >= 0) map[mid_r][mid_c - 1] = Map::INGROWN_WALL_CUBE;
-                    if (mid_c + 1 < mapSize && map[mid_r][mid_c + 1] != Map::INGROWN_WALL_CUBE) map[mid_r][mid_c + 1] = pathway;
+                    // random deletions throughout maze "one" to make it not traditional labyrinth but more some random mess.
+                    // if (mid_r + 1 < mapSize && map[mid_r + 1][mid_c] != Map::INGROWN_WALL_CUBE) map[mid_r + 1][mid_c] = pathway;
+                    // if (mid_c + 1 < mapSize && map[mid_r][mid_c + 1] != Map::INGROWN_WALL_CUBE) map[mid_r][mid_c + 1] = pathway;
+                    
+                    if (rand() % 50 == 0) {
+                        int len = 20; // tile long straight
+                        bool x = false; bool y = false;
+                        rand() % 2 == 0 ? x = true : y = true;
+
+                        while (len > 0) {
+                            if ((ny + len) >= mapSize) {
+                                break;
+                            }
+                            if ((nx + len) >= mapSize) {
+                                break;
+                            }
+
+                            try
+                            {
+                                if (y) map[ny + len][nx] = pathway;
+                                else if (x) map[ny][nx + len] = pathway;
+                                len--;
+                            }
+                            catch (const std::exception& e)
+                            {
+                                std::cerr << e.what() << '\n';
+                            }
+
+                        }
+                    }
                 }
                 if (type == "two" || type == "three") {
                     map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;

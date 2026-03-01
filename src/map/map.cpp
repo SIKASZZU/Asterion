@@ -33,6 +33,8 @@ void generate_map() {
     // if (mapLoaded) { return; }
     if (testMapEnvironment) {
         generate_test_map(map);
+        Maze::generate_maze(map, 30, 30, "one");
+        generate_glade(map);
         return;
     }
     else {
@@ -241,6 +243,32 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
             if (y == 0 || x == 0 || y == (mapSize - 1) || x == (mapSize - 1)) {
                 map[y][x] = Map::INGROWN_WALL_CUBE;
             }
+
+            // 4 sector walls (diagonals)
+            if (distance <= mazeOuterRadius
+                && dx > gladeRadius + 1
+                && dy > gladeRadius + 1) {
+                if (y == x || x == mapSize - y - 1) diagonalGrids.push_back(std::make_pair(y, x));
+            }
+        }
+    }
+    std::cout << "Possible void spawnpoints in set: " << voidSpawnpoints.size() << '\n';
+    generate_glade(map);
+    generate_voids(voidSpawnpoints, maxVoids);
+}
+
+void generate_glade(int map[mapSize][mapSize]) {
+
+    int halfMapSize = mapSize / 2;
+
+    /* Glade */
+    int gladeRadius = (mapSize / 10) >= 10 ? 10 : mapSize / 10;  // if mapSize / 10 > 10; hard cap to 10.
+
+    for (int y = 0; y < mapSize; y++) {
+        for (int x = 0; x < mapSize; x++) {
+            int dx = static_cast<int>(std::abs(x - halfMapSize));
+            int dy = static_cast<int>(std::abs(y - halfMapSize));
+
             // Glade (square) and Ingrown walls around glade
             int thicknessGladeWall = 1;
             if (dx <= gladeRadius + thicknessGladeWall
@@ -263,16 +291,14 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
                     map[y][x] = Map::GROUND_CUBE;
                 }
             }
-            if (distance <= mazeOuterRadius
-                && dx > gladeRadius + 1
-                && dy > gladeRadius + 1) {
-                if (y == x || x == mapSize - y - 1) diagonalGrids.push_back(std::make_pair(y, x));
-            }
         }
     }
-    std::cout << "Possible void spawnpoints in set: " << voidSpawnpoints.size() << '\n';
-    generate_voids(voidSpawnpoints, maxVoids);
 }
+
+void generate_double_walls() {
+
+}
+
 
 void generate_test_map(int map[mapSize][mapSize]) {
 

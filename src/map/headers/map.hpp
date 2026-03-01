@@ -125,6 +125,7 @@ const int vinesDecoMod = 4;
 const int groundMod = 12;
 
 void generate_map();
+void generate_glade(int map[mapSize][mapSize]);
 void generate_decorations();
 void print_map(int map[mapSize][mapSize]);
 void generate_random_map(int map[mapSize][mapSize], int min_val, int max_val);
