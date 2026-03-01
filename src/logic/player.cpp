@@ -14,7 +14,8 @@ bool groundOffsetAdded = false;
 int groundOffsetAmount = 0;
 
 PlayerData player = {
-    movementSpeed: PlayerNS::defaultMovementSpeed,
+    state: PlayerState::Idle,
+    movementSpeed : PlayerNS::defaultMovementSpeed,
     size : (tileSize),
     grid : (spawnpointGrid.x, spawnpointGrid.y),
     x : static_cast<float>(spawnpointGrid.x * tileSize),
@@ -29,6 +30,8 @@ PlayerData player = {
     lastMovementKey : 'a',
     cartesianMovement : false,
 };
+
+
 
 namespace PlayerNS {
     bool collisionX = false;
@@ -151,9 +154,25 @@ namespace PlayerNS {
         }
     }
 
+    void setState() {
+        if (player.movementSpeed == 0) {
+            player.state = PlayerState::Idle;
+            return;
+        }
+        if (player.shifting) {
+            player.state = PlayerState::Walk;
+            return;
+        }
+        else if (!player.shifting){
+            player.state = PlayerState::Run;
+            return;
+        }
+    }
+
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
         calculate_new_coordinates(deltaTime);
         if (player.movementSpeed != 0) update_rect();
+        setState();
 
         // apply ground offset to player.y
         auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));

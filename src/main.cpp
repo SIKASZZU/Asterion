@@ -20,6 +20,7 @@
 #include "memory.hpp"
 #include "daylight.hpp"
 #include <thread>
+#include "map.hpp"
 #include <iostream>
 
 int main(int argc, char* argv[]) {
@@ -51,6 +52,8 @@ int main(int argc, char* argv[]) {
     load_textures(renderer);
 
     srand(static_cast<unsigned int>(std::time(NULL)));
+
+    testMapEnvironment = true;
     generate_map();
     map[165][160] = Map::WALL_CUBE;
 

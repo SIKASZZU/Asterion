@@ -5,7 +5,16 @@
 #include "map.hpp"
 #include "offset.hpp"
 
+enum class PlayerState {
+    Idle,
+    Walk,
+    Run
+};
+
+// PlayerState state;
+
 struct PlayerData {
+    PlayerState state;
     float movementSpeed;
     float size;
     SDL_Point grid;

@@ -36,6 +36,7 @@ int renderRadius = 20; // perfectse rad -> (win_width / 2) / tileSize //*NOTE wi
 
 /* map.hpp args */
 float tileSize = 100.0f;
+bool testMapEnvironment = true;
 
 /* pathfinding */
 int pathEndX = -1;
@@ -191,6 +192,12 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
     case SDLK_Q: {
         std::cout << "Forced exit " << std::endl;
         isRunning = false;
+        break;
+    }
+    case SDLK_0: {
+        testMapEnvironment = !testMapEnvironment;
+        std::cout << "testMapEnvironment is: " << testMapEnvironment << '\n';
+        generate_map();
         break;
     }
     default:

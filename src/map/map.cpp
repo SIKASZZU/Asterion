@@ -31,10 +31,7 @@ void generate_map() {
     /* Vali ise, mis mappi tahad geneda. */
     // generate_random_map(map, 2, 2);          // random ring, circular map
     // if (mapLoaded) { return; }
-
-    bool test = true;
-
-    if (test) {
+    if (testMapEnvironment) {
         generate_test_map(map);
         return;
     }

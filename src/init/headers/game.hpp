@@ -38,6 +38,7 @@ extern int renderRadius;
 
 /* map.hpp args */
 extern float tileSize;
+extern bool testMapEnvironment;
 
 /* pathfinding */
 extern int pathEndX;

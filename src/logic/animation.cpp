@@ -117,36 +117,33 @@ void animation_player(SDL_Renderer* renderer) {
         // spriteEnum = Map::player_girl_animation_down;
     }
 
-    bool walking = player.shifting ? 1 : 0;
 
+    if (currentDir.x == 1 && currentDir.y == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_down_right : Map::player_girl_run_down_right; }
+    else if (currentDir.x == -1 && currentDir.y == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_up_left : Map::player_girl_run_up_left; }
+    else if (currentDir.y == 1 && currentDir.x == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_down_left : Map::player_girl_run_down_left; }
+    else if (currentDir.y == -1 && currentDir.x == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_up_right : Map::player_girl_run_up_right; }
 
-    if (currentDir.x == 1 && currentDir.y == 0) { spriteEnum = walking ? Map::player_girl_walk_down_right : Map::player_girl_run_down_right; }
-    else if (currentDir.x == -1 && currentDir.y == 0) { spriteEnum = walking ? Map::player_girl_walk_up_left : Map::player_girl_run_up_left; }
-    else if (currentDir.y == 1 && currentDir.x == 0) { spriteEnum = walking ? Map::player_girl_walk_down_left : Map::player_girl_run_down_left; }
-    else if (currentDir.y == -1 && currentDir.x == 0) { spriteEnum = walking ? Map::player_girl_walk_up_right : Map::player_girl_run_up_right; }
+    else if (currentDir.y == -1 && currentDir.x == 1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_right : Map::player_girl_run_right; }
+    else if (currentDir.x == 1 && currentDir.y == 1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_down : Map::player_girl_run_down; }
+    else if (currentDir.y == 1 && currentDir.x == -1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_left : Map::player_girl_run_left; }
+    else if (currentDir.x == -1 && currentDir.y == -1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_up : Map::player_girl_run_up; }
 
-    else if (currentDir.y == -1 && currentDir.x == 1) { spriteEnum = walking ? Map::player_girl_walk_right : Map::player_girl_run_right; }
-    else if (currentDir.x == 1 && currentDir.y == 1) { spriteEnum = walking ? Map::player_girl_walk_down : Map::player_girl_run_down; }
-    else if (currentDir.y == 1 && currentDir.x == -1) { spriteEnum = walking ? Map::player_girl_walk_left : Map::player_girl_run_left; }
-    else if (currentDir.x == -1 && currentDir.y == -1) { spriteEnum = walking ? Map::player_girl_walk_up : Map::player_girl_run_up; }
-
-    float animationSpeed;
-
-    animationSpeed = 200;
+    // animationSpeed = 200;
+    float animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 0.8f;
     if (SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed)) {
         lastUpdate = SDL_GetTicks();
         animCol = (animCol + 1) % 4;
         std::cout << "x" << animRow << ' ' << animCol << '\n';
 
-        if (walking == 1) {
+        if (player.state == PlayerState::Walk) {
             if (animCol == 0) {
                 animRow += 1;
             }
             if (animRow >= 2 && animCol >= 1) {
-                animRow = 0;
-                animCol = 0;
+                animRow = 0; animCol = 0;
             }
-        } else {
+        }
+        else {
             if (animCol == 0) {
                 animRow += 1;
             }
