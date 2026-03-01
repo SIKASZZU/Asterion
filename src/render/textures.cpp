@@ -39,10 +39,19 @@ std::unordered_map<std::pair<int, int>, int, pair_hash> gridVines;
 
 void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::SPRITESHEET] = ImageTexture(renderer, Assets::Images::spritesheet);
-    textureMap[Map::PLAYER] = ImageTexture(renderer, Assets::Player::player_animation);
+    // textureMap[Map::PLAYER] = ImageTexture(renderer, Assets::Player::player_animation);
     // textureMap[Map::SPIDER] = ImageTexture(renderer, Assets::Images::spider_animation);
 
     // player-girl walk 8-way
+    textureMap[Map::player_girl_idle_down] = ImageTexture(renderer, Assets::Player::player_girl_idle_down);
+    textureMap[Map::player_girl_idle_down_left] = ImageTexture(renderer, Assets::Player::player_girl_idle_down_left);
+    textureMap[Map::player_girl_idle_down_right] = ImageTexture(renderer, Assets::Player::player_girl_idle_down_right);
+    textureMap[Map::player_girl_idle_right] = ImageTexture(renderer, Assets::Player::player_girl_idle_right);
+    textureMap[Map::player_girl_idle_left] = ImageTexture(renderer, Assets::Player::player_girl_idle_left);
+    textureMap[Map::player_girl_idle_up] = ImageTexture(renderer, Assets::Player::player_girl_idle_up);
+    textureMap[Map::player_girl_idle_up_left] = ImageTexture(renderer, Assets::Player::player_girl_idle_up_left);
+    textureMap[Map::player_girl_idle_up_right] = ImageTexture(renderer, Assets::Player::player_girl_idle_up_right);
+
     textureMap[Map::player_girl_walk_down] = ImageTexture(renderer, Assets::Player::player_girl_walk_down);
     textureMap[Map::player_girl_walk_down_left] = ImageTexture(renderer, Assets::Player::player_girl_walk_down_left);
     textureMap[Map::player_girl_walk_down_right] = ImageTexture(renderer, Assets::Player::player_girl_walk_down_right);

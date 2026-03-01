@@ -5,6 +5,8 @@
 #include <cstring>
 #include <vector>
 
+// --------------- Enemy --------------- //
+
 Uint32 AnimEnemy::lastUpdate;
 int AnimEnemy::animRow = 1;
 int AnimEnemy::animCol = 1;
@@ -90,78 +92,109 @@ void Enemy::animation(SDL_Renderer* renderer, const char* activity) {
     textureMap[spriteEnum].render(renderer, &srcRect, &dstRect);
 }
 
-Uint32 AnimPlayer::lastUpdate = SDL_GetTicks();
-int AnimPlayer::animCol = 0;
-int AnimPlayer::animRow = 0;
+// --------------- Player --------------- //
 
-SDL_FPoint AnimPlayer::lastDirection = { 0.f, 0.f };
+Uint32 AnimPlayer::lastUpdate = SDL_GetTicks();
+int AnimPlayer::currentAnimCol = 0;
+int AnimPlayer::currentAnimRow = 0;
+int AnimPlayer::previousState = 0;
+
+SDL_FPoint AnimPlayer::lastDirectionVector = { 0.f, 0.f };
 int AnimPlayer::spriteEnum = 0;
-SDL_FRect AnimPlayer::lastSrcRect = { 0,0,0,0 };
+
+int animation_player_idle(SDL_FPoint movementVector) {
+    if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_idle_down_right; }
+    else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_idle_up_left; }
+    else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_idle_down_left; }
+    else if (movementVector.y == -1 && movementVector.x == 0) { return Map::player_girl_idle_up_right; }
+
+    else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_idle_right; }
+    else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_idle_down; }
+    else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_idle_left; }
+    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_idle_up; }
+    return Map::player_girl_idle_down;
+}
+
+int animation_player_walk(SDL_FPoint movementVector) {
+    if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_walk_down_right; }
+    else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_walk_up_left; }
+    else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_walk_down_left; }
+    else if (movementVector.y == -1 && movementVector.x == 0) { return Map::player_girl_walk_up_right; }
+
+    else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_walk_right; }
+    else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_walk_down; }
+    else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_walk_left; }
+    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_walk_up; }
+    return Map::player_girl_walk_down;
+}
+
+int animation_player_run(SDL_FPoint movementVector) {
+    if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_run_down_right; }
+    else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_run_up_left; }
+    else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_run_down_left; }
+    else if (movementVector.y == -1 && movementVector.x == 0) { return Map::player_girl_run_up_right; }
+
+    else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_run_right; }
+    else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_run_down; }
+    else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_run_left; }
+    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_run_up; }
+    return Map::player_girl_run_down;
+}
 
 void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
-    bool isMoving = (player.movementSpeed != 0);
-    if (!isMoving) {
-        textureMap[spriteEnum].render(renderer, &lastSrcRect, &player.rect);
-        return;
+
+    if ((player.movementVector.x != 0 || player.movementVector.y != 0)) {
+        lastDirectionVector = player.movementVector;
     }
 
-
-    SDL_FPoint currentDir = isMoving ? player.movementVector : lastDirection;
-    if (isMoving) {
-        lastDirection = player.movementVector;
+    int maxRows, lastRowCols;
+    switch (player.state) {
+    case PlayerState::Walk: {
+        spriteEnum = animation_player_walk(player.movementVector);
+        maxRows = 2; lastRowCols = 1;
+        break;
+    }
+    case PlayerState::Run: {
+        spriteEnum = animation_player_run(player.movementVector);
+        maxRows = 1; lastRowCols = 1;
+        break;
+    }
+    default: {
+        spriteEnum = animation_player_idle(lastDirectionVector);
+        maxRows = 3; lastRowCols = 1;
+        break;
+    }
     }
 
-    if (lastDirection.x == 0 && lastDirection.y == 0) {
-        // isMoving seems broken, not reset fast enough?
-        // spriteEnum = Map::player_girl_animation_down;
-    }
-
-
-    if (currentDir.x == 1 && currentDir.y == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_down_right : Map::player_girl_run_down_right; }
-    else if (currentDir.x == -1 && currentDir.y == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_up_left : Map::player_girl_run_up_left; }
-    else if (currentDir.y == 1 && currentDir.x == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_down_left : Map::player_girl_run_down_left; }
-    else if (currentDir.y == -1 && currentDir.x == 0) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_up_right : Map::player_girl_run_up_right; }
-
-    else if (currentDir.y == -1 && currentDir.x == 1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_right : Map::player_girl_run_right; }
-    else if (currentDir.x == 1 && currentDir.y == 1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_down : Map::player_girl_run_down; }
-    else if (currentDir.y == 1 && currentDir.x == -1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_left : Map::player_girl_run_left; }
-    else if (currentDir.x == -1 && currentDir.y == -1) { spriteEnum = (player.state == PlayerState::Walk) ? Map::player_girl_walk_up : Map::player_girl_run_up; }
-
-    // animationSpeed = 200;
     float animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 0.8f;
-    if (SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed)) {
-        lastUpdate = SDL_GetTicks();
-        animCol = (animCol + 1) % 4;
-        std::cout << "x" << animRow << ' ' << animCol << '\n';
+    bool updateFrame = SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed);
+    if (previousState != static_cast<std::underlying_type_t<PlayerState>>(player.state)) {
+        updateFrame = true;
+    }
+    previousState = static_cast<std::underlying_type_t<PlayerState>>(player.state);
 
-        if (player.state == PlayerState::Walk) {
-            if (animCol == 0) {
-                animRow += 1;
-            }
-            if (animRow >= 2 && animCol >= 1) {
-                animRow = 0; animCol = 0;
-            }
+    if (updateFrame) {
+        lastUpdate = SDL_GetTicks();
+        currentAnimCol = (currentAnimCol + 1) % 4;
+
+        // std::cout << "x" << currentAnimRow << ' ' << currentAnimCol << '\n';
+
+        if (currentAnimCol == 0) {
+            currentAnimRow += 1;
         }
-        else {
-            if (animCol == 0) {
-                animRow += 1;
-            }
-            if (animRow >= 1 && animCol >= 1) {
-                animRow = 0;
-                animCol = 0;
-            }
+        if (currentAnimRow >= maxRows && currentAnimCol >= lastRowCols) {
+            currentAnimRow = 0; currentAnimCol = 0;
         }
+
     }
 
     SDL_FRect srcRect = {
-        static_cast<float>(animCol * spriteWidth),
-        static_cast<float>(animRow * spriteHeight),
+        static_cast<float>(currentAnimCol * spriteWidth),
+        static_cast<float>(currentAnimRow * spriteHeight),
         static_cast<float>(spriteWidth),
         static_cast<float>(spriteHeight)
     };
-
-    lastSrcRect = srcRect;
 
     textureMap[spriteEnum].render(renderer, &srcRect, &player.rect);
 }

@@ -44,6 +44,16 @@ namespace Assets {
         static const char* player_animation = "resources/player_sprite_sheet.png";
 
         // player-girl
+        // ready idle
+        static const char* player_girl_idle_down = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Down.png";
+        static const char* player_girl_idle_down_left = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_DownLeft.png";
+        static const char* player_girl_idle_down_right = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_DownRight.png";
+        static const char* player_girl_idle_right = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Right.png";
+        static const char* player_girl_idle_left = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Left.png";
+        static const char* player_girl_idle_up = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Up.png";
+        static const char* player_girl_idle_up_left = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_UpLeft.png";
+        static const char* player_girl_idle_up_right = "resources/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_UpRight.png";
+
         // walk
         static const char* player_girl_walk_down = "resources/player/GirlSampleWalk/GirlSample_Walk_Down.png";
         static const char* player_girl_walk_down_left = "resources/player/GirlSampleWalk/GirlSample_Walk_DownLeft.png";
@@ -67,7 +77,6 @@ namespace Assets {
 
     namespace Spider {
         // run
-
         static const char* spider_run45_animation = "resources/spider/Run/Run_Body_045.png";
         static const char* spider_run135_animation = "resources/spider/Run/Run_Body_135.png";
         static const char* spider_run225_animation = "resources/spider/Run/Run_Body_225.png";
@@ -77,7 +86,6 @@ namespace Assets {
         static const char* spider_run270_animation = "resources/spider/Run/Run_Body_270.png";
         static const char* spider_run0_animation = "resources/spider/Run/Run_Body_0.png";
         // walk
-
         static const char* spider_walk45_animation = "resources/spider/Walk/Walk_Body_045.png";
         static const char* spider_walk135_animation = "resources/spider/Walk/Walk_Body_135.png";
         static const char* spider_walk225_animation = "resources/spider/Walk/Walk_Body_225.png";
@@ -87,7 +95,6 @@ namespace Assets {
         static const char* spider_walk270_animation = "resources/spider/Walk/Walk_Body_270.png";
         static const char* spider_walk0_animation = "resources/spider/Walk/Walk_Body_0.png";
         // idle
-
         static const char* spider_idle45_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_045.png";
         static const char* spider_idle135_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_135.png";
         static const char* spider_idle225_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_225.png";
@@ -96,6 +103,5 @@ namespace Assets {
         static const char* spider_idle180_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_180.png";
         static const char* spider_idle270_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_270.png";
         static const char* spider_idle0_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_0.png";
-
     }
 }

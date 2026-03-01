@@ -90,8 +90,9 @@ namespace PlayerNS {
         SDL_FRect templatePlayerRect = {
             player.x,
             player.y,
-            player.rect.w,
-            player.rect.h
+            // see / 2 on h2kk, sest player size on nyyd full tileSize. COllision arvutamise m6ttes, tegin /2
+            player.rect.w / 2,
+            player.rect.h / 2
         };
 
         SDL_FRect rectX = templatePlayerRect;
@@ -112,12 +113,22 @@ namespace PlayerNS {
     }
 
     void update_rect() {
+        
+        // apply ground offset to player.y
+        auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
+        if (it != randomOffsetsGround.end()) {
+            groundOffsetAmount = it->second / 2;
+        }
+        else {
+            groundOffsetAmount = 0;
+        }
+
         float x = player.x + player.size / 4.0f;
         float y = player.y - player.size / 4.0f;
         SDL_FPoint coords = to_isometric_coordinate(x, y);
         player.rect = {
             coords.x - (player.size / 4) + offset.x,
-            coords.y - (player.size / 4) + offset.y,
+            coords.y - (player.size / 4) + offset.y - groundOffsetAmount,
             player.size,
             player.size
         };
@@ -167,21 +178,14 @@ namespace PlayerNS {
             player.state = PlayerState::Run;
             return;
         }
+        player.state = PlayerState::Idle;
+        return;
     }
 
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
         calculate_new_coordinates(deltaTime);
         if (player.movementSpeed != 0) update_rect();
         setState();
-
-        // apply ground offset to player.y
-        auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
-        if (it != randomOffsetsGround.end()) {
-            groundOffsetAmount = it->second;
-        }
-        else {
-            groundOffsetAmount = 0;
-        }
 
         // Apply ground offset only for rendering
 

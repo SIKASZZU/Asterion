@@ -9,10 +9,19 @@
 /// Some things do not have textures associated with them.
 enum Map {
     SPRITESHEET,
+    SPIDER,
     PLAYER,
 
-    // todo: player enum
     // player girl
+    player_girl_idle_down,
+    player_girl_idle_down_left,
+    player_girl_idle_down_right,
+    player_girl_idle_right,
+    player_girl_idle_left,
+    player_girl_idle_up,
+    player_girl_idle_up_left,
+    player_girl_idle_up_right,
+
     player_girl_walk_down,
     player_girl_walk_down_left,
     player_girl_walk_down_right,
@@ -31,8 +40,6 @@ enum Map {
     player_girl_run_up_left,
     player_girl_run_up_right,
 
-    // todo: spider enum.
-    SPIDER,
     // spider run
     spider_run45_animation,
     spider_run135_animation,
