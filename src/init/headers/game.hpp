@@ -68,4 +68,4 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
 void react_to_keyboard_state(const bool* state);
 void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize);
-
+void game_debug(SDL_Renderer* renderer);

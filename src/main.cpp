@@ -121,10 +121,9 @@ int main(int argc, char* argv[]) {
             frameCount = 0;
             fpsTimer = fpsNow;
         }
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
-        SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
         DaylightNS::debug(renderer);
+        game_debug(renderer);
+        PlayerNS::debug(renderer);
         SDL_RenderPresent(renderer);
         frameCount++;
     }

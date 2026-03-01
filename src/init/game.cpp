@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 
+#include "memory.hpp"
 #include "offset.hpp"
 #include "game.hpp"
 #include "map.hpp"
@@ -84,15 +85,6 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
 
         std::cout << "----- SYSTEM -----" << "\n";
         std::cout << "offset: " << offset.x << " " << offset.y << "\n";
-
-        std::cout << "----- PLAYER -----" << "\n";
-        std::cout << "x, y:          " << player.x << ", " << player.y << "\n";
-        std::cout << "grid:     (x,y)" << static_cast<int>(player.x / tileSize) << ' ' << static_cast<int>(player.y / tileSize) << '\n';
-        std::cout << "value:    (y,x)" << map[static_cast<int>(player.y / tileSize)][static_cast<int>(player.x / tileSize)] << '\n';
-        std::cout << "mVec:     (x,y)" << player.movementVector.x << " " << player.movementVector.y << "\n";
-        std::cout << "lastKey:       " << player.lastMovementKey << "\n";
-        std::cout << "movementSpeed: " << player.movementSpeed << "\n";
-        std::cout << "state:         " << static_cast<std::underlying_type_t<PlayerState>>(player.state) << "\n";
 
         std::cout << "----- ENEMY -----" << "\n";
         for (const auto& e : enemyArray) {
@@ -241,3 +233,8 @@ void react_to_keyboard_state(const bool* state) {
     PlayerNS::create_movementVector(state);
 }
 
+void game_debug(SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
+    SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
+    SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+}

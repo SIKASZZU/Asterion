@@ -51,6 +51,7 @@ namespace DaylightNS {
     }
 
     void debug(SDL_Renderer* renderer) {
+        SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
         // Day/night debug status
         int hours = static_cast<int>(timeOfDay * 24.0f) % 24;
         int minutes = static_cast<int>((timeOfDay * 24.0f - hours) * 60.0f);

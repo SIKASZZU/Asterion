@@ -41,7 +41,7 @@ namespace PlayerNS {
     float defaultMovementSpeedShifting = tileSize * tilesPerSecond / 4;
 
     void create_movementVector(const bool* state) {
-        SDL_FPoint dir = { 0, 0 };
+        SDL_Point dir = { 0, 0 };
         // player.movementVector = { 0, 0 }
 
         if (state[SDL_SCANCODE_W]) {
@@ -113,7 +113,7 @@ namespace PlayerNS {
     }
 
     void update_rect() {
-        
+
         // apply ground offset to player.y
         auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
         if (it != randomOffsetsGround.end()) {
@@ -135,7 +135,7 @@ namespace PlayerNS {
     }
 
     void calculate_new_coordinates(float deltaTime) {
-        SDL_FPoint dir = player.movementVector;
+        SDL_Point dir = player.movementVector;
         SDL_FPoint velocity = { 0.0f, 0.0f };
 
         collisionX = false;
@@ -174,7 +174,7 @@ namespace PlayerNS {
             player.state = PlayerState::Walk;
             return;
         }
-        else if (!player.shifting){
+        else if (!player.shifting) {
             player.state = PlayerState::Run;
             return;
         }
@@ -189,5 +189,38 @@ namespace PlayerNS {
 
         // Apply ground offset only for rendering
 
+    }
+
+    void debug(SDL_Renderer* renderer) {
+        int x = 50;
+        int y = 210;
+        int lineHeight = 20; // Adjust based on your font size
+        SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
+
+        auto drawLine = [&](const std::string& text) {
+            SDL_RenderDebugText(renderer, x, y, text.c_str());
+            y += lineHeight;
+            };
+
+        // Header
+        drawLine("----- PLAYER -----");
+
+        // Position and Grid
+        drawLine("(x,y)coord: " + std::to_string(player.x) + ", " + std::to_string(player.y));
+
+        drawLine("(x,y)grid:  " + std::to_string(player.grid.x) + " " + std::to_string(player.grid.y));
+
+        // Map Value
+        drawLine("value:      " + std::to_string(map[player.grid.y][player.grid.x]));
+
+        // Vectors and Input
+        drawLine("(x,y)mVec:  " + std::to_string(player.movementVector.x) + " " + std::to_string(player.movementVector.y));
+        drawLine("lastKey:    " + std::string(1, player.lastMovementKey)); // Assumes lastMovementKey is a char
+
+        // Speed and State
+        drawLine("movementSpeed:  " + std::to_string(player.movementSpeed));
+
+        auto stateVal = static_cast<std::underlying_type_t<PlayerState>>(player.state);
+        drawLine("state:          " + std::to_string(stateVal));
     }
 }

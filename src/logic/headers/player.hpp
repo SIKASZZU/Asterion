@@ -23,7 +23,7 @@ struct PlayerData {
     SDL_FRect rect;
     bool collision;
     std::unordered_set<int> collision_array;
-    SDL_FPoint movementVector;  // Will be used to calculate where player will end up at, direction alike.
+    SDL_Point movementVector;  // Will be used to calculate where player will end up at, direction alike.
     SDL_FPoint velocity;
     int animationSpeed;
     bool shifting;  // has player pressed shift?
@@ -40,4 +40,5 @@ namespace PlayerNS {
     extern bool collisionY;
     void update(int map[mapSize][mapSize], struct Offset& offset, SDL_Renderer* renderer, float deltaTime);
     void create_movementVector(const bool* state);
+    void debug(SDL_Renderer* renderer);
 }

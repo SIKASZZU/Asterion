@@ -72,6 +72,7 @@ void generate_map() {
     mod_map_sector_3();
     seperate_4_sections();
     generate_decorations();
+    generate_glade(map);
     // print_map(map);
     // save_map_locally(map);
     std::cout << "Map generation done.\n";
@@ -253,7 +254,6 @@ void generate_maze_runner_map(int map[mapSize][mapSize]) {
         }
     }
     std::cout << "Possible void spawnpoints in set: " << voidSpawnpoints.size() << '\n';
-    generate_glade(map);
     generate_voids(voidSpawnpoints, maxVoids);
 }
 

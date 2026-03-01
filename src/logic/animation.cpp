@@ -99,10 +99,10 @@ int AnimPlayer::currentAnimCol = 0;
 int AnimPlayer::currentAnimRow = 0;
 int AnimPlayer::previousState = 0;
 
-SDL_FPoint AnimPlayer::lastDirectionVector = { 0.f, 0.f };
+SDL_Point AnimPlayer::lastDirectionVector = { 0, 0 };
 int AnimPlayer::spriteEnum = 0;
 
-int animation_player_idle(SDL_FPoint movementVector) {
+int animation_player_idle(SDL_Point movementVector) {
     if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_idle_down_right; }
     else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_idle_up_left; }
     else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_idle_down_left; }
@@ -115,7 +115,7 @@ int animation_player_idle(SDL_FPoint movementVector) {
     return Map::player_girl_idle_down;
 }
 
-int animation_player_walk(SDL_FPoint movementVector) {
+int animation_player_walk(SDL_Point movementVector) {
     if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_walk_down_right; }
     else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_walk_up_left; }
     else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_walk_down_left; }
@@ -128,7 +128,7 @@ int animation_player_walk(SDL_FPoint movementVector) {
     return Map::player_girl_walk_down;
 }
 
-int animation_player_run(SDL_FPoint movementVector) {
+int animation_player_run(SDL_Point movementVector) {
     if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_run_down_right; }
     else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_run_up_left; }
     else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_run_down_left; }

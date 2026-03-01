@@ -24,7 +24,7 @@ namespace AnimPlayer {
     extern int previousState;
     extern int spriteEnum;
 
-    extern SDL_FPoint lastDirectionVector;
+    extern SDL_Point lastDirectionVector;
 }
 
 void animation_player(SDL_Renderer* renderer);
