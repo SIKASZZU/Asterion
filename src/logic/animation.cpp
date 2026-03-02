@@ -144,8 +144,11 @@ int animation_player_run(SDL_Point movementVector) {
 void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
 
+    // detect et player enam ei liigu
     if ((player.movementVector.x != 0 || player.movementVector.y != 0)) {
         lastDirectionVector = player.movementVector;
+    } else if (player.state != PlayerState::Idle) {
+        player.movementVector = lastDirectionVector;
     }
 
     int maxRows, lastRowCols;
@@ -167,8 +170,7 @@ void animation_player(SDL_Renderer* renderer) {
     }
     }
 
-    float animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 0.8f;
-    bool updateFrame = SDL_GetTicks() - lastUpdate > static_cast<Uint32>(animationSpeed);
+    bool updateFrame = SDL_GetTicks() - lastUpdate > static_cast<Uint32>(player.animationSpeed);
     if (previousState != static_cast<std::underlying_type_t<PlayerState>>(player.state)) {
         updateFrame = true;
     }

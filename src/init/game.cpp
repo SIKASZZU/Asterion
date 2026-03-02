@@ -193,6 +193,18 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         generate_map();
         break;
     }
+    case SDLK_K: {
+        if (player.shifting) {
+            PlayerNS::defaultMovementSpeed -= 15;
+            std::cout << "PlayerNS::defaultMovementSpeed: " << PlayerNS::defaultMovementSpeed << '\n';
+            break;
+        }
+        PlayerNS::defaultMovementSpeed += 15;
+        std::cout << "PlayerNS::defaultMovementSpeed: " << PlayerNS::defaultMovementSpeed << '\n';
+        break;
+    }
+    case SDLK_L: {
+    }
     default:
         break;
     }

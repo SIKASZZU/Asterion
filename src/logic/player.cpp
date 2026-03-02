@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 #include "render.hpp"
 #include "map.hpp"
@@ -12,6 +13,12 @@
 const SDL_Point spawnpointGrid = { x: mapSize / 2, y : mapSize / 2 };
 bool groundOffsetAdded = false;
 int groundOffsetAmount = 0;
+
+// Suggested constants (adjust to taste)
+const float MAX_SPEED = 400.0f;
+const float MAX_WALK_SPEED = MAX_SPEED / 4;
+const float ACCEL = 2000.0f;    // High value for snappy feel
+const float FRICTION = 1500.0f; // How fast player slides to a stop
 
 PlayerData player = {
     state: PlayerState::Idle,
@@ -34,11 +41,9 @@ PlayerData player = {
 
 
 namespace PlayerNS {
-    bool collisionX = false;
-    bool collisionY = false;
-    float tilesPerSecond = 10.0f;
+    float tilesPerSecond = 2.0f;
     float defaultMovementSpeed = tileSize * tilesPerSecond;
-    float defaultMovementSpeedShifting = tileSize * tilesPerSecond / 4;
+    float defaultMovementSpeedShifting = defaultMovementSpeed / 4;
 
     void create_movementVector(const bool* state) {
         SDL_Point dir = { 0, 0 };
@@ -86,7 +91,7 @@ namespace PlayerNS {
         player.movementVector = { dir.x, dir.y };
     }
 
-    SDL_FPoint validate_velocity(SDL_FPoint& newVelocity) {
+    SDL_FPoint validate_velocity(SDL_FPoint newVelocity) {
         SDL_FRect templatePlayerRect = {
             player.x,
             player.y,
@@ -97,16 +102,14 @@ namespace PlayerNS {
 
         SDL_FRect rectX = templatePlayerRect;
         rectX.x += newVelocity.x;
-        collisionX = check_collision(map, player, rectX);
 
         SDL_FRect rectY = templatePlayerRect;
         rectY.y += newVelocity.y;
-        collisionY = check_collision(map, player, rectY);
 
-        if (collisionX) {
+        if (check_collision(map, player, rectX)) {
             newVelocity.x = 0;
         }
-        if (collisionY) {
+        if (check_collision(map, player, rectY)) {
             newVelocity.y = 0;
         }
         return newVelocity;
@@ -136,40 +139,51 @@ namespace PlayerNS {
 
     void calculate_new_coordinates(float deltaTime) {
         SDL_Point dir = player.movementVector;
-        SDL_FPoint velocity = { 0.0f, 0.0f };
 
-        collisionX = false;
-        collisionY = false;
+        float currentMaxSpeed = player.shifting ? MAX_WALK_SPEED : MAX_SPEED;
 
-        if (dir.x != 0 || dir.y != 0) {
-            // if player presses movement key then reset the sliding with giga hard speed
-            if (abs(dir.x) == 1 || abs(dir.y) == 1) {
-                if (!player.shifting) { player.movementSpeed = defaultMovementSpeed; }
-                else { player.movementSpeed = defaultMovementSpeedShifting; }
-            }
-            velocity.x = dir.x * player.movementSpeed * deltaTime;
-            velocity.y = dir.y * player.movementSpeed * deltaTime;
+        // velocity calculations
 
-            velocity = validate_velocity(velocity);
-
-            player.x += velocity.x;
-            player.y += velocity.y;
-            player.grid = {
-                static_cast<int>((player.x + player.size / 2.0f) / tileSize),
-                static_cast<int>((player.y + player.size / 2.0f) / tileSize)
-            };
+        if (dir.x != 0) {
+            player.velocity.x += dir.x * ACCEL * deltaTime;
         }
         else {
-            // muidu player seisab aga variable ytleb, et speed == 20
-            player.movementSpeed = 0;
+            if (player.velocity.x > 0)
+                player.velocity.x = std::max(0.0f, player.velocity.x - FRICTION * deltaTime);
+            else if (player.velocity.x < 0)
+                player.velocity.x = std::min(0.0f, player.velocity.x + FRICTION * deltaTime);
         }
+
+        if (dir.y != 0) {
+            player.velocity.y += dir.y * ACCEL * deltaTime;
+        }
+        else {
+            if (player.velocity.y > 0)
+                player.velocity.y = std::max(0.0f, player.velocity.y - FRICTION * deltaTime);
+            else if (player.velocity.y < 0)
+                player.velocity.y = std::min(0.0f, player.velocity.y + FRICTION * deltaTime);
+        }
+
+        player.velocity.x = std::clamp(player.velocity.x, -currentMaxSpeed, currentMaxSpeed);
+        player.velocity.y = std::clamp(player.velocity.y, -currentMaxSpeed, currentMaxSpeed);
+
+        SDL_FPoint finalVel = validate_velocity({ player.velocity.x * deltaTime, player.velocity.y * deltaTime });
+
+        player.x += finalVel.x;
+        player.y += finalVel.y;
+
+        player.grid = {
+            static_cast<int>((player.x + player.size / 2.0f) / tileSize),
+            static_cast<int>((player.y + player.size / 2.0f) / tileSize)
+        };
     }
 
-    void setState() {
-        if (player.movementSpeed == 0) {
+    void set_state() {
+        if (player.velocity.x == 0 && player.velocity.y == 0) {
             player.state = PlayerState::Idle;
             return;
         }
+        // if (abs(player.velocity.x) < MAX_WALK_SPEED && abs(player.velocity.y) < MAX_WALK_SPEED) {
         if (player.shifting) {
             player.state = PlayerState::Walk;
             return;
@@ -182,19 +196,21 @@ namespace PlayerNS {
         return;
     }
 
+    void update_animation_speed() {
+        player.animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 1.6f;
+    }
+
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
         calculate_new_coordinates(deltaTime);
         if (player.movementSpeed != 0) update_rect();
-        setState();
-
-        // Apply ground offset only for rendering
-
+        set_state();
+        update_animation_speed();
     }
 
     void debug(SDL_Renderer* renderer) {
         int x = 50;
         int y = 210;
-        int lineHeight = 20; // Adjust based on your font size
+        int lineHeight = 20;
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
 
         auto drawLine = [&](const std::string& text) {
@@ -214,6 +230,7 @@ namespace PlayerNS {
         drawLine("value:      " + std::to_string(map[player.grid.y][player.grid.x]));
 
         // Vectors and Input
+        drawLine("(x,y)vel:   " + std::to_string(player.velocity.x) + " " + std::to_string(player.velocity.y));
         drawLine("(x,y)mVec:  " + std::to_string(player.movementVector.x) + " " + std::to_string(player.movementVector.y));
         drawLine("lastKey:    " + std::string(1, player.lastMovementKey)); // Assumes lastMovementKey is a char
 
@@ -221,6 +238,7 @@ namespace PlayerNS {
         drawLine("movementSpeed:  " + std::to_string(player.movementSpeed));
 
         auto stateVal = static_cast<std::underlying_type_t<PlayerState>>(player.state);
-        drawLine("state:          " + std::to_string(stateVal));
+        drawLine("state:    " + std::to_string(stateVal));
+        drawLine("shifting: " + std::to_string(player.shifting) + " animationSpeed: " + std::to_string(player.animationSpeed));
     }
 }
