@@ -112,7 +112,7 @@ int animation_player_idle(SDL_Point movementVector) {
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_idle_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_idle_left; }
     else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_idle_up; }
-    return Map::player_girl_idle_down;
+    return Map::ERROR_CUBE;
 }
 
 int animation_player_walk(SDL_Point movementVector) {
@@ -125,7 +125,7 @@ int animation_player_walk(SDL_Point movementVector) {
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_walk_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_walk_left; }
     else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_walk_up; }
-    return Map::player_girl_walk_down;
+    return Map::ERROR_CUBE;
 }
 
 int animation_player_run(SDL_Point movementVector) {
@@ -138,7 +138,7 @@ int animation_player_run(SDL_Point movementVector) {
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_run_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_run_left; }
     else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_run_up; }
-    return Map::player_girl_run_down;
+    return Map::ERROR_CUBE;
 }
 
 void animation_player(SDL_Renderer* renderer) {
@@ -147,7 +147,8 @@ void animation_player(SDL_Renderer* renderer) {
     // detect et player enam ei liigu
     if ((player.movementVector.x != 0 || player.movementVector.y != 0)) {
         lastDirectionVector = player.movementVector;
-    } else if (player.state != PlayerState::Idle) {
+    }
+    else if (player.state != PlayerState::Idle) {
         player.movementVector = lastDirectionVector;
     }
 
@@ -163,9 +164,13 @@ void animation_player(SDL_Renderer* renderer) {
         maxRows = 1; lastRowCols = 1;
         break;
     }
-    default: {
+    case PlayerState::Idle: {
         spriteEnum = animation_player_idle(lastDirectionVector);
         maxRows = 3; lastRowCols = 1;
+        break;
+    }
+    default: {
+        std::cout << "Player state is unknown. No spriteEnum for player" << '\n';
         break;
     }
     }

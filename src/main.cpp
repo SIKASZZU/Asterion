@@ -55,7 +55,6 @@ int main(int argc, char* argv[]) {
 
     testMapEnvironment = true;
     generate_map();
-    map[165][160] = Map::WALL_CUBE;
 
     TerrainClass terrain;
     Vision::create_darkness(renderer);
@@ -64,7 +63,6 @@ int main(int argc, char* argv[]) {
     const bool* state = SDL_GetKeyboardState(nullptr);
 
     Enemy enemy(162, 162);
-    map[162][162] = Map::ERROR_CUBE;
     enemy.set_speed(320);
     enemy.set_size(tileSize * 0.75f);
 
@@ -106,7 +104,6 @@ int main(int argc, char* argv[]) {
             terrain.calculate_miscellaneous(fixedDeltaTime);
         }
         DaylightNS::update_daynight(elapsedMS);
-
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         terrain.render(renderer);

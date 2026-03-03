@@ -167,6 +167,8 @@ namespace PlayerNS {
         player.velocity.x = std::clamp(player.velocity.x, -currentMaxSpeed, currentMaxSpeed);
         player.velocity.y = std::clamp(player.velocity.y, -currentMaxSpeed, currentMaxSpeed);
 
+        player.movementSpeed = (sqrt(pow(player.velocity.x, 2) + pow(player.velocity.y, 2)));
+
         SDL_FPoint finalVel = validate_velocity({ player.velocity.x * deltaTime, player.velocity.y * deltaTime });
 
         player.x += finalVel.x;
@@ -197,12 +199,14 @@ namespace PlayerNS {
     }
 
     void update_animation_speed() {
-        player.animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 1.6f;
+        player.animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 1.2f;
     }
 
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
         calculate_new_coordinates(deltaTime);
-        if (player.movementSpeed != 0) update_rect();
+        if (!isEmpty(player.velocity)) update_rect();
+        // here, jsut because first time rect is empty and do it for sakes
+        else if (isEmpty(player.rect)) update_rect();
         set_state();
         update_animation_speed();
     }

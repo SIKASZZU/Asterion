@@ -12,13 +12,12 @@ namespace AnimEnemy {
     extern int spriteEnum;
 }
 
+
 namespace AnimPlayer {
     const int spriteWidth = 256;
     const int spriteHeight = 256;
     extern Uint32 lastUpdate;  // Used for animation timing
 
-    extern int lastFrame;
-    extern int lastRow;
     extern int currentAnimCol;
     extern int currentAnimRow;
     extern int previousState;

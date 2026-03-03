@@ -48,10 +48,6 @@ int pathStartY = -1;
 /* keys */
 bool v_pressed = false;
 
-bool isEmpty(const SDL_FRect& r) {
-    return r.w <= 0 || r.h <= 0;
-}
-
 // Recalculate world-space positions after `tileSize` changes.
 // oldTileSize: previous tile size; newTileSize: current `tileSize` global
 void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
@@ -90,7 +86,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         for (const auto& e : enemyArray) {
             SDL_FPoint pos = e.get_position();
             std::cout << "x, y: " << pos.x << " " << pos.y << "\n";
-            std::cout << "activity: " << e.activity << "\n";
+            // std::cout << "activity: " << static_cast<int>(e.activity) << "\n";
             std::cout << "grid: " << e.grid.x << " " << e.grid.y << "\n";
             SDL_Point mV = e.get_movementVector();
             std::cout << "mVec: " << mV.x << " " << mV.y << std::endl;
@@ -194,13 +190,7 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_K: {
-        if (player.shifting) {
-            PlayerNS::defaultMovementSpeed -= 15;
-            std::cout << "PlayerNS::defaultMovementSpeed: " << PlayerNS::defaultMovementSpeed << '\n';
-            break;
-        }
-        PlayerNS::defaultMovementSpeed += 15;
-        std::cout << "PlayerNS::defaultMovementSpeed: " << PlayerNS::defaultMovementSpeed << '\n';
+
         break;
     }
     case SDLK_L: {
@@ -224,7 +214,7 @@ void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
     switch (key)
     {
     case SDLK_LSHIFT: {
-        player.movementSpeed = PlayerNS::defaultMovementSpeed;
+        // player.movementSpeed = PlayerNS::defaultMovementSpeed;
         player.shifting = false;
         break;
     }

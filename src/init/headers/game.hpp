@@ -62,8 +62,15 @@ inline uint32_t make_grid_key(int row, int col) {
     return (static_cast<uint32_t>(row) << 16) | static_cast<uint32_t>(col);
 }
 
+static bool isEmpty(const SDL_FRect& r) {
+    return r.w <= 0 || r.h <= 0;
+}
+
+static bool isEmpty(const SDL_FPoint& p) {
+    return p.x == 0 && p.y == 0;
+}
+
 /* functions */
-bool isEmpty(const SDL_FRect& r);
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]);
 void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
 void react_to_keyboard_state(const bool* state);
