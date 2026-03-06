@@ -5,13 +5,26 @@
 #include "offset.hpp"
 #include "game.hpp"
 
+enum class EnemyState {
+    Idle,
+    Walk,
+    Run,
+    Dead,
+};
+
+enum class EnemyActivity {
+    Roam,
+    Chase,
+    Idle,
+};
+
 class Enemy {
 public:
     Enemy(int gridX, int gridY);
     SDL_Point grid;
     SDL_Point lastDirection;
 
-    void animation(SDL_Renderer* renderer, const char* activity);
+    void animation(SDL_Renderer* renderer);
     void update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT);
     void render(SDL_Renderer* renderer);
     void set_speed(float s) { speed = s; };
@@ -23,6 +36,8 @@ public:
     int get_size() const { return size; };
     // chasing, roaming
     const char* activity;
+    EnemyState state;
+    EnemyActivity activityS;
 
 private:
     float size;
