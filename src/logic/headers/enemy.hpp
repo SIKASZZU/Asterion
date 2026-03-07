@@ -34,10 +34,8 @@ public:
     SDL_Point get_movementVector() const { return movementVector; };
     SDL_FRect get_rect() const { return rect; };
     int get_size() const { return size; };
-    // chasing, roaming
-    const char* activity;
     EnemyState state;
-    EnemyActivity activityS;
+    EnemyActivity activity;
 
 private:
     float size;
@@ -52,11 +50,13 @@ private:
     SDL_Point targetGrid;
     float roamingDistanceTraveled;
     bool hasRoamingTarget;
+    float standingTimer;
 
+    void choose_state();
+    void choose_activity(SDL_Point tG);
     void move_along_path(float dT);
     void compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid);
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
-    void draw_path(const std::vector<std::pair<int, int>>& path);
     void choose_target(const int map[mapSize][mapSize], SDL_Point playerGrid);
     bool has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, SDL_Point to);
 };

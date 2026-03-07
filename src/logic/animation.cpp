@@ -18,8 +18,8 @@ void Enemy::animation(SDL_Renderer* renderer) {
     SDL_FRect srcRect;
     int animationSpeed = 48;
 
-    switch (activityS) {
-    case EnemyActivity::Chase: {
+    switch (state) {
+    case EnemyState::Run: {
         lastDirection = movementVector;
         if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_run135_animation; }
         if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_run315_animation; }
@@ -32,7 +32,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_run0_animation; }
         break;
     }
-    case EnemyActivity::Roam: {
+    case EnemyState::Walk: {
         lastDirection = movementVector;
         animationSpeed = 48;
         if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_walk135_animation; }
@@ -46,7 +46,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_walk0_animation; }
         break;
     }
-    case EnemyActivity::Idle: {
+    case EnemyState::Idle: {
         animationSpeed = 72;
         if (lastDirection.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_idle135_animation; }
         if (lastDirection.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_idle315_animation; }
@@ -57,7 +57,6 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (lastDirection.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_idle180_animation; }
         if (lastDirection.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_idle270_animation; }
         if (lastDirection.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_idle0_animation; }
-
         break;
     }
     }
@@ -77,7 +76,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
     if (SDL_GetTicks() - lastUpdate > animationSpeed) {
         lastUpdate = SDL_GetTicks();
         animCol++;
-        if (activityS == EnemyActivity::Idle) {
+        if (activity == EnemyActivity::Idle) {
             if (animCol >= 6) {
                 animRow++;
                 animCol = 0;
