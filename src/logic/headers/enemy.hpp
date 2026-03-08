@@ -48,6 +48,7 @@ private:
     float speed;
     std::vector<std::pair<int, int>> path;
     SDL_FPoint pos;
+    SDL_FPoint velocity;
     SDL_FRect rect;
     SDL_Color color;
     size_t currentPathIndex;
@@ -60,6 +61,7 @@ private:
 
     void choose_state();
     void choose_activity(SDL_Point tG);
+    void calculate_velocity(float dT);
     void move_along_path(float dT);
     void compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid);
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);

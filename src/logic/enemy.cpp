@@ -21,6 +21,10 @@
 #include <algorithm>
 #include <random>
 
+// Enemy movement inertia constants
+const float ENEMY_ACCEL = 1500.0f;
+const float ENEMY_FRICTION = 1200.0f;
+
 bool stopAllEnemies = false;
 std::vector<Enemy> enemyArray = {};
 const int maxRoamingDistance = 5 * tileSize;
@@ -33,6 +37,7 @@ Enemy::Enemy(int gx, int gy)
     currentPathIndex(0),
     movementVector{ 0, 0 },
     speed(player.movementSpeed),
+    velocity{ 0.0f, 0.0f },
     pos{
         static_cast<float>(grid.x * tileSize + (size / 2)),
         static_cast<float>(grid.y * tileSize + (size / 2))
@@ -143,18 +148,22 @@ void Enemy::move_along_path(float dT) {
     float dist = std::hypot(dx, dy);
 
     if (dist <= 4.0f) {
+        // Snap precisely to the grid cell
         pos = nextPos;
         grid = { nextX, nextY };
         currentPathIndex++;
         return;
     }
 
-    float moveAmount = speed * dT;
-    pos.x += (dx / dist) * moveAmount;
-    pos.y += (dy / dist) * moveAmount;
+    // Move by already-calculated velocity (with delta time)
+    SDL_FPoint moveBy = { velocity.x * dT, velocity.y * dT };
+    pos.x += moveBy.x;
+    pos.y += moveBy.y;
+
     if (activity == EnemyActivity::Roam) {
-        roamingDistanceTraveled += moveAmount;
+        roamingDistanceTraveled += std::hypot(moveBy.x, moveBy.y);
     }
+
     movementVector = { nextGrid.first - grid.x, nextGrid.second - grid.y };
 }
 
@@ -188,6 +197,105 @@ bool Enemy::has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, S
         }
     }
     return true;
+}
+
+// Calculate velocity (inertia) towards the next path node.
+void Enemy::calculate_velocity(float dT) {
+    if (path.empty() || currentPathIndex >= path.size()) {
+        // No target -> apply friction to slow down
+        if (velocity.x > 0)
+            velocity.x = std::max(0.0f, velocity.x - ENEMY_FRICTION * dT);
+        else if (velocity.x < 0)
+            velocity.x = std::min(0.0f, velocity.x + ENEMY_FRICTION * dT);
+
+        if (velocity.y > 0)
+            velocity.y = std::max(0.0f, velocity.y - ENEMY_FRICTION * dT);
+        else if (velocity.y < 0)
+            velocity.y = std::min(0.0f, velocity.y + ENEMY_FRICTION * dT);
+
+        return;
+    }
+
+    const auto& nextGrid = path[currentPathIndex];
+    int nextX = nextGrid.first;
+    int nextY = nextGrid.second;
+    SDL_FPoint nextPos{
+        static_cast<float>((nextX * tileSize + tileSize / 2)),
+        static_cast<float>((nextY * tileSize + tileSize / 2))
+    };
+    float dx = nextPos.x - pos.x;
+    float dy = nextPos.y - pos.y;
+    float dist = std::hypot(dx, dy);
+
+    float dirX = 0.0f;
+    float dirY = 0.0f;
+    if (dist > 1e-6f) {
+        dirX = dx / dist;
+        dirY = dy / dist;
+    }
+
+    // Apply acceleration towards movement direction
+    velocity.x += dirX * ENEMY_ACCEL * dT;
+    velocity.y += dirY * ENEMY_ACCEL * dT;
+
+    // Apply friction when there is effectively no intended movement along an axis
+    if (std::abs(dirX) < 1e-6f) {
+        if (velocity.x > 0)
+            velocity.x = std::max(0.0f, velocity.x - ENEMY_FRICTION * dT);
+        else if (velocity.x < 0)
+            velocity.x = std::min(0.0f, velocity.x + ENEMY_FRICTION * dT);
+    }
+    if (std::abs(dirY) < 1e-6f) {
+        if (velocity.y > 0)
+            velocity.y = std::max(0.0f, velocity.y - ENEMY_FRICTION * dT);
+        else if (velocity.y < 0)
+            velocity.y = std::min(0.0f, velocity.y + ENEMY_FRICTION * dT);
+    }
+
+    // If we're very close to the current path node, prepare velocity towards
+    // the following node (if any) so movement doesn't snap or jitter per-tile.
+    if (!path.empty() && currentPathIndex < path.size()) {
+        const auto& nextGrid = path[currentPathIndex];
+        SDL_FPoint nextPos{
+            static_cast<float>((nextGrid.first * tileSize + tileSize / 2)),
+            static_cast<float>((nextGrid.second * tileSize + tileSize / 2))
+        };
+        float ndx_toNode = nextPos.x - pos.x;
+        float ndy_toNode = nextPos.y - pos.y;
+        float nodeDist = std::hypot(ndx_toNode, ndy_toNode);
+
+        if (nodeDist < 4.0f) {
+            // If there's a following node, accelerate towards it
+            if (currentPathIndex + 1 < path.size()) {
+                const auto& futureGrid = path[currentPathIndex + 1];
+                SDL_FPoint futurePos{
+                    static_cast<float>((futureGrid.first * tileSize + tileSize / 2)),
+                    static_cast<float>((futureGrid.second * tileSize + tileSize / 2))
+                };
+                float fdx = futurePos.x - pos.x;
+                float fdy = futurePos.y - pos.y;
+                float fdist = std::hypot(fdx, fdy);
+                if (fdist > 1e-6f) {
+                    float desiredX = fdx / fdist;
+                    float desiredY = fdy / fdist;
+                    float curSpeed = std::hypot(velocity.x, velocity.y);
+                    float accelStep = ENEMY_ACCEL * dT;
+                    float targetSpeed = std::min(curSpeed + accelStep, speed);
+                    if (targetSpeed < 1e-3f) targetSpeed = std::min(accelStep, speed * 0.25f);
+                    velocity.x = desiredX * targetSpeed;
+                    velocity.y = desiredY * targetSpeed;
+                }
+            }
+            // else: at the final node, leave velocity for friction to handle
+        }
+    }
+
+    // Clamp velocity magnitude to speed
+    float vmag = std::hypot(velocity.x, velocity.y);
+    if (vmag > speed && vmag > 0.0f) {
+        velocity.x = (velocity.x / vmag) * speed;
+        velocity.y = (velocity.y / vmag) * speed;
+    }
 }
 
 void Enemy::choose_target(const int map[mapSize][mapSize], SDL_Point tG) {
@@ -264,6 +372,8 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
         return;
     }
 
+    // calculate velocity (inertia) first, then move using that velocity
+    calculate_velocity(dT);
     move_along_path(dT);
 
     // 3. ROAMING SUCCESSION
@@ -290,4 +400,5 @@ void Enemy::debug(SDL_Renderer* renderer) {
     drawLine("activity: " + std::string(activityToString(activity)));
     drawLine("state:    " + std::string(stateToString(state)));
     drawLine("mVector:  " + std::to_string(movementVector.x) + " " + std::to_string(movementVector.y));
+    drawLine("velocity:  " + std::to_string(Enemy::velocity.x) + " " + std::to_string(velocity.y));
 }
