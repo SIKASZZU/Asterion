@@ -23,7 +23,8 @@
 
 bool stopAllEnemies = false;
 std::vector<Enemy> enemyArray = {};
-int idleCounter = 0;
+const int maxRoamingDistance = 5 * tileSize;
+bool debugText = false;
 
 Enemy::Enemy(int gx, int gy)
     : grid{ gx, gy },
@@ -33,11 +34,10 @@ Enemy::Enemy(int gx, int gy)
     movementVector{ 0, 0 },
     speed(player.movementSpeed),
     pos{
-        static_cast<float>(grid.x * tileSize),
-        static_cast<float>(grid.y * tileSize)
+        static_cast<float>(grid.x * tileSize + (size / 2)),
+        static_cast<float>(grid.y * tileSize + (size / 2))
     },
     rect{ pos.x, pos.y, size, size },
-    // chasing, roaming
     lastKnownPlayerGrid{ gx, gy },
     targetGrid{ gx, gy },
     roamingDistanceTraveled(0.0f),
@@ -50,58 +50,73 @@ Enemy::Enemy(int gx, int gy)
 
 void Enemy::choose_state() {
     switch (activity) {
-        case EnemyActivity::Idle: {
-            state = EnemyState::Idle;
-            break;
-        }
-        case EnemyActivity::Roam: {
-            state = EnemyState::Walk;
-            break;
-        }
-        case EnemyActivity::Chase: {
-            state = EnemyState::Run;
-            break;
-        }
+    case EnemyActivity::Idle: {
+        state = EnemyState::Idle;
+        break;
+    }
+    case EnemyActivity::Roam: {
+        state = EnemyState::Walk;
+        break;
+    }
+    case EnemyActivity::Chase: {
+        state = EnemyState::Run;
+        break;
+    }
     }
 }
-void Enemy::choose_activity(SDL_Point tG) {
-    float dist = std::hypot(pos.x - tG.x * tileSize, pos.y - tG.y * tileSize);
-    if (dist <= tileSize * 2) {
-        lastKnownPlayerGrid = tG;
-        targetGrid = tG;
-        hasRoamingTarget = false;
 
-        // attack range
-        int attackRange = tileSize;
-        if (dist <= attackRange) {
+const char* stateToString(EnemyState s) {
+    switch (s) {
+    case (EnemyState::Idle): return "Idle"; break;
+    case (EnemyState::Walk): return "Walk"; break;
+    case (EnemyState::Run): return "Run"; break;
+    case (EnemyState::Dead): return "Dead"; break;
+    default: return "Unconfigured state"; break;
+    }
+}
+
+void Enemy::choose_activity(SDL_Point tG) {
+    // Calculate distance in pixels for precision
+    float dist = std::hypot(pos.x - (tG.x * tileSize + tileSize / 2),
+        pos.y - (tG.y * tileSize + tileSize / 2));
+
+    // Detection Range: 5 tiles
+    if (dist <= tileSize * 5) {
+        // if (has_line_of_sight(map, Enemy::grid, tG)) {
+        lastKnownPlayerGrid = tG;
+        activity = EnemyActivity::Chase;
+        targetGrid = lastKnownPlayerGrid;
+        // }
+    }
+
+    // Attack Range Check
+    if (activity == EnemyActivity::Chase) {
+        if (dist <= tileSize * 0.8f) { // Within 80% of a tile
             activity = EnemyActivity::Idle;
         }
-        else {
-            activity = EnemyActivity::Chase;
-        }
-
-    }
-    else if (activity == EnemyActivity::Chase) {
-        // Continue to last known if no line of sight or not in range
-        if (has_line_of_sight(map, grid, tG)) {
-            targetGrid = tG;
-        }
-        else {
-            targetGrid = lastKnownPlayerGrid;
-            if (grid.x == lastKnownPlayerGrid.x && grid.y == lastKnownPlayerGrid.y) {
-                activity = EnemyActivity::Roam;
-                hasRoamingTarget = false;
-            }
-        }
     }
 
+    // If we were chasing but reached the last known location and player is gone
+    if (activity == EnemyActivity::Chase && grid.x == lastKnownPlayerGrid.x && grid.y == lastKnownPlayerGrid.y) {
+        activity = EnemyActivity::Roam;
+        hasRoamingTarget = false;
+    }
+}
+
+const char* activityToString(EnemyActivity a) {
+    switch (a) {
+    case (EnemyActivity::Idle): return "Idle"; break;
+    case (EnemyActivity::Roam): return "Roam"; break;
+    case (EnemyActivity::Chase): return "Chase"; break;
+    default: return "Unconfigured activity"; break;
+    }
 }
 
 void Enemy::compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid) {
     path.clear();
     currentPathIndex = 0;
-    Maze::find_path(map, grid.x, grid.y, targetGrid.x, targetGrid.y);
-    path = Maze::path;
+    bool pathFound = Maze::find_path(map, grid.x, grid.y, targetGrid.x, targetGrid.y);
+    if (pathFound) path = Maze::path;
 }
 
 bool Enemy::is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid) {
@@ -110,7 +125,9 @@ bool Enemy::is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid) {
 }
 
 void Enemy::move_along_path(float dT) {
-    if (path.empty()) {
+    if (path.empty() || currentPathIndex >= path.size()) {
+        // Reset movement if no path
+        movementVector = { 0, 0 };
         return;
     }
 
@@ -125,31 +142,6 @@ void Enemy::move_along_path(float dT) {
     float dy = nextPos.y - pos.y;
     float dist = std::hypot(dx, dy);
 
-    movementVector = { nextX - grid.x, nextY - grid.y };
-    {
-        // use the grid delta so discrete movement aligns with path steps
-        float nx = static_cast<float>(nextX - grid.x);
-        float ny = static_cast<float>(nextY - grid.y);
-        int qx = 0, qy = 0;
-        if (nx != 0.0f || ny != 0.0f) {
-            // invert ny for screen/grid orientation so "up" becomes negative y in mapping
-            float angle = std::atan2(-ny, nx); // angle in radians
-            // map angle to closest 45° sector (8-way)
-            int sector = static_cast<int>(std::round(angle / (PI / 4.0f)));
-            sector = (sector % 8 + 8) % 8; // normalize to [0,7]
-            switch (sector) {
-            case 0: qx = 1; qy = 0; break; // E
-            case 1: qx = 1; qy = -1; break; // NE
-            case 2: qx = 0; qy = -1; break; // N
-            case 3: qx = -1; qy = -1; break; // NW
-            case 4: qx = -1; qy = 0; break; // W
-            case 5: qx = -1; qy = 1; break; // SW
-            case 6: qx = 0; qy = 1; break; // S
-            case 7: qx = 1; qy = 1; break; // SE
-            }
-        }
-        movementVector = { qx, qy };
-    }
     if (dist <= 4.0f) {
         pos = nextPos;
         grid = { nextX, nextY };
@@ -163,6 +155,7 @@ void Enemy::move_along_path(float dT) {
     if (activity == EnemyActivity::Roam) {
         roamingDistanceTraveled += moveAmount;
     }
+    movementVector = { nextGrid.first - grid.x, nextGrid.second - grid.y };
 }
 
 // Simple line of sight check using Bresenham's line algorithm
@@ -198,31 +191,30 @@ bool Enemy::has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, S
 }
 
 void Enemy::choose_target(const int map[mapSize][mapSize], SDL_Point tG) {
-    choose_activity(tG);
-    choose_state();
-    // Roaming
-    // before new direction roam, stand in the new spot for a sec
-    bool roamComplete = roamingDistanceTraveled >= 2 * tileSize;
-    // if (roamComplete && activity != EnemyActivity::Idle) {
-    //     idleCounter++;
 
-    //     if (idleCounter >= 100) {
-    //         std::cout << "hasRoamingTarget: " << hasRoamingTarget << '\n';
-    //         idleCounter = 0;
-    //         activity = EnemyActivity::Idle;
-    //     }
-    // }
+    // IF CHASING: The target is already set to the player/last known by choose_activity.
+    // We just need to exit so we don't overwrite it with roaming logic.
+    if (activity == EnemyActivity::Chase) {
+        hasRoamingTarget = false;
+        return;
+    }
 
-    // choose new direction to roam to
-    if (!hasRoamingTarget || roamComplete) {
-        // Choose new direction
+    // ROAMING LOGIC
+    bool roamComplete = roamingDistanceTraveled >= maxRoamingDistance;
+    if (roamComplete) {
+        hasRoamingTarget = false;
+    }
+
+    if (!hasRoamingTarget) {
         std::vector<SDL_Point> directions = {
             {0, 1}, {1, 0}, {0, -1}, {-1, 0},
             {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
         };
+
         std::shuffle(directions.begin(), directions.end(), std::mt19937{ std::random_device{}() });
         for (auto& dir : directions) {
             SDL_Point newGrid = { grid.x + dir.x, grid.y + dir.y };
+
             if (is_walkable(map, newGrid)) {
                 targetGrid = newGrid;
                 hasRoamingTarget = true;
@@ -230,43 +222,72 @@ void Enemy::choose_target(const int map[mapSize][mapSize], SDL_Point tG) {
                 standingTimer = 0.0f;
                 return;
             }
+
         }
-        // If no direction works, stay
         targetGrid = grid;
         hasRoamingTarget = true;
-        roamingDistanceTraveled = 0.0f;
-        standingTimer = 0.0f;
     }
 }
 
 void Enemy::render(SDL_Renderer* renderer) {
     SDL_FPoint isoPos = to_isometric_coordinate(pos.x, pos.y);
     rect = { isoPos.x + offset.x, isoPos.y + offset.y - (tileSize / 4), size, size };
+
     animation(renderer);
+
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderRect(renderer, &rect);
+
+    if (debugText) {
+        debug(renderer);
+    }
 }
 
-void Enemy::update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT) {
-
-    choose_target(map, targetGrid);
+void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float dT) {
     if (stopAllEnemies) return;
 
-    // When roaming and just chose a new direction, stand still for 1-2 seconds
+    choose_activity(playerGrid);
+    choose_state();
+    choose_target(map, playerGrid);
+
+    bool needsNewPath = path.empty() || currentPathIndex >= path.size();
+    if (needsNewPath) {
+        if (is_walkable(map, targetGrid)) {
+            compute_path(map, targetGrid);
+        }
+    }
+
+    // 2. IDLE TIMER (Only for roaming)
     if (activity == EnemyActivity::Roam && standingTimer < 1.5f) {
         standingTimer += dT;
         state = EnemyState::Idle;
         return;
     }
 
-    if (path.empty() || currentPathIndex >= path.size() || (path.back().first != this->targetGrid.x || path.back().second != this->targetGrid.y)) {
-        if (!is_walkable(map, this->targetGrid)) { std::cout << "not walkable" << '\n'; return; };
-        compute_path(map, this->targetGrid);
-    }
     move_along_path(dT);
-    // If roaming and reached target but haven't traveled enough, choose new
-    if ((activity == EnemyActivity::Roam) && grid.x == this->targetGrid.x && grid.y == this->targetGrid.y && roamingDistanceTraveled < 2 * tileSize) {
-        hasRoamingTarget = false;
-        choose_target(map, targetGrid);
+
+    // 3. ROAMING SUCCESSION
+    if (activity == EnemyActivity::Roam && grid.x == targetGrid.x && grid.y == targetGrid.y) {
+        if (roamingDistanceTraveled < maxRoamingDistance) {
+            hasRoamingTarget = false; // Trigger new roam target next frame
+        }
     }
+}
+
+void Enemy::debug(SDL_Renderer* renderer) {
+    // using namespace Enemy;
+    // SDL_SetRenderDrawColor(renderer, 44, 62, 80, 255);
+    SDL_SetRenderDrawColor(renderer, 241, 196, 15, 255);
+
+    int lineHeight = 10;
+    int x = Enemy::rect.x + Enemy::rect.w; int y = Enemy::rect.y;
+
+    auto drawLine = [&](const std::string& text) {
+        SDL_RenderDebugText(renderer, x, y, text.c_str());
+        y += lineHeight;
+        };
+
+    drawLine("activity: " + std::string(activityToString(activity)));
+    drawLine("state:    " + std::string(stateToString(state)));
+    drawLine("mVector:  " + std::to_string(movementVector.x) + " " + std::to_string(movementVector.y));
 }

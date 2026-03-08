@@ -34,7 +34,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
     }
     case EnemyState::Walk: {
         lastDirection = movementVector;
-        animationSpeed = 48;
+        animationSpeed = 24;
         if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_walk135_animation; }
         if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_walk315_animation; }
         if (movementVector.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_walk225_animation; }
@@ -47,7 +47,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
         break;
     }
     case EnemyState::Idle: {
-        animationSpeed = 72;
+        animationSpeed = 60;
         if (lastDirection.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_idle135_animation; }
         if (lastDirection.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_idle315_animation; }
         if (lastDirection.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_idle225_animation; }
@@ -73,7 +73,8 @@ void Enemy::animation(SDL_Renderer* renderer) {
     // center inside the original rect (e.g. tile)
     dstRect.x = rect.x + (rect.w - dstRect.w) * 0.5f;
     dstRect.y = rect.y + (rect.h - dstRect.h) * 0.5f;
-    if (SDL_GetTicks() - lastUpdate > animationSpeed) {
+    bool updateFrame = (SDL_GetTicks() - lastUpdate > animationSpeed);
+    if (updateFrame) {
         lastUpdate = SDL_GetTicks();
         animCol++;
         if (activity == EnemyActivity::Idle) {

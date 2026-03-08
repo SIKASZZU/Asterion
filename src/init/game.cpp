@@ -90,6 +90,8 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
             std::cout << "grid: " << e.grid.x << " " << e.grid.y << "\n";
             SDL_Point mV = e.get_movementVector();
             std::cout << "mVec: " << mV.x << " " << mV.y << std::endl;
+            std::cout << "activtiy: " << activityToString(e.activity) << '\n';
+            std::cout << "state: " << stateToString(e.state) << '\n';
         }
         break;
     }
@@ -190,7 +192,8 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_K: {
-
+        debugText = !debugText;
+        std::cout << "debugText is: " << debugText << '\n';
         break;
     }
     case SDLK_L: {

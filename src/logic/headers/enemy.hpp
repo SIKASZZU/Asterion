@@ -12,11 +12,17 @@ enum class EnemyState {
     Dead,
 };
 
+
 enum class EnemyActivity {
+    Idle,
     Roam,
     Chase,
-    Idle,
 };
+
+const char* stateToString(EnemyState s);
+const char* activityToString(EnemyActivity a);
+
+extern bool debugText;
 
 class Enemy {
 public:
@@ -59,6 +65,7 @@ private:
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
     void choose_target(const int map[mapSize][mapSize], SDL_Point playerGrid);
     bool has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, SDL_Point to);
+    void debug(SDL_Renderer* renderer);
 };
 
 extern bool stopAllEnemies;
