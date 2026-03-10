@@ -390,15 +390,18 @@ void Enemy::debug(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 241, 196, 15, 255);
 
     int lineHeight = 10;
-    int x = Enemy::rect.x + Enemy::rect.w; int y = Enemy::rect.y;
+    int x = Enemy::rect.x / 1.5; int y = Enemy::rect.y / 1.5;
 
     auto drawLine = [&](const std::string& text) {
         SDL_RenderDebugText(renderer, x, y, text.c_str());
         y += lineHeight;
         };
+    SDL_SetRenderScale(renderer, 1.5f, 1.5f);
 
     drawLine("activity: " + std::string(activityToString(activity)));
     drawLine("state:    " + std::string(stateToString(state)));
     drawLine("mVector:  " + std::to_string(movementVector.x) + " " + std::to_string(movementVector.y));
     drawLine("velocity:  " + std::to_string(Enemy::velocity.x) + " " + std::to_string(velocity.y));
+
+    SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 }

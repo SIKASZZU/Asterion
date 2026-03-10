@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
         return SDL_APP_FAILURE;
     }
     // 1280	720, https://en.wikipedia.org/wiki/16:9_aspect_ratio
-    if (!SDL_CreateWindowAndRenderer("Asterion", 1024, 768, 0, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Asterion", 1600, 960, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -83,6 +83,9 @@ int main(int argc, char* argv[]) {
                 react_to_keyboard_up(event.key.key, player);
         }
         react_to_keyboard_state(state);
+        if (SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
+            SDL_GetWindowSize(window, &screenWidth, &screenHeight);
+        }
 
         // tickrate specific
         while (tickLag >= TICK_DELAY_MS) {
