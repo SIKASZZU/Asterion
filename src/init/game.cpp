@@ -75,6 +75,14 @@ void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]) {
     switch (key)
     {
+    case SDLK_E: {
+        std::cout << "spawning enemies" << '\n';
+        for (int i = 0; auto& e : enemyArray) {
+            e.spawn(SDL_Point{ 155 + i, 155 });
+            i++;
+        }
+        break;
+    }
     case SDLK_F: {
         /* print information */
         std::cout << std::endl;
@@ -201,45 +209,45 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
     default:
         break;
     }
-    if (pathEndX != -1 && pathStartX != -1) {
-        Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX); // dont ask miks need tagurpidi on
+               if (pathEndX != -1 && pathStartX != -1) {
+                   Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX); // dont ask miks need tagurpidi on
 
-        // reset
-        pathEndX = -1;
-        pathEndY = -1;
-        pathStartX = -1;
-        pathStartY = -1;
-    }
-}
-
-
-void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
-    switch (key)
-    {
-    case SDLK_LSHIFT: {
-        // player.movementSpeed = PlayerNS::defaultMovementSpeed;
-        player.shifting = false;
-        break;
+                   // reset
+                   pathEndX = -1;
+                   pathEndY = -1;
+                   pathStartX = -1;
+                   pathStartY = -1;
+               }
     }
 
-    default:
-        break;
+
+    void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
+        switch (key)
+        {
+        case SDLK_LSHIFT: {
+            // player.movementSpeed = PlayerNS::defaultMovementSpeed;
+            player.shifting = false;
+            break;
+        }
+
+        default:
+            break;
+        }
     }
-}
 
 
-/// @brief This takes more resources due to if statements.
-///
-/// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
-/// as they use switch cases and react to events.
-/// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
-/// @param player struct Player player
-void react_to_keyboard_state(const bool* state) {
-    PlayerNS::create_movementVector(state);
-}
+    /// @brief This takes more resources due to if statements.
+    ///
+    /// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
+    /// as they use switch cases and react to events.
+    /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
+    /// @param player struct Player player
+    void react_to_keyboard_state(const bool* state) {
+        PlayerNS::create_movementVector(state);
+    }
 
-void game_debug(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
-    SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
-    SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
-}
+    void game_debug(SDL_Renderer * renderer) {
+        SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
+        SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
+        SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+    }

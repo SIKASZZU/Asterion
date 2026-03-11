@@ -12,7 +12,7 @@ enum Map {
     SPIDER,
     PLAYER,
 
-    // player girl
+    // player idle
     player_girl_idle_down,
     player_girl_idle_down_left,
     player_girl_idle_down_right,
@@ -21,7 +21,7 @@ enum Map {
     player_girl_idle_up,
     player_girl_idle_up_left,
     player_girl_idle_up_right,
-
+    // player walk
     player_girl_walk_down,
     player_girl_walk_down_left,
     player_girl_walk_down_right,
@@ -30,7 +30,7 @@ enum Map {
     player_girl_walk_up,
     player_girl_walk_up_left,
     player_girl_walk_up_right,
-
+    // player run
     player_girl_run_down,
     player_girl_run_down_left,
     player_girl_run_down_right,
@@ -67,6 +67,16 @@ enum Map {
     spider_idle180_animation,
     spider_idle270_animation,
     spider_idle0_animation,
+    // spider raise
+    spider_raise45_animation,
+    spider_raise135_animation,
+    spider_raise225_animation,
+    spider_raise315_animation,
+    spider_raise90_animation,
+    spider_raise180_animation,
+    spider_raise270_animation,
+    spider_raise0_animation,
+
     SECTOR_1_PATHWAY,
     SECTOR_2_PATHWAY,
     SECTOR_3_PATHWAY,

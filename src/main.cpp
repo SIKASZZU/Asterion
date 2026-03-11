@@ -63,10 +63,15 @@ int main(int argc, char* argv[]) {
     const bool* state = SDL_GetKeyboardState(nullptr);
 
     Enemy enemy(162, 162);
+    Enemy enemy2(159, 162);
+
     enemy.set_speed(320);
+    enemy2.set_speed(320);
     enemy.set_size(tileSize * 0.75f);
+    enemy2.set_size(tileSize * 0.75f);
 
     enemyArray.push_back(enemy);
+    enemyArray.push_back(enemy2);
 
     while (isRunning) {
         Uint64 now = SDL_GetTicks();

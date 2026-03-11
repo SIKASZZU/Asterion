@@ -49,8 +49,34 @@ Enemy::Enemy(int gx, int gy)
     hasRoamingTarget(false),
     standingTimer(0.0f),
     state{ EnemyState::Idle },
-    activity{ EnemyActivity::Roam }
+    activity{ EnemyActivity::Roam },
+    anim_lastUpdate(SDL_GetTicks()),
+    anim_currentAnimCol(0),
+    anim_currentAnimRow(0),
+    anim_spriteEnum(0),
+    anim_previousState(0)
 {
+}
+
+const char* stateToString(EnemyState s) {
+    switch (s) {
+    case (EnemyState::Idle): return "Idle"; break;
+    case (EnemyState::Walk): return "Walk"; break;
+    case (EnemyState::Run): return "Run"; break;
+    case (EnemyState::Dead): return "Dead"; break;
+    case (EnemyState::Raise): return "Raise"; break;
+    default: return "Unconfigured state"; break;
+    }
+}
+
+const char* activityToString(EnemyActivity a) {
+    switch (a) {
+    case (EnemyActivity::Idle): return "Idle"; break;
+    case (EnemyActivity::Roam): return "Roam"; break;
+    case (EnemyActivity::Chase): return "Chase"; break;
+    case (EnemyActivity::Raise): return "Raise"; break;
+    default: return "Unconfigured activity"; break;
+    }
 }
 
 void Enemy::choose_state() {
@@ -67,16 +93,10 @@ void Enemy::choose_state() {
         state = EnemyState::Run;
         break;
     }
+    case EnemyActivity::Raise: {
+        state = EnemyState::Raise;
+        break;
     }
-}
-
-const char* stateToString(EnemyState s) {
-    switch (s) {
-    case (EnemyState::Idle): return "Idle"; break;
-    case (EnemyState::Walk): return "Walk"; break;
-    case (EnemyState::Run): return "Run"; break;
-    case (EnemyState::Dead): return "Dead"; break;
-    default: return "Unconfigured state"; break;
     }
 }
 
@@ -106,14 +126,12 @@ void Enemy::choose_activity(SDL_Point tG) {
         activity = EnemyActivity::Roam;
         hasRoamingTarget = false;
     }
-}
+    if (spawning == true) {
+        activity = EnemyActivity::Raise;
+    }
 
-const char* activityToString(EnemyActivity a) {
-    switch (a) {
-    case (EnemyActivity::Idle): return "Idle"; break;
-    case (EnemyActivity::Roam): return "Roam"; break;
-    case (EnemyActivity::Chase): return "Chase"; break;
-    default: return "Unconfigured activity"; break;
+    if (activity == EnemyActivity::Raise && spawning == false) {
+        activity = EnemyActivity::Roam;
     }
 }
 
@@ -201,6 +219,7 @@ bool Enemy::has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, S
 
 // Calculate velocity (inertia) towards the next path node.
 void Enemy::calculate_velocity(float dT) {
+
     if (path.empty() || currentPathIndex >= path.size()) {
         // No target -> apply friction to slow down
         if (velocity.x > 0)
@@ -345,10 +364,10 @@ void Enemy::render(SDL_Renderer* renderer) {
 
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderRect(renderer, &rect);
-
     if (debugText) {
         debug(renderer);
     }
+
 }
 
 void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float dT) {
@@ -357,6 +376,11 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
     choose_activity(playerGrid);
     choose_state();
     choose_target(map, playerGrid);
+
+    if (activity == EnemyActivity::Raise) {
+        velocity = SDL_FPoint{ 0,0 };
+        return;
+    }
 
     bool needsNewPath = path.empty() || currentPathIndex >= path.size();
     if (needsNewPath) {
@@ -390,7 +414,7 @@ void Enemy::debug(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 241, 196, 15, 255);
 
     int lineHeight = 10;
-    int x = Enemy::rect.x / 1.5; int y = Enemy::rect.y / 1.5;
+    int x = (Enemy::rect.x + Enemy::rect.w) / 1.5; int y = Enemy::rect.y / 1.5;
 
     auto drawLine = [&](const std::string& text) {
         SDL_RenderDebugText(renderer, x, y, text.c_str());
@@ -402,6 +426,7 @@ void Enemy::debug(SDL_Renderer* renderer) {
     drawLine("state:    " + std::string(stateToString(state)));
     drawLine("mVector:  " + std::to_string(movementVector.x) + " " + std::to_string(movementVector.y));
     drawLine("velocity:  " + std::to_string(Enemy::velocity.x) + " " + std::to_string(velocity.y));
+    drawLine("spawning:  " + std::string(Enemy::spawning ? "True" : "False"));
 
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 }

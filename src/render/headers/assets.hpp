@@ -103,5 +103,14 @@ namespace Assets {
         static const char* spider_idle180_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_180.png";
         static const char* spider_idle270_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_270.png";
         static const char* spider_idle0_animation = "resources/spider/Idle_Nervous/Idle_Nervous_Body_0.png";
+        // raise
+        static const char* spider_raise45_animation = "resources/spider/Raise/Raise_Body_045.png";
+        static const char* spider_raise135_animation = "resources/spider/Raise/Raise_Body_135.png";
+        static const char* spider_raise225_animation = "resources/spider/Raise/Raise_Body_225.png";
+        static const char* spider_raise315_animation = "resources/spider/Raise/Raise_Body_315.png";
+        static const char* spider_raise90_animation = "resources/spider/Raise/Raise_Body_090.png";
+        static const char* spider_raise180_animation = "resources/spider/Raise/Raise_Body_180.png";
+        static const char* spider_raise270_animation = "resources/spider/Raise/Raise_Body_270.png";
+        static const char* spider_raise0_animation = "resources/spider/Raise/Raise_Body_0.png";
     }
 }

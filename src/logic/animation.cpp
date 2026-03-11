@@ -7,64 +7,68 @@
 
 // --------------- Enemy --------------- //
 
-Uint32 AnimEnemy::lastUpdate;
-int AnimEnemy::animRow = 1;
-int AnimEnemy::animCol = 1;
-int AnimEnemy::spriteEnum = 1;
-
 void Enemy::animation(SDL_Renderer* renderer) {
     using namespace AnimEnemy;
 
-    SDL_FRect srcRect;
     int animationSpeed = 48;
+    int maxCols = 4; int maxRows = 4;
 
     switch (state) {
     case EnemyState::Run: {
         lastDirection = movementVector;
-        if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_run135_animation; }
-        if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_run315_animation; }
-        if (movementVector.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_run225_animation; }
-        if (movementVector.y == -1 && movementVector.x == 0) { spriteEnum = Map::spider_run45_animation; }
+        if (movementVector.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_run135_animation; }
+        if (movementVector.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_run315_animation; }
+        if (movementVector.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_run225_animation; }
+        if (movementVector.y == -1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_run45_animation; }
 
-        if (movementVector.y == -1 && movementVector.x == 1) { spriteEnum = Map::spider_run90_animation; }
-        if (movementVector.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_run180_animation; }
-        if (movementVector.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_run270_animation; }
-        if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_run0_animation; }
+        if (movementVector.y == -1 && movementVector.x == 1) { anim_spriteEnum = Map::spider_run90_animation; }
+        if (movementVector.x == 1 && movementVector.y == 1) { anim_spriteEnum = Map::spider_run180_animation; }
+        if (movementVector.y == 1 && movementVector.x == -1) { anim_spriteEnum = Map::spider_run270_animation; }
+        if (movementVector.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_run0_animation; }
         break;
     }
     case EnemyState::Walk: {
         lastDirection = movementVector;
         animationSpeed = 24;
-        if (movementVector.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_walk135_animation; }
-        if (movementVector.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_walk315_animation; }
-        if (movementVector.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_walk225_animation; }
-        if (movementVector.y == -1 && movementVector.x == 0) { spriteEnum = Map::spider_walk45_animation; }
+        if (movementVector.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_walk135_animation; }
+        if (movementVector.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_walk315_animation; }
+        if (movementVector.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_walk225_animation; }
+        if (movementVector.y == -1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_walk45_animation; }
 
-        if (movementVector.y == -1 && movementVector.x == 1) { spriteEnum = Map::spider_walk90_animation; }
-        if (movementVector.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_walk180_animation; }
-        if (movementVector.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_walk270_animation; }
-        if (movementVector.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_walk0_animation; }
+        if (movementVector.y == -1 && movementVector.x == 1) { anim_spriteEnum = Map::spider_walk90_animation; }
+        if (movementVector.x == 1 && movementVector.y == 1) { anim_spriteEnum = Map::spider_walk180_animation; }
+        if (movementVector.y == 1 && movementVector.x == -1) { anim_spriteEnum = Map::spider_walk270_animation; }
+        if (movementVector.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_walk0_animation; }
         break;
     }
     case EnemyState::Idle: {
         animationSpeed = 60;
-        if (lastDirection.x == 1 && movementVector.y == 0) { spriteEnum = Map::spider_idle135_animation; }
-        if (lastDirection.x == -1 && movementVector.y == 0) { spriteEnum = Map::spider_idle315_animation; }
-        if (lastDirection.y == 1 && movementVector.x == 0) { spriteEnum = Map::spider_idle225_animation; }
-        if (lastDirection.y == -1 && movementVector.x == 0) { spriteEnum = Map::spider_idle45_animation; }
+        maxCols = 6;
+        if (lastDirection.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_idle135_animation; }
+        if (lastDirection.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_idle315_animation; }
+        if (lastDirection.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_idle225_animation; }
+        if (lastDirection.y == -1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_idle45_animation; }
 
-        if (lastDirection.y == -1 && movementVector.x == 1) { spriteEnum = Map::spider_idle90_animation; }
-        if (lastDirection.x == 1 && movementVector.y == 1) { spriteEnum = Map::spider_idle180_animation; }
-        if (lastDirection.y == 1 && movementVector.x == -1) { spriteEnum = Map::spider_idle270_animation; }
-        if (lastDirection.x == -1 && movementVector.y == -1) { spriteEnum = Map::spider_idle0_animation; }
+        if (lastDirection.y == -1 && movementVector.x == 1) { anim_spriteEnum = Map::spider_idle90_animation; }
+        if (lastDirection.x == 1 && movementVector.y == 1) { anim_spriteEnum = Map::spider_idle180_animation; }
+        if (lastDirection.y == 1 && movementVector.x == -1) { anim_spriteEnum = Map::spider_idle270_animation; }
+        if (lastDirection.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_idle0_animation; }
+        break;
+    }
+    case EnemyState::Raise: {
+        animationSpeed = 120; //74
+        if (lastDirection.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_raise135_animation; }
+        if (lastDirection.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_raise315_animation; }
+        if (lastDirection.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_raise225_animation; }
+        if (lastDirection.y == -1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_raise45_animation; }
+
+        if (lastDirection.y == -1 && movementVector.x == 1) { anim_spriteEnum = Map::spider_raise90_animation; }
+        if (lastDirection.x == 1 && movementVector.y == 1) { anim_spriteEnum = Map::spider_raise180_animation; }
+        if (lastDirection.y == 1 && movementVector.x == -1) { anim_spriteEnum = Map::spider_raise270_animation; }
+        if (lastDirection.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_raise0_animation; }
         break;
     }
     }
-
-    srcRect.x = animCol * spriteWidth;
-    srcRect.y = animRow * spriteHeight;
-    srcRect.w = spriteWidth;
-    srcRect.h = spriteHeight;
 
     SDL_FRect dstRect = rect;
     float scaleFactor = 1.0f;
@@ -73,30 +77,38 @@ void Enemy::animation(SDL_Renderer* renderer) {
     // center inside the original rect (e.g. tile)
     dstRect.x = rect.x + (rect.w - dstRect.w) * 0.5f;
     dstRect.y = rect.y + (rect.h - dstRect.h) * 0.5f;
-    bool updateFrame = (SDL_GetTicks() - lastUpdate > animationSpeed);
-    if (updateFrame) {
-        lastUpdate = SDL_GetTicks();
-        animCol++;
-        if (activity == EnemyActivity::Idle) {
-            if (animCol >= 6) {
-                animRow++;
-                animCol = 0;
-            }
-            if (animRow >= 4) {
-                animRow = 0;
-            }
-        }
-        else {
-            if (animCol >= 4) {
-                animRow++;
-                animCol = 0;
-            }
-            if (animRow >= 4) {
-                animRow = 0;
-            }
-        }
+
+    bool updateFrame = (SDL_GetTicks() - anim_lastUpdate > animationSpeed);
+    if (anim_previousState != static_cast<std::underlying_type_t<EnemyActivity>>(activity)) {
+        updateFrame = true;
+        anim_currentAnimRow = 0; anim_currentAnimCol = 0;
     }
-    textureMap[spriteEnum].render(renderer, &srcRect, &dstRect);
+    anim_previousState = static_cast<std::underlying_type_t<EnemyActivity>>(activity);
+
+    if (updateFrame) {
+        anim_lastUpdate = SDL_GetTicks();
+        anim_currentAnimCol = (anim_currentAnimCol + 1) % maxCols;
+
+        std::cout << "anim: " << anim_currentAnimCol << " " << anim_currentAnimRow << '\n';
+
+        if (anim_currentAnimCol == 0) {
+            anim_currentAnimRow += 1;
+        }
+        if (anim_currentAnimRow >= maxRows) {
+            anim_currentAnimRow = 0; anim_currentAnimCol = 0;
+            std::cout << "reset!" << spawning << '\n';
+            if (spawning) spawning = false;
+        }
+
+    }
+    SDL_FRect srcRect = {
+        static_cast<float>(anim_currentAnimCol * spriteWidth),
+        static_cast<float>(anim_currentAnimRow * spriteHeight),
+        static_cast<float>(spriteWidth),
+        static_cast<float>(spriteHeight)
+    };
+
+    textureMap[anim_spriteEnum].render(renderer, &srcRect, &dstRect);
 }
 
 // --------------- Player --------------- //
@@ -185,6 +197,7 @@ void animation_player(SDL_Renderer* renderer) {
     bool updateFrame = SDL_GetTicks() - lastUpdate > static_cast<Uint32>(player.animationSpeed);
     if (previousState != static_cast<std::underlying_type_t<PlayerState>>(player.state)) {
         updateFrame = true;
+        currentAnimRow = 0; currentAnimCol = 0;
     }
     previousState = static_cast<std::underlying_type_t<PlayerState>>(player.state);
 
@@ -200,7 +213,6 @@ void animation_player(SDL_Renderer* renderer) {
         if (currentAnimRow >= maxRows && currentAnimCol >= lastRowCols) {
             currentAnimRow = 0; currentAnimCol = 0;
         }
-
     }
 
     SDL_FRect srcRect = {

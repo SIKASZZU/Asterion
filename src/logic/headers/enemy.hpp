@@ -10,6 +10,7 @@ enum class EnemyState {
     Walk,
     Run,
     Dead,
+    Raise,
 };
 
 
@@ -17,6 +18,7 @@ enum class EnemyActivity {
     Idle,
     Roam,
     Chase,
+    Raise,
 };
 
 const char* stateToString(EnemyState s);
@@ -32,6 +34,7 @@ public:
 
     void animation(SDL_Renderer* renderer);
     void update(const int map[mapSize][mapSize], SDL_Point targetGrid, float dT);
+    void debug(SDL_Renderer* renderer);
     void render(SDL_Renderer* renderer);
     void set_speed(float s) { speed = s; };
     void set_size(float sz) { size = sz; };
@@ -42,6 +45,21 @@ public:
     int get_size() const { return size; };
     EnemyState state;
     EnemyActivity activity;
+    bool spawning;
+    void spawn(SDL_Point spawnGrid) {
+        grid = spawnGrid;
+        // teleport to grid center
+        // cancer buhg, 100.0f is hardcoded tilesize xD
+        pos = SDL_FPoint{ static_cast<float>(grid.x * 100.0f + (size / 2)), static_cast<float>(grid.y * 100.0f + (size / 2)) };
+        velocity = { 0.0f, 0.0f };
+        movementVector = { 0, 0 };
+        path.clear();
+        currentPathIndex = 0;
+        lastDirection = { 0, -1 };
+        activity = EnemyActivity::Raise;
+        state = EnemyState::Raise;
+        spawning = true;
+    };
 
 private:
     float size;
@@ -59,6 +77,13 @@ private:
     bool hasRoamingTarget;
     float standingTimer;
 
+    // Per-instance animation state (previously shared across all enemies)
+    Uint32 anim_lastUpdate;
+    int anim_currentAnimCol;
+    int anim_currentAnimRow;
+    int anim_spriteEnum;
+    int anim_previousState;
+
     void choose_state();
     void choose_activity(SDL_Point tG);
     void calculate_velocity(float dT);
@@ -67,7 +92,6 @@ private:
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
     void choose_target(const int map[mapSize][mapSize], SDL_Point playerGrid);
     bool has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, SDL_Point to);
-    void debug(SDL_Renderer* renderer);
 };
 
 extern bool stopAllEnemies;
