@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 
     srand(static_cast<unsigned int>(std::time(NULL)));
 
-    testMapEnvironment = true;
+    testMapEnvironment = false;
     generate_map();
 
     TerrainClass terrain;

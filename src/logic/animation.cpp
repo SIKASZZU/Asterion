@@ -56,7 +56,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
         break;
     }
     case EnemyState::Raise: {
-        animationSpeed = 120; //74
+        animationSpeed = 80;
         if (lastDirection.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_raise135_animation; }
         if (lastDirection.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_raise315_animation; }
         if (lastDirection.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_raise225_animation; }
@@ -66,6 +66,10 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (lastDirection.x == 1 && movementVector.y == 1) { anim_spriteEnum = Map::spider_raise180_animation; }
         if (lastDirection.y == 1 && movementVector.x == -1) { anim_spriteEnum = Map::spider_raise270_animation; }
         if (lastDirection.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_raise0_animation; }
+        break;
+    }
+    default: {
+        std::cout << "Enemy state is unknown. No spriteEnum for enemy" << '\n';
         break;
     }
     }
@@ -89,14 +93,11 @@ void Enemy::animation(SDL_Renderer* renderer) {
         anim_lastUpdate = SDL_GetTicks();
         anim_currentAnimCol = (anim_currentAnimCol + 1) % maxCols;
 
-        std::cout << "anim: " << anim_currentAnimCol << " " << anim_currentAnimRow << '\n';
-
         if (anim_currentAnimCol == 0) {
             anim_currentAnimRow += 1;
         }
         if (anim_currentAnimRow >= maxRows) {
             anim_currentAnimRow = 0; anim_currentAnimCol = 0;
-            std::cout << "reset!" << spawning << '\n';
             if (spawning) spawning = false;
         }
 
@@ -189,7 +190,7 @@ void animation_player(SDL_Renderer* renderer) {
         break;
     }
     default: {
-        std::cout << "Player state is unknown. No spriteEnum for player" << '\n';
+        std::cout << "Player state is unknown. No spriteEnum for player." << '\n';
         break;
     }
     }

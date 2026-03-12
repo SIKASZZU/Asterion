@@ -45,7 +45,7 @@ namespace Maze {
 
         if (type == "one") {
             directions = directions_sec_1;
-            allowed_number = testMapEnvironment ? Map::GROUND_CUBE : Map::SECTOR_1_WALL_VAL;
+            allowed_number = Map::SECTOR_1_WALL_VAL;
             pathway = Map::SECTOR_1_PATHWAY;
         }
         else if (type == "two") {
@@ -65,53 +65,56 @@ namespace Maze {
             int nx = start_col + dir.first;
             int ny = start_row + dir.second;
 
-            // Boundary check: ensure the 2x2 block fits
-            if (nx > 0 && ny > 0 && nx < mapSize - 2 && ny < mapSize - 2) {
-
-                if (map[ny][nx] == allowed_number) {
-
-                    if (type == "one") {
-
-                        // 2. Carve the 2x2 destination block
-                        map[ny][nx] = pathway;
-                        map[ny + 1][nx] = pathway;
-                        map[ny][nx + 1] = pathway;
-                        map[ny + 1][nx + 1] = pathway;
-
-                        // 3. Carve the connection (the bridge)
-                        // If moving horizontally (X)
-                        if (dir.first != 0) {
-                            int step = (dir.first > 0) ? 1 : -1;
-                            // Carve the two tiles between the 2x2 blocks
-                            map[start_row][start_col + step] = pathway;
-                            map[start_row][start_col + (step * 2)] = pathway;
-                            map[start_row + 1][start_col + step] = pathway;
-                            map[start_row + 1][start_col + (step * 2)] = pathway;
-                        }
-                        // If moving vertically (Y)
-                        else if (dir.second != 0) {
-                            int step = (dir.second > 0) ? 1 : -1;
-                            // Carve the two tiles between the 2x2 blocks
-                            map[start_row + step][start_col] = pathway;
-                            map[start_row + (step * 2)][start_col] = pathway;
-                            map[start_row + step][start_col + 1] = pathway;
-                            map[start_row + (step * 2)][start_col + 1] = pathway;
-                        }
-                    }
-
-                    if (type == "two" || type == "three") {
-                        map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
-                        map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
-                        map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
-                    }
-
-                    if (type == "three") {
-                        map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
-                        map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
-                    }
-
-                    generate_maze(map, ny, nx, type);
+            if (map[ny][nx] != allowed_number) {
+                if (map[ny][nx] == pathway && type != "one") {
+                    continue;
                 }
+                continue;
+            }
+
+            if (nx > 0 && ny > 0 && nx < mapSize - 2 && ny < mapSize - 2) {
+                map[ny][nx] = pathway;
+                if (type == "one") {
+
+                    // 2. Carve the 2x2 destination block
+
+                    map[ny + 1][nx] = pathway;
+                    map[ny][nx + 1] = pathway;
+                    map[ny + 1][nx + 1] = pathway;
+
+                    // 3. Carve the connection (the bridge)
+                    // If moving horizontally (X)
+                    if (dir.first != 0) {
+                        int step = (dir.first > 0) ? 1 : -1;
+                        // Carve the two tiles between the 2x2 blocks
+                        map[start_row][start_col + step] = pathway;
+                        map[start_row][start_col + (step * 2)] = pathway;
+                        map[start_row + 1][start_col + step] = pathway;
+                        map[start_row + 1][start_col + (step * 2)] = pathway;
+                    }
+                    // If moving vertically (Y)
+                    else if (dir.second != 0) {
+                        int step = (dir.second > 0) ? 1 : -1;
+                        // Carve the two tiles between the 2x2 blocks
+                        map[start_row + step][start_col] = pathway;
+                        map[start_row + (step * 2)][start_col] = pathway;
+                        map[start_row + step][start_col + 1] = pathway;
+                        map[start_row + (step * 2)][start_col + 1] = pathway;
+                    }
+                }
+
+                if (type == "two" || type == "three") {
+                    map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
+                }
+
+                if (type == "three") {
+                    map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
+                    map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
+                }
+
+                generate_maze(map, ny, nx, type);
             }
         }
     }
@@ -120,7 +123,6 @@ namespace Maze {
     }
     // A* Pathfinding from (sx, sy) to (gx, gy) with 8-way movement
     bool find_path(const int map[mapSize][mapSize], int sx, int sy, int gx, int gy) {
-
         path.clear();
 
         using pii = std::pair<int, int>;

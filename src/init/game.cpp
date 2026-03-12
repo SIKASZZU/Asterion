@@ -37,7 +37,7 @@ int renderRadius = 20; // perfectse rad -> (win_width / 2) / tileSize //*NOTE wi
 
 /* map.hpp args */
 float tileSize = 100.0f;
-bool testMapEnvironment = true;
+bool testMapEnvironment;
 
 /* pathfinding */
 int pathEndX = -1;
@@ -145,14 +145,14 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         break;
     }
     case SDLK_PAGEDOWN: {
-        pathStartX = static_cast<int>(player.x / tileSize);
-        pathStartY = static_cast<int>(player.y / tileSize);
+        pathStartX = player.grid.x;
+        pathStartY = player.grid.y;
         std::cout << "Start point set: " << pathStartX << " " << pathStartY << "\n";
         break;
     }
     case SDLK_PAGEUP: {
-        pathEndX = static_cast<int>(player.x / tileSize);
-        pathEndY = static_cast<int>(player.y / tileSize);
+        pathEndX = player.grid.x;
+        pathEndY = player.grid.y;
         std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
         break;
     }
@@ -209,45 +209,46 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
     default:
         break;
     }
-               if (pathEndX != -1 && pathStartX != -1) {
-                   Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX); // dont ask miks need tagurpidi on
+    if (pathEndX != -1 && pathStartX != -1) {
+        Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX);
+        std::cout << "found path size: " << (Maze::path.size()) << '\n';
 
-                   // reset
-                   pathEndX = -1;
-                   pathEndY = -1;
-                   pathStartX = -1;
-                   pathStartY = -1;
-               }
+        // reset
+        pathEndX = -1;
+        pathEndY = -1;
+        pathStartX = -1;
+        pathStartY = -1;
+    }
+}
+
+
+void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
+    switch (key)
+    {
+    case SDLK_LSHIFT: {
+        // player.movementSpeed = PlayerNS::defaultMovementSpeed;
+        player.shifting = false;
+        break;
     }
 
-
-    void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
-        switch (key)
-        {
-        case SDLK_LSHIFT: {
-            // player.movementSpeed = PlayerNS::defaultMovementSpeed;
-            player.shifting = false;
-            break;
-        }
-
-        default:
-            break;
-        }
+    default:
+        break;
     }
+}
 
 
-    /// @brief This takes more resources due to if statements.
-    ///
-    /// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
-    /// as they use switch cases and react to events.
-    /// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
-    /// @param player struct Player player
-    void react_to_keyboard_state(const bool* state) {
-        PlayerNS::create_movementVector(state);
-    }
+/// @brief This takes more resources due to if statements.
+///
+/// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
+/// as they use switch cases and react to events.
+/// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
+/// @param player struct Player player
+void react_to_keyboard_state(const bool* state) {
+    PlayerNS::create_movementVector(state);
+}
 
-    void game_debug(SDL_Renderer * renderer) {
-        SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
-        SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
-        SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
-    }
+void game_debug(SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
+    SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
+    SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+}
