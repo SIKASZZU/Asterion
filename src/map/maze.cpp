@@ -21,8 +21,12 @@ namespace Maze {
         {-4, 0}, {2, 0}, {0, -4}, {0, 2}  // perse l2inud symbioos
     };
 
+    // std::vector<std::pair<int, int>> directions_sec_1 = {
+    //     {-2, 0}, {2, 0}, {0, -2}, {0, 2}  // normal maze
+    // };
+
     std::vector<std::pair<int, int>> directions_sec_1 = {
-        {-2, 0}, {2, 0}, {0, -2}, {0, 2}  // normal maze
+            {-3, 0}, {3, 0}, {0, -3}, {0, 3}
     };
 
     std::vector<std::pair<int, int>> path;
@@ -58,66 +62,56 @@ namespace Maze {
         shuffle_directions(directions);
 
         for (const auto& dir : directions) {
-            // start_row/start_col correspond to map[row][col]
-            int nx = start_col + dir.first; // next x (column)
-            int ny = start_row + dir.second; // next y (row)
+            int nx = start_col + dir.first;
+            int ny = start_row + dir.second;
 
-            if (map[ny][nx] != allowed_number) {
-                if (map[ny][nx] == pathway && type != "one") {
-                    continue;
-                }
-                continue;
-            }
+            // Boundary check: ensure the 2x2 block fits
+            if (nx > 0 && ny > 0 && nx < mapSize - 2 && ny < mapSize - 2) {
 
-            if (nx > 0 && ny > 0 && nx < mapSize - 1 && ny < mapSize - 1) {
-                map[ny][nx] = pathway;
-                map[start_row + (dir.second != 0 ? dir.second / 2 : dir.second)][start_col + (dir.first != 0 ? dir.first / 2 : dir.first)] = pathway;
-                if (type == "one") {
-                    int mid_r = start_row + (dir.second != 0 ? dir.second / 2 : dir.second);
-                    int mid_c = start_col + (dir.first != 0 ? dir.first / 2 : dir.first);
-                    // random deletions throughout maze "one" to make it not traditional labyrinth but more some random mess.
-                    // if (mid_r + 1 < mapSize && map[mid_r + 1][mid_c] != Map::INGROWN_WALL_CUBE) map[mid_r + 1][mid_c] = pathway;
-                    // if (mid_c + 1 < mapSize && map[mid_r][mid_c + 1] != Map::INGROWN_WALL_CUBE) map[mid_r][mid_c + 1] = pathway;
-                    
-                    if (rand() % 50 == 0) {
-                        int len = 20; // tile long straight
-                        bool x = false; bool y = false;
-                        rand() % 2 == 0 ? x = true : y = true;
+                if (map[ny][nx] == allowed_number) {
 
-                        while (len > 0) {
-                            if ((ny + len) >= mapSize) {
-                                break;
-                            }
-                            if ((nx + len) >= mapSize) {
-                                break;
-                            }
+                    if (type == "one") {
 
-                            try
-                            {
-                                if (y) map[ny + len][nx] = pathway;
-                                else if (x) map[ny][nx + len] = pathway;
-                                len--;
-                            }
-                            catch (const std::exception& e)
-                            {
-                                std::cerr << e.what() << '\n';
-                            }
+                        // 2. Carve the 2x2 destination block
+                        map[ny][nx] = pathway;
+                        map[ny + 1][nx] = pathway;
+                        map[ny][nx + 1] = pathway;
+                        map[ny + 1][nx + 1] = pathway;
 
+                        // 3. Carve the connection (the bridge)
+                        // If moving horizontally (X)
+                        if (dir.first != 0) {
+                            int step = (dir.first > 0) ? 1 : -1;
+                            // Carve the two tiles between the 2x2 blocks
+                            map[start_row][start_col + step] = pathway;
+                            map[start_row][start_col + (step * 2)] = pathway;
+                            map[start_row + 1][start_col + step] = pathway;
+                            map[start_row + 1][start_col + (step * 2)] = pathway;
+                        }
+                        // If moving vertically (Y)
+                        else if (dir.second != 0) {
+                            int step = (dir.second > 0) ? 1 : -1;
+                            // Carve the two tiles between the 2x2 blocks
+                            map[start_row + step][start_col] = pathway;
+                            map[start_row + (step * 2)][start_col] = pathway;
+                            map[start_row + step][start_col + 1] = pathway;
+                            map[start_row + (step * 2)][start_col + 1] = pathway;
                         }
                     }
-                }
-                if (type == "two" || type == "three") {
-                    map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
-                    map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
-                    map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
-                }
 
-                if (type == "three") {
-                    map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
-                    map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
-                }
+                    if (type == "two" || type == "three") {
+                        map[start_row + (dir.second != 0 ? dir.second + 2 : dir.second)][start_col + (dir.first != 0 ? dir.first + 2 : dir.first)] = pathway;
+                        map[start_row + (dir.second != 0 ? dir.second + 3 : dir.second)][start_col + (dir.first != 0 ? dir.first + 3 : dir.first)] = pathway;
+                        map[start_row + (dir.second != 0 ? dir.second + 1 : dir.second)][start_col + (dir.first != 0 ? dir.first + 1 : dir.first)] = pathway;
+                    }
 
-                generate_maze(map, ny, nx, type);
+                    if (type == "three") {
+                        map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
+                        map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
+                    }
+
+                    generate_maze(map, ny, nx, type);
+                }
             }
         }
     }
