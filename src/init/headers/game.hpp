@@ -1,6 +1,7 @@
 #pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
 #include <SDL3/SDL.h>
 #include <functional>
+#include <random>
 
 #include "offset.hpp"
 #include "player.hpp"
@@ -51,6 +52,13 @@ extern bool v_pressed;
 
 /* constants */
 const double PI = 3.1415926535897932384626433832;
+
+inline float generateRandomFloat(float min, float max) {
+    std::random_device rd;                               // Seed source
+    std::mt19937 gen(rd());                              // Mersenne Twister engine
+    std::uniform_real_distribution<float> dis(min, max); // Range [min, max)
+    return dis(gen);
+}
 
 struct pair_hash {
     std::size_t operator()(const std::pair<int, int>& p) const {

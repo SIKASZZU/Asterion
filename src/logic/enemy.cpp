@@ -347,6 +347,7 @@ void Enemy::choose_target(const int map[mapSize][mapSize], SDL_Point tG) {
                 hasRoamingTarget = true;
                 roamingDistanceTraveled = 0.0f;
                 standingTimer = 0.0f;
+                standingTimerMax = generateRandomFloat(1.2f, 2.2f);
                 return;
             }
 
@@ -390,7 +391,8 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
     }
 
     // 2. IDLE TIMER (Only for roaming)
-    if (activity == EnemyActivity::Roam && standingTimer < 1.5f) {
+    if (activity == EnemyActivity::Roam && standingTimer < standingTimerMax) {
+        std::cout << standingTimerMax << "\n";
         standingTimer += dT;
         state = EnemyState::Idle;
         return;

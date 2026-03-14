@@ -76,6 +76,7 @@ private:
     float roamingDistanceTraveled;
     bool hasRoamingTarget;
     float standingTimer;
+    float standingTimerMax;
 
     // Per-instance animation state (previously shared across all enemies)
     Uint32 anim_lastUpdate;
