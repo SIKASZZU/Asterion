@@ -392,7 +392,6 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
 
     // 2. IDLE TIMER (Only for roaming)
     if (activity == EnemyActivity::Roam && standingTimer < standingTimerMax) {
-        std::cout << standingTimerMax << "\n";
         standingTimer += dT;
         state = EnemyState::Idle;
         return;

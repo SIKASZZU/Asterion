@@ -33,6 +33,7 @@ void generate_map() {
     // if (mapLoaded) { return; }
     if (testMapEnvironment) {
         generate_test_map(map);
+        Maze::generate_maze(map, 50, 50, "one");
         generate_glade(map);
         return;
     }

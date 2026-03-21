@@ -180,7 +180,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
         }
     }
 }
-void TerrainClass::create_renderQ_walls() {
+void TerrainClass::create_renderQ_walls(SDL_Renderer* renderer) {
     // Precompute which wall tiles should be shifted upwards when fading.
     std::unordered_set<uint32_t> shiftedWalls;
     for (int prow = mapIndexTop; prow <= mapIndexBottom; ++prow) {
@@ -511,7 +511,7 @@ void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
 void TerrainClass::render(SDL_Renderer* renderer) {
     create_renderQ_ground(renderer);
     create_renderQ_items(renderer);
-    create_renderQ_walls();
+    create_renderQ_walls(renderer);
     create_renderQ_colored_cubes(renderer);
     create_renderQ_decoration(renderer);
 

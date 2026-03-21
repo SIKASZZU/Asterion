@@ -148,7 +148,7 @@ namespace Raycast {
         // see func fucking laagab raigelt, ilmselt
         // 1. maxDecaySize too big?
         // 2. retarded arvutused?
-        return;
+        // return;
 
         std::vector<std::pair<int, int>> added;
         {
@@ -189,14 +189,22 @@ namespace Raycast {
 
     void update(SDL_Renderer* renderer, struct Offset& Offset) {
         if (!enabled) return;
-        update_max_grid_size();
+
+        // update_max_grid_size();
+
         SDL_FPoint currentPos = { player.x, player.y };
         float distMoved = hypotf(currentPos.x - lastComputedSource.x, currentPos.y - lastComputedSource.y);
-        if (distMoved > tileSize * 0.5f) {  // Adjust threshold as needed
+
+        // Only request a new one if we aren't already busy
+        if (distMoved > tileSize * 0.5f && !computeRequested.load()) {
             request_calculation();
-            wait_until_ready();
-            calculate_decay_grids();
         }
+
+        // // Check if the worker finished without blocking
+        if (computeReady.load()) {
+            computeReady.store(false); // Reset so we don't process the same data twice
+        }
+
         if (showRays) {
             render_rays(renderer, offset);
         }
@@ -215,6 +223,7 @@ namespace Raycast {
             // Compute
             update_max_grid_size();
             calculate_active_grids(localSrc);
+            calculate_decay_grids();
 
             // Signal ready
             {

@@ -45,7 +45,7 @@ namespace Maze {
 
         if (type == "one") {
             directions = directions_sec_1;
-            allowed_number = Map::SECTOR_1_WALL_VAL;
+            allowed_number = testMapEnvironment ? Map::GROUND_CUBE : Map::SECTOR_1_WALL_VAL;
             pathway = Map::SECTOR_1_PATHWAY;
         }
         else if (type == "two") {
