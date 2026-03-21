@@ -218,7 +218,6 @@ namespace PlayerNS {
         //     player.state = PlayerState::Idle;
         //     return;
         // }
-
         if (player.jumping && player.state != PlayerState::Run && player.state != PlayerState::RunningJump) {
             player.state = PlayerState::Jump;
             return;
@@ -227,7 +226,7 @@ namespace PlayerNS {
             player.state = PlayerState::RunningJump;
             return;
         }
-        if (player.shifting) {
+        if (player.shifting && player.movementSpeed != 0) {
             player.state = PlayerState::Walk;
             return;
         }
