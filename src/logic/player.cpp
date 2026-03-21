@@ -19,6 +19,8 @@ const float MAX_SPEED = 400.0f;
 const float MAX_WALK_SPEED = MAX_SPEED / 4;
 const float ACCEL = 2000.0f;    // High value for snappy feel
 const float FRICTION = 1500.0f; // How fast player slides to a stop
+const float GRAVITY = 2000.0f; // Gravity for jump (pixels/s^2)
+const float JUMP_VELOCITY = 350.0f; // Initial jump velocity (pixels/s)
 
 PlayerData player = {
     state: PlayerState::Idle,
@@ -34,11 +36,23 @@ PlayerData player = {
     velocity : {0, 0},
     animationSpeed : 1,
     shifting : false,
+    jumping : false,
+    z : 0.0f,
+    zVelocity : 0.0f,
     lastMovementKey : 'a',
     cartesianMovement : false,
 };
 
-
+const char* stateToString(PlayerState s) {
+    switch (s) {
+    case (PlayerState::Idle): return "Idle"; break;
+    case (PlayerState::Walk): return "Walk"; break;
+    case (PlayerState::Run): return "Run"; break;
+    case (PlayerState::Jump): return "Jump"; break;
+    case (PlayerState::RunningJump): return "RunningJump"; break;
+    default: return "Unconfigured state"; break;
+    }
+}
 
 namespace PlayerNS {
     float tilesPerSecond = 2.0f;
@@ -131,7 +145,7 @@ namespace PlayerNS {
         SDL_FPoint coords = to_isometric_coordinate(x, y);
         player.rect = {
             coords.x - (player.size / 4) + offset.x,
-            coords.y - (player.size / 4) + offset.y - groundOffsetAmount,
+            coords.y - (player.size / 4) + offset.y - groundOffsetAmount - player.z,
             player.size,
             player.size
         };
@@ -178,19 +192,46 @@ namespace PlayerNS {
             static_cast<int>((player.x + player.size / 2.0f) / tileSize),
             static_cast<int>((player.y + player.size / 2.0f) / tileSize)
         };
+
+        // Jump physics (vertical axis)
+        // If jump was requested and player is on ground, give an initial upward velocity
+        if (player.jumping && player.z == 0.0f) {
+            player.zVelocity = JUMP_VELOCITY;
+        }
+
+        // Integrate vertical motion
+        if (player.z > 0.0f || player.zVelocity > 0.0f || player.jumping) {
+            player.z += player.zVelocity * deltaTime;
+            player.zVelocity -= GRAVITY * deltaTime;
+
+            if (player.z <= 0.0f) {
+                player.z = 0.0f;
+                player.zVelocity = 0.0f;
+                player.jumping = false; // landed
+            }
+        }
     }
 
     void set_state() {
-        if (player.velocity.x == 0 && player.velocity.y == 0) {
-            player.state = PlayerState::Idle;
+        // TODO: idle needs to be the default return but player.movementVector doesnt get reset for some reason.
+        // if (player.velocity.x == 0 && player.velocity.y == 0 && !player.jumping) {
+        //     player.state = PlayerState::Idle;
+        //     return;
+        // }
+
+        if (player.jumping && player.state != PlayerState::Run && player.state != PlayerState::RunningJump) {
+            player.state = PlayerState::Jump;
             return;
         }
-        // if (abs(player.velocity.x) < MAX_WALK_SPEED && abs(player.velocity.y) < MAX_WALK_SPEED) {
+        else if (player.jumping) {
+            player.state = PlayerState::RunningJump;
+            return;
+        }
         if (player.shifting) {
             player.state = PlayerState::Walk;
             return;
         }
-        else if (!player.shifting) {
+        else if (!player.shifting && player.movementSpeed != 0) {
             player.state = PlayerState::Run;
             return;
         }
@@ -199,15 +240,43 @@ namespace PlayerNS {
     }
 
     void update_animation_speed() {
-        player.animationSpeed = player.shifting ? tileSize * 1.4f : tileSize * 1.2f;
+
+        // todo: animation speed has to be equal to length of an action. Jumping, RunningJump is fixed time.
+        switch (player.state) {
+        case (PlayerState::Idle): {
+            player.animationSpeed = 120;
+            break;
+        }
+        case (PlayerState::Walk): {
+            player.animationSpeed = tileSize * 1.4f;
+            break;
+        }
+        case (PlayerState::Run): {
+            player.animationSpeed = tileSize * 1.2f;
+            break;
+        }
+        case (PlayerState::Jump): {
+            player.animationSpeed = 20;
+            break;
+        }
+        case (PlayerState::RunningJump): {
+            player.animationSpeed = 65;
+            break;
+        }
+        }
     }
 
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
         calculate_new_coordinates(deltaTime);
-        if (!isEmpty(player.velocity)) update_rect();
-        // here, jsut because first time rect is empty and do it for sakes
-        else if (isEmpty(player.rect)) update_rect();
+
+        // Always update the collision/render rect so `player.z` (vertical jump)
+        // is applied even when the player is standing still.
+
+        // if (!isEmpty(player.velocity)) update_rect();
+        // // here, jsut because first time rect is empty and do it for sakes
+        // else if (isEmpty(player.rect)) update_rect();
         set_state();
+        update_rect();
         update_animation_speed();
     }
 
@@ -241,8 +310,14 @@ namespace PlayerNS {
         // Speed and State
         drawLine("movementSpeed:  " + std::to_string(player.movementSpeed));
 
-        auto stateVal = static_cast<std::underlying_type_t<PlayerState>>(player.state);
-        drawLine("state:    " + std::to_string(stateVal));
+        auto stateVal = stateToString(player.state);
+        drawLine("state:    " + std::string(stateVal));
         drawLine("shifting: " + std::to_string(player.shifting) + " animationSpeed: " + std::to_string(player.animationSpeed));
+
+        // player rect
+        if (debugText) {
+            SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+            SDL_RenderRect(renderer, &player.rect);
+        }
     }
 }

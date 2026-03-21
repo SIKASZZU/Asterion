@@ -39,6 +39,24 @@ enum Map {
     player_girl_run_up,
     player_girl_run_up_left,
     player_girl_run_up_right,
+    // player jump
+    player_girl_jump_down,
+    player_girl_jump_down_left,
+    player_girl_jump_down_right,
+    player_girl_jump_right,
+    player_girl_jump_left,
+    player_girl_jump_up,
+    player_girl_jump_up_left,
+    player_girl_jump_up_right,
+    // player running-jump
+    player_girl_running_jump_down,
+    player_girl_running_jump_down_left,
+    player_girl_running_jump_down_right,
+    player_girl_running_jump_right,
+    player_girl_running_jump_left,
+    player_girl_running_jump_up,
+    player_girl_running_jump_up_left,
+    player_girl_running_jump_up_right,
 
     // spider run
     spider_run45_animation,

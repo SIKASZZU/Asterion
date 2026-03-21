@@ -69,6 +69,24 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::player_girl_run_up] = ImageTexture(renderer, Assets::Player::player_girl_run_up);
     textureMap[Map::player_girl_run_up_left] = ImageTexture(renderer, Assets::Player::player_girl_run_up_left);
     textureMap[Map::player_girl_run_up_right] = ImageTexture(renderer, Assets::Player::player_girl_run_up_right);
+    // player jump
+    textureMap[Map::player_girl_jump_down] = ImageTexture(renderer, Assets::Player::player_girl_jump_down);
+    textureMap[Map::player_girl_jump_down_left] = ImageTexture(renderer, Assets::Player::player_girl_jump_down_left);
+    textureMap[Map::player_girl_jump_down_right] = ImageTexture(renderer, Assets::Player::player_girl_jump_down_right);
+    textureMap[Map::player_girl_jump_right] = ImageTexture(renderer, Assets::Player::player_girl_jump_right);
+    textureMap[Map::player_girl_jump_left] = ImageTexture(renderer, Assets::Player::player_girl_jump_left);
+    textureMap[Map::player_girl_jump_up] = ImageTexture(renderer, Assets::Player::player_girl_jump_up);
+    textureMap[Map::player_girl_jump_up_left] = ImageTexture(renderer, Assets::Player::player_girl_jump_up_left);
+    textureMap[Map::player_girl_jump_up_right] = ImageTexture(renderer, Assets::Player::player_girl_jump_up_right);
+    // player running-jump
+    textureMap[Map::player_girl_running_jump_down] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_down);
+    textureMap[Map::player_girl_running_jump_down_left] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_down_left);
+    textureMap[Map::player_girl_running_jump_down_right] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_down_right);
+    textureMap[Map::player_girl_running_jump_right] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_right);
+    textureMap[Map::player_girl_running_jump_left] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_left);
+    textureMap[Map::player_girl_running_jump_up] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_up);
+    textureMap[Map::player_girl_running_jump_up_left] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_up_left);
+    textureMap[Map::player_girl_running_jump_up_right] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_up_right);
 
     // spider run
     textureMap[Map::spider_run45_animation] = ImageTexture(renderer, Assets::Spider::spider_run45_animation);

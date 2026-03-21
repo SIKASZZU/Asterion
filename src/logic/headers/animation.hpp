@@ -17,6 +17,8 @@ namespace AnimPlayer {
     extern int currentAnimRow;
     extern int previousState;
     extern int spriteEnum;
+    extern bool singleLoop;
+    extern bool loopComplete;
 
     extern SDL_Point lastDirectionVector;
 }

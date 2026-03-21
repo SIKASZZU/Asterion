@@ -73,6 +73,26 @@ namespace Assets {
         static const char* player_girl_run_up = "resources/player/GirlSampleRun/GirlSample_Run_Up.png";
         static const char* player_girl_run_up_left = "resources/player/GirlSampleRun/GirlSample_Run_UpLeft.png";
         static const char* player_girl_run_up_right = "resources/player/GirlSampleRun/GirlSample_Run_UpRight.png";
+
+        // jump
+        static const char* player_girl_jump_down = "resources/player/GirlSampleJump/GirlSample_Jump_Down.png";
+        static const char* player_girl_jump_down_left = "resources/player/GirlSampleJump/GirlSample_Jump_DownLeft.png";
+        static const char* player_girl_jump_down_right = "resources/player/GirlSampleJump/GirlSample_Jump_DownRight.png";
+        static const char* player_girl_jump_right = "resources/player/GirlSampleJump/GirlSample_Jump_Right.png";
+        static const char* player_girl_jump_left = "resources/player/GirlSampleJump/GirlSample_Jump_Left.png";
+        static const char* player_girl_jump_up = "resources/player/GirlSampleJump/GirlSample_Jump_Up.png";
+        static const char* player_girl_jump_up_left = "resources/player/GirlSampleJump/GirlSample_Jump_UpLeft.png";
+        static const char* player_girl_jump_up_right = "resources/player/GirlSampleJump/GirlSample_Jump_UpRight.png";
+
+        // running jump
+        static const char* player_girl_running_jump_down = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_Down.png";
+        static const char* player_girl_running_jump_down_left = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_DownLeft.png";
+        static const char* player_girl_running_jump_down_right = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_DownRight.png";
+        static const char* player_girl_running_jump_right = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_Right.png";
+        static const char* player_girl_running_jump_left = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_Left.png";
+        static const char* player_girl_running_jump_up = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_Up.png";
+        static const char* player_girl_running_jump_up_left = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_UpLeft.png";
+        static const char* player_girl_running_jump_up_right = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_UpRight.png";
     }
 
     namespace Spider {

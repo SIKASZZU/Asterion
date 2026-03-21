@@ -8,7 +8,9 @@
 enum class PlayerState {
     Idle,
     Walk,
-    Run
+    Run,
+    Jump,
+    RunningJump,
 };
 
 // PlayerState state;
@@ -27,6 +29,9 @@ struct PlayerData {
     SDL_FPoint velocity;
     int animationSpeed;
     bool shifting;  // has player pressed shift?
+    bool jumping;  // has player pressed space?
+    float z; // vertical offset (pixels)
+    float zVelocity; // vertical velocity (pixels per second)
     char lastMovementKey;
     bool cartesianMovement;
 };

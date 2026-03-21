@@ -488,7 +488,10 @@ void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
 }
 void TerrainClass::create_renderQ_entities() {
     // player
-    renderQueue.push_back(RenderQueueItem(static_cast<int>(player.rect.y - (tileSize / 2)), [](SDL_Renderer* renderer) { animation_player(renderer); }));
+    // Use the player's ground Y (undo vertical `z`) for render ordering so
+    // jumping (which shifts the drawn rect by -z) doesn't change depth sorting.
+    float playerGroundY = player.rect.y + player.z;
+    renderQueue.push_back(RenderQueueItem(static_cast<int>(playerGroundY - (tileSize / 2)), [](SDL_Renderer* renderer) { animation_player(renderer); }));
 
     // add enemies to renderQ
     for (auto& e : enemyArray) {

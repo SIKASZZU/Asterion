@@ -75,6 +75,10 @@ void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
 void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]) {
     switch (key)
     {
+    case SDLK_SPACE: {
+        player.jumping = true;
+        break;
+    }
     case SDLK_E: {
         std::cout << "spawning enemies" << '\n';
         for (int i = 0; auto& e : enemyArray) {
@@ -226,11 +230,9 @@ void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
     switch (key)
     {
     case SDLK_LSHIFT: {
-        // player.movementSpeed = PlayerNS::defaultMovementSpeed;
         player.shifting = false;
         break;
     }
-
     default:
         break;
     }

@@ -118,6 +118,9 @@ Uint32 AnimPlayer::lastUpdate = SDL_GetTicks();
 int AnimPlayer::currentAnimCol = 0;
 int AnimPlayer::currentAnimRow = 0;
 int AnimPlayer::previousState = 0;
+bool AnimPlayer::singleLoop = false;
+bool AnimPlayer::loopComplete = false;
+
 
 SDL_Point AnimPlayer::lastDirectionVector = { 0, 0 };
 int AnimPlayer::spriteEnum = 0;
@@ -161,8 +164,35 @@ int animation_player_run(SDL_Point movementVector) {
     return Map::ERROR_CUBE;
 }
 
+int animation_player_jump(SDL_Point movementVector) {
+    if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_jump_down_right; }
+    else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_jump_up_left; }
+    else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_jump_down_left; }
+    else if (movementVector.y == -1 && movementVector.x == 0) { return Map::player_girl_jump_up_right; }
+
+    else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_jump_right; }
+    else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_jump_down; }
+    else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_jump_left; }
+    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_jump_up; }
+    return Map::ERROR_CUBE;
+}
+
+int animation_player_running_jump(SDL_Point movementVector) {
+    if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_running_jump_down_right; }
+    else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_running_jump_up_left; }
+    else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_running_jump_down_left; }
+    else if (movementVector.y == -1 && movementVector.x == 0) { return Map::player_girl_running_jump_up_right; }
+
+    else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_running_jump_right; }
+    else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_running_jump_down; }
+    else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_running_jump_left; }
+    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_running_jump_up; }
+    return Map::ERROR_CUBE;
+}
+
 void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
+    singleLoop = false;
 
     // detect et player enam ei liigu
     if ((player.movementVector.x != 0 || player.movementVector.y != 0)) {
@@ -189,6 +219,18 @@ void animation_player(SDL_Renderer* renderer) {
         maxRows = 3; lastRowCols = 1;
         break;
     }
+    case PlayerState::Jump: {
+        spriteEnum = animation_player_jump(lastDirectionVector);
+        maxRows = 2; lastRowCols = 2;
+        singleLoop = true;
+        break;
+    }
+    case PlayerState::RunningJump: {
+        spriteEnum = animation_player_running_jump(lastDirectionVector);
+        maxRows = 1; lastRowCols = 3;
+        singleLoop = true;
+        break;
+    }
     default: {
         std::cout << "Player state is unknown. No spriteEnum for player." << '\n';
         break;
@@ -199,21 +241,15 @@ void animation_player(SDL_Renderer* renderer) {
     if (previousState != static_cast<std::underlying_type_t<PlayerState>>(player.state)) {
         updateFrame = true;
         currentAnimRow = 0; currentAnimCol = 0;
+        loopComplete = false;
     }
     previousState = static_cast<std::underlying_type_t<PlayerState>>(player.state);
 
-    if (updateFrame) {
-        lastUpdate = SDL_GetTicks();
-        currentAnimCol = (currentAnimCol + 1) % 4;
-
-        // std::cout << "x" << currentAnimRow << ' ' << currentAnimCol << '\n';
-
-        if (currentAnimCol == 0) {
-            currentAnimRow += 1;
-        }
-        if (currentAnimRow >= maxRows && currentAnimCol >= lastRowCols) {
-            currentAnimRow = 0; currentAnimCol = 0;
-        }
+    if (singleLoop == true && loopComplete == true) {
+        // use the animation's last frame on repeat.
+        std::cout << "here" << '\n';
+        currentAnimCol = lastRowCols;
+        currentAnimRow = maxRows;
     }
 
     SDL_FRect srcRect = {
@@ -224,4 +260,22 @@ void animation_player(SDL_Renderer* renderer) {
     };
 
     textureMap[spriteEnum].render(renderer, &srcRect, &player.rect);
+
+    // currentAnimCol, Row for next frame.
+    // rendering before this means, it can render the 0,0 index perfect.
+    if (updateFrame) {
+        lastUpdate = SDL_GetTicks();
+
+        currentAnimCol = (currentAnimCol + 1) % 4;
+        std::cout << "x" << currentAnimRow << ' ' << currentAnimCol << " " << "max: " << maxRows << " " << lastRowCols << '\n';
+
+        if (currentAnimCol == 0) {
+            currentAnimRow += 1;
+        }
+        if (currentAnimRow >= maxRows && currentAnimCol >= lastRowCols) {
+            currentAnimRow = 0; currentAnimCol = 0;
+            loopComplete = true;
+            // std::cout << "max col, row reached!" << '\n';
+        }
+    }
 }
