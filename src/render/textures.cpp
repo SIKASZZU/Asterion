@@ -156,6 +156,7 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::INVISIBLE_CUBE] = ImageTexture(renderer, Assets::Images::invisible_cube);
     textureMap[Map::WALL_MARKINGS] = ImageTexture(renderer, Assets::Images::wall_markings);
     textureMap[Map::MAZE_DECO] = ImageTexture(renderer, Assets::Images::maze_deco);
+    textureMap[Map::CAMPFIRE] = ImageTexture(renderer, Assets::Images::campfire);
 }
 
 void destroy_all_textures() {

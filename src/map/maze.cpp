@@ -110,8 +110,8 @@ namespace Maze {
                 }
 
                 if (type == "three") {
-                    map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
-                    map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
+                    // map[start_row + (dir.second != 0 ? dir.second - 3 : dir.second)][start_col + (dir.first != 0 ? dir.first - 3 : dir.first)] = pathway;
+                    // map[start_row + (dir.second != 0 ? dir.second - 1 : dir.second)][start_col + (dir.first != 0 ? dir.first - 1 : dir.first)] = pathway;
                 }
 
                 generate_maze(map, ny, nx, type);

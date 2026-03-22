@@ -27,7 +27,14 @@ namespace Vision {
         // Render darkness to texture
         SDL_SetRenderTarget(renderer, darkness);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        float brightness = daylightSettings.daylightEnabled ? DaylightNS::get_day_brightness() : 1.0f;
+        float brightness;
+        if (daylightSettings.daylightEnabled) {
+            brightness = DaylightNS::get_day_brightness();
+        } else if (v_pressed) {
+            brightness = 0.0f; // force darkness overlay when `v` is pressed
+        } else {
+            brightness = 1.0f;
+        }
         float dayFactor = 1.0f - brightness;
         Uint8 baseClearAlpha = static_cast<Uint8>(120.0f * dayFactor);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, baseClearAlpha);

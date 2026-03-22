@@ -58,6 +58,10 @@ int main(int argc, char* argv[]) {
     testMapEnvironment = false;
     generate_map();
 
+    if (testMapEnvironment) {
+        map[165][165] = Map::CAMPFIRE;
+    }
+
     TerrainClass terrain;
     Vision::create_darkness(renderer);
 

@@ -247,7 +247,6 @@ void animation_player(SDL_Renderer* renderer) {
 
     if (singleLoop == true && loopComplete == true) {
         // use the animation's last frame on repeat.
-        std::cout << "here" << '\n';
         currentAnimCol = lastRowCols;
         currentAnimRow = maxRows;
     }
@@ -267,7 +266,7 @@ void animation_player(SDL_Renderer* renderer) {
         lastUpdate = SDL_GetTicks();
 
         currentAnimCol = (currentAnimCol + 1) % 4;
-        std::cout << "x" << currentAnimRow << ' ' << currentAnimCol << " " << "max: " << maxRows << " " << lastRowCols << '\n';
+        // std::cout << "x" << currentAnimRow << ' ' << currentAnimCol << " " << "max: " << maxRows << " " << lastRowCols << '\n';
 
         if (currentAnimCol == 0) {
             currentAnimRow += 1;

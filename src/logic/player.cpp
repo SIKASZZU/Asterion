@@ -299,7 +299,7 @@ namespace PlayerNS {
         drawLine("(x,y)grid:  " + std::to_string(player.grid.x) + " " + std::to_string(player.grid.y));
 
         // Map Value
-        drawLine("value:      " + std::to_string(map[player.grid.y][player.grid.x]));
+        drawLine("Value: " + std::to_string(map[player.grid.y][player.grid.x]) + " Name: " + std::string(enumMapToString(map[player.grid.y][player.grid.x])));
 
         // Vectors and Input
         drawLine("(x,y)vel:   " + std::to_string(player.velocity.x) + " " + std::to_string(player.velocity.y));

@@ -97,6 +97,7 @@ namespace Raycast {
         }
 
         float distance = 0.0f;
+        bool extraReach = false;
         while (distance < maxRayLength) {
             localEndpoints.insert({ gridY, gridX });
             if (rayLength1D.x < rayLength1D.y) {
@@ -111,9 +112,33 @@ namespace Raycast {
             }
             if (wallValues.find(map[gridY][gridX]) != wallValues.end()) {
                 localEndpoints.insert({ gridY, gridX });
+                extraReach = true;
                 break;
             }
         }
+
+        if (!extraReach) {
+            return distance;
+        }
+
+        {
+            // do an extra reach ahead to make smoother ray endings by showing more walls.
+            if (rayLength1D.x < rayLength1D.y) {
+                gridX += step.x;
+                distance = rayLength1D.x * tileSize;
+                rayLength1D.x += rayUnitStep.x;
+            }
+            else {
+                gridY += step.y;
+                distance = rayLength1D.y * tileSize;
+                rayLength1D.y += rayUnitStep.y;
+            }
+            if (wallValues.find(map[gridY][gridX]) != wallValues.end()) {
+                localEndpoints.insert({ gridY, gridX });
+            }
+
+        }
+
         return distance;
     }
 
