@@ -256,7 +256,7 @@ static const char* enumMapToString(int gridValue) {
 }
 
 
-static const std::unordered_set<int> wallValues = {
+static std::unordered_set<int> wallValues = {
     Map::WALL_CUBE, Map::INGROWN_WALL_CUBE,
     Map::SECTOR_1_WALL_VAL, Map::SECTOR_2_WALL_VAL, Map::SECTOR_3_WALL_VAL
 };

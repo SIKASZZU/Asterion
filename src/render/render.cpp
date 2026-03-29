@@ -454,8 +454,16 @@ void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
             case Map::MAZE_NS_DOOR: {
                 SDL_FRect renderTile = destTile;
                 float relativeTargetClosed = -halfTile;
-                bool gladeDoorsClosed = daylightSettings.day;
-                if (gladeDoorsClosed) {
+                bool gladeDoorsOpen = daylightSettings.day;
+                if (gladeDoorsOpen) {
+                    player.collision_array.erase(gridValue);
+                } else {
+                    player.collision_array.emplace(gridValue);
+
+                }
+                
+                // ta ei peaks alati kalkuleerima seda 0 väärtust yk?
+                if (gladeDoorsOpen) {
                     relativeTargetClosed -= halfTile;
                 }
                 if (savedDoorY == 0) {
@@ -467,6 +475,7 @@ void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
                 else if (savedDoorY > relativeTargetClosed) {
                     savedDoorY = std::max(savedDoorY - elapsedDistance, relativeTargetClosed);
                 }
+
                 elapsedDistance = 0;
                 renderTile.y = destTile.y + savedDoorY;
                 destTile.y -= halfTile;

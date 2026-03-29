@@ -110,7 +110,7 @@ namespace Raycast {
                 distance = rayLength1D.y * tileSize;
                 rayLength1D.y += rayUnitStep.y;
             }
-            if (wallValues.find(map[gridY][gridX]) != wallValues.end()) {
+            if (player.collision_array.find(map[gridY][gridX]) != player.collision_array.end()) {
                 localEndpoints.insert({ gridY, gridX });
                 extraReach = true;
                 break;
@@ -133,7 +133,7 @@ namespace Raycast {
                 distance = rayLength1D.y * tileSize;
                 rayLength1D.y += rayUnitStep.y;
             }
-            if (wallValues.find(map[gridY][gridX]) != wallValues.end()) {
+            if (player.collision_array.find(map[gridY][gridX]) != player.collision_array.end()) {
                 localEndpoints.insert({ gridY, gridX });
             }
 
@@ -173,7 +173,7 @@ namespace Raycast {
         // see func fucking laagab raigelt, ilmselt
         // 1. maxDecaySize too big?
         // 2. retarded arvutused?
-        // return;
+        return;
 
         std::vector<std::pair<int, int>> added;
         {

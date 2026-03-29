@@ -309,6 +309,8 @@ namespace PlayerNS {
         // Speed and State
         drawLine("movementSpeed:  " + std::to_string(player.movementSpeed));
 
+        drawLine("collision: " + std::string(player.collision ? "true" : "false"));
+
         auto stateVal = stateToString(player.state);
         drawLine("state:    " + std::string(stateVal));
         drawLine("shifting: " + std::to_string(player.shifting) + " animationSpeed: " + std::to_string(player.animationSpeed));
