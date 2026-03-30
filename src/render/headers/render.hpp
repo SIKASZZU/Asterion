@@ -44,7 +44,7 @@ namespace ssi {
     constexpr SpritesheetConfig sec2Ground{ 1, 0, 5 };
     constexpr SpritesheetConfig sec3Ground{ 1, 0, 10 };
     constexpr SpritesheetConfig coverGround{ 12, 0, 2 };
-    constexpr SpritesheetConfig coverMaze{ 12, 3, 5 };
+    constexpr SpritesheetConfig coverMaze{ 12, 0, 5 };
     constexpr SpritesheetConfig empty{ 0, 0, 0 };
 }
 

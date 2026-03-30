@@ -15,7 +15,7 @@ bool groundOffsetAdded = false;
 int groundOffsetAmount = 0;
 
 // Suggested constants (adjust to taste)
-const float MAX_SPEED = 400.0f;
+const float MAX_SPEED = 4000.0f; // normal value 400.0f
 const float MAX_WALK_SPEED = MAX_SPEED / 4;
 const float ACCEL = 2000.0f;    // High value for snappy feel
 const float FRICTION = 1500.0f; // How fast player slides to a stop

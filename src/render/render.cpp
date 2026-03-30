@@ -373,7 +373,7 @@ void TerrainClass::create_renderQ_decoration(SDL_Renderer* renderer) {
                 auto it = decorationIndexMap.find(key);
                 if (it == decorationIndexMap.end()) break; // no decoration for this tile
                 int idx = it->second;
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::coverGround.row);  // ssi::groundDecoration.row
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::groundDecoration.row);  // ssi::coverGround.row ?
                 renderQueue.push_back(RenderQueueItem(destTile.y + 1, src, destTile, &textureMap[Map::SPRITESHEET], alpha));
                 break;
             }
@@ -457,11 +457,12 @@ void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
                 bool gladeDoorsOpen = daylightSettings.day;
                 if (gladeDoorsOpen) {
                     player.collision_array.erase(gridValue);
-                } else {
+                }
+                else {
                     player.collision_array.emplace(gridValue);
 
                 }
-                
+
                 // ta ei peaks alati kalkuleerima seda 0 väärtust yk?
                 if (gladeDoorsOpen) {
                     relativeTargetClosed -= halfTile;
