@@ -3,6 +3,7 @@
 struct Offset {
     float x;
     float y;
+    bool flipped = false;
 };
 extern Offset offset;
 

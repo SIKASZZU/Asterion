@@ -25,3 +25,4 @@ struct RenderQueueItem {
 };
 
 extern std::vector<RenderQueueItem> renderQueue;
+extern std::vector<RenderQueueItem> groundRenderQueue;

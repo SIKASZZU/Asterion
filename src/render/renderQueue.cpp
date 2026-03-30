@@ -34,3 +34,4 @@ void RenderQueueItem::call_render(SDL_Renderer* renderer) {
     throw std::logic_error("texture or render function needed for rendering");
 }
 std::vector<RenderQueueItem> renderQueue;
+std::vector<RenderQueueItem> groundRenderQueue;

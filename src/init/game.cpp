@@ -169,6 +169,11 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "Raycast::enabled: " << Raycast::enabled << '\n';
         break;
     }
+    case SDLK_T: {
+        offset.flipped = !offset.flipped;
+        std::cout << "Camera flipped: " << offset.flipped << '\n';
+        break;
+    }
     case SDLK_Y: {
         // enable day
         daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
@@ -250,7 +255,18 @@ void react_to_keyboard_state(const bool* state) {
 }
 
 void game_debug(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
-    SDL_RenderDebugText(renderer, 50, 110, ("FPS: " + std::to_string((int)fps)).c_str());
-    SDL_RenderDebugText(renderer, 50, 130, (std::string("Mem: ") + std::to_string(printMemoryUsage())).c_str());
+    SDL_SetRenderDrawColor(renderer, 100, 240, 240, 255);
+
+    int x = 50;
+    int y = 60;
+    int lineHeight = 20;
+
+    auto drawLine = [&](const std::string& text) {
+        SDL_RenderDebugText(renderer, x, y, text.c_str());
+        y += lineHeight;
+        };
+
+    drawLine("FPS: " + std::to_string((int)fps));
+    drawLine("MEMORY: " + std::to_string(printMemoryUsage()));
+    drawLine("FLIPPED: " + std::string(offset.flipped ? "true" : "false"));
 }

@@ -3,7 +3,7 @@
 #include "offset.hpp"
 #include <iostream>
 /* camera offset */
-Offset offset = { 0, 0 };
+Offset offset = { 0, 0, false };
 
 void update_offset(struct PlayerData& player) {
 
