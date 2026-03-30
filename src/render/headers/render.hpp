@@ -64,6 +64,7 @@ private:
     void create_renderQ_entities();
     void render_entity_grid_highlights(SDL_Renderer* renderer);
     void render_renderQ(SDL_Renderer* renderer);
+    void render_renderQ_ground(SDL_Renderer* renderer);
     int mapIndexLeft;
     int mapIndexRight;
     int mapIndexTop;
@@ -82,4 +83,5 @@ private:
 public:
     void calculate_miscellaneous(float dT);
     void render(SDL_Renderer* renderer);
+    void update(SDL_Renderer* renderer);
 };

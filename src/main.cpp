@@ -115,6 +115,7 @@ int main(int argc, char* argv[]) {
             PlayerNS::update(map, offset, renderer, fixedDeltaTime);
 
             Portal::has_entered();
+            terrain.update(renderer);
             terrain.calculate_miscellaneous(fixedDeltaTime);
         }
         DaylightNS::update_daynight(elapsedMS);

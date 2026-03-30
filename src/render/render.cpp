@@ -518,25 +518,26 @@ void TerrainClass::create_renderQ_entities() {
         renderQueue.push_back(RenderQueueItem(yPos, [&e](SDL_Renderer* renderer) { e.render(renderer); }));
     }
 }
+// renders all of renderable right now
 void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
 
-    // sorting
     std::sort(renderQueue.begin(), renderQueue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
         return a.renderOrder < b.renderOrder;
         });
+
+    for (auto& r : renderQueue) { r.call_render(renderer); }
+
+}
+void TerrainClass::render_renderQ_ground(SDL_Renderer* renderer) {
 
     std::sort(groundRenderQueue.begin(), groundRenderQueue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
         return a.renderOrder < b.renderOrder;
         });
 
-    // rendering // order of these items matter // call the render's of items inside the queue
     for (auto& r : groundRenderQueue) { r.call_render(renderer); }
-    for (auto& r : renderQueue) { r.call_render(renderer); }
 
-    // clear all shit
-    renderQueue.clear();
-    groundRenderQueue.clear();
 }
+
 void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
 
     SDL_FRect destTile = return_destTile(player.grid.y, player.grid.x);
@@ -544,16 +545,23 @@ void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
     textureMap[Map::INVISIBLE_CUBE].render(renderer, &destTile);
 }
 
-void TerrainClass::render(SDL_Renderer* renderer) {
+void TerrainClass::update(SDL_Renderer* renderer) {
+    groundRenderQueue.clear();
+    renderQueue.clear();
+
     create_renderQ_ground(renderer);
     create_renderQ_items(renderer);
     create_renderQ_walls(renderer);
     create_renderQ_colored_cubes(renderer);
     create_renderQ_decoration(renderer);
+    create_renderQ_entities();
+}
+
+void TerrainClass::render(SDL_Renderer* renderer) {
+    render_renderQ_ground(renderer);
+    render_renderQ(renderer);
 
     render_entity_grid_highlights(renderer);
-    create_renderQ_entities();
-    render_renderQ(renderer);
     // overlay minimap on top-right
     render_minimap(renderer);
 }
