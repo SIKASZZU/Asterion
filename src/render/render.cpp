@@ -107,7 +107,10 @@ float TerrainClass::determine_alpha(std::pair<int, int> gridPos) {
 void TerrainClass::calculate_miscellaneous(float dT) {
     elapsedDistance += doorMovingSpeed * dT;
     halfTile = tileSize / 2;
+
     renderQueue.reserve(4 * (renderRadius * renderRadius));
+    groundRenderQueue.reserve(4 * (renderRadius * renderRadius));
+
     playerTileX = static_cast<int>((player.x + player.size / 2) / tileSize);
     playerTileY = static_cast<int>((player.y + player.size / 2) / tileSize);
 
@@ -134,7 +137,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::ground);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::ground.row);
                 destTile.y -= imageShift;
-                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+                groundRenderQueue.push_back(RenderQueueItem(static_cast<int>(destTile.y), src, destTile, &textureMap[Map::SPRITESHEET], alpha));
             }
             if (wallValues.find(gridValue) != wallValues.end()
                 || gridValue == Map::VINE_OVERHANG_SN
@@ -146,7 +149,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
                 destTile.y -= imageShift;
-                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+                groundRenderQueue.push_back(RenderQueueItem(static_cast<int>(destTile.y), src, destTile, &textureMap[Map::SPRITESHEET], alpha));
             }
             switch (gridValue) {
             case Map::VOID_CUBE:
@@ -160,7 +163,11 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
                 destTile.y -= imageShift;
-                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+
+                // textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+
+                groundRenderQueue.push_back(RenderQueueItem(static_cast<int>(destTile.y), src, destTile, &textureMap[Map::SPRITESHEET], alpha));
+
                 break;
             }
             case Map::MAZE_GROUND_CUBE:
@@ -173,7 +180,9 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazePathway);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazePathway.row);
                 destTile.y -= imageShift;
-                textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+                // textureMap[Map::SPRITESHEET].render(renderer, &src, &destTile);
+                groundRenderQueue.push_back(RenderQueueItem(static_cast<int>(destTile.y), src, destTile, &textureMap[Map::SPRITESHEET], alpha));
+
                 break;
             }
             }
@@ -510,9 +519,23 @@ void TerrainClass::create_renderQ_entities() {
     }
 }
 void TerrainClass::render_renderQ(SDL_Renderer* renderer) {
-    std::sort(renderQueue.begin(), renderQueue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) { return a.renderOrder < b.renderOrder; });
+
+    // sorting
+    std::sort(renderQueue.begin(), renderQueue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
+        return a.renderOrder < b.renderOrder;
+        });
+
+    std::sort(groundRenderQueue.begin(), groundRenderQueue.end(), [](const RenderQueueItem& a, const RenderQueueItem& b) {
+        return a.renderOrder < b.renderOrder;
+        });
+
+    // rendering // order of these items matter // call the render's of items inside the queue
+    for (auto& r : groundRenderQueue) { r.call_render(renderer); }
     for (auto& r : renderQueue) { r.call_render(renderer); }
+
+    // clear all shit
     renderQueue.clear();
+    groundRenderQueue.clear();
 }
 void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
 

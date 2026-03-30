@@ -9,8 +9,12 @@
 /// @param yGrid Y-grid
 /// @return Returns coordinates.
 SDL_FPoint to_isometric_grid_coordinate(float xGrid, float yGrid) {
-    float rowCoord = xGrid * (0.5 * tileSize) + yGrid * (-0.5 * tileSize) + offset.x;
-    float colCoord = xGrid * (0.25 * tileSize) + yGrid * (0.25 * tileSize) + offset.y;
+    // base transform (world grid -> isometric screen coords)
+    float baseRow = xGrid * (0.5f * tileSize) + yGrid * (-0.5f * tileSize);
+    float baseCol = xGrid * (0.25f * tileSize) + yGrid * (0.25f * tileSize);
+
+    float rowCoord = offset.flipped ? -baseRow + offset.x : baseRow + offset.x;
+    float colCoord = offset.flipped ? -baseCol + offset.y : baseCol + offset.y;
     return { rowCoord, colCoord };
 
 }
@@ -19,8 +23,10 @@ SDL_FPoint to_isometric_grid_coordinate(float xGrid, float yGrid) {
 /// @param yGrid Y-grid
 /// @return Returns coordinates.
 SDL_FPoint to_isometric_coordinate(float xGrid, float yGrid) {
-    float rowCoord = xGrid * (0.5) + yGrid * (-0.5);
-    float colCoord = xGrid * (0.25) + yGrid * (0.25);
+    float baseRow = xGrid * (0.5f) + yGrid * (-0.5f);
+    float baseCol = xGrid * (0.25f) + yGrid * (0.25f);
+    float rowCoord = offset.flipped ? -baseRow : baseRow;
+    float colCoord = offset.flipped ? -baseCol : baseCol;
     return { rowCoord, colCoord };
 
 }
@@ -33,5 +39,9 @@ SDL_FPoint to_screen_coordinate(float rowCoord, float colCoord) {
     float cy = colCoord - offset.y;
     float xGrid = (rx + 2 * cy) / tileSize;
     float yGrid = (2 * cy - rx) / tileSize;
+    if (offset.flipped) {
+        xGrid = -xGrid;
+        yGrid = -yGrid;
+    }
     return { xGrid, yGrid };
 }

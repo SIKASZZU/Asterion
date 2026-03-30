@@ -103,6 +103,11 @@ namespace PlayerNS {
             if (!state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W]) { dir.y = 0; }
         }
         player.movementVector = { dir.x, dir.y };
+
+        if (offset.flipped) {
+            player.movementVector.x = -player.movementVector.x;
+            player.movementVector.y = -player.movementVector.y;
+        }
     }
 
     SDL_FPoint validate_velocity(SDL_FPoint newVelocity) {

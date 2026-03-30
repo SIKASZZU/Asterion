@@ -194,23 +194,33 @@ void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
     singleLoop = false;
 
+
+    SDL_Point movementVector = player.movementVector;
+
+    // flip around again, to fix for correct animation directions
+    if (offset.flipped) {
+        movementVector.x = -movementVector.x;
+        movementVector.y = -movementVector.y;
+    }
+
+
     // detect et player enam ei liigu
-    if ((player.movementVector.x != 0 || player.movementVector.y != 0)) {
-        lastDirectionVector = player.movementVector;
+    if ((movementVector.x != 0 || movementVector.y != 0)) {
+        lastDirectionVector = movementVector;
     }
     else if (player.state != PlayerState::Idle) {
-        player.movementVector = lastDirectionVector;
+        movementVector = lastDirectionVector;
     }
 
     int maxRows, lastRowCols;
     switch (player.state) {
     case PlayerState::Walk: {
-        spriteEnum = animation_player_walk(player.movementVector);
+        spriteEnum = animation_player_walk(movementVector);
         maxRows = 2; lastRowCols = 1;
         break;
     }
     case PlayerState::Run: {
-        spriteEnum = animation_player_run(player.movementVector);
+        spriteEnum = animation_player_run(movementVector);
         maxRows = 1; lastRowCols = 1;
         break;
     }
