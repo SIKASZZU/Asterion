@@ -221,6 +221,7 @@ namespace Raycast {
         float distMoved = hypotf(currentPos.x - lastComputedSource.x, currentPos.y - lastComputedSource.y);
 
         // Only request a new one if we aren't already busy
+        // todo:: if you dont move and doors open/close, the raycast doesnt realise to update visibility.
         if (distMoved > tileSize * 0.5f && !computeRequested.load()) {
             request_calculation();
         }

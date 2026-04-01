@@ -46,4 +46,5 @@ namespace PlayerNS {
     void update(int map[mapSize][mapSize], struct Offset& offset, SDL_Renderer* renderer, float deltaTime);
     void create_movementVector(const bool* state);
     void debug(SDL_Renderer* renderer);
+    void init();
 }

@@ -12,7 +12,6 @@
 
 const SDL_Point spawnpointGrid = { x: mapSize / 2, y : mapSize / 2 };
 bool groundOffsetAdded = false;
-int groundOffsetAmount = 0;
 
 // Suggested constants (adjust to taste)
 const float MAX_SPEED = 4000.0f; // normal value 400.0f
@@ -22,26 +21,7 @@ const float FRICTION = 1500.0f; // How fast player slides to a stop
 const float GRAVITY = 2000.0f; // Gravity for jump (pixels/s^2)
 const float JUMP_VELOCITY = 350.0f; // Initial jump velocity (pixels/s)
 
-PlayerData player = {
-    state: PlayerState::Idle,
-    movementSpeed : PlayerNS::defaultMovementSpeed,
-    size : (tileSize),
-    grid : (spawnpointGrid.x, spawnpointGrid.y),
-    x : static_cast<float>(spawnpointGrid.x * tileSize),
-    y : static_cast<float>(spawnpointGrid.y * tileSize),
-    rect : {0.0, 0.0, 0.0, 0.0},
-    collision : false,
-    collision_array : wallValues,
-    movementVector : {0, 0},
-    velocity : {0, 0},
-    animationSpeed : 1,
-    shifting : false,
-    jumping : false,
-    z : 0.0f,
-    zVelocity : 0.0f,
-    lastMovementKey : 'a',
-    cartesianMovement : false,
-};
+PlayerData player = {};
 
 const char* stateToString(PlayerState s) {
     switch (s) {
@@ -56,8 +36,9 @@ const char* stateToString(PlayerState s) {
 
 namespace PlayerNS {
     float tilesPerSecond = 2.0f;
-    float defaultMovementSpeed = tileSize * tilesPerSecond;
-    float defaultMovementSpeedShifting = defaultMovementSpeed / 4;
+    float defaultMovementSpeed = 0.0f;
+    float defaultMovementSpeedShifting = 0.0f;
+
 
     void create_movementVector(const bool* state) {
         SDL_Point dir = { 0, 0 };
@@ -114,6 +95,7 @@ namespace PlayerNS {
         SDL_FRect templatePlayerRect = {
             player.x,
             player.y,
+            // todo: fix / 2
             // see / 2 on h2kk, sest player size on nyyd full tileSize. COllision arvutamise m6ttes, tegin /2
             player.rect.w / 2,
             player.rect.h / 2
@@ -138,19 +120,20 @@ namespace PlayerNS {
 
         // apply ground offset to player.y
         auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
+        int groundOffsetAmount = 0;
+
         if (it != randomOffsetsGround.end()) {
-            groundOffsetAmount = it->second / 2;
-        }
-        else {
-            groundOffsetAmount = 0;
+            groundOffsetAmount = it->second;
         }
 
-        float x = player.x + player.size / 4.0f;
-        float y = player.y - player.size / 4.0f;
-        SDL_FPoint coords = to_isometric_coordinate(x, y);
+        // float x = player.x;  //  + player.size //  / 4.0f
+        // float y = player.y;  //  - player.size //  / 4.0f
+        SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
+
+
         player.rect = {
-            coords.x - (player.size / 4) + offset.x,
-            coords.y - (player.size / 4) + offset.y - groundOffsetAmount - player.z,
+            coords.x + offset.x, // - (player.size / 4) 
+            coords.y + offset.y - groundOffsetAmount - player.z, // - (player.size / 4) 
             player.size,
             player.size
         };
@@ -218,11 +201,7 @@ namespace PlayerNS {
     }
 
     void set_state() {
-        // TODO: idle needs to be the default return but player.movementVector doesnt get reset for some reason.
-        // if (player.velocity.x == 0 && player.velocity.y == 0 && !player.jumping) {
-        //     player.state = PlayerState::Idle;
-        //     return;
-        // }
+
         if (player.jumping && player.state != PlayerState::Run && player.state != PlayerState::RunningJump) {
             player.state = PlayerState::Jump;
             return;
@@ -268,6 +247,32 @@ namespace PlayerNS {
             break;
         }
         }
+    }
+
+    void init() {
+        defaultMovementSpeed = tileSize * tilesPerSecond;
+        defaultMovementSpeedShifting = defaultMovementSpeed / 4.0f;
+
+        player.state = PlayerState::Idle;
+        player.movementSpeed = defaultMovementSpeed;
+        player.size = tileSize;
+        player.grid = { spawnpointGrid.x, spawnpointGrid.y };
+        player.x = static_cast<float>(spawnpointGrid.x * tileSize);
+        player.y = static_cast<float>(spawnpointGrid.y * tileSize);
+        player.rect = { 0.0f, 0.0f, player.size, player.size };
+        player.collision = false;
+        player.collision_array = wallValues;
+        player.movementVector = { 0, 0 };
+        player.velocity = { 0.0f, 0.0f };
+        player.animationSpeed = 1;
+        player.shifting = false;
+        player.jumping = false;
+        player.z = 0.0f;
+        player.zVelocity = 0.0f;
+        player.lastMovementKey = 'a';
+        player.cartesianMovement = false;
+
+        update_rect();
     }
 
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {

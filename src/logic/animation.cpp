@@ -134,8 +134,7 @@ int animation_player_idle(SDL_Point movementVector) {
     else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_idle_right; }
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_idle_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_idle_left; }
-    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_idle_up; }
-    return Map::ERROR_CUBE;
+    else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_idle_up; }
 }
 
 int animation_player_walk(SDL_Point movementVector) {
@@ -147,8 +146,7 @@ int animation_player_walk(SDL_Point movementVector) {
     else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_walk_right; }
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_walk_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_walk_left; }
-    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_walk_up; }
-    return Map::ERROR_CUBE;
+    else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_walk_up; }
 }
 
 int animation_player_run(SDL_Point movementVector) {
@@ -160,8 +158,7 @@ int animation_player_run(SDL_Point movementVector) {
     else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_run_right; }
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_run_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_run_left; }
-    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_run_up; }
-    return Map::ERROR_CUBE;
+    else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_run_up; }
 }
 
 int animation_player_jump(SDL_Point movementVector) {
@@ -173,8 +170,7 @@ int animation_player_jump(SDL_Point movementVector) {
     else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_jump_right; }
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_jump_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_jump_left; }
-    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_jump_up; }
-    return Map::ERROR_CUBE;
+    else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_jump_up; }
 }
 
 int animation_player_running_jump(SDL_Point movementVector) {
@@ -186,8 +182,7 @@ int animation_player_running_jump(SDL_Point movementVector) {
     else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_running_jump_right; }
     else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_running_jump_down; }
     else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_running_jump_left; }
-    else if (movementVector.x == -1 && movementVector.y == -1) { return Map::player_girl_running_jump_up; }
-    return Map::ERROR_CUBE;
+    else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_running_jump_up; }
 }
 
 void animation_player(SDL_Renderer* renderer) {
@@ -202,7 +197,6 @@ void animation_player(SDL_Renderer* renderer) {
         movementVector.x = -movementVector.x;
         movementVector.y = -movementVector.y;
     }
-
 
     // detect et player enam ei liigu
     if ((movementVector.x != 0 || movementVector.y != 0)) {

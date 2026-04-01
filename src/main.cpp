@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
     load_textures(renderer);
 
     srand(static_cast<unsigned int>(std::time(NULL)));
+    PlayerNS::init();
 
     testMapEnvironment = false;
     generate_map();
