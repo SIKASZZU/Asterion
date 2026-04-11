@@ -11,6 +11,7 @@ enum class EnemyState {
     Run,
     Dead,
     Raise,
+    Attack,
 };
 
 
@@ -19,6 +20,7 @@ enum class EnemyActivity {
     Roam,
     Chase,
     Raise,
+    Attack,
 };
 
 const char* stateToString(EnemyState s);
@@ -77,6 +79,9 @@ private:
     bool hasRoamingTarget;
     float standingTimer;
     float standingTimerMax;
+    float attackCooldown;
+    float attackCooldownMax;
+    int attackDamage;
 
     // Per-instance animation state (previously shared across all enemies)
     Uint32 anim_lastUpdate;

@@ -68,6 +68,19 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (lastDirection.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_raise0_animation; }
         break;
     }
+    case EnemyState::Attack: {
+        animationSpeed = 50;
+        if (lastDirection.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_attack1_135_animation; }
+        if (lastDirection.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_attack1_315_animation; }
+        if (lastDirection.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_attack1_225_animation; }
+        if (lastDirection.y == -1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_attack1_45_animation; }
+
+        if (lastDirection.y == -1 && movementVector.x == 1) { anim_spriteEnum = Map::spider_attack1_90_animation; }
+        if (lastDirection.x == 1 && movementVector.y == 1) { anim_spriteEnum = Map::spider_attack1_180_animation; }
+        if (lastDirection.y == 1 && movementVector.x == -1) { anim_spriteEnum = Map::spider_attack1_270_animation; }
+        if (lastDirection.x == -1 && movementVector.y == -1) { anim_spriteEnum = Map::spider_attack1_0_animation; }
+        break;
+    }
     default: {
         std::cout << "Enemy state is unknown. No spriteEnum for enemy" << '\n';
         break;
@@ -272,6 +285,11 @@ void animation_player(SDL_Renderer* renderer) {
         // use the animation's last frame on repeat.
         currentAnimCol = lastRowCols;
         currentAnimRow = maxRows;
+
+        if (player.state == PlayerState::Damage) {
+            player.state = PlayerState::Idle;
+        }
+
     }
 
     SDL_FRect srcRect = {

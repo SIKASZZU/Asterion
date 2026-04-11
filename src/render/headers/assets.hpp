@@ -141,5 +141,23 @@ namespace Assets {
         static const char* spider_raise180_animation = "resources/spider/Raise/Raise_Body_180.png";
         static const char* spider_raise270_animation = "resources/spider/Raise/Raise_Body_270.png";
         static const char* spider_raise0_animation = "resources/spider/Raise/Raise_Body_0.png";
+        // attack 1
+        static const char* spider_attack1_45_animation = "resources/spider/Attack1/Attack1_Body_045.png";
+        static const char* spider_attack1_135_animation = "resources/spider/Attack1/Attack1_Body_135.png";
+        static const char* spider_attack1_225_animation = "resources/spider/Attack1/Attack1_Body_225.png";
+        static const char* spider_attack1_315_animation = "resources/spider/Attack1/Attack1_Body_315.png";
+        static const char* spider_attack1_90_animation = "resources/spider/Attack1/Attack1_Body_090.png";
+        static const char* spider_attack1_180_animation = "resources/spider/Attack1/Attack1_Body_180.png";
+        static const char* spider_attack1_270_animation = "resources/spider/Attack1/Attack1_Body_270.png";
+        static const char* spider_attack1_0_animation = "resources/spider/Attack1/Attack1_Body_0.png";
+        // attack 2
+        static const char* spider_attack2_45_animation = "resources/spider/Attack2/Attack2_Body_045.png";
+        static const char* spider_attack2_135_animation = "resources/spider/Attack2/Attack2_Body_135.png";
+        static const char* spider_attack2_225_animation = "resources/spider/Attack2/Attack2_Body_225.png";
+        static const char* spider_attack2_315_animation = "resources/spider/Attack2/Attack2_Body_315.png";
+        static const char* spider_attack2_90_animation = "resources/spider/Attack2/Attack2_Body_090.png";
+        static const char* spider_attack2_180_animation = "resources/spider/Attack2/Attack2_Body_180.png";
+        static const char* spider_attack2_270_animation = "resources/spider/Attack2/Attack2_Body_270.png";
+        static const char* spider_attack2_0_animation = "resources/spider/Attack2/Attack2_Body_0.png";
     }
 }

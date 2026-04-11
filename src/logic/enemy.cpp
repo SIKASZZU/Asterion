@@ -48,6 +48,9 @@ Enemy::Enemy(int gx, int gy)
     roamingDistanceTraveled(0.0f),
     hasRoamingTarget(false),
     standingTimer(0.0f),
+    attackCooldown(0.0f),
+    attackCooldownMax(1.0f),
+    attackDamage(10),
     state{ EnemyState::Idle },
     activity{ EnemyActivity::Roam },
     anim_lastUpdate(SDL_GetTicks()),
@@ -75,6 +78,7 @@ const char* activityToString(EnemyActivity a) {
     case (EnemyActivity::Roam): return "Roam"; break;
     case (EnemyActivity::Chase): return "Chase"; break;
     case (EnemyActivity::Raise): return "Raise"; break;
+    case (EnemyActivity::Attack): return "Attack"; break;
     default: return "Unconfigured activity"; break;
     }
 }
@@ -97,6 +101,10 @@ void Enemy::choose_state() {
         state = EnemyState::Raise;
         break;
     }
+    case EnemyActivity::Attack: {
+        state = EnemyState::Attack;
+        break;
+    }
     }
 }
 
@@ -114,18 +122,22 @@ void Enemy::choose_activity(SDL_Point tG) {
         // }
     }
 
-    // Attack Range Check
-    if (activity == EnemyActivity::Chase) {
-        if (dist <= tileSize * 0.8f) { // Within 80% of a tile
-            activity = EnemyActivity::Idle;
-        }
+    // Attack Range Check: Within 80% of a tile
+    if (activity == EnemyActivity::Chase && dist <= tileSize * 0.8f) {
+        activity = EnemyActivity::Attack;
     }
+
+    // // Return to chasing if out of attack range
+    // else if (activity == EnemyActivity::Attack && dist > tileSize * 1.2f) {
+    //     activity = EnemyActivity::Chase;
+    // }
 
     // If we were chasing but reached the last known location and player is gone
     if (activity == EnemyActivity::Chase && grid.x == lastKnownPlayerGrid.x && grid.y == lastKnownPlayerGrid.y) {
         activity = EnemyActivity::Roam;
         hasRoamingTarget = false;
     }
+
     if (spawning == true) {
         activity = EnemyActivity::Raise;
     }
@@ -378,6 +390,17 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
     choose_state();
     choose_target(map, playerGrid);
 
+    // Handle attack cooldown
+    if (attackCooldown > 0.0f) {
+        attackCooldown -= dT;
+    }
+
+    // Deal damage to player if attacking and cooldown is ready
+    if (activity == EnemyActivity::Attack && attackCooldown <= 0.0f) {
+        player.state = PlayerState::Damage;
+        attackCooldown = attackCooldownMax;  // Reset cooldown
+    }
+
     if (activity == EnemyActivity::Raise) {
         velocity = SDL_FPoint{ 0,0 };
         return;
@@ -394,6 +417,12 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
     if (activity == EnemyActivity::Roam && standingTimer < standingTimerMax) {
         standingTimer += dT;
         state = EnemyState::Idle;
+        return;
+    }
+
+    // Don't move while attacking
+    if (activity == EnemyActivity::Attack) {
+        velocity = SDL_FPoint{ 0.0f, 0.0f };
         return;
     }
 

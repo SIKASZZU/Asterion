@@ -30,6 +30,7 @@ const char* stateToString(PlayerState s) {
     case (PlayerState::Run): return "Run"; break;
     case (PlayerState::Jump): return "Jump"; break;
     case (PlayerState::RunningJump): return "RunningJump"; break;
+    case (PlayerState::Damage): return "Damage"; break;
     default: return "Unconfigured state"; break;
     }
 }
@@ -206,6 +207,11 @@ namespace PlayerNS {
             player.state = PlayerState::Jump;
             return;
         }
+
+        else if (player.state == PlayerState::Damage) {
+            return;
+        }
+
         else if (player.jumping) {
             player.state = PlayerState::RunningJump;
             return;
@@ -246,8 +252,12 @@ namespace PlayerNS {
             player.animationSpeed = 65;
             break;
         }
+        case (PlayerState::Damage): {
+            player.animationSpeed = 100;
+            break;
+        }
         default: {
-            std::cout << "Animation speed not specified. Default set.";
+            std::cout << "Animation speed not specified. Default set." << '\n';
             player.animationSpeed = 100;
             break;
         }
@@ -281,15 +291,12 @@ namespace PlayerNS {
     }
 
     void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
-        calculate_new_coordinates(deltaTime);
-
-        // Always update the collision/render rect so `player.z` (vertical jump)
-        // is applied even when the player is standing still.
-
-        // if (!isEmpty(player.velocity)) update_rect();
-        // // here, jsut because first time rect is empty and do it for sakes
-        // else if (isEmpty(player.rect)) update_rect();
         set_state();
+
+        if (player.state != PlayerState::Damage) {
+            calculate_new_coordinates(deltaTime);
+        }
+
         update_rect();
         update_animation_speed();
     }

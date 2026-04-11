@@ -133,6 +133,15 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::spider_raise180_animation] = ImageTexture(renderer, Assets::Spider::spider_raise180_animation);
     textureMap[Map::spider_raise270_animation] = ImageTexture(renderer, Assets::Spider::spider_raise270_animation);
     textureMap[Map::spider_raise0_animation] = ImageTexture(renderer, Assets::Spider::spider_raise0_animation);
+    // spider attack1
+    textureMap[Map::spider_attack1_45_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_45_animation);
+    textureMap[Map::spider_attack1_135_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_135_animation);
+    textureMap[Map::spider_attack1_225_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_225_animation);
+    textureMap[Map::spider_attack1_315_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_315_animation);
+    textureMap[Map::spider_attack1_90_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_90_animation);
+    textureMap[Map::spider_attack1_180_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_180_animation);
+    textureMap[Map::spider_attack1_270_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_270_animation);
+    textureMap[Map::spider_attack1_0_animation] = ImageTexture(renderer, Assets::Spider::spider_attack1_0_animation);
 
     textureMap[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
     textureMap[Map::TREE_TRUNK] = ImageTexture(renderer, Assets::Images::tree_trunk);

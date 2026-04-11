@@ -176,6 +176,11 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
     }
     case SDLK_O: {
         player.state = PlayerState::Damage;
+        for (int i = 0; auto& e : enemyArray) {
+            e.activity = EnemyActivity::Attack;
+            i++;
+        }
+        break;
         std::cout << "Damage animation!" << '\n';
         break;
     }
