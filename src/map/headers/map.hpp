@@ -57,6 +57,15 @@ enum Map {
     player_girl_running_jump_up,
     player_girl_running_jump_up_left,
     player_girl_running_jump_up_right,
+    // player damage
+    player_girl_damage_down,
+    player_girl_damage_down_left,
+    player_girl_damage_down_right,
+    player_girl_damage_right,
+    player_girl_damage_left,
+    player_girl_damage_up,
+    player_girl_damage_up_left,
+    player_girl_damage_up_right,
 
     // spider run
     spider_run45_animation,
@@ -182,6 +191,14 @@ static const char* enumMapToString(int gridValue) {
     case Map::player_girl_running_jump_up: { return "Map::player_girl_running_jump_up"; break; }
     case Map::player_girl_running_jump_up_left: { return "Map::player_girl_running_jump_up_left"; break; }
     case Map::player_girl_running_jump_up_right: { return "Map::player_girl_running_jump_up_right"; break; }
+    case Map::player_girl_damage_down: { return "Map::player_girl_damage_down"; break; }
+    case Map::player_girl_damage_down_left: { return "Map::player_girl_damage_down_left"; break; }
+    case Map::player_girl_damage_down_right: { return "Map::player_girl_damage_down_right"; break; }
+    case Map::player_girl_damage_right: { return "Map::player_girl_damage_right"; break; }
+    case Map::player_girl_damage_left: { return "Map::player_girl_damage_left"; break; }
+    case Map::player_girl_damage_up: { return "Map::player_girl_damage_up"; break; }
+    case Map::player_girl_damage_up_left: { return "Map::player_girl_damage_up_left"; break; }
+    case Map::player_girl_damage_up_right: { return "Map::player_girl_damage_up_right"; break; }
     case Map::spider_run45_animation: { return "Map::spider_run45_animation"; break; }
     case Map::spider_run135_animation: { return "Map::spider_run135_animation"; break; }
     case Map::spider_run225_animation: { return "Map::spider_run225_animation"; break; }

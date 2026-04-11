@@ -185,6 +185,18 @@ int animation_player_running_jump(SDL_Point movementVector) {
     else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_running_jump_up; }
 }
 
+int animation_player_damage(SDL_Point movementVector) {
+    if (movementVector.x == 1 && movementVector.y == 0) { return Map::player_girl_damage_down_right; }
+    else if (movementVector.x == -1 && movementVector.y == 0) { return Map::player_girl_damage_up_left; }
+    else if (movementVector.y == 1 && movementVector.x == 0) { return Map::player_girl_damage_down_left; }
+    else if (movementVector.y == -1 && movementVector.x == 0) { return Map::player_girl_damage_up_right; }
+
+    else if (movementVector.y == -1 && movementVector.x == 1) { return Map::player_girl_damage_right; }
+    else if (movementVector.x == 1 && movementVector.y == 1) { return Map::player_girl_damage_down; }
+    else if (movementVector.y == 1 && movementVector.x == -1) { return Map::player_girl_damage_left; }
+    else /* (movementVector.x == -1 && movementVector.y == -1) */ { return Map::player_girl_damage_up; }
+}
+
 void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
     singleLoop = false;
@@ -235,6 +247,13 @@ void animation_player(SDL_Renderer* renderer) {
         singleLoop = true;
         break;
     }
+    case PlayerState::Damage: {
+        spriteEnum = animation_player_damage(lastDirectionVector);
+        maxRows = 3; lastRowCols = 3;
+        singleLoop = true;
+        break;
+    }
+
     default: {
         std::cout << "Player state is unknown. No spriteEnum for player." << '\n';
         break;

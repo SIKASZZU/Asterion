@@ -246,6 +246,11 @@ namespace PlayerNS {
             player.animationSpeed = 65;
             break;
         }
+        default: {
+            std::cout << "Animation speed not specified. Default set.";
+            player.animationSpeed = 100;
+            break;
+        }
         }
     }
 

@@ -174,6 +174,11 @@ void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct O
         std::cout << "Camera flipped: " << offset.flipped << '\n';
         break;
     }
+    case SDLK_O: {
+        player.state = PlayerState::Damage;
+        std::cout << "Damage animation!" << '\n';
+        break;
+    }
     case SDLK_Y: {
         // enable day
         daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;

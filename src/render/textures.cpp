@@ -87,6 +87,15 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::player_girl_running_jump_up] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_up);
     textureMap[Map::player_girl_running_jump_up_left] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_up_left);
     textureMap[Map::player_girl_running_jump_up_right] = ImageTexture(renderer, Assets::Player::player_girl_running_jump_up_right);
+    // player damage
+    textureMap[Map::player_girl_damage_down] = ImageTexture(renderer, Assets::Player::player_girl_damage_down);
+    textureMap[Map::player_girl_damage_down_left] = ImageTexture(renderer, Assets::Player::player_girl_damage_down_left);
+    textureMap[Map::player_girl_damage_down_right] = ImageTexture(renderer, Assets::Player::player_girl_damage_down_right);
+    textureMap[Map::player_girl_damage_right] = ImageTexture(renderer, Assets::Player::player_girl_damage_right);
+    textureMap[Map::player_girl_damage_left] = ImageTexture(renderer, Assets::Player::player_girl_damage_left);
+    textureMap[Map::player_girl_damage_up] = ImageTexture(renderer, Assets::Player::player_girl_damage_up);
+    textureMap[Map::player_girl_damage_up_left] = ImageTexture(renderer, Assets::Player::player_girl_damage_up_left);
+    textureMap[Map::player_girl_damage_up_right] = ImageTexture(renderer, Assets::Player::player_girl_damage_up_right);
 
     // spider run
     textureMap[Map::spider_run45_animation] = ImageTexture(renderer, Assets::Spider::spider_run45_animation);

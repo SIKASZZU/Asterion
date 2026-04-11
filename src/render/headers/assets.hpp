@@ -92,6 +92,16 @@ namespace Assets {
         static const char* player_girl_running_jump_up = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_Up.png";
         static const char* player_girl_running_jump_up_left = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_UpLeft.png";
         static const char* player_girl_running_jump_up_right = "resources/player/GirlSampleRunningJump/GirlSample_RunningJump_UpRight.png";
+
+        // damage
+        static const char* player_girl_damage_down = "resources/player/GirlSampleDamaged/GirlSample_Damaged_Down.png";
+        static const char* player_girl_damage_down_left = "resources/player/GirlSampleDamaged/GirlSample_Damaged_DownLeft.png";
+        static const char* player_girl_damage_down_right = "resources/player/GirlSampleDamaged/GirlSample_Damaged_DownRight.png";
+        static const char* player_girl_damage_right = "resources/player/GirlSampleDamaged/GirlSample_Damaged_Right.png";
+        static const char* player_girl_damage_left = "resources/player/GirlSampleDamaged/GirlSample_Damaged_Left.png";
+        static const char* player_girl_damage_up = "resources/player/GirlSampleDamaged/GirlSample_Damaged_Up.png";
+        static const char* player_girl_damage_up_left = "resources/player/GirlSampleDamaged/GirlSample_Damaged_UpLeft.png";
+        static const char* player_girl_damage_up_right = "resources/player/GirlSampleDamaged/GirlSample_Damaged_UpRight.png";
     }
 
     namespace Spider {

@@ -11,6 +11,7 @@ enum class PlayerState {
     Run,
     Jump,
     RunningJump,
+    Damage,
 };
 
 // PlayerState state;
