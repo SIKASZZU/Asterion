@@ -3,6 +3,7 @@
 #include "assets.hpp"
 #include "render.hpp"
 #include "offset.hpp"
+#include "renderQueue.hpp"
 
 #include <vector>
 #include <iostream>
@@ -204,15 +205,12 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> gridPos)
     return nullptr;
 }
 
-void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
-    int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile) {
-    SDL_FRect srcTile = { 0, 0, Texture::spriteWidth, Texture::spriteHeight };
+void create_void_and_surrounding(SDL_Renderer* renderer, int map[mapSize][mapSize], std::pair<int, int> gridPos) {
     auto [row, col] = gridPos;
 
     if (map[row][col] == Map::VOID_CUBE) {
         // VOID_CUBE_NEIGHBOUR on 2x2 tilemap, VOID_CUBE on single tile.
-        srcTile.x = 32; srcTile.y = 0;
-        textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+
         // change 2x2 to VOID_CUBE_NEIGHBOURS
         map[row + 1][col] = Map::VOID_CUBE_NEIGHBOUR;  // East
         map[row][col + 1] = Map::VOID_CUBE_NEIGHBOUR;  // West
@@ -237,22 +235,35 @@ void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
             }
         }
     }
+}
+
+void render_void_tilemap(SDL_Renderer* renderer, int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile) {
+    auto [row, col] = gridPos;
+    create_void_and_surrounding(renderer, map, gridPos);
+    SDL_FRect srcTile = { 32, 0, Texture::spriteWidth, Texture::spriteHeight };
+
+    if (map[row][col] == Map::VOID_CUBE) {
+        srcTile.x = 32, srcTile.y = 0;
+        // textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+    }
+
     if (map[row][col] == Map::VOID_CUBE_NEIGHBOUR) {
+
         // check surroudings
         if (map[row - 1][col] == VOID_CUBE) {
             srcTile.x = 0, srcTile.y = 32;
-            textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+            // textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
         }
         else if (map[row][col - 1] == VOID_CUBE) {
             srcTile.x = 32, srcTile.y = 32;
-            textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+            // textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
         }
-        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR
-            && map[row][col - 1] == VOID_CUBE_NEIGHBOUR) {
+        else if (map[row - 1][col] == VOID_CUBE_NEIGHBOUR && map[row][col - 1] == VOID_CUBE_NEIGHBOUR) {
             srcTile.x = 0, srcTile.y = 0;
-            textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
+            // textureMap[Map::VOID_CUBE_NEIGHBOUR].render(renderer, &srcTile, &destTile);
         }
     }
+    groundRenderQueue.push_back(RenderQueueItem(static_cast<int>(destTile.y), srcTile, destTile, &textureMap[Map::VOID_CUBE_NEIGHBOUR], 1.0f));
 }
 
 /* Texture method definitions*/

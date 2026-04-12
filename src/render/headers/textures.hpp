@@ -25,8 +25,7 @@ extern std::unordered_map<std::pair<int, int>, int, pair_hash> gridVines;
 
 void load_textures(SDL_Renderer* renderer);
 void destroy_all_textures();
-void render_void_tilemap(SDL_Renderer* renderer, struct Offset& offset,
-  int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile);
+void render_void_tilemap(SDL_Renderer* renderer, int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile);
 
 Texture* choose_cube_vine_texture(std::string type = "", std::pair<int, int> gridPos = { -1, -1 });
 

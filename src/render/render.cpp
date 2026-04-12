@@ -154,7 +154,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
             switch (gridValue) {
             case Map::VOID_CUBE:
             case Map::VOID_CUBE_NEIGHBOUR: {
-                render_void_tilemap(renderer, offset, map, gridPos, destTile);
+                render_void_tilemap(renderer, map, gridPos, destTile);
                 break;
             }
             case Map::MAZE_WE_DOOR:
