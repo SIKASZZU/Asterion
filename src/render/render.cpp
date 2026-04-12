@@ -539,11 +539,52 @@ void TerrainClass::render_renderQ_ground(SDL_Renderer* renderer) {
 }
 
 void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
+    if (!debugText) return;
 
-    if (debugText) {
-        SDL_FRect destTile = return_destTile(player.grid.y, player.grid.x);
-        textureMap[Map::INVISIBLE_CUBE].render(renderer, &destTile);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+    // Compute orthographic camera offset that centers the player
+    // loe sessiooni et teada saada miks 
+    float orthoOffsetX = static_cast<float>(screenWidth) / 2.0f - (player.x + player.size / 2.0f);
+    float orthoOffsetY = static_cast<float>(screenHeight) / 2.0f - (player.y + player.size / 2.0f);
+
+    for (int row = mapIndexTop; row <= mapIndexBottom; ++row) {
+        for (int column = mapIndexLeft; column <= mapIndexRight; ++column) {
+
+            std::pair<int, int> gridPos = { row, column };
+            int gridValue = map[row][column];
+            if (is_grid_not_renderable(gridPos, gridValue)) continue;
+
+            if (player.collision_array.find(gridValue) == player.collision_array.end()) continue;
+
+            SDL_SetRenderDrawColor(renderer, 255, 120, 255, 255);
+            if (wallValues.find(gridValue) == wallValues.end()) {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            }
+
+            float sx = column * tileSize + orthoOffsetX;
+            float sy = row * tileSize + orthoOffsetY;
+
+            SDL_FRect r = { sx, sy, tileSize, tileSize };
+            SDL_RenderRect(renderer, &r);
+
+            SDL_RenderPoint(renderer, r.x, r.y);
+            SDL_RenderPoint(renderer, r.x + r.w - 1.0f, r.y + r.h - 1.0f);
+
+            // show numeric screen coords (top-left) for quick inspection
+            std::string coordText = std::to_string(static_cast<int>(std::round(r.x))) + "," + std::to_string(static_cast<int>(std::round(r.y)));
+            SDL_RenderDebugText(renderer, static_cast<int>(r.x), static_cast<int>(r.y) - 12, coordText.c_str());
+        }
     }
+
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_FRect pr = { player.x + orthoOffsetX, player.y + orthoOffsetY, player.size, player.size };
+    SDL_RenderRect(renderer, &pr);
+    std::string pText = "P:" + std::to_string(static_cast<int>(std::round(pr.x))) + "," + std::to_string(static_cast<int>(std::round(pr.y)));
+    SDL_RenderDebugText(renderer, static_cast<int>(pr.x), static_cast<int>(pr.y) - 14, pText.c_str());
+
+    SDL_FRect playerScreenRect = { player.x + orthoOffsetX, player.y + orthoOffsetY, player.size, player.size };
+    SDL_RenderRect(renderer, &playerScreenRect);
 }
 
 void TerrainClass::update(SDL_Renderer* renderer) {

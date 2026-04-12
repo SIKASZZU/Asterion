@@ -96,10 +96,8 @@ namespace PlayerNS {
         SDL_FRect templatePlayerRect = {
             player.x,
             player.y,
-            // todo: fix / 2
-            // see / 2 on h2kk, sest player size on nyyd full tileSize. COllision arvutamise m6ttes, tegin /2
-            player.rect.w / 2,
-            player.rect.h / 2
+            player.size,
+            player.size
         };
 
         SDL_FRect rectX = templatePlayerRect;
