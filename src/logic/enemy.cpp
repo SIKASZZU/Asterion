@@ -48,9 +48,13 @@ Enemy::Enemy(int gx, int gy)
     roamingDistanceTraveled(0.0f),
     hasRoamingTarget(false),
     standingTimer(0.0f),
-    attackCooldown(0.0f),
-    attackCooldownMax(1.0f),
+
+    attackCooldown(1.0f),
+    attackCooldownMax(3.0f),
     attackDamage(10),
+
+    animationLoopComplete(false),
+
     state{ EnemyState::Idle },
     activity{ EnemyActivity::Roam },
     anim_lastUpdate(SDL_GetTicks()),
@@ -375,9 +379,9 @@ void Enemy::render(SDL_Renderer* renderer) {
 
     animation(renderer);
 
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderRect(renderer, &rect);
     if (debugText) {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+        SDL_RenderRect(renderer, &rect);
         debug(renderer);
     }
 
@@ -398,7 +402,12 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
     // Deal damage to player if attacking and cooldown is ready
     if (activity == EnemyActivity::Attack && attackCooldown <= 0.0f) {
         player.state = PlayerState::Damage;
-        attackCooldown = attackCooldownMax;  // Reset cooldown
+        attackCooldown = attackCooldownMax;
+
+        animationLoopComplete = false;
+        anim_currentAnimCol = 0;
+        anim_currentAnimRow = 0;
+
     }
 
     if (activity == EnemyActivity::Raise) {
@@ -439,7 +448,6 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
 }
 
 void Enemy::debug(SDL_Renderer* renderer) {
-    // using namespace Enemy;
     // SDL_SetRenderDrawColor(renderer, 44, 62, 80, 255);
     SDL_SetRenderDrawColor(renderer, 241, 196, 15, 255);
 
@@ -457,6 +465,7 @@ void Enemy::debug(SDL_Renderer* renderer) {
     drawLine("mVector:  " + std::to_string(movementVector.x) + " " + std::to_string(movementVector.y));
     drawLine("velocity:  " + std::to_string(Enemy::velocity.x) + " " + std::to_string(velocity.y));
     drawLine("spawning:  " + std::string(Enemy::spawning ? "True" : "False"));
+    drawLine("Attack:    " + std::to_string(Enemy::attackCooldown) + "/" + std::to_string(Enemy::attackCooldownMax));
 
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 }

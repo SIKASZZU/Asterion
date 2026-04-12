@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     const bool* state = SDL_GetKeyboardState(nullptr);
 
     Enemy enemy(162, 162);
-    Enemy enemy2(159, 162);
+    Enemy enemy2(142, 162);
 
     enemy.set_speed(320);
     enemy2.set_speed(320);

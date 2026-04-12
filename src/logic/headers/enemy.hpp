@@ -90,6 +90,8 @@ private:
     int anim_spriteEnum;
     int anim_previousState;
 
+    bool animationLoopComplete;
+
     void choose_state();
     void choose_activity(SDL_Point tG);
     void calculate_velocity(float dT);

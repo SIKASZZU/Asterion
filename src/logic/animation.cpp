@@ -7,11 +7,14 @@
 
 // --------------- Enemy --------------- //
 
+bool AnimEnemy::singleLoop = false;
+
 void Enemy::animation(SDL_Renderer* renderer) {
     using namespace AnimEnemy;
 
     int animationSpeed = 48;
-    int maxCols = 4; int maxRows = 4;
+    int maxCols = 4;int maxRows = 4;
+    singleLoop = false;
 
     switch (state) {
     case EnemyState::Run: {
@@ -70,6 +73,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
     }
     case EnemyState::Attack: {
         animationSpeed = 50;
+        singleLoop = true;
         if (lastDirection.x == 1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_attack1_135_animation; }
         if (lastDirection.x == -1 && movementVector.y == 0) { anim_spriteEnum = Map::spider_attack1_315_animation; }
         if (lastDirection.y == 1 && movementVector.x == 0) { anim_spriteEnum = Map::spider_attack1_225_animation; }
@@ -97,10 +101,19 @@ void Enemy::animation(SDL_Renderer* renderer) {
 
     bool updateFrame = (SDL_GetTicks() - anim_lastUpdate > animationSpeed);
     if (anim_previousState != static_cast<std::underlying_type_t<EnemyActivity>>(activity)) {
+        animationLoopComplete = false;
+        // seda variable settitakse enemy.cpps
         updateFrame = true;
         anim_currentAnimRow = 0; anim_currentAnimCol = 0;
     }
+
+
     anim_previousState = static_cast<std::underlying_type_t<EnemyActivity>>(activity);
+
+    if (singleLoop && animationLoopComplete) {
+        anim_currentAnimCol = maxCols - 1;
+        anim_currentAnimRow = maxRows - 1;
+    }
 
     if (updateFrame) {
         anim_lastUpdate = SDL_GetTicks();
@@ -112,6 +125,7 @@ void Enemy::animation(SDL_Renderer* renderer) {
         if (anim_currentAnimRow >= maxRows) {
             anim_currentAnimRow = 0; anim_currentAnimCol = 0;
             if (spawning) spawning = false;
+            if (singleLoop) animationLoopComplete = true;
         }
 
     }

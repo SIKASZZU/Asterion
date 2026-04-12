@@ -5,6 +5,7 @@
 namespace AnimEnemy {
     const int spriteWidth = 256;
     const int spriteHeight = 256;
+    extern bool singleLoop;
 }
 
 

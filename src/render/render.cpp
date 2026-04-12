@@ -540,9 +540,10 @@ void TerrainClass::render_renderQ_ground(SDL_Renderer* renderer) {
 
 void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
 
-    SDL_FRect destTile = return_destTile(player.grid.y, player.grid.x);
-    // destTile.y -= halfTile;
-    textureMap[Map::INVISIBLE_CUBE].render(renderer, &destTile);
+    if (debugText) {
+        SDL_FRect destTile = return_destTile(player.grid.y, player.grid.x);
+        textureMap[Map::INVISIBLE_CUBE].render(renderer, &destTile);
+    }
 }
 
 void TerrainClass::update(SDL_Renderer* renderer) {
