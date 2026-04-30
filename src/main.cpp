@@ -2,7 +2,7 @@
 
 #include <ctime>
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <algorithm>
 #include <array>
 #include <thread>
@@ -88,16 +88,22 @@ int main(int argc, char* argv[]) {
 
         // Input (always real-time)
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) isRunning = false;
-            else if (event.type == SDL_EVENT_KEY_DOWN)
+
+            if (event.type == SDL_EVENT_QUIT) {
+                isRunning = false;
+            }
+            else if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
+                SDL_GetWindowSize(window, &screenWidth, &screenHeight);
+            }
+            else if (event.type == SDL_EVENT_KEY_DOWN) {
                 react_to_keyboard_down(event.key.key, player, offset, map);
-            else if (event.type == SDL_EVENT_KEY_UP)
+            }
+            else if (event.type == SDL_EVENT_KEY_UP) {
                 react_to_keyboard_up(event.key.key, player);
+            }
         }
+
         react_to_keyboard_state(state);
-        if (SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
-            SDL_GetWindowSize(window, &screenWidth, &screenHeight);
-        }
 
         // tickrate specific
         while (tickLag >= TICK_DELAY_MS) {

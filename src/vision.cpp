@@ -1,6 +1,6 @@
 // #include <iostream>
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <set>
 #include <algorithm>
 
@@ -30,9 +30,11 @@ namespace Vision {
         float brightness;
         if (daylightSettings.daylightEnabled) {
             brightness = DaylightNS::get_day_brightness();
-        } else if (v_pressed) {
+        }
+        else if (v_pressed) {
             brightness = 0.0f; // force darkness overlay when `v` is pressed
-        } else {
+        }
+        else {
             brightness = 1.0f;
         }
         float dayFactor = 1.0f - brightness;

@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <unordered_map>
-#include <SDL3/SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <SDL3/SDL.h>
 
 
@@ -146,12 +146,12 @@ void load_textures(SDL_Renderer* renderer) {
 
     textureMap[Map::TREE] = ImageTexture(renderer, Assets::Images::tree);
     textureMap[Map::TREE_TRUNK] = ImageTexture(renderer, Assets::Images::tree_trunk);
-    // notused = ImageTexture(renderer, "resources/snowy_tree.png");
+    // notused = ImageTexture(renderer, "assets/snowy_tree.png");
     textureMap[Map::GROUND_CUBE] = ImageTexture(renderer, Assets::Images::ground_cube);
     textureMap[Map::GROUND_CUBE_SPRITE] = ImageTexture(renderer, Assets::Images::ground_cube_sprite);
     textureMap[Map::MAZE_GROUND_CUBE] = ImageTexture(renderer, Assets::Images::maze_ground_cube);
     textureMap[Map::MAZE_GROUND_SPRITE] = ImageTexture(renderer, Assets::Images::maze_ground_spirte);
-    // textureMap[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "resources/snowy_ground_cube.png");
+    // textureMap[Map::SNOWY_GROUND_CUBE] = ImageTexture(renderer, "assets/snowy_ground_cube.png");
     textureMap[Map::ERROR_CUBE] = ImageTexture(renderer, Assets::Images::error_cube);
     textureMap[Map::YELLOW_CUBE] = ImageTexture(renderer, Assets::Images::yellow_cube);
     textureMap[Map::BLUE_CUBE] = ImageTexture(renderer, Assets::Images::blue_cube);

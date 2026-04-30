@@ -1,79 +1,61 @@
-TARGET_EXEC ?= main
-SRC_DIR ?= src
-BUILD_DIR ?= bld
-BIN_DIR ?= bin
+# --- Project Settings ---
+TARGET_EXEC := main
+BIN_DIR     := bin
+BLD_DIR     := bld
+SRC_DIR     := src
+INC_DIR     := include
+ASSET_DIR   := assets
 
-CXX ?= g++
-CXXFLAGS ?= -std=c++20
+TARGET      := $(BIN_DIR)/$(TARGET_EXEC)
 
-TARGET := $(BIN_DIR)/$(TARGET_EXEC)
+# --- Compiler & Flags ---
+CXX         := g++
+CXXFLAGS    := -std=c++20 -Wall -Wextra -g
+CPPFLAGS    := -I$(INC_DIR) -MMD -MP
 
-# recursively find all .cpp under src (works in MSYS / bash)
-SOURCES := $(shell find $(SRC_DIR) -type f -name '*.cpp' 2>/dev/null | sort)
+# Fetch SDL3 settings dynamically
+SDL_CFLAGS  := $(shell pkg-config --cflags sdl3 sdl3-image)
+SDL_LIBS    := $(shell pkg-config --libs sdl3 sdl3-image)
 
-# map src/path/file.cpp -> bld/path/file.o  (preserves directory layout)
-OBJECTS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
+# Combine flags
+CPPFLAGS    += $(SDL_CFLAGS)
+LDLIBS      := $(SDL_LIBS)
 
-# dependency files
-DEPENDENCIES := $(OBJECTS:.o=.d)
+# --- Discovery ---
+# Finds all .cpp files in src/ and its subdirectories
+SOURCES     := $(shell find $(SRC_DIR) -type f -name '*.cpp')
+# Maps src/path/file.cpp -> bld/path/file.o
+OBJECTS     := $(SOURCES:$(SRC_DIR)/%.cpp=$(BLD_DIR)/%.o)
+DEPENDS     := $(OBJECTS:.o=.d)
 
-# auto-discover any "headers" directories under src and create -I flags
-HEADER_DIRS := $(shell find $(SRC_DIR) -type d -name headers 2>/dev/null || true)
-INCLUDE_FLAGS := $(patsubst %,-I%,$(HEADER_DIRS))
+# --- Rules ---
+.PHONY: all build run clean copy_assets
 
-# dependency generation + include directories
-CPPFLAGS := -MMD -MP -g $(INCLUDE_FLAGS)
+all: build copy_assets
 
-# Put SDL libs or others here. MinGW often needs -lmingw32 before SDL to resolve entry points.
-LDFLAGS := -lSDL3 -lSDL3_image
+build: $(TARGET)
 
-all: build run
+run: build copy_assets
+	./$(TARGET)
 
-build: $(TARGET) copy_resources
-
-run: build
-	cd $(dir $(TARGET)) && ./$(TARGET_EXEC)
-
+# Linking the final executable
 $(TARGET): $(OBJECTS)
-	mkdir -p $(dir $@)
-	$(CXX) $(OBJECTS) -o $@  $(LDFLAGS)
+	@mkdir -p $(dir $@)
+	$(CXX) $(OBJECTS) -o $@ $(LDLIBS)
 
-# compile rule: preserve src/ subdirs into bld/ subdirs
-# example: src/logic/foo.cpp -> bld/logic/foo.o
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	mkdir -p $(dir $@)
+# Compiling source files
+$(BLD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-# resource map (keeps your original resource copying logic)
-RESOURCE_MAP := $(SRC_DIR)/render/headers/assets.hpp
-RESOURCE_FILES := $(shell \
-	[ -f $(RESOURCE_MAP) ] && \
-	grep -E '^\s*[^/]*".*"' $(RESOURCE_MAP) 2>/dev/null | \
-	sed -nE 's/.*"([^"]+)".*/\1/p' || true \
-)
-RESOURCE_FILES_IN_BLD := $(RESOURCE_FILES:%=$(BIN_DIR)/%)
-
-copy_resources: $(RESOURCE_FILES_IN_BLD)
-	@echo All files copied that were found in \"$(RESOURCE_MAP)\"
-
-$(RESOURCE_FILES_IN_BLD): $(RESOURCE_FILES)
-	@SRC=$(patsubst $(BIN_DIR)/%,%,$@);\
-	echo "Copying $$SRC to $@";\
-	mkdir -p $(dir $@);\
-	cp $$SRC $@
+# Simple Asset Sync: Copy the whole assets folder to bin/
+copy_assets:
+	@echo "Syncing assets..."
+	@mkdir -p $(BIN_DIR)/assets
+	@cp -ru $(ASSET_DIR)/* $(BIN_DIR)/assets/ 2>/dev/null || true
 
 clean:
-	$(RM) -r $(BUILD_DIR)
-	$(RM) -r $(BIN_DIR)
+	@echo "Cleaning project..."
+	$(RM) -r $(BLD_DIR) $(BIN_DIR)
 
-.PHONY: clean all run copy_resources print-vars
-
-# include dependency files if generated
--include $(DEPENDENCIES)
-
-# debug helper to see what Make discovered
-print-vars:
-	@echo "SOURCES:"; printf "  %s\n" $(SOURCES)
-	@echo "OBJECTS:"; printf "  %s\n" $(OBJECTS)
-	@echo "HEADER_DIRS:"; printf "  %s\n" $(HEADER_DIRS)
-	@echo "INCLUDE_FLAGS: $(INCLUDE_FLAGS)"
+-include $(DEPENDS)
