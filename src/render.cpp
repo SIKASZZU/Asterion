@@ -120,7 +120,7 @@ void TerrainClass::calculate_miscellaneous(float dT) {
     mapIndexBottom = std::min(mapSize - 1, playerTileY + renderRadius);
 
 }
-void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
+void TerrainClass::create_renderQ_ground() {
     for (int row = mapIndexTop; row <= mapIndexBottom; row++) {
         for (int column = mapIndexLeft; column <= mapIndexRight; column++) {
             std::pair<int, int> gridPos = { row, column };
@@ -128,7 +128,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
             if (is_grid_not_renderable(gridPos, gridValue)) continue;
 
             SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            // SDL_FRect srcFRect = { 0, 0, 0, 0 };
 
             if (groundValues.find(gridValue) != groundValues.end()) {
                 int xr = randomOffsetsGround.try_emplace(make_grid_key(row, column), rand() % groundMod)
@@ -154,7 +154,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
             switch (gridValue) {
             case Map::VOID_CUBE:
             case Map::VOID_CUBE_NEIGHBOUR: {
-                render_void_tilemap(renderer, map, gridPos, destTile);
+                render_void_tilemap(map, gridPos, destTile);
                 break;
             }
             case Map::MAZE_WE_DOOR:
@@ -189,7 +189,7 @@ void TerrainClass::create_renderQ_ground(SDL_Renderer* renderer) {
         }
     }
 }
-void TerrainClass::create_renderQ_walls(SDL_Renderer* renderer) {
+void TerrainClass::create_renderQ_walls() {
     // Precompute which wall tiles should be shifted upwards when fading.
     std::unordered_set<uint32_t> shiftedWalls;
     for (int prow = mapIndexTop; prow <= mapIndexBottom; ++prow) {
@@ -276,10 +276,11 @@ void TerrainClass::create_renderQ_walls(SDL_Renderer* renderer) {
             }
             case Map::WALL_CUBE: {
                 destTile.y -= halfTile;
-                // if (shiftedWalls.find(key) != shiftedWalls.end()) {
-                //     alpha = inFrontAlpha;
-                // }
-                shiftedWalls.find(key) == shiftedWalls.end() ? : alpha = inFrontAlpha;
+
+                if (shiftedWalls.find(key) != shiftedWalls.end()) {
+                    alpha = inFrontAlpha;
+                }
+
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::wallCubes);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::wallCubes.row);
                 renderQueue.push_back(
@@ -292,8 +293,11 @@ void TerrainClass::create_renderQ_walls(SDL_Renderer* renderer) {
 
                 int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
-                // if (shiftedWalls.find(key) != shiftedWalls.end()) { alpha = inFrontAlpha; }
-                shiftedWalls.find(key) == shiftedWalls.end() ? : alpha = inFrontAlpha;
+
+                if (shiftedWalls.find(key) != shiftedWalls.end()) {
+                    alpha = inFrontAlpha;
+                }
+
                 renderQueue.push_back(
                     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
                 );
@@ -348,7 +352,7 @@ void TerrainClass::create_renderQ_decoration(SDL_Renderer* renderer) {
             if (is_grid_not_renderable(gridPos, gridValue)) continue;
 
             SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            // SDL_FRect srcFRect = { 0, 0, 0, 0 };
             uint32_t key = make_grid_key(row, column);
 
             destTile.y -= halfTile;
@@ -408,7 +412,7 @@ void TerrainClass::create_renderQ_colored_cubes(SDL_Renderer* renderer) {
             if (is_grid_not_renderable(gridPos, gridValue)) continue;
 
             SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            // SDL_FRect srcFRect = { 0, 0, 0, 0 };
 
             switch (gridValue) {
             case Map::YELLOW_CUBE:
@@ -430,7 +434,7 @@ void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
             if (is_grid_not_renderable(gridPos, gridValue)) continue;
 
             SDL_FRect destTile = return_destTile(row, column);
-            SDL_FRect srcFRect = { 0, 0, 0, 0 };
+            // SDL_FRect srcFRect = { 0, 0, 0, 0 };
 
             switch (gridValue) {
             case Map::TREE_TRUNK: {
@@ -591,9 +595,9 @@ void TerrainClass::update(SDL_Renderer* renderer) {
     groundRenderQueue.clear();
     renderQueue.clear();
 
-    create_renderQ_ground(renderer);
+    create_renderQ_ground();
     create_renderQ_items(renderer);
-    create_renderQ_walls(renderer);
+    create_renderQ_walls();
     create_renderQ_colored_cubes(renderer);
     create_renderQ_decoration(renderer);
     create_renderQ_entities();

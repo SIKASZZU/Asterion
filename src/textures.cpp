@@ -205,9 +205,10 @@ Texture* choose_cube_vine_texture(std::string type, std::pair<int, int> gridPos)
     return nullptr;
 }
 
-void create_void_and_surrounding(SDL_Renderer* renderer, int map[mapSize][mapSize], std::pair<int, int> gridPos) {
+void create_void_and_surrounding(int map[mapSize][mapSize], std::pair<int, int> gridPos) {
     auto [row, col] = gridPos;
-
+    // https://gemini.google.com/app/b3721698f9310a05
+    // fix it, core dump, randomOffsetsTrees thing?
     if (map[row][col] == Map::VOID_CUBE) {
         // VOID_CUBE_NEIGHBOUR on 2x2 tilemap, VOID_CUBE on single tile.
 
@@ -237,9 +238,10 @@ void create_void_and_surrounding(SDL_Renderer* renderer, int map[mapSize][mapSiz
     }
 }
 
-void render_void_tilemap(SDL_Renderer* renderer, int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile) {
+void render_void_tilemap(int map[mapSize][mapSize], std::pair<int, int> gridPos, SDL_FRect destTile) {
     auto [row, col] = gridPos;
-    create_void_and_surrounding(renderer, map, gridPos);
+    std::cout << "void row, col: " << row << " " << col << '\n';
+    create_void_and_surrounding(map, gridPos);
     SDL_FRect srcTile = { 32, 0, Texture::spriteWidth, Texture::spriteHeight };
 
     if (map[row][col] == Map::VOID_CUBE) {

@@ -56,8 +56,8 @@ private:
     SDL_FRect return_destTile(int row, int column);
     bool is_grid_not_renderable(std::pair<int, int> gridPos, int gridValue);
     float determine_alpha(std::pair<int, int> gridPos);
-    void create_renderQ_ground(SDL_Renderer* renderer);
-    void create_renderQ_walls(SDL_Renderer* renderer);
+    void create_renderQ_ground();
+    void create_renderQ_walls();
     void create_renderQ_decoration(SDL_Renderer* renderer);
     void create_renderQ_items(SDL_Renderer* renderer);
     void create_renderQ_colored_cubes(SDL_Renderer* renderer);

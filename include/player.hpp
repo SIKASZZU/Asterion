@@ -44,7 +44,7 @@ namespace PlayerNS {
     extern float defaultMovementSpeedShifting;
     extern bool collisionX;
     extern bool collisionY;
-    void update(int map[mapSize][mapSize], struct Offset& offset, SDL_Renderer* renderer, float deltaTime);
+    void update(float deltaTime);
     void create_movementVector(const bool* state);
     void debug(SDL_Renderer* renderer);
     void init();

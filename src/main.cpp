@@ -23,7 +23,10 @@
 #include "map.hpp"
 #include <iostream>
 
-int main(int argc, char* argv[]) {
+int main() {
+    // int argc, char* argv[]
+    // (void)argc;
+    // (void)argv;
 
     std::cout << "\n201103L => C++11\n201402L => C++14\n201703L => C++17\n202002L => C++20\n202302L => C++23\nCPP VERSION: " << __cplusplus << std::endl;
 
@@ -119,7 +122,7 @@ int main(int argc, char* argv[]) {
                 e.update(map, enemyTargetGrid, fixedDeltaTime);
             }
             update_offset(player);
-            PlayerNS::update(map, offset, renderer, fixedDeltaTime);
+            PlayerNS::update(fixedDeltaTime);
 
             Portal::has_entered();
             terrain.update(renderer);
@@ -129,7 +132,7 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         terrain.render(renderer);
-        Raycast::update(renderer, offset);
+        Raycast::update(renderer);
         Vision::update(renderer, offset);
         if (Ending::start) Ending::update(renderer);
         DaylightNS::draw(renderer);

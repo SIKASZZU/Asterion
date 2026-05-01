@@ -212,7 +212,7 @@ namespace Raycast {
         maxDecaySize = maxActiveSize / 2;
     }
 
-    void update(SDL_Renderer* renderer, struct Offset& Offset) {
+    void update(SDL_Renderer* renderer) {
         if (!enabled) return;
 
         // update_max_grid_size();
@@ -232,7 +232,7 @@ namespace Raycast {
         }
 
         if (showRays) {
-            render_rays(renderer, offset);
+            render_rays(renderer);
         }
     }
 
@@ -288,7 +288,7 @@ namespace Raycast {
         workerCv.wait(lk, [] { return computeReady.load(); });
     }
 
-    void render_rays(SDL_Renderer* renderer, struct Offset& offset) {
+    void render_rays(SDL_Renderer* renderer) {
         SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
         std::vector<SDL_FPoint> localEndpoints;
         SDL_FPoint localSource;

@@ -288,7 +288,7 @@ namespace PlayerNS {
         update_rect();
     }
 
-    void update(int map[mapSize][mapSize], struct ::Offset& offset, SDL_Renderer* renderer, float deltaTime) {
+    void update(float deltaTime) {
         set_state();
 
         if (player.state != PlayerState::Damage) {

@@ -32,7 +32,7 @@ namespace Raycast {
     void stop_worker();
     void request_calculation();
     void wait_until_ready();
-    void render_rays(SDL_Renderer* renderer, struct Offset& offset);
+    void render_rays(SDL_Renderer* renderer);
 
     void update_sourcePos();
     float to_radians(float degrees);
@@ -41,5 +41,5 @@ namespace Raycast {
     void calculate_decay_grids();
     void clear_arrays();
     void update_max_grid_size();
-    void update(SDL_Renderer* renderer, struct Offset& offset);
+    void update(SDL_Renderer* renderer);
 }

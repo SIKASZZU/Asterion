@@ -164,7 +164,7 @@ enum Map {
 /// @brief Argument has to be a grid value of map
 /// @param gridValue int 
 /// @return Returns the const char* equivalent of that value from enum Map
-static const char* enumMapToString(int gridValue) {
+inline constexpr const char* enumMapToString(int gridValue) {
     switch (gridValue) {
     case Map::SPRITESHEET: { return "Map::SPRITESHEET"; break; }
     case Map::SPIDER: { return "Map::SPIDER"; break; }

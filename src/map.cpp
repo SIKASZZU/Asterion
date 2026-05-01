@@ -304,8 +304,6 @@ void generate_test_map(int map[mapSize][mapSize]) {
 
     int testIslandRadius = static_cast<int>(mapSize * 0.7);
     int halfMapSize = mapSize / 2;
-    float maxDistance = std::sqrt(halfMapSize * halfMapSize + halfMapSize * halfMapSize);
-
 
     for (int y = 0; y < mapSize; y++) {
         for (int x = 0; x < mapSize; x++) {

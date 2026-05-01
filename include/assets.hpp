@@ -40,7 +40,7 @@ namespace Assets {
     namespace Player {
 
         //player animation
-        static const char* player_animation = "assets/player_sprite_sheet.png";
+        // static const char* player_animation = "assets/player_sprite_sheet.png";
 
         // player-girl
         // ready idle

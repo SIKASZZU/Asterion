@@ -33,10 +33,10 @@ bool debugText = false;
 Enemy::Enemy(int gx, int gy)
     : grid{ gx, gy },
     size(tileSize),
+    speed(player.movementSpeed),
     color({ 255, 0, 0, 255 }),
     currentPathIndex(0),
     movementVector{ 0, 0 },
-    speed(player.movementSpeed),
     velocity{ 0.0f, 0.0f },
     pos{
         static_cast<float>(grid.x * tileSize + (size / 2)),
