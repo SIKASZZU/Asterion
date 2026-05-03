@@ -234,62 +234,12 @@ void rescale_world(float oldTs, float newTs) {
 }
 void react_to_keyboard_down(SDL_Keycode key) {
 
-    // ── Player ────────────────────────────────────────────
-    // switch (key) {
-    // case SDLK_SPACE:  player.jumping = true; return;
-    // case SDLK_LSHIFT: player.shifting = true; return;
-    // case SDLK_C:      PlayerNS::toggle_collision();  return;
-    // }
-
-    // // ── Enemy ─────────────────────────────────────────────
-    // switch (key) {
-    // case SDLK_E: EnemyNS::debug_spawn(); return;
-    // case SDLK_O: EnemyNS::debug_attack(); return;
-    // }
-
-    // // ── Daylight ──────────────────────────────────────────
-    // switch (key) {
-    // case SDLK_Y: DaylightNS::toggle();       return;
-    // case SDLK_U: DaylightNS::shorten_day();  return;
-    // case SDLK_I: DaylightNS::lengthen_day(); return;
-    // }
-
-    // // ── Map / World ───────────────────────────────────────
-    // switch (key) {
-    // case SDLK_PERIOD:   MapNS::increase_tilesize(); return;
-    // case SDLK_COMMA:    MapNS::decrease_tilesize(); return;
-    // case SDLK_KP_PLUS:  MapNS::increase_radius();   return;
-    // case SDLK_KP_MINUS: MapNS::decrease_radius();   return;
-    // case SDLK_0:        MapNS::regenerate();         return;
-    // }
-
-    // // ── Pathfinding ───────────────────────────────────────
-    // switch (key) {
-    // case SDLK_PAGEDOWN: PathNS::set_start(player.grid); return;
-    // case SDLK_PAGEUP:   PathNS::set_end(player.grid);   return;
-    // }
-
-    // // ── Debug / Meta ──────────────────────────────────────
-    // switch (key) {
-    // case SDLK_F: Debug::print_state();    return;
-    // case SDLK_K: Debug::toggle_text();    return;
-    // case SDLK_R: Raycast::toggle();       return;
-    // case SDLK_T: offset.flipped ^= true; return;
-    // case SDLK_V: v_pressed ^= true; return;
-    // case SDLK_Q: isRunning = false;       return;
-    // }
-
     switch (key) {
     case SDLK_SPACE:  player.jumping = true;  break;
     case SDLK_LSHIFT: player.shifting = true;  break;
-    case SDLK_C:
-        player.collision = !player.collision;
-        std::cout << "Collision: " << player.collision << '\n';
-        break;
-    case SDLK_R:
-        Raycast::enabled = !Raycast::enabled;
-        std::cout << "Raycast: " << Raycast::enabled << '\n';
-        break;
+    case SDLK_C: PlayerNS::toggle_collision(); break;
+    case SDLK_R: Raycast::toggle(); break;
+
     case SDLK_T:
         offset.flipped = !offset.flipped;
         std::cout << "Camera flipped: " << offset.flipped << '\n';
@@ -331,52 +281,20 @@ void react_to_keyboard_down(SDL_Keycode key) {
         break;
 
         // ── render radius ──────────────────────────────────────
-    case SDLK_KP_PLUS: case SDLK_PLUS:
-        renderRadius += 5;
-        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
-        Raycast::updateMaxGridSize = true;
-        break;
-    case SDLK_KP_MINUS: case SDLK_MINUS:
-        if (renderRadius > 5) renderRadius -= 5;
-        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
-        Raycast::updateMaxGridSize = true;
-        break;
+    case SDLK_KP_PLUS: case SDLK_PLUS: MapNS::increase_radius(); break;
+    case SDLK_KP_MINUS: case SDLK_MINUS: MapNS::decrease_radius(); break;
 
         // ── tile size ──────────────────────────────────────────
-    case SDLK_PERIOD: {
-        float old = tileSize;
-        tileSize += 5;
-        Raycast::updateMaxGridSize = true;
-        rescale_world(old, tileSize);
-        break;
-    }
-    case SDLK_COMMA: {
-        float old = tileSize;
-        if (tileSize > 5) tileSize -= 5;
-        Raycast::updateMaxGridSize = true;
-        rescale_world(old, tileSize);
-        break;
-    }
+    case SDLK_PERIOD: MapNS::increase_tilesize(); break;
+    case SDLK_COMMA: MapNS::decrease_tilesize(); break;
 
-                   // ── daylight ───────────────────────────────────────────
-    case SDLK_Y:
-        daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
-        break;
-    case SDLK_U:
-        daylightSettings.dayLengthSeconds =
-            std::max(5.0f, daylightSettings.dayLengthSeconds - 10.0f);
-        break;
-    case SDLK_I:
-        daylightSettings.dayLengthSeconds += 10.0f;
-        break;
+        // ── daylight ───────────────────────────────────────────
+    case SDLK_Y: DaylightNS::toggle_daynight(); break;
+    case SDLK_U: DaylightNS::decrease_time_speed(); break;
+    case SDLK_I: DaylightNS::increase_time_speed(); break;
 
         // ── map ────────────────────────────────────────────────
-    case SDLK_0:
-        testMapEnvironment = !testMapEnvironment;
-        generate_map();
-        break;
-
-    default: break;
+    case SDLK_0: MapNS::change_map(); break;
     }
 }
 void react_to_keyboard_up(SDL_Keycode key) {

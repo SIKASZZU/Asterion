@@ -4,6 +4,14 @@
 #include <utility>
 #include <unordered_set>
 
+namespace MapNS {
+    void increase_tilesize();
+    void decrease_tilesize();
+    void increase_radius();
+    void decrease_radius();
+    void change_map();
+}
+
 /// @brief Enum for things used in the map generation and rendering
 ///
 /// Some things do not have textures associated with them.

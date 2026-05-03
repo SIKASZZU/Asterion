@@ -28,6 +28,7 @@ namespace Raycast {
     extern std::deque<std::pair<int, int>> decayGrids;
 
     // Threading API: start/stop worker, request calculation, render results
+    void toggle();
     std::jthread::id start_worker();
     void stop_worker();
     void request_calculation();

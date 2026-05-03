@@ -44,6 +44,7 @@ namespace PlayerNS {
     extern float defaultMovementSpeedShifting;
     extern bool collisionX;
     extern bool collisionY;
+    void toggle_collision();
     void update(float deltaTime);
     void create_movementVector(const bool* state);
     void debug(SDL_Renderer* renderer);

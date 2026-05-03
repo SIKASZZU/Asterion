@@ -3,6 +3,7 @@
 #include "maze.hpp"
 #include "mod_map_data.hpp"
 #include "render.hpp"
+#include "raycast.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -12,6 +13,39 @@
 #include <random>
 
 int map[mapSize][mapSize];  // tra mdea, aga see peab siin uuesti olema ilma externita.
+
+namespace MapNS {
+    void increase_tilesize() {
+        float old = tileSize;
+        tileSize += 5;
+        Raycast::updateMaxGridSize = true;
+        rescale_world(old, tileSize);
+    }
+
+    void decrease_tilesize() {
+        float old = tileSize;
+        if (tileSize > 5) tileSize -= 5;
+        Raycast::updateMaxGridSize = true;
+        rescale_world(old, tileSize);
+    }
+
+    void increase_radius() {
+        renderRadius += 5;
+        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
+        Raycast::updateMaxGridSize = true;
+    }
+
+    void decrease_radius() {
+        if (renderRadius > 5) renderRadius -= 5;
+        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
+        Raycast::updateMaxGridSize = true;
+    }
+
+    void change_map() {
+        testMapEnvironment = !testMapEnvironment;
+        generate_map();
+    }
+}
 
 void print_map(int map[mapSize][mapSize]) {
     for (int y = 0; y < mapSize; y++) {

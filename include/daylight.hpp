@@ -5,6 +5,9 @@
 namespace DaylightNS {
     // Day/night system
     extern float timeOfDay; // 0.0 - 1.0
+    void toggle_daynight();
+    void increase_time_speed();
+    void decrease_time_speed();
 
     void update_daynight(Uint64 elapsedMS);
     // returns brightness 0..1 where 1 = day (bright), 0 = night (dark)

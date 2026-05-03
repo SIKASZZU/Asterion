@@ -41,6 +41,10 @@ namespace Raycast {
     static std::atomic<bool> computeReady{ false };
     static std::vector<SDL_FPoint> rayEndpoints;
 
+    void toggle() {
+        Raycast::enabled = !Raycast::enabled;
+        std::cout << "Raycast: " << Raycast::enabled << '\n';
+    }
     void update_sourcePos() {
         sourcePos = { player.x, player.y };
     }

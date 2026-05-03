@@ -11,6 +11,17 @@ namespace DaylightNS {
 
     float timeOfDay = 0.0f;
 
+    void toggle_daynight() {
+        daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
+    }
+
+    void increase_time_speed(){
+        daylightSettings.dayLengthSeconds += 10.0f;
+    }
+    void decrease_time_speed(){
+        daylightSettings.dayLengthSeconds = std::max(5.0f, daylightSettings.dayLengthSeconds - 10.0f);
+    }
+
     void update_daynight(Uint64 elapsedMS) {
         if (!daylightSettings.daylightEnabled) return;
         if (daylightSettings.dayLengthSeconds <= 0.0f) return;

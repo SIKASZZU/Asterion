@@ -41,6 +41,10 @@ namespace PlayerNS {
     float defaultMovementSpeed = 0.0f;
     float defaultMovementSpeedShifting = 0.0f;
 
+    void toggle_collision() {
+        player.collision = !player.collision;
+        std::cout << "Collision: " << player.collision << '\n';
+    }
 
     void create_movementVector(const bool* state) {
         SDL_Point dir = { 0, 0 };
