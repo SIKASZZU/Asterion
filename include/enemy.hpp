@@ -4,6 +4,7 @@
 
 #include "offset.hpp"
 #include "game.hpp"
+#include "map.hpp"
 
 enum class EnemyState {
     Idle,

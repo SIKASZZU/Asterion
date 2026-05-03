@@ -1,9 +1,11 @@
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <iostream>
+#include <ctime>
 
+#include "game.hpp"
 #include "memory.hpp"
 #include "offset.hpp"
-#include "game.hpp"
 #include "map.hpp"
 #include "maze.hpp"
 #include "raycast.hpp"
@@ -11,272 +13,375 @@
 #include "enemy.hpp"
 #include "isometric_calc.hpp"
 #include "daylight.hpp"
+#include "textures.hpp"
+#include "vision.hpp"
+#include "end.hpp"
+#include "render.hpp"
 
-/* game state, screen */
-bool isRunning = true;
-float mouse_x = 0;
-float mouse_y = 0;
-int screenWidth = 0;
-int screenHeight = 0;
+/* ── globals ──────────────────────────────────────────────── */
 
-/* framerate */
-Uint32 frameCount = 0;
-float fps = 0.0f;
-Uint32 fpsTimer;
-Uint32 frameTime;
+bool        isRunning = true;
+float       mouse_x = 0;
+float       mouse_y = 0;
+int         screenWidth = 0;
+int         screenHeight = 0;
 
-/* tickrate */
-Uint32 tickLag = 0;
-const int tickrate = 60;
-int tickCount = 0;
-float tps = 0.0f;
-Uint64 previousTick = SDL_GetTicks();
+Uint32      frameCount = 0;
+float       fps = 0.0f;
+Uint32      fpsTimer = 0;
+Uint32      frameTime = 0;
 
-/* render.hpp args */
-int renderRadius = 20; // perfectse rad -> (win_width / 2) / tileSize //*NOTE win_widthil pole siin veel v22rtust vaid
+Uint32      tickLag = 0;
+const int   tickrate = 60;
+int         tickCount = 0;
+float       tps = 0.0f;
+Uint64      previousTick = SDL_GetTicks();
 
-/* map.hpp args */
-float tileSize = 100.0f;
-bool testMapEnvironment;
+int         renderRadius = 20;
+float       tileSize = 100.0f;
+bool        testMapEnvironment = false;
 
-/* pathfinding */
-int pathEndX = -1;
-int pathEndY = -1;
-int pathStartX = -1;
-int pathStartY = -1;
+const Uint64 TICK_DELAY_MS = 16;
+const float fixedDeltaTime = TICK_DELAY_MS / 1000.0f;
 
-/* keys */
+int pathEndX = -1, pathEndY = -1;
+int pathStartX = -1, pathStartY = -1;
 bool v_pressed = false;
 
-// Recalculate world-space positions after `tileSize` changes.
-// oldTileSize: previous tile size; newTileSize: current `tileSize` global
-void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize) {
-    // Player: compute grid from old pixel coords and reproject to new tileSize
-    int playerGX = static_cast<int>((player.x + player.size / 2.0f) / oldTileSize);
-    int playerGY = static_cast<int>((player.y + player.size / 2.0f) / oldTileSize);
-    player.x = playerGX * newTileSize;
-    player.y = playerGY * newTileSize;
-    player.size = newTileSize; //  / 2.0f
-    player.grid = {
-        playerGX,
-        playerGY
-    };
-    SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
-    player.rect.x = coords.x; // player.size / 2.0f
-    player.rect.y = coords.y; // player.size / 2.0f
+/* ── file-scope state (private to game.cpp) ───────────────── */
 
-    for (auto& e : enemyArray) {
-        SDL_FPoint newPos = { static_cast<float>(e.grid.x) * newTileSize, static_cast<float>(e.grid.y) * newTileSize };
-        e.set_position(newPos);
+static SDL_Window* s_window = nullptr;
+static SDL_Renderer* s_renderer = nullptr;
+static TerrainClass  s_terrain;
+static SDL_Event     s_event;
+static const bool* s_keyState = nullptr;
+
+namespace Game {
+
+    bool init() {
+        const char* projectName = "Asterion";
+        screenWidth = 1600; screenHeight = 960;
+
+        std::cout << "Main thread id: " << std::this_thread::get_id() << '\n';
+
+        std::jthread::id threadID = Raycast::start_worker();
+        std::cout << "Raycast thread id: " << threadID << '\n';
+
+        SDL_SetAppMetadata("Asterion", "1.0", "com.example.asterion");
+
+        if (!SDL_Init(SDL_INIT_VIDEO)) {
+            SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
+            return false;
+        }
+
+        SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE
+            | SDL_WINDOW_INPUT_FOCUS
+            | SDL_WINDOW_MOUSE_FOCUS
+            | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+
+        if (!SDL_CreateWindowAndRenderer(projectName, screenWidth, screenHeight, flags, &s_window, &s_renderer)) {
+            SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+            return false;
+        }
+
+        SDL_GetWindowSize(s_window, &screenWidth, &screenHeight);
+        s_keyState = SDL_GetKeyboardState(nullptr);
+
+        load_textures(s_renderer);
+        return true;
     }
+
+    void load_level() {
+        srand(static_cast<unsigned int>(std::time(nullptr)));
+        PlayerNS::init();
+
+        testMapEnvironment = false;
+        generate_map();
+
+        if (testMapEnvironment)
+            map[165][165] = Map::CAMPFIRE;
+
+        Vision::create_darkness(s_renderer);
+
+        Enemy e1(162, 162);
+        Enemy e2(142, 162);
+        e1.set_speed(320);   e1.set_size(tileSize * 0.75f);
+        e2.set_speed(320);   e2.set_size(tileSize * 0.75f);
+        enemyArray.push_back(e1);
+        enemyArray.push_back(e2);
+    }
+
+    void handle_events() {
+        while (SDL_PollEvent(&s_event)) {
+            switch (s_event.type) {
+            case SDL_EVENT_QUIT:
+                isRunning = false;
+                break;
+            case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+                SDL_GetWindowSize(s_window, &screenWidth, &screenHeight);
+                break;
+            case SDL_EVENT_KEY_DOWN:
+                react_to_keyboard_down(s_event.key.key);
+                break;
+            case SDL_EVENT_KEY_UP:
+                react_to_keyboard_up(s_event.key.key);
+                break;
+            }
+        }
+
+        PlayerNS::create_movementVector(s_keyState);
+    }
+
+    void update() {
+        Uint64 now = SDL_GetTicks();
+        Uint64 elapsedMS = now - previousTick;
+        previousTick = now;
+        tickLag += elapsedMS;
+
+        while (tickLag >= TICK_DELAY_MS) {
+            tickLag -= TICK_DELAY_MS;
+            tickCount++;
+
+            SDL_Point enemyTarget = {
+                static_cast<int>((player.x + player.size / 2) / tileSize),
+                static_cast<int>((player.y + player.size / 2) / tileSize)
+            };
+            for (auto& e : enemyArray)
+                e.update(map, enemyTarget, fixedDeltaTime);
+
+            update_offset(player);
+            PlayerNS::update(fixedDeltaTime);
+            Portal::has_entered();
+            s_terrain.update(s_renderer);
+            s_terrain.calculate_miscellaneous(fixedDeltaTime);
+        }
+
+        DaylightNS::update_daynight(elapsedMS);
+    }
+
+    void render() {
+        SDL_SetRenderDrawColor(s_renderer, 0, 0, 0, 255);
+        SDL_RenderClear(s_renderer);
+
+        s_terrain.render(s_renderer);
+        Raycast::update(s_renderer);
+        Vision::update(s_renderer, offset);
+
+        if (Ending::start)
+            Ending::update(s_renderer);
+
+        DaylightNS::draw(s_renderer);
+
+        // FPS counter
+        Uint32 fpsNow = SDL_GetTicks();
+        if (fpsNow - fpsTimer > 400) {
+            fps = frameCount * 1000.0f / (fpsNow - fpsTimer);
+            frameCount = 0;
+            fpsTimer = fpsNow;
+        }
+
+        // Debug overlays
+        DaylightNS::debug(s_renderer);
+        Game::debug(s_renderer);
+        PlayerNS::debug(s_renderer);
+
+        SDL_RenderPresent(s_renderer);
+        frameCount++;
+    }
+
+    bool is_running() {
+        return isRunning;
+    }
+
+    void shutdown() {
+        Raycast::stop_worker();
+        destroy_all_textures();
+        SDL_DestroyRenderer(s_renderer);
+        SDL_DestroyWindow(s_window);
+        SDL_Quit();
+    }
+
+    void debug(SDL_Renderer* renderer) {
+        SDL_SetRenderDrawColor(renderer, 100, 240, 240, 255);
+        int x = 50, y = 60, lineHeight = 20;
+
+        auto drawLine = [&](const std::string& text) {
+            SDL_RenderDebugText(renderer, x, y, text.c_str());
+            y += lineHeight;
+            };
+
+        drawLine("FPS: " + std::to_string((int)fps));
+        drawLine("MEMORY: " + std::to_string(printMemoryUsage()));
+        drawLine("FLIPPED: " + std::string(offset.flipped ? "true" : "false"));
+    }
+
 }
 
+void rescale_world(float oldTs, float newTs) {
+    int gx = static_cast<int>((player.x + player.size / 2.0f) / oldTs);
+    int gy = static_cast<int>((player.y + player.size / 2.0f) / oldTs);
+    player.x = gx * newTs;
+    player.y = gy * newTs;
+    player.size = newTs;
+    player.grid = { gx, gy };
+    SDL_FPoint iso = to_isometric_coordinate(player.x, player.y);
+    player.rect.x = iso.x;
+    player.rect.y = iso.y;
 
-void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]) {
-    switch (key)
-    {
-    case SDLK_SPACE: {
-        player.jumping = true;
-        break;
-    }
-    case SDLK_E: {
-        std::cout << "spawning enemies" << '\n';
-        for (int i = 0; auto& e : enemyArray) {
-            e.spawn(SDL_Point{ 155 + i, 155 });
-            i++;
-        }
-        break;
-    }
-    case SDLK_F: {
-        /* print information */
-        std::cout << std::endl;
+    for (auto& e : enemyArray)
+        e.set_position({ static_cast<float>(e.grid.x) * newTs,
+                         static_cast<float>(e.grid.y) * newTs });
+}
+void react_to_keyboard_down(SDL_Keycode key) {
 
-        std::cout << "----- SYSTEM -----" << "\n";
-        std::cout << "offset: " << offset.x << " " << offset.y << "\n";
+    // ── Player ────────────────────────────────────────────
+    // switch (key) {
+    // case SDLK_SPACE:  player.jumping = true; return;
+    // case SDLK_LSHIFT: player.shifting = true; return;
+    // case SDLK_C:      PlayerNS::toggle_collision();  return;
+    // }
 
-        std::cout << "----- ENEMY -----" << "\n";
-        for (const auto& e : enemyArray) {
-            SDL_FPoint pos = e.get_position();
-            std::cout << "x, y: " << pos.x << " " << pos.y << "\n";
-            // std::cout << "activity: " << static_cast<int>(e.activity) << "\n";
-            std::cout << "grid: " << e.grid.x << " " << e.grid.y << "\n";
-            SDL_Point mV = e.get_movementVector();
-            std::cout << "mVec: " << mV.x << " " << mV.y << std::endl;
-            std::cout << "activtiy: " << activityToString(e.activity) << '\n';
-            std::cout << "state: " << stateToString(e.state) << '\n';
-        }
-        break;
-    }
-    case SDLK_C: {
+    // // ── Enemy ─────────────────────────────────────────────
+    // switch (key) {
+    // case SDLK_E: EnemyNS::debug_spawn(); return;
+    // case SDLK_O: EnemyNS::debug_attack(); return;
+    // }
+
+    // // ── Daylight ──────────────────────────────────────────
+    // switch (key) {
+    // case SDLK_Y: DaylightNS::toggle();       return;
+    // case SDLK_U: DaylightNS::shorten_day();  return;
+    // case SDLK_I: DaylightNS::lengthen_day(); return;
+    // }
+
+    // // ── Map / World ───────────────────────────────────────
+    // switch (key) {
+    // case SDLK_PERIOD:   MapNS::increase_tilesize(); return;
+    // case SDLK_COMMA:    MapNS::decrease_tilesize(); return;
+    // case SDLK_KP_PLUS:  MapNS::increase_radius();   return;
+    // case SDLK_KP_MINUS: MapNS::decrease_radius();   return;
+    // case SDLK_0:        MapNS::regenerate();         return;
+    // }
+
+    // // ── Pathfinding ───────────────────────────────────────
+    // switch (key) {
+    // case SDLK_PAGEDOWN: PathNS::set_start(player.grid); return;
+    // case SDLK_PAGEUP:   PathNS::set_end(player.grid);   return;
+    // }
+
+    // // ── Debug / Meta ──────────────────────────────────────
+    // switch (key) {
+    // case SDLK_F: Debug::print_state();    return;
+    // case SDLK_K: Debug::toggle_text();    return;
+    // case SDLK_R: Raycast::toggle();       return;
+    // case SDLK_T: offset.flipped ^= true; return;
+    // case SDLK_V: v_pressed ^= true; return;
+    // case SDLK_Q: isRunning = false;       return;
+    // }
+
+    switch (key) {
+    case SDLK_SPACE:  player.jumping = true;  break;
+    case SDLK_LSHIFT: player.shifting = true;  break;
+    case SDLK_C:
         player.collision = !player.collision;
-        std::cout << "Player collision is: " << player.collision << '\n';
+        std::cout << "Collision: " << player.collision << '\n';
         break;
-    }
-    case SDLK_KP_PLUS: case SDLK_PLUS: {
-        renderRadius += 5;
-        Raycast::maxRayLength = renderRadius * (tileSize * 0.75);
-        Raycast::updateMaxGridSize = true;
-        std::cout << "renderRadius = " << renderRadius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
-        break;
-    }
-    case SDLK_KP_MINUS: case SDLK_MINUS: {
-        // (glade_radius > 10) ? 10 : glade_radius;  // if glade_radius > 10; hard cap to 10.
-        renderRadius > 5 ? renderRadius -= 5 : renderRadius;
-        Raycast::maxRayLength = renderRadius * (tileSize * 0.75);
-        Raycast::updateMaxGridSize = true;
-        std::cout << "renderRadius = " << renderRadius << ". Raycast maxRayLength = " << Raycast::maxRayLength << "\n";
-        break;
-    }
-    case SDLK_PERIOD: {
-        {
-            float oldTs = tileSize;
-            tileSize += 5;
-            std::cout << "tileSize = " << tileSize << "\n";
-            Raycast::updateMaxGridSize = true;
-            // rescale world to keep logical positions
-            rescale_world_after_tilesize_change(oldTs, tileSize);
-        }
-        break;
-    }
-    case SDLK_COMMA: {
-        {
-            float oldTs = tileSize;
-            tileSize > 5 ? tileSize -= 5 : tileSize;
-            std::cout << "tileSize = " << tileSize << "\n";
-            Raycast::updateMaxGridSize = true;
-            rescale_world_after_tilesize_change(oldTs, tileSize);
-        }
-        break;
-    }
-    case SDLK_PAGEDOWN: {
-        pathStartX = player.grid.x;
-        pathStartY = player.grid.y;
-        std::cout << "Start point set: " << pathStartX << " " << pathStartY << "\n";
-        break;
-    }
-    case SDLK_PAGEUP: {
-        pathEndX = player.grid.x;
-        pathEndY = player.grid.y;
-        std::cout << "End point set: " << pathEndX << " " << pathEndY << "\n";
-        break;
-    }
-    case SDLK_LSHIFT: {
-        player.shifting = true;
-        break;
-    }
-    case SDLK_R: {
+    case SDLK_R:
         Raycast::enabled = !Raycast::enabled;
-        std::cout << "Raycast::enabled: " << Raycast::enabled << '\n';
+        std::cout << "Raycast: " << Raycast::enabled << '\n';
         break;
-    }
-    case SDLK_T: {
+    case SDLK_T:
         offset.flipped = !offset.flipped;
         std::cout << "Camera flipped: " << offset.flipped << '\n';
         break;
-    }
-    case SDLK_O: {
-        player.state = PlayerState::Damage;
-        for (int i = 0; auto& e : enemyArray) {
-            e.activity = EnemyActivity::Attack;
-            i++;
-        }
-        break;
-        std::cout << "Damage animation!" << '\n';
-        break;
-    }
-    case SDLK_Y: {
-        // enable day
-        daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
-        std::cout << "Day/Night enabled: " << daylightSettings.daylightEnabled << " timeOfDay: " << DaylightNS::timeOfDay << '\n';
-        break;
-    }
-    case SDLK_U: {
-        // shorten day
-        daylightSettings.dayLengthSeconds = std::max(5.0f, daylightSettings.dayLengthSeconds - 10.0f);
-        std::cout << "dayLengthSeconds = " << daylightSettings.dayLengthSeconds << '\n';
-        break;
-    }
-    case SDLK_I: {
-        // lengthen day
-        daylightSettings.dayLengthSeconds += 10.0f;
-        std::cout << "dayLengthSeconds = " << daylightSettings.dayLengthSeconds << '\n';
-        break;
-    }
-    case SDLK_V: {
+    case SDLK_V:
         v_pressed = !v_pressed;
-        std::cout << "Vision is: " << v_pressed << '\n';
+        std::cout << "Vision: " << v_pressed << '\n';
         break;
-    }
-    case SDLK_Q: {
-        std::cout << "Forced exit " << std::endl;
+    case SDLK_K:
+        debugText = !debugText;
+        break;
+    case SDLK_Q:
         isRunning = false;
         break;
+
+        // ── enemy ──────────────────────────────────────────────
+    case SDLK_E:
+        for (int i = 0; auto& e : enemyArray)
+            e.spawn({ 155 + i++, 155 });
+        break;
+    case SDLK_O:
+        player.state = PlayerState::Damage;
+        for (auto& e : enemyArray)
+            e.activity = EnemyActivity::Attack;
+        break;
+
+        // ── debug info ─────────────────────────────────────────
+    case SDLK_F:
+        std::cout << "offset: " << offset.x << " " << offset.y << '\n';
+        for (const auto& e : enemyArray) {
+            SDL_FPoint pos = e.get_position();
+            SDL_Point  mv = e.get_movementVector();
+            std::cout << "pos: " << pos.x << " " << pos.y
+                << " grid: " << e.grid.x << " " << e.grid.y
+                << " mv: " << mv.x << " " << mv.y
+                << " activity: " << activityToString(e.activity)
+                << " state: " << stateToString(e.state) << '\n';
+        }
+        break;
+
+        // ── render radius ──────────────────────────────────────
+    case SDLK_KP_PLUS: case SDLK_PLUS:
+        renderRadius += 5;
+        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
+        Raycast::updateMaxGridSize = true;
+        break;
+    case SDLK_KP_MINUS: case SDLK_MINUS:
+        if (renderRadius > 5) renderRadius -= 5;
+        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
+        Raycast::updateMaxGridSize = true;
+        break;
+
+        // ── tile size ──────────────────────────────────────────
+    case SDLK_PERIOD: {
+        float old = tileSize;
+        tileSize += 5;
+        Raycast::updateMaxGridSize = true;
+        rescale_world(old, tileSize);
+        break;
     }
-    case SDLK_0: {
+    case SDLK_COMMA: {
+        float old = tileSize;
+        if (tileSize > 5) tileSize -= 5;
+        Raycast::updateMaxGridSize = true;
+        rescale_world(old, tileSize);
+        break;
+    }
+
+                   // ── daylight ───────────────────────────────────────────
+    case SDLK_Y:
+        daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
+        break;
+    case SDLK_U:
+        daylightSettings.dayLengthSeconds =
+            std::max(5.0f, daylightSettings.dayLengthSeconds - 10.0f);
+        break;
+    case SDLK_I:
+        daylightSettings.dayLengthSeconds += 10.0f;
+        break;
+
+        // ── map ────────────────────────────────────────────────
+    case SDLK_0:
         testMapEnvironment = !testMapEnvironment;
-        std::cout << "testMapEnvironment is: " << testMapEnvironment << '\n';
         generate_map();
         break;
-    }
-    case SDLK_K: {
-        debugText = !debugText;
-        std::cout << "debugText is: " << debugText << '\n';
-        break;
-    }
-    case SDLK_L: {
-    }
-    default:
-        break;
-    }
-    if (pathEndX != -1 && pathStartX != -1) {
-        Maze::find_path(map, pathStartY, pathStartX, pathEndY, pathEndX);
-        std::cout << "found path size: " << (Maze::path.size()) << '\n';
 
-        // reset
-        pathEndX = -1;
-        pathEndY = -1;
-        pathStartX = -1;
-        pathStartY = -1;
+    default: break;
     }
 }
-
-
-void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player) {
-    switch (key)
-    {
-    case SDLK_LSHIFT: {
-        player.shifting = false;
-        break;
+void react_to_keyboard_up(SDL_Keycode key) {
+    switch (key) {
+    case SDLK_LSHIFT: player.shifting = false; break;
+    default: break;
     }
-    default:
-        break;
-    }
-}
-
-
-/// @brief This takes more resources due to if statements.
-///
-/// It is preferred to use other functions like `react_to_keyboard_down` and `react_to_keyboard_up`
-/// as they use switch cases and react to events.
-/// @param state is expected to be gotten from `SDL_GetKeyboardState(NULL)`
-/// @param player struct Player player
-void react_to_keyboard_state(const bool* state) {
-    PlayerNS::create_movementVector(state);
-}
-
-void game_debug(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 100, 240, 240, 255);
-
-    int x = 50;
-    int y = 60;
-    int lineHeight = 20;
-
-    auto drawLine = [&](const std::string& text) {
-        SDL_RenderDebugText(renderer, x, y, text.c_str());
-        y += lineHeight;
-        };
-
-    drawLine("FPS: " + std::to_string((int)fps));
-    drawLine("MEMORY: " + std::to_string(printMemoryUsage()));
-    drawLine("FLIPPED: " + std::string(offset.flipped ? "true" : "false"));
 }

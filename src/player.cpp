@@ -9,6 +9,7 @@
 #include "player.hpp"
 #include "collision.hpp"
 #include "offset.hpp"
+#include "enemy.hpp"
 
 const SDL_Point spawnpointGrid = { x: mapSize / 2, y : mapSize / 2 };
 bool groundOffsetAdded = false;

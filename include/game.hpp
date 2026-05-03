@@ -1,53 +1,49 @@
-#pragma once // compilerile relvaga kulpi, et jooksutaks seda faili vaid yhe korra
-#include <SDL3/SDL.h>
-#include <functional>
+#pragma once
+
 #include <random>
+#include <SDL3/SDL.h>
 
-#include "offset.hpp"
-#include "player.hpp"
-#include "map.hpp"
-#include "enemy.hpp"
+/* ── Game loop ────────────────────────────────────────────── */
 
-// /* screen */
-extern int screenWidth;
-extern int screenHeight;
+namespace Game {
+    bool init();
+    void load_level();
+    void handle_events();
+    void update();
+    void render();
+    bool is_running();
+    void shutdown();
+    void debug(SDL_Renderer* renderer);
+}
+
+/* ── Globals (defined in game.cpp) ───────────────────────── */
+
+// game state
+extern bool  isRunning;
 extern float mouse_x;
 extern float mouse_y;
+extern int   screenWidth;
+extern int   screenHeight;
 
-/* game */
-extern bool isRunning;
-extern const Uint8* state;
-
-/* framerate */
-extern Uint32 frameTime;
+// framerate
 extern Uint32 frameCount;
-extern float fps;
+extern float  fps;
 extern Uint32 fpsTimer;
+extern Uint32 frameTime;
 
-/* tickrate */
+// tickrate
+extern Uint32    tickLag;
 extern const int tickrate;
-extern const int tickDelay;
-extern Uint32 tickLag;
-extern int tickCount;
-extern float tps;
-extern Uint64 previousTick;
-const Uint64 TICK_DELAY_MS = 16;  // 60 ticks per second
-const float fixedDeltaTime = TICK_DELAY_MS / 1000.0f;  // 0.016
+extern int       tickCount;
+extern float     tps;
+extern Uint64    previousTick;
 
-/* render.hpp args */
-extern int renderRadius;
-
-/* map.hpp args */
+// world
+extern int   renderRadius;
 extern float tileSize;
-extern bool testMapEnvironment;
+extern bool  testMapEnvironment;
 
-/* pathfinding */
-extern int pathEndX;
-extern int pathEndY;
-extern int pathStartX;
-extern int pathStartY;
-
-/* keys */
+// keys
 extern bool v_pressed;
 
 /* constants */
@@ -71,8 +67,6 @@ inline uint32_t make_grid_key(int row, int col) {
 }
 
 /* functions */
-void react_to_keyboard_down(SDL_Keycode key, struct PlayerData& player, struct Offset& offset, int map[mapSize][mapSize]);
-void react_to_keyboard_up(SDL_Keycode key, struct PlayerData& player);
-void react_to_keyboard_state(const bool* state);
-void rescale_world_after_tilesize_change(float oldTileSize, float newTileSize);
-void game_debug(SDL_Renderer* renderer);
+void react_to_keyboard_down(SDL_Keycode key);
+void react_to_keyboard_up(SDL_Keycode key);
+void rescale_world(float oldTileSize, float newTileSize);

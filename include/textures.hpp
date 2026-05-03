@@ -1,5 +1,6 @@
 #pragma once
 #include "game.hpp"
+#include "map.hpp"
 #include "offset.hpp"
 
 #include <SDL3/SDL.h>

@@ -2,6 +2,8 @@
 #include "isometric_calc.hpp"
 #include "offset.hpp"
 #include <iostream>
+#include "player.hpp"
+
 /* camera offset */
 Offset offset = { 0, 0, false };
 

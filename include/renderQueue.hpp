@@ -1,8 +1,8 @@
 #pragma once
+#include <functional>
 
 #include <iostream>
 #include <optional>
-
 #include "textures.hpp"
 
 struct RenderQueueItem {

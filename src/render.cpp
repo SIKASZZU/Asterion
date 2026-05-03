@@ -9,6 +9,7 @@
 #include "minimap.hpp"
 #include "raycast.hpp"
 #include "renderQueue.hpp"
+#include "enemy.hpp"
 
 #include <iostream>
 #include <vector>
