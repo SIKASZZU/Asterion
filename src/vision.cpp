@@ -23,7 +23,7 @@ namespace Vision {
         );
         SDL_SetTextureBlendMode(darkness, SDL_BLENDMODE_BLEND);
     }
-    void draw_overlay(SDL_Renderer* renderer, struct Offset& offset) {
+    void draw_overlay(SDL_Renderer* renderer) {
         // Render darkness to texture
         SDL_SetRenderTarget(renderer, darkness);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -75,8 +75,8 @@ namespace Vision {
         SDL_SetRenderTarget(renderer, nullptr);
         SDL_RenderTexture(renderer, darkness, nullptr, nullptr);
     }
-    void update(SDL_Renderer* renderer, struct Offset& offset) {
+    void update(SDL_Renderer* renderer) {
         if (!v_pressed) return;
-        draw_overlay(renderer, offset);
+        draw_overlay(renderer);
     }
 }

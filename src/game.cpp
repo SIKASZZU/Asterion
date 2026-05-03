@@ -165,7 +165,7 @@ namespace Game {
 
         s_terrain.render(s_renderer);
         Raycast::update(s_renderer);
-        Vision::update(s_renderer, offset);
+        Vision::update(s_renderer);
 
         if (Ending::start)
             Ending::update(s_renderer);

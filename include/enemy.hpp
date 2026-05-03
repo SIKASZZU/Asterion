@@ -99,7 +99,7 @@ private:
     void move_along_path(float dT);
     void compute_path(const int map[mapSize][mapSize], SDL_Point targetGrid);
     bool is_walkable(const int map[mapSize][mapSize], SDL_Point targetGrid);
-    void choose_target(const int map[mapSize][mapSize], SDL_Point playerGrid);
+    void choose_target(const int map[mapSize][mapSize]);
     bool has_line_of_sight(const int map[mapSize][mapSize], SDL_Point from, SDL_Point to);
 };
 

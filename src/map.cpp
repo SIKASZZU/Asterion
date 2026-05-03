@@ -63,7 +63,6 @@ void generate_map() {
     // load_map_from_file(map);  // return boolean mapLoaded
 
     /* Vali ise, mis mappi tahad geneda. */
-    // generate_random_map(map, 2, 2);          // random ring, circular map
     // if (mapLoaded) { return; }
     if (testMapEnvironment) {
         generate_test_map(map);
@@ -71,37 +70,7 @@ void generate_map() {
         generate_glade(map);
         return;
     }
-    else {
-        generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
-    }
-
-    bool sector_1 = false, sector_2 = false, sector_3 = false;
-
-    auto find_start_sectors = [&]() -> bool {
-        for (int i = 0; i < mapSize; i++) {
-            for (int j = 0; j < mapSize; j++) {
-                if (map[i][j] == Map::SECTOR_1_WALL_VAL && sector_1 == false) {
-                    std::cout << "Generating SECTION 1: Start grid: " << i << " " << j << "\n";
-                    Maze::generate_maze(map, i, j, "one");
-                    sector_1 = true;
-                }
-                if (map[i][j] == Map::SECTOR_2_WALL_VAL && sector_2 == false) {
-                    std::cout << "Generating SECTION 2: Start grid: " << i << " " << j << "\n";
-                    Maze::generate_maze(map, i, j, "two");
-                    sector_2 = true;
-                }
-                if (map[i][j] == Map::SECTOR_3_WALL_VAL && sector_3 == false) {
-                    std::cout << "Generating SECTION 3: Start grid: " << i << " " << j << "\n";
-                    Maze::generate_maze(map, i, j, "three");
-                    sector_3 = true;
-                }
-                if (sector_1 == true && sector_2 == true && sector_3 == true) return true;
-            }
-        }
-        return false;
-        };
-
-    bool sector_status = find_start_sectors();
+    generate_maze_runner_map(map);              // maze runner based map. WorkInProgress
 
     mod_map_sector_3();
     seperate_4_sections();
@@ -111,40 +80,6 @@ void generate_map() {
     // save_map_locally(map);
     std::cout << "Map generation done.\n";
 }
-
-// this is not used anywhere and most likely out of date with recent changes
-void generate_random_map(int map[mapSize][mapSize], int minVal, int maxVal) {
-    float centerX = mapSize / 2.0f;
-    float centerY = mapSize / 2.0f;
-    float maxDistance = std::sqrt(centerX * centerX + centerY * centerY);
-
-    for (int y = 0; y < mapSize; y++) {
-        for (int x = 0; x < mapSize; x++) {
-            float dx = y - centerX;
-            float dy = x - centerY;
-            float distance = std::sqrt(dx * dx + dy * dy) / maxDistance;
-
-            // Inverse chance of land (closer to center = more land)
-            float landChance = 1.0f - distance;
-
-            // Add stronger noise (-0.4 to +0.4)
-            landChance += ((rand() % 100) / 100.0f - 0.5f) * 0.8f;
-
-            landChance = 1.0f ? landChance > 1.0f : landChance = 0.0f;  // Clamp to 0–1
-
-            if (landChance > 0.4f) {
-                // Land: elevation between mid and max
-                int landVal = minVal + (maxVal - minVal) / 2 + rand() % ((maxVal - minVal) / 2 + 1);
-                map[y][x] = landVal;
-            }
-            else {
-                // Water
-                map[y][x] = minVal;
-            }
-        }
-    }
-}
-
 
 void generate_maze_runner_map(int map[mapSize][mapSize]) {
     int halfMapSize = mapSize / 2;
@@ -328,11 +263,6 @@ void generate_glade(int map[mapSize][mapSize]) {
         }
     }
 }
-
-void generate_double_walls() {
-
-}
-
 
 void generate_test_map(int map[mapSize][mapSize]) {
 

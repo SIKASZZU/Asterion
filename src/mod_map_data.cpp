@@ -37,10 +37,10 @@ void mod_map_sector_3() {
                     unchangableWalls_S3.insert(gP);
                     break;
                 }
-                if (map[row + 1][column] == Map::MAZE_GROUND_CUBE
-                    && map[row - 1][column] == Map::MAZE_GROUND_CUBE
-                    || map[row][column + 1] == Map::MAZE_GROUND_CUBE
-                    && map[row][column - 1] == Map::MAZE_GROUND_CUBE) {
+                if ((map[row + 1][column] == Map::MAZE_GROUND_CUBE
+                    && map[row - 1][column] == Map::MAZE_GROUND_CUBE)
+                    || (map[row][column + 1] == Map::MAZE_GROUND_CUBE
+                    && map[row][column - 1] == Map::MAZE_GROUND_CUBE)) {
                     unchangableWalls_S3.insert(gP);
                     break;
                 }

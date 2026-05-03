@@ -11,6 +11,6 @@ namespace Vision {
     extern SDL_Texture* darkness;
 
     void create_darkness(SDL_Renderer* renderer);
-    void draw_overlay(SDL_Renderer* renderer, struct Offset& offset);
-    void update(SDL_Renderer* renderer, struct Offset& offset);
+    void draw_overlay(SDL_Renderer* renderer);
+    void update(SDL_Renderer* renderer);
 };

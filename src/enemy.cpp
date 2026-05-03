@@ -333,7 +333,7 @@ void Enemy::calculate_velocity(float dT) {
     }
 }
 
-void Enemy::choose_target(const int map[mapSize][mapSize], SDL_Point tG) {
+void Enemy::choose_target(const int map[mapSize][mapSize]) {
 
     // IF CHASING: The target is already set to the player/last known by choose_activity.
     // We just need to exit so we don't overwrite it with roaming logic.
@@ -392,7 +392,7 @@ void Enemy::update(const int map[mapSize][mapSize], SDL_Point playerGrid, float 
 
     choose_activity(playerGrid);
     choose_state();
-    choose_target(map, playerGrid);
+    choose_target(map);
 
     // Handle attack cooldown
     if (attackCooldown > 0.0f) {
