@@ -4,14 +4,6 @@
 #include <utility>
 #include <unordered_set>
 
-namespace MapNS {
-    void increase_tilesize();
-    void decrease_tilesize();
-    void increase_radius();
-    void decrease_radius();
-    void change_map();
-}
-
 /// @brief Enum for things used in the map generation and rendering
 ///
 /// Some things do not have textures associated with them.
@@ -318,11 +310,22 @@ const int groundDecoMod = 4;
 const int vinesDecoMod = 4;
 const int groundMod = 12;
 
-void generate_map();
-void generate_glade(int map[mapSize][mapSize]);
-void generate_decorations();
-void print_map(int map[mapSize][mapSize]);
-void generate_random_map(int map[mapSize][mapSize], int min_val, int max_val);
-void generate_maze_runner_map(int map[mapSize][mapSize]);
-void generate_test_map(int map[mapSize][mapSize]);
-void generate_voids(std::set<std::pair<int, int>> void_locations, const int max_voids);
+namespace MapNS {
+    void increase_tilesize();
+    void decrease_tilesize();
+    void increase_radius();
+    void decrease_radius();
+    void change_map();
+}
+
+namespace MapGenerator {
+    void init();
+    void init_test();
+
+    void generate_ground();
+    void generate_mazes();
+    void generate_glade(int map[mapSize][mapSize]);
+    void generate_decorations();
+    void generate_voids();
+    void generate_test(int map[mapSize][mapSize]);
+}

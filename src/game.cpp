@@ -96,10 +96,7 @@ namespace Game {
         PlayerNS::init();
 
         testMapEnvironment = false;
-        generate_map();
-
-        if (testMapEnvironment)
-            map[165][165] = Map::CAMPFIRE;
+        MapGenerator::init();
 
         Vision::create_darkness(s_renderer);
 
