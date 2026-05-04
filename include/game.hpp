@@ -39,9 +39,9 @@ extern float     tps;
 extern Uint64    previousTick;
 
 // world
-extern int   renderRadius;
-extern float tileSize;
-extern bool  testMapEnvironment;
+extern int      renderRadius;
+extern float    tileSize;
+extern bool     testMapEnvironment;
 
 // keys
 extern bool v_pressed;

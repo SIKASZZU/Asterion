@@ -15,7 +15,6 @@
 
 namespace Raycast {
     extern bool enabled;
-    extern bool showRays;
     extern SDL_FPoint sourcePos;
     const int increment = 3;
     const int angleStep = 1;
@@ -33,7 +32,6 @@ namespace Raycast {
     void stop_worker();
     void request_calculation();
     void wait_until_ready();
-    void render_rays(SDL_Renderer* renderer);
 
     void update_sourcePos();
     float to_radians(float degrees);

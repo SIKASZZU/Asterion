@@ -319,7 +319,7 @@ namespace PlayerNS {
         drawLine("----- PLAYER -----");
 
         // Position and Grid
-        drawLine("(x,y)coord: " + std::to_string(player.x) + ", " + std::to_string(player.y));
+        drawLine("x,y,z: " + std::to_string(player.x) + ", " + std::to_string(player.y) + ", " + std::to_string(player.z));
 
         drawLine("(x,y)grid:  " + std::to_string(player.grid.x) + " " + std::to_string(player.grid.y));
 

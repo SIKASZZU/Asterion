@@ -78,7 +78,6 @@ int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, const ssi::Spr
     return ensure_spritesheet_index_for_row(gridPos, config.row, config.minColumn, config.maxColumn);
 }
 
-
 SDL_FRect TerrainClass::return_destTile(int row, int column) {
     SDL_FPoint isometricCoordinates = to_isometric_grid_coordinate(column, row);
     return SDL_FRect{ isometricCoordinates.x, isometricCoordinates.y, tileSize, tileSize };

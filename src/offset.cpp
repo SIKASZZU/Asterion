@@ -11,9 +11,6 @@ void update_offset(struct PlayerData& player) {
 
     SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
 
-    // coords.x -= offset.x;
-    // coords.y -= offset.y;
-    // std::cout << "coords: " << coords.x << " " << coords.y << '\n';
     offset.x = screenWidth / 2 - coords.x;
     offset.y = screenHeight / 2 - coords.y;
 }

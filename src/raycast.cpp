@@ -22,7 +22,6 @@
 
 namespace Raycast {
     bool enabled = false;
-    bool showRays = false;
     SDL_FPoint sourcePos = {};
     SDL_FPoint lastComputedSource = {};
     signed int maxActiveSize = ((renderRadius / tileSize) * (renderRadius / tileSize) * PI);
@@ -235,9 +234,6 @@ namespace Raycast {
             computeReady.store(false); // Reset so we don't process the same data twice
         }
 
-        if (showRays) {
-            render_rays(renderer);
-        }
     }
 
     // Worker loop
@@ -290,21 +286,5 @@ namespace Raycast {
     void wait_until_ready() {
         std::unique_lock<std::mutex> lk(workerMutex);
         workerCv.wait(lk, [] { return computeReady.load(); });
-    }
-
-    void render_rays(SDL_Renderer* renderer) {
-        SDL_SetRenderDrawColor(renderer, 100, 255, 255, 255);
-        std::vector<SDL_FPoint> localEndpoints;
-        SDL_FPoint localSource;
-        {
-            std::lock_guard<std::mutex> lk(workerMutex);  // Protect read
-            localEndpoints = rayEndpoints;  // Copy to avoid holding lock during render
-            localSource = lastComputedSource;
-        }
-        const SDL_FPoint isoStart = to_isometric_coordinate(localSource.x, localSource.y);
-        for (const auto& end : localEndpoints) {
-            const SDL_FPoint isoEnd = to_isometric_coordinate(end.x, end.y);
-            SDL_RenderLine(renderer, isoStart.x + (tileSize / 2), isoStart.y, isoEnd.x + (tileSize / 2), isoEnd.y);
-        }
     }
 }

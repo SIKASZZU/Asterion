@@ -17,6 +17,7 @@
 #include "vision.hpp"
 #include "end.hpp"
 #include "render.hpp"
+#include "map.hpp"
 
 /* ── globals ──────────────────────────────────────────────── */
 
@@ -210,6 +211,7 @@ namespace Game {
         drawLine("FPS: " + std::to_string((int)fps));
         drawLine("MEMORY: " + std::to_string(printMemoryUsage()));
         drawLine("FLIPPED: " + std::string(offset.flipped ? "true" : "false"));
+        drawLine("tile size: " + std::to_string(tileSize));
     }
 
 }
