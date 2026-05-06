@@ -15,7 +15,7 @@ const SDL_Point spawnpointGrid = { x: mapSize / 2, y : mapSize / 2 };
 bool groundOffsetAdded = false;
 
 // Suggested constants (adjust to taste)
-const float MAX_SPEED = 4000.0f; // normal value 400.0f
+const float MAX_SPEED = 400.0f; // normal value 400.0f
 const float MAX_WALK_SPEED = MAX_SPEED / 4;
 const float ACCEL = 2000.0f;    // High value for snappy feel
 const float FRICTION = 1500.0f; // How fast player slides to a stop
@@ -236,7 +236,7 @@ namespace PlayerNS {
         // todo: animation speed has to be equal to length of an action. Jumping, RunningJump is fixed time.
         switch (player.state) {
         case (PlayerState::Idle): {
-            player.animationSpeed = 120;
+            player.animationSpeed = 250;
             break;
         }
         case (PlayerState::Walk): {
@@ -244,7 +244,7 @@ namespace PlayerNS {
             break;
         }
         case (PlayerState::Run): {
-            player.animationSpeed = tileSize * 1.2f;
+            player.animationSpeed = tileSize * 1.0f;
             break;
         }
         case (PlayerState::Jump): {

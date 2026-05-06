@@ -37,41 +37,70 @@ namespace Assets {
         static const char* maze_deco = "assets/maze_deco.png";
         static const char* campfire = "assets/campfire-Sheet.png";
     }
+
     namespace Player {
+        //female
+        static const char* player_girl_idle_down = "assets/female/animations/Idle/south.png";
+        static const char* player_girl_idle_down_left = "assets/female/animations/Idle/south-west.png";
+        static const char* player_girl_idle_down_right = "assets/female/animations/Idle/south-east.png";
+        static const char* player_girl_idle_right = "assets/female/animations/Idle/west.png";
+        static const char* player_girl_idle_left = "assets/female/animations/Idle/east.png";
+        static const char* player_girl_idle_up = "assets/female/animations/Idle/north.png";
+        static const char* player_girl_idle_up_left = "assets/female/animations/Idle/north-west.png";
+        static const char* player_girl_idle_up_right = "assets/female/animations/Idle/north-east.png";
+
+        static const char* player_girl_run_down = "assets/female/animations/Running/south.png";
+        static const char* player_girl_run_down_left = "assets/female/animations/Running/south-west.png";
+        static const char* player_girl_run_down_right = "assets/female/animations/Running/south-east.png";
+        static const char* player_girl_run_right = "assets/female/animations/Running/east.png";
+        static const char* player_girl_run_left = "assets/female/animations/Running/west.png";
+        static const char* player_girl_run_up = "assets/female/animations/Running/north.png";
+        static const char* player_girl_run_up_left = "assets/female/animations/Running/north-west.png";
+        static const char* player_girl_run_up_right = "assets/female/animations/Running/north-east.png";
+
+        static const char* player_girl_walk_down = "assets/female/animations/Walking/south.png";
+        static const char* player_girl_walk_down_left = "assets/female/animations/Walking/south-west.png";
+        static const char* player_girl_walk_down_right = "assets/female/animations/Walking/south-east.png";
+        static const char* player_girl_walk_right = "assets/female/animations/Walking/east.png";
+        static const char* player_girl_walk_left = "assets/female/animations/Walking/west.png";
+        static const char* player_girl_walk_up = "assets/female/animations/Walking/north.png";
+        static const char* player_girl_walk_up_left = "assets/female/animations/Walking/north-west.png";
+        static const char* player_girl_walk_up_right = "assets/female/animations/Walking/north-east.png";
+        //female end
 
         //player animation
         // static const char* player_animation = "assets/player_sprite_sheet.png";
 
         // player-girl
         // ready idle
-        static const char* player_girl_idle_down = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Down.png";
-        static const char* player_girl_idle_down_left = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_DownLeft.png";
-        static const char* player_girl_idle_down_right = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_DownRight.png";
-        static const char* player_girl_idle_right = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Right.png";
-        static const char* player_girl_idle_left = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Left.png";
-        static const char* player_girl_idle_up = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Up.png";
-        static const char* player_girl_idle_up_left = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_UpLeft.png";
-        static const char* player_girl_idle_up_right = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_UpRight.png";
+        // static const char* player_girl_idle_down = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Down.png";
+        // static const char* player_girl_idle_down_left = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_DownLeft.png";
+        // static const char* player_girl_idle_down_right = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_DownRight.png";
+        // static const char* player_girl_idle_right = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Right.png";
+        // static const char* player_girl_idle_left = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Left.png";
+        // static const char* player_girl_idle_up = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_Up.png";
+        // static const char* player_girl_idle_up_left = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_UpLeft.png";
+        // static const char* player_girl_idle_up_right = "assets/player/GirlSampleReadyIdle/GirlSample_ReadyIdle_UpRight.png";
 
-        // walk
-        static const char* player_girl_walk_down = "assets/player/GirlSampleWalk/GirlSample_Walk_Down.png";
-        static const char* player_girl_walk_down_left = "assets/player/GirlSampleWalk/GirlSample_Walk_DownLeft.png";
-        static const char* player_girl_walk_down_right = "assets/player/GirlSampleWalk/GirlSample_Walk_DownRight.png";
-        static const char* player_girl_walk_right = "assets/player/GirlSampleWalk/GirlSample_Walk_Right.png";
-        static const char* player_girl_walk_left = "assets/player/GirlSampleWalk/GirlSample_Walk_Left.png";
-        static const char* player_girl_walk_up = "assets/player/GirlSampleWalk/GirlSample_Walk_Up.png";
-        static const char* player_girl_walk_up_left = "assets/player/GirlSampleWalk/GirlSample_Walk_UpLeft.png";
-        static const char* player_girl_walk_up_right = "assets/player/GirlSampleWalk/GirlSample_Walk_UpRight.png";
+        // // walk
+        // static const char* player_girl_walk_down = "assets/player/GirlSampleWalk/GirlSample_Walk_Down.png";
+        // static const char* player_girl_walk_down_left = "assets/player/GirlSampleWalk/GirlSample_Walk_DownLeft.png";
+        // static const char* player_girl_walk_down_right = "assets/player/GirlSampleWalk/GirlSample_Walk_DownRight.png";
+        // static const char* player_girl_walk_right = "assets/player/GirlSampleWalk/GirlSample_Walk_Right.png";
+        // static const char* player_girl_walk_left = "assets/player/GirlSampleWalk/GirlSample_Walk_Left.png";
+        // static const char* player_girl_walk_up = "assets/player/GirlSampleWalk/GirlSample_Walk_Up.png";
+        // static const char* player_girl_walk_up_left = "assets/player/GirlSampleWalk/GirlSample_Walk_UpLeft.png";
+        // static const char* player_girl_walk_up_right = "assets/player/GirlSampleWalk/GirlSample_Walk_UpRight.png";
 
         // run
-        static const char* player_girl_run_down = "assets/player/GirlSampleRun/GirlSample_Run_Down.png";
-        static const char* player_girl_run_down_left = "assets/player/GirlSampleRun/GirlSample_Run_DownLeft.png";
-        static const char* player_girl_run_down_right = "assets/player/GirlSampleRun/GirlSample_Run_DownRight.png";
-        static const char* player_girl_run_right = "assets/player/GirlSampleRun/GirlSample_Run_Right.png";
-        static const char* player_girl_run_left = "assets/player/GirlSampleRun/GirlSample_Run_Left.png";
-        static const char* player_girl_run_up = "assets/player/GirlSampleRun/GirlSample_Run_Up.png";
-        static const char* player_girl_run_up_left = "assets/player/GirlSampleRun/GirlSample_Run_UpLeft.png";
-        static const char* player_girl_run_up_right = "assets/player/GirlSampleRun/GirlSample_Run_UpRight.png";
+        // static const char* player_girl_run_down = "assets/player/GirlSampleRun/GirlSample_Run_Down.png";
+        // static const char* player_girl_run_down_left = "assets/player/GirlSampleRun/GirlSample_Run_DownLeft.png";
+        // static const char* player_girl_run_down_right = "assets/player/GirlSampleRun/GirlSample_Run_DownRight.png";
+        // static const char* player_girl_run_right = "assets/player/GirlSampleRun/GirlSample_Run_Right.png";
+        // static const char* player_girl_run_left = "assets/player/GirlSampleRun/GirlSample_Run_Left.png";
+        // static const char* player_girl_run_up = "assets/player/GirlSampleRun/GirlSample_Run_Up.png";
+        // static const char* player_girl_run_up_left = "assets/player/GirlSampleRun/GirlSample_Run_UpLeft.png";
+        // static const char* player_girl_run_up_right = "assets/player/GirlSampleRun/GirlSample_Run_UpRight.png";
 
         // jump
         static const char* player_girl_jump_down = "assets/player/GirlSampleJump/GirlSample_Jump_Down.png";

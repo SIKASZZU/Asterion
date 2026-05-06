@@ -10,8 +10,8 @@ namespace AnimEnemy {
 
 
 namespace AnimPlayer {
-    const int spriteWidth = 256;
-    const int spriteHeight = 256;
+    const int spriteWidth = 92;
+    const int spriteHeight = 92;
 
     extern Uint32 lastUpdate;
     extern int currentAnimCol;

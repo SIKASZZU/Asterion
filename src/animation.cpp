@@ -228,6 +228,7 @@ void animation_player(SDL_Renderer* renderer) {
     using namespace AnimPlayer;
     singleLoop = false;
 
+    // divide image size by spirte size to detemine column, row values.
 
     SDL_Point movementVector = player.movementVector;
 
@@ -245,21 +246,23 @@ void animation_player(SDL_Renderer* renderer) {
         movementVector = lastDirectionVector;
     }
 
-    int maxRows, lastRowCols;
+    int maxRows, lastRowCols; // 0 indexed
+    int ImagesPerRow = 4; // start count 1
+
     switch (player.state) {
     case PlayerState::Walk: {
         spriteEnum = animation_player_walk(movementVector);
-        maxRows = 2; lastRowCols = 1;
+        maxRows = 1; lastRowCols = 2; ImagesPerRow = 3;
         break;
     }
     case PlayerState::Run: {
         spriteEnum = animation_player_run(movementVector);
-        maxRows = 1; lastRowCols = 1;
+        maxRows = 2; lastRowCols = 2; ImagesPerRow = 3;
         break;
     }
     case PlayerState::Idle: {
         spriteEnum = animation_player_idle(lastDirectionVector);
-        maxRows = 3; lastRowCols = 1;
+        maxRows = 1; lastRowCols = 1; ImagesPerRow = 2;
         break;
     }
     case PlayerState::Jump: {
@@ -320,7 +323,7 @@ void animation_player(SDL_Renderer* renderer) {
     if (updateFrame) {
         lastUpdate = SDL_GetTicks();
 
-        currentAnimCol = (currentAnimCol + 1) % 4;
+        currentAnimCol = (currentAnimCol + 1) % ImagesPerRow;
         // std::cout << "x" << currentAnimRow << ' ' << currentAnimCol << " " << "max: " << maxRows << " " << lastRowCols << '\n';
 
         if (currentAnimCol == 0) {

@@ -5,7 +5,10 @@
 int main() {
     std::cout << "C++ version: " << __cplusplus << '\n';
 
-    if (!Game::init())    return 1;
+    if (!Game::init()) {
+        return 1;
+    }
+
     Game::load_level();
 
     while (Game::is_running()) {
