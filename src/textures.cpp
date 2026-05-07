@@ -160,6 +160,7 @@ void load_textures(SDL_Renderer* renderer) {
     textureMap[Map::WALL_CUBE_GROUND] = ImageTexture(renderer, Assets::Images::wall_cube_ground);
     // this is used as sector 1,2,3 walls
     textureMap[Map::WALL_CUBE_SPRITE] = ImageTexture(renderer, Assets::Images::wall_cube_sprite);
+    textureMap[Map::WALL_SPRITESHEET] = ImageTexture(renderer, Assets::Images::wall_spritesheet);
     textureMap[Map::VINE_CUBE_HARD] = ImageTexture(renderer, Assets::Images::vine_cube_hard);
     textureMap[Map::VINE_CUBE_MEDIUM] = ImageTexture(renderer, Assets::Images::vine_cube_medium);
     textureMap[Map::VINE_CUBE_SOFT] = ImageTexture(renderer, Assets::Images::vine_cube_soft);

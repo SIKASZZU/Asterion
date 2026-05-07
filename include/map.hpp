@@ -159,6 +159,7 @@ enum Map {
     MAZE_NS_DOOR,
     MAZE_WE_DOOR,
     CAMPFIRE,
+    WALL_SPRITESHEET,
 };
 
 /// @brief Argument has to be a grid value of map
@@ -286,6 +287,7 @@ inline constexpr const char* enumMapToString(int gridValue) {
     case Map::MAZE_NS_DOOR: { return "Map::MAZE_NS_DOOR"; break; }
     case Map::MAZE_WE_DOOR: { return "Map::MAZE_WE_DOOR"; break; }
     case Map::CAMPFIRE: { return "Map::CAMPFIRE"; break; }
+    case Map::WALL_SPRITESHEET: { return "Map::WALL_SPRITESHEET"; break; }
     default: { return "Unconfigured Map enum"; break; }
     }
 }

@@ -54,6 +54,14 @@ static const SDL_FRect& get_cached_spritesheet_src(int col, int row) {
     return insertedIt->second;
 }
 
+// Return src rect for the dedicated wall spritesheet (10 images, single row, 144x144 each)
+static SDL_FRect get_wall_spritesheet_src(int index) {
+    const float w = 144.0f;
+    const float h = 144.0f;
+    int c = std::max(0, index % 10);
+    return SDL_FRect{ static_cast<float>(c) * w, 0.0f, w, h };
+}
+
 /// @brief
 /// Return index of image of grid pos.
 /// If doesn't exist, assigns that pos.
@@ -281,10 +289,10 @@ void TerrainClass::create_renderQ_walls() {
                     alpha = inFrontAlpha;
                 }
 
-                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::wallCubes);
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::wallCubes.row);
+                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                SDL_FRect src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
-                    RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                    RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
                 );
                 break;
             }
@@ -312,10 +320,10 @@ void TerrainClass::create_renderQ_walls() {
                 destTile.x += (xr / 4);
                 destTile.w -= (xr / 2);
                 destTile.h -= (xr / 2);
-                int idx = ensure_spritesheet_index_for_row(gridPos, ssi::wallCubes);
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::wallCubes.row);
+                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                const SDL_FRect& src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
-                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
                 );
                 break;
             }
@@ -325,17 +333,17 @@ void TerrainClass::create_renderQ_walls() {
                 destTile.y -= halfTile;
                 SDL_FRect src;
                 int idx = 0;
-                idx = ensure_spritesheet_index_for_row(gridPos, ssi::wallCubes);
-                src = get_cached_spritesheet_src(idx, ssi::wallCubes.row);
+                idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
-                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
                 );
                 // create random 2nd story walls based on decoration.
                 destTile.y -= halfTile;
-                idx = ensure_spritesheet_index_for_row(gridPos, ssi::wallCubes);
-                src = get_cached_spritesheet_src(idx, ssi::wallCubes.row);
+                idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
-                    RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::WALL_CUBE_SPRITE], alpha)
+                    RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
                 );
                 break;
             }

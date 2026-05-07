@@ -20,6 +20,7 @@ namespace Assets {
         static const char* wall_cube = "assets/wall_cube.png";
         static const char* wall_cube_ground = "assets/wall_cube_ground.png";
         static const char* wall_cube_sprite = "assets/wall_cube_sprite_sheet.png";
+        static const char* wall_spritesheet = "assets/walls_sprite_sheet.png";
         static const char* vine_cube_hard = "assets/vine_cube_hard.png";
         static const char* vine_cube_medium = "assets/vine_cube_medium.png";
         static const char* vine_cube_soft = "assets/vine_cube_soft.png";
