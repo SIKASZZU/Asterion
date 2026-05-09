@@ -221,7 +221,9 @@ void rescale_world(float oldTs, float newTs) {
     int gy = static_cast<int>((player.y + player.size / 2.0f) / oldTs);
     player.x = gx * newTs;
     player.y = gy * newTs;
-    player.size = newTs;
+
+    float ratio = static_cast<float>(player.size / oldTs);
+    player.size = newTs * ratio;
     player.grid = { gx, gy };
     SDL_FPoint iso = to_isometric_coordinate(player.x, player.y);
     player.rect.x = iso.x;

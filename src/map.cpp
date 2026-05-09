@@ -302,10 +302,6 @@ namespace MapGenerator {
     }
 
     void generate_decorations() {
-        // Precompute decoration indices so renderer can just render.
-
-        decorationIndexMap.clear();
-
         for (int row = 0; row < mapSize; row++) {
             for (int column = 0; column < mapSize; column++) {
 
@@ -320,7 +316,32 @@ namespace MapGenerator {
                     break;
                 }
                                           // case Map::MAZE_GROUND_CUBE: {
-                case Map::SECTOR_3_WALL_VAL:
+                case Map::SECTOR_3_WALL_VAL: {
+                    if (rand() % mazeDecoMod == 0) {
+                        int idx = ensure_spritesheet_index_for_row(gridPos, ssi::coverMaze);
+                        decorationIndexMap.try_emplace(key, idx);
+                    }
+                    // persistent cutout mapping: 1 in sector3CutoutMod tiles
+                    if (rand() % sector3CutoutMod == 0) {
+                        // Only add cutout if the tile has support on at least two orthogonal sides
+                        int row = gridPos.first;
+                        int col = gridPos.second;
+                        auto is_wall = [&](int r, int c) -> bool {
+                            if (r < 0 || r >= mapSize || c < 0 || c >= mapSize) return false;
+                            return wallValues.count(map[r][c]) > 0;
+                        };
+                        int supportCount = 0;
+                        if (is_wall(row - 1, col)) ++supportCount; // north
+                        if (is_wall(row + 1, col)) ++supportCount; // south
+                        if (is_wall(row, col - 1)) ++supportCount; // west
+                        if (is_wall(row, col + 1)) ++supportCount; // east
+
+                        if (supportCount >= 2) {
+                            sector3Cutouts.insert(key);
+                        }
+                    }
+                    break;
+                }
                 case Map::SECTOR_2_PATHWAY:
                 case Map::SECTOR_3_PATHWAY: {
                     if (rand() % mazeDecoMod == 0) {

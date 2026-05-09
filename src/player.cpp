@@ -15,7 +15,7 @@ const SDL_Point spawnpointGrid = { x: mapSize / 2, y : mapSize / 2 };
 bool groundOffsetAdded = false;
 
 // Suggested constants (adjust to taste)
-const float MAX_SPEED = 400.0f; // normal value 400.0f
+const float MAX_SPEED = 4000.0f; // normal value 400.0f
 const float MAX_WALK_SPEED = MAX_SPEED / 4;
 const float ACCEL = 2000.0f;    // High value for snappy feel
 const float FRICTION = 1500.0f; // How fast player slides to a stop
@@ -273,7 +273,7 @@ namespace PlayerNS {
 
         player.state = PlayerState::Idle;
         player.movementSpeed = defaultMovementSpeed;
-        player.size = tileSize;
+        player.size = tileSize * 0.75;
         player.grid = { spawnpointGrid.x, spawnpointGrid.y };
         player.x = static_cast<float>(spawnpointGrid.x * tileSize);
         player.y = static_cast<float>(spawnpointGrid.y * tileSize);

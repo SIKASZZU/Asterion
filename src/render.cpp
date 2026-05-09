@@ -27,6 +27,7 @@ std::unordered_map<uint32_t, int> randomOffsetsTrees;
 std::unordered_map<uint32_t, int> randomOffsetsGround;
 // key, index of decoration. You need to know key to SpritesheetConfig. Else wrong texture, jsut random index of spritesheet.
 std::unordered_map<uint32_t, int> decorationIndexMap;
+std::unordered_set<uint32_t> sector3Cutouts;
 // std::unordered_map<uint32_t, int> vineDecorationIndexMap;
 // Per-tile, per-row random spritesheet frame index to avoid cross-category leakage.
 static std::unordered_map<uint32_t, std::array<int, ssi::maxSideLength>> spritesheetIndexMap;
@@ -58,7 +59,7 @@ static const SDL_FRect& get_cached_spritesheet_src(int col, int row) {
 static SDL_FRect get_wall_spritesheet_src(int index) {
     const float w = 144.0f;
     const float h = 144.0f;
-    int c = std::max(0, index % 10);
+    int c = std::max(0, index % 14);
     return SDL_FRect{ static_cast<float>(c) * w, 0.0f, w, h };
 }
 
@@ -289,7 +290,7 @@ void TerrainClass::create_renderQ_walls() {
                     alpha = inFrontAlpha;
                 }
 
-                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 14);
                 SDL_FRect src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
                     RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
@@ -299,16 +300,20 @@ void TerrainClass::create_renderQ_walls() {
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= halfTile;
 
-                int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
+                // int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
+                // const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
 
                 if (shiftedWalls.find(key) != shiftedWalls.end()) {
                     alpha = inFrontAlpha;
                 }
-
+                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                const SDL_FRect& src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
-                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
                 );
+                // renderQueue.push_back(
+                //     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                // );
                 break;
             }
             case Map::SECTOR_2_WALL_VAL: {
@@ -320,7 +325,7 @@ void TerrainClass::create_renderQ_walls() {
                 destTile.x += (xr / 4);
                 destTile.w -= (xr / 2);
                 destTile.h -= (xr / 2);
-                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 14);
                 const SDL_FRect& src = get_wall_spritesheet_src(idx);
                 renderQueue.push_back(
                     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
@@ -328,23 +333,27 @@ void TerrainClass::create_renderQ_walls() {
                 break;
             }
             case Map::SECTOR_3_WALL_VAL: {
-                if (unchangableWalls_S3.find(gridPos) == unchangableWalls_S3.end()) return;
-                // create walls
+                if (unchangableWalls_S3.find(gridPos) == unchangableWalls_S3.end()) break;
+
                 destTile.y -= halfTile;
-                SDL_FRect src;
-                int idx = 0;
-                idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
-                src = get_wall_spritesheet_src(idx);
-                renderQueue.push_back(
-                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
-                );
-                // create random 2nd story walls based on decoration.
+                if (sector3Cutouts.find(key) == sector3Cutouts.end()) {
+                    // simple gravitational support: ensure tile below exists and
+                    // is ground or wall so the cutout won't float
+                    // if (row + 1 >= 0 && row + 1 < mapSize) {
+                    //     // int below = map[row + 1][column];
+                    //     cutoutSupported = true;
+                    // }
+                    int idxTop = ensure_spritesheet_index_for_row(gridPos, 0, 0, 14);
+                    SDL_FRect srcTop = get_wall_spritesheet_src(idxTop);
+                    renderQueue.push_back(RenderQueueItem(destTile.y, srcTop, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha));
+
+                }
+
                 destTile.y -= halfTile;
-                idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
-                src = get_wall_spritesheet_src(idx);
-                renderQueue.push_back(
-                    RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
-                );
+                int idxBot = ensure_spritesheet_index_for_row(gridPos, 0, 0, 14);
+                SDL_FRect srcBot = get_wall_spritesheet_src(idxBot);
+                renderQueue.push_back(RenderQueueItem(destTile.y + halfTile + 1, srcBot, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha));
+
                 break;
             }
             }
@@ -399,12 +408,12 @@ void TerrainClass::create_renderQ_decoration(SDL_Renderer* renderer) {
                 break;
             }
             case Map::SECTOR_3_WALL_VAL: {
-                destTile.y -= halfTile;
-                auto it = decorationIndexMap.find(key);
-                if (it == decorationIndexMap.end()) break; // no decoration for this tile
-                int idx = it->second;
-                const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::coverMaze.row);
-                renderQueue.push_back(RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::SPRITESHEET], alpha));
+                // destTile.y -= halfTile;
+                // auto it = decorationIndexMap.find(key);
+                // if (it == decorationIndexMap.end()) break; // no decoration for this tile
+                // int idx = it->second;
+                // const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::coverMaze.row);
+                // renderQueue.push_back(RenderQueueItem(destTile.y + halfTile + 1, src, destTile, &textureMap[Map::SPRITESHEET], alpha));
                 break;
             }
             }
@@ -571,6 +580,11 @@ void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
 
             SDL_SetRenderDrawColor(renderer, 255, 120, 255, 255);
             if (wallValues.find(gridValue) == wallValues.end()) {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            }
+
+            uint32_t key_br = make_grid_key(row, column);
+            if (sector3Cutouts.find(key_br) != sector3Cutouts.end()) {
                 SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
             }
 

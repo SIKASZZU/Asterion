@@ -1,11 +1,3 @@
-#include "map.hpp"
-#include "player.hpp"
-#include "raycast.hpp"
-#include "isometric_calc.hpp"
-#include "game.hpp"
-#include "vision.hpp"
-#include "offset.hpp"
-
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <set>
@@ -19,6 +11,15 @@
 #include <condition_variable>
 #include <atomic>
 #include <vector>
+
+#include "map.hpp"
+#include "player.hpp"
+#include "raycast.hpp"
+#include "isometric_calc.hpp"
+#include "game.hpp"
+#include "vision.hpp"
+#include "offset.hpp"
+#include "render.hpp"
 
 namespace Raycast {
     bool enabled = false;
@@ -113,7 +114,9 @@ namespace Raycast {
                 distance = rayLength1D.y * tileSize;
                 rayLength1D.y += rayUnitStep.y;
             }
-            if (player.collision_array.find(map[gridY][gridX]) != player.collision_array.end()) {
+
+            uint32_t key_br = make_grid_key(gridY, gridX);
+            if (player.collision_array.find(map[gridY][gridX]) != player.collision_array.end() && sector3Cutouts.find(key_br) == sector3Cutouts.end()) {
                 localEndpoints.insert({ gridY, gridX });
                 extraReach = true;
                 break;

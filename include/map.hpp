@@ -311,6 +311,8 @@ const int mazeDecoMod = 4;
 const int groundDecoMod = 4;
 const int vinesDecoMod = 4;
 const int groundMod = 12;
+// how often a sector3 wall will have a lower-wall cutout (1 in N)
+const int sector3CutoutMod = 3;
 
 namespace MapNS {
     void increase_tilesize();

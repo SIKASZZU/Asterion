@@ -16,6 +16,7 @@ extern std::unordered_map<uint32_t, int> randomOffsetsTrees;
 extern std::unordered_map<uint32_t, int> randomOffsetsGround;
 extern std::set<std::pair<int, int>> gridVineChecked;
 extern std::unordered_map<uint32_t, int> decorationIndexMap;
+extern std::unordered_set<uint32_t> sector3Cutouts;
 
 // extern std::unordered_map<uint32_t, int> vineDecorationIndexMap;
 
