@@ -40,5 +40,5 @@ namespace Raycast {
     void calculate_decay_grids();
     void clear_arrays();
     void update_max_grid_size();
-    void update(SDL_Renderer* renderer);
+    void update();
 }

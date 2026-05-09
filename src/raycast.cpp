@@ -218,7 +218,7 @@ namespace Raycast {
         maxDecaySize = maxActiveSize / 2;
     }
 
-    void update(SDL_Renderer* renderer) {
+    void update() {
         if (!enabled) return;
 
         // update_max_grid_size();

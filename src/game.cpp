@@ -162,7 +162,7 @@ namespace Game {
         SDL_RenderClear(s_renderer);
 
         s_terrain.render(s_renderer);
-        Raycast::update(s_renderer);
+        Raycast::update();
         Vision::update(s_renderer);
 
         if (Ending::start)
