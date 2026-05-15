@@ -89,7 +89,7 @@ int ensure_spritesheet_index_for_row(std::pair<int, int> gridPos, const ssi::Spr
 
 SDL_FRect TerrainClass::return_destTile(int row, int column) {
     SDL_FPoint isometricCoordinates = to_isometric_grid_coordinate(column, row);
-    return SDL_FRect{ isometricCoordinates.x, isometricCoordinates.y, tileSize, tileSize };
+    return SDL_FRect{ isometricCoordinates.x, isometricCoordinates.y, MapNS::tileSize, MapNS::tileSize };
 }
 bool TerrainClass::is_grid_not_renderable(std::pair<int, int> gridPos, int gridValue) {
     // Always render ingrown walls within the current render window
@@ -115,18 +115,18 @@ float TerrainClass::determine_alpha(std::pair<int, int> gridPos) {
 }
 void TerrainClass::calculate_miscellaneous(float dT) {
     elapsedDistance += doorMovingSpeed * dT;
-    halfTile = tileSize / 2;
+    halfTile = MapNS::tileSize / 2;
 
-    renderQueue.reserve(4 * (renderRadius * renderRadius));
-    groundRenderQueue.reserve(4 * (renderRadius * renderRadius));
+    renderQueue.reserve(4 * (Raycast::renderRadius * Raycast::renderRadius));
+    groundRenderQueue.reserve(4 * (Raycast::renderRadius * Raycast::renderRadius));
 
-    playerTileX = static_cast<int>((player.x + player.size / 2) / tileSize);
-    playerTileY = static_cast<int>((player.y + player.size / 2) / tileSize);
+    playerTileX = static_cast<int>((player.x + player.size / 2) / MapNS::tileSize);
+    playerTileY = static_cast<int>((player.y + player.size / 2) / MapNS::tileSize);
 
-    mapIndexLeft = std::max(0, playerTileX - renderRadius);
-    mapIndexTop = std::max(0, playerTileY - renderRadius);
-    mapIndexRight = std::min(mapSize - 1, playerTileX + renderRadius);
-    mapIndexBottom = std::min(mapSize - 1, playerTileY + renderRadius);
+    mapIndexLeft = std::max(0, playerTileX - Raycast::renderRadius);
+    mapIndexTop = std::max(0, playerTileY - Raycast::renderRadius);
+    mapIndexRight = std::min(mapSize - 1, playerTileX + Raycast::renderRadius);
+    mapIndexBottom = std::min(mapSize - 1, playerTileY + Raycast::renderRadius);
 
 }
 void TerrainClass::create_renderQ_ground() {
@@ -460,10 +460,10 @@ void TerrainClass::create_renderQ_items(SDL_Renderer* renderer) {
                 int xr = randomOffsetsTrees.try_emplace(make_grid_key(row, column), rand() % 20)
                     .first->second;
                 SDL_FRect tempTile = destTile;
-                tempTile.x += (tileSize / 5) + xr;
-                tempTile.y += (tileSize / 3) + xr;
-                tempTile.h = (tileSize / 2) - xr;
-                tempTile.w = (tileSize / 2) - xr;
+                tempTile.x += (MapNS::tileSize / 5) + xr;
+                tempTile.y += (MapNS::tileSize / 3) + xr;
+                tempTile.h = (MapNS::tileSize / 2) - xr;
+                tempTile.w = (MapNS::tileSize / 2) - xr;
                 textureMap[gridValue].render(renderer, &tempTile);
                 break;
             }
@@ -532,12 +532,12 @@ void TerrainClass::create_renderQ_entities() {
     // Use the player's ground Y (undo vertical `z`) for render ordering so
     // jumping (which shifts the drawn rect by -z) doesn't change depth sorting.
     float playerGroundY = player.rect.y + player.z;
-    //  - (tileSize / 2)
+    //  - (MapNS::tileSize / 2)
     renderQueue.push_back(RenderQueueItem(static_cast<int>(playerGroundY), [](SDL_Renderer* renderer) { animation_player(renderer); }));
 
     // add enemies to renderQ
     for (auto& e : enemyArray) {
-        int yPos = static_cast<int>(e.get_rect().y - tileSize / 2);
+        int yPos = static_cast<int>(e.get_rect().y - MapNS::tileSize / 2);
         renderQueue.push_back(RenderQueueItem(yPos, [&e](SDL_Renderer* renderer) { e.render(renderer); }));
     }
 }
@@ -561,15 +561,15 @@ void TerrainClass::render_renderQ_ground(SDL_Renderer* renderer) {
 
 }
 
-void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
+void TerrainClass::render_entity_grid_highlights(GameState* gS) {
     if (!debugText) return;
 
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawBlendMode(gS->s_renderer, SDL_BLENDMODE_BLEND);
 
     // Compute orthographic camera offset that centers the player
     // loe sessiooni et teada saada miks 
-    float orthoOffsetX = static_cast<float>(screenWidth) / 2.0f - (player.x + player.size / 2.0f);
-    float orthoOffsetY = static_cast<float>(screenHeight) / 2.0f - (player.y + player.size / 2.0f);
+    float orthoOffsetX = static_cast<float>(gS->screenWidth) / 2.0f - (player.x + player.size / 2.0f);
+    float orthoOffsetY = static_cast<float>(gS->screenHeight) / 2.0f - (player.y + player.size / 2.0f);
 
     for (int row = mapIndexTop; row <= mapIndexBottom; ++row) {
         for (int column = mapIndexLeft; column <= mapIndexRight; ++column) {
@@ -580,39 +580,39 @@ void TerrainClass::render_entity_grid_highlights(SDL_Renderer* renderer) {
 
             if (player.collision_array.find(gridValue) == player.collision_array.end()) continue;
 
-            SDL_SetRenderDrawColor(renderer, 255, 120, 255, 255);
+            SDL_SetRenderDrawColor(gS->s_renderer, 255, 120, 255, 255);
             if (wallValues.find(gridValue) == wallValues.end()) {
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                SDL_SetRenderDrawColor(gS->s_renderer, 0, 255, 0, 255);
             }
 
             uint32_t key_br = make_grid_key(row, column);
             if (sector3Cutouts.find(key_br) != sector3Cutouts.end()) {
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                SDL_SetRenderDrawColor(gS->s_renderer, 0, 255, 0, 255);
             }
 
-            float sx = column * tileSize + orthoOffsetX;
-            float sy = row * tileSize + orthoOffsetY;
+            float sx = column * MapNS::tileSize + orthoOffsetX;
+            float sy = row * MapNS::tileSize + orthoOffsetY;
 
-            SDL_FRect r = { sx, sy, tileSize, tileSize };
-            SDL_RenderRect(renderer, &r);
+            SDL_FRect r = { sx, sy, MapNS::tileSize, MapNS::tileSize };
+            SDL_RenderRect(gS->s_renderer, &r);
 
-            SDL_RenderPoint(renderer, r.x, r.y);
-            SDL_RenderPoint(renderer, r.x + r.w - 1.0f, r.y + r.h - 1.0f);
+            SDL_RenderPoint(gS->s_renderer, r.x, r.y);
+            SDL_RenderPoint(gS->s_renderer, r.x + r.w - 1.0f, r.y + r.h - 1.0f);
 
             // show numeric screen coords (top-left) for quick inspection
             std::string coordText = std::to_string(static_cast<int>(std::round(r.x))) + "," + std::to_string(static_cast<int>(std::round(r.y)));
-            SDL_RenderDebugText(renderer, static_cast<int>(r.x), static_cast<int>(r.y) - 12, coordText.c_str());
+            SDL_RenderDebugText(gS->s_renderer, static_cast<int>(r.x), static_cast<int>(r.y) - 12, coordText.c_str());
         }
     }
 
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_SetRenderDrawColor(gS->s_renderer, 0, 255, 0, 255);
     SDL_FRect pr = { player.x + orthoOffsetX, player.y + orthoOffsetY, player.size, player.size };
-    SDL_RenderRect(renderer, &pr);
+    SDL_RenderRect(gS->s_renderer, &pr);
     std::string pText = "P:" + std::to_string(static_cast<int>(std::round(pr.x))) + "," + std::to_string(static_cast<int>(std::round(pr.y)));
-    SDL_RenderDebugText(renderer, static_cast<int>(pr.x), static_cast<int>(pr.y) - 14, pText.c_str());
+    SDL_RenderDebugText(gS->s_renderer, static_cast<int>(pr.x), static_cast<int>(pr.y) - 14, pText.c_str());
 
     SDL_FRect playerScreenRect = { player.x + orthoOffsetX, player.y + orthoOffsetY, player.size, player.size };
-    SDL_RenderRect(renderer, &playerScreenRect);
+    SDL_RenderRect(gS->s_renderer, &playerScreenRect);
 }
 
 void TerrainClass::update(SDL_Renderer* renderer) {
@@ -627,11 +627,11 @@ void TerrainClass::update(SDL_Renderer* renderer) {
     create_renderQ_entities();
 }
 
-void TerrainClass::render(SDL_Renderer* renderer) {
-    render_renderQ_ground(renderer);
-    render_renderQ(renderer);
+void TerrainClass::render(GameState* gS) {
+    render_renderQ_ground(gS->s_renderer);
+    render_renderQ(gS->s_renderer);
 
-    render_entity_grid_highlights(renderer);
+    render_entity_grid_highlights(gS);
     // overlay minimap on top-right
-    render_minimap(renderer);
+    render_minimap(gS, gS->s_renderer);
 }

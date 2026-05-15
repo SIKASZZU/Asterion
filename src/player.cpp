@@ -121,7 +121,7 @@ namespace PlayerNS {
         return newVelocity;
     }
 
-    void update_rect() {
+    void update_rect(GameState* gS) {
 
         // apply ground offset to player.y
         int groundOffsetAmount = 0;
@@ -132,8 +132,8 @@ namespace PlayerNS {
         }
 
         player.rect = {
-            screenWidth / 2.0f, //  - player.size / 2.0f
-            screenHeight / 2.0f - player.z - groundOffsetAmount, //  - player.size / 2.0f
+            gS->screenWidth / 2.0f, //  - player.size / 2.0f
+            gS->screenHeight / 2.0f - player.z - groundOffsetAmount, //  - player.size / 2.0f
             player.size,
             player.size
         };
@@ -185,8 +185,8 @@ namespace PlayerNS {
         player.y += finalVel.y;
 
         player.grid = {
-            static_cast<int>((player.x + player.size / 2.0f) / tileSize),
-            static_cast<int>((player.y + player.size / 2.0f) / tileSize)
+            static_cast<int>((player.x + player.size / 2.0f) / MapNS::tileSize),
+            static_cast<int>((player.y + player.size / 2.0f) / MapNS::tileSize)
         };
 
         // Jump physics (vertical axis)
@@ -244,11 +244,11 @@ namespace PlayerNS {
             break;
         }
         case (PlayerState::Walk): {
-            player.animationSpeed = tileSize * 1.4f;
+            player.animationSpeed = MapNS::tileSize * 1.4f;
             break;
         }
         case (PlayerState::Run): {
-            player.animationSpeed = tileSize * 1.0f;
+            player.animationSpeed = MapNS::tileSize * 1.0f;
             break;
         }
         case (PlayerState::Jump): {
@@ -271,16 +271,16 @@ namespace PlayerNS {
         }
     }
 
-    void init() {
-        defaultMovementSpeed = tileSize * tilesPerSecond;
+    void init(GameState* gS) {
+        defaultMovementSpeed = MapNS::tileSize * tilesPerSecond;
         defaultMovementSpeedShifting = defaultMovementSpeed / 4.0f;
 
         player.state = PlayerState::Idle;
         player.movementSpeed = defaultMovementSpeed;
-        player.size = tileSize * 0.75;
+        player.size = MapNS::tileSize * 0.75;
         player.grid = { spawnpointGrid.x, spawnpointGrid.y };
-        player.x = static_cast<float>(spawnpointGrid.x * tileSize);
-        player.y = static_cast<float>(spawnpointGrid.y * tileSize);
+        player.x = static_cast<float>(spawnpointGrid.x * MapNS::tileSize);
+        player.y = static_cast<float>(spawnpointGrid.y * MapNS::tileSize);
         player.rect = { 0.0f, 0.0f, player.size, player.size };
         player.hitboxRect = {
             player.rect.x + (player.size / 4.0f),
@@ -300,17 +300,17 @@ namespace PlayerNS {
         player.lastMovementKey = 'a';
         player.cartesianMovement = false;
 
-        update_rect();
+        update_rect(gS);
     }
 
-    void update(float deltaTime) {
+    void update(float deltaTime, GameState* gS) {
         set_state();
 
         if (player.state != PlayerState::Damage) {
             calculate_new_coordinates(deltaTime);
         }
 
-        update_rect();
+        update_rect(gS);
         update_animation_speed();
     }
 

@@ -11,7 +11,7 @@ bug: see fucking spider 8way k6nnib l2bi seinte. Tee 8 way mingi vektor, mis ext
 bug: void cube tex fixi 2ra
 bug: player mazeis runnides clipib wallide sisse
 bug: raycast on sellep perses i think
-bug (mis kedagi ei koti): kui tile size on spetsnaz ja Vision, raycastiga m2ngida, ss m6nikord m6ni tile ei satu Vision::rect setti ja mappi tekivad augud. (tilesize 100 no problem? bueno)
+bug (mis kedagi ei koti): kui tile size on spetsnaz ja Vision, raycastiga m2ngida, ss m6nikord m6ni tile ei satu Vision::rect setti ja mappi tekivad augud. (MapNS::tileSize 100 no problem? bueno)
 
 debug: visuaalselt displayida world coordiga recte player ymber. 
 

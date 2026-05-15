@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <SDL3/SDL.h>
+#include "game_state.hpp"
 
 namespace DaylightNS {
     // Day/night system
@@ -13,7 +14,7 @@ namespace DaylightNS {
     // returns brightness 0..1 where 1 = day (bright), 0 = night (dark)
     float get_day_brightness();
     void debug(SDL_Renderer* renderer);
-    void draw(SDL_Renderer* renderer);
+    void draw(GameState* gS);
 }
 
 // Game settings struct (runtime-configurable and easy to serialize)

@@ -14,12 +14,15 @@
 
 namespace Vision {
     SDL_Texture* darkness = nullptr;
+    bool enabled = false;
 
-    void create_darkness(SDL_Renderer* renderer) {
+    void create_darkness(GameState* gS) {
         darkness = SDL_CreateTexture(
-            renderer, SDL_PIXELFORMAT_RGBA8888,
+            gS->s_renderer,
+            SDL_PIXELFORMAT_RGBA8888,
             SDL_TEXTUREACCESS_TARGET,
-            screenWidth, screenHeight
+            gS->screenWidth,
+            gS->screenHeight
         );
         SDL_SetTextureBlendMode(darkness, SDL_BLENDMODE_BLEND);
     }
@@ -31,7 +34,7 @@ namespace Vision {
         if (daylightSettings.daylightEnabled) {
             brightness = DaylightNS::get_day_brightness();
         }
-        else if (v_pressed) {
+        else if (enabled) {
             brightness = 0.0f; // force darkness overlay when `v` is pressed
         }
         else {
@@ -44,12 +47,12 @@ namespace Vision {
 
         auto draw_fade_rect = [&](int gridX, int gridY) {
             SDL_FPoint coords = to_isometric_grid_coordinate(gridX, gridY);
-            coords.y -= tileSize / 2;
-            SDL_FRect rect = { coords.x, coords.y, tileSize, tileSize };
-            float dx = (gridX * tileSize + tileSize / 2) - (player.x);
-            float dy = (gridY * tileSize + tileSize / 2) - (player.y);
-            float dist = std::sqrt(dx * dx + dy * dy) / (tileSize * 4);
-            float t = std::clamp(dist / (renderRadius), 0.0f, 1.0f);
+            coords.y -= MapNS::tileSize / 2;
+            SDL_FRect rect = { coords.x, coords.y, MapNS::tileSize, MapNS::tileSize };
+            float dx = (gridX * MapNS::tileSize + MapNS::tileSize / 2) - (player.x);
+            float dy = (gridY * MapNS::tileSize + MapNS::tileSize / 2) - (player.y);
+            float dist = std::sqrt(dx * dx + dy * dy) / (MapNS::tileSize * 4);
+            float t = std::clamp(dist / (Raycast::renderRadius), 0.0f, 1.0f);
             // tile alpha scaled by dayFactor so at day it's transparent
             Uint8 alpha = static_cast<Uint8>(t * 255.0f * dayFactor);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
@@ -76,7 +79,7 @@ namespace Vision {
         SDL_RenderTexture(renderer, darkness, nullptr, nullptr);
     }
     void update(SDL_Renderer* renderer) {
-        if (!v_pressed) return;
+        if (!enabled) return;
         draw_overlay(renderer);
     }
 }

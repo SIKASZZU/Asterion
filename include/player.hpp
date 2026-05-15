@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "game.hpp"
+#include "game_state.hpp"
 #include "map.hpp"
 #include "offset.hpp"
 
@@ -46,8 +47,8 @@ namespace PlayerNS {
     extern bool collisionX;
     extern bool collisionY;
     void toggle_collision();
-    void update(float deltaTime);
+    void update(float deltaTime, GameState* gS);
     void create_movementVector(const bool* state);
     void debug(SDL_Renderer* renderer);
-    void init();
+    void init(GameState* gS);
 }

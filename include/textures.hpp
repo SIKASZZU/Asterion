@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 #include <unordered_map>
+#include "common.hpp"
 
 class Texture {
 protected:

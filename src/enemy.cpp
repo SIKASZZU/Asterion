@@ -27,20 +27,20 @@ const float ENEMY_FRICTION = 1200.0f;
 
 bool stopAllEnemies = false;
 std::vector<Enemy> enemyArray = {};
-const int maxRoamingDistance = 5 * tileSize;
+const int maxRoamingDistance = 5 * MapNS::tileSize;
 bool debugText = false;
 
 Enemy::Enemy(int gx, int gy)
     : grid{ gx, gy },
-    size(tileSize),
+    size(MapNS::tileSize),
     speed(player.movementSpeed),
     color({ 255, 0, 0, 255 }),
     currentPathIndex(0),
     movementVector{ 0, 0 },
     velocity{ 0.0f, 0.0f },
     pos{
-        static_cast<float>(grid.x * tileSize + (size / 2)),
-        static_cast<float>(grid.y * tileSize + (size / 2))
+        static_cast<float>(grid.x * MapNS::tileSize + (size / 2)),
+        static_cast<float>(grid.y * MapNS::tileSize + (size / 2))
     },
     rect{ pos.x, pos.y, size, size },
     lastKnownPlayerGrid{ gx, gy },
@@ -114,11 +114,11 @@ void Enemy::choose_state() {
 
 void Enemy::choose_activity(SDL_Point tG) {
     // Calculate distance in pixels for precision
-    float dist = std::hypot(pos.x - (tG.x * tileSize + tileSize / 2),
-        pos.y - (tG.y * tileSize + tileSize / 2));
+    float dist = std::hypot(pos.x - (tG.x * MapNS::tileSize + MapNS::tileSize / 2),
+        pos.y - (tG.y * MapNS::tileSize + MapNS::tileSize / 2));
 
     // Detection Range: 5 tiles
-    if (dist <= tileSize * 5) {
+    if (dist <= MapNS::tileSize * 5) {
         // if (has_line_of_sight(map, Enemy::grid, tG)) {
         lastKnownPlayerGrid = tG;
         activity = EnemyActivity::Chase;
@@ -127,12 +127,12 @@ void Enemy::choose_activity(SDL_Point tG) {
     }
 
     // Attack Range Check: Within 80% of a tile
-    if (activity == EnemyActivity::Chase && dist <= tileSize * 0.8f) {
+    if (activity == EnemyActivity::Chase && dist <= MapNS::tileSize * 0.8f) {
         activity = EnemyActivity::Attack;
     }
 
     // // Return to chasing if out of attack range
-    // else if (activity == EnemyActivity::Attack && dist > tileSize * 1.2f) {
+    // else if (activity == EnemyActivity::Attack && dist > MapNS::tileSize * 1.2f) {
     //     activity = EnemyActivity::Chase;
     // }
 
@@ -174,8 +174,8 @@ void Enemy::move_along_path(float dT) {
     int nextX = nextGrid.first;
     int nextY = nextGrid.second;
     SDL_FPoint nextPos{
-        static_cast<float>((nextX * tileSize + tileSize / 2)),
-        static_cast<float>((nextY * tileSize + tileSize / 2))
+        static_cast<float>((nextX * MapNS::tileSize + MapNS::tileSize / 2)),
+        static_cast<float>((nextY * MapNS::tileSize + MapNS::tileSize / 2))
     };
     float dx = nextPos.x - pos.x;
     float dy = nextPos.y - pos.y;
@@ -255,8 +255,8 @@ void Enemy::calculate_velocity(float dT) {
     int nextX = nextGrid.first;
     int nextY = nextGrid.second;
     SDL_FPoint nextPos{
-        static_cast<float>((nextX * tileSize + tileSize / 2)),
-        static_cast<float>((nextY * tileSize + tileSize / 2))
+        static_cast<float>((nextX * MapNS::tileSize + MapNS::tileSize / 2)),
+        static_cast<float>((nextY * MapNS::tileSize + MapNS::tileSize / 2))
     };
     float dx = nextPos.x - pos.x;
     float dy = nextPos.y - pos.y;
@@ -292,8 +292,8 @@ void Enemy::calculate_velocity(float dT) {
     if (!path.empty() && currentPathIndex < path.size()) {
         const auto& nextGrid = path[currentPathIndex];
         SDL_FPoint nextPos{
-            static_cast<float>((nextGrid.first * tileSize + tileSize / 2)),
-            static_cast<float>((nextGrid.second * tileSize + tileSize / 2))
+            static_cast<float>((nextGrid.first * MapNS::tileSize + MapNS::tileSize / 2)),
+            static_cast<float>((nextGrid.second * MapNS::tileSize + MapNS::tileSize / 2))
         };
         float ndx_toNode = nextPos.x - pos.x;
         float ndy_toNode = nextPos.y - pos.y;
@@ -304,8 +304,8 @@ void Enemy::calculate_velocity(float dT) {
             if (currentPathIndex + 1 < path.size()) {
                 const auto& futureGrid = path[currentPathIndex + 1];
                 SDL_FPoint futurePos{
-                    static_cast<float>((futureGrid.first * tileSize + tileSize / 2)),
-                    static_cast<float>((futureGrid.second * tileSize + tileSize / 2))
+                    static_cast<float>((futureGrid.first * MapNS::tileSize + MapNS::tileSize / 2)),
+                    static_cast<float>((futureGrid.second * MapNS::tileSize + MapNS::tileSize / 2))
                 };
                 float fdx = futurePos.x - pos.x;
                 float fdy = futurePos.y - pos.y;
@@ -375,7 +375,7 @@ void Enemy::choose_target(const int map[mapSize][mapSize]) {
 
 void Enemy::render(SDL_Renderer* renderer) {
     SDL_FPoint isoPos = to_isometric_coordinate(pos.x, pos.y);
-    rect = { isoPos.x + offset.x, isoPos.y + offset.y - (tileSize / 4), size, size };
+    rect = { isoPos.x + offset.x, isoPos.y + offset.y - (MapNS::tileSize / 4), size, size };
 
     animation(renderer);
 

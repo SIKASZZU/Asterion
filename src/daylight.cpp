@@ -1,6 +1,7 @@
 #include <cmath>
 #include <algorithm>
 
+// #include "game_state.hpp"
 #include "daylight.hpp"
 #include "game.hpp"
 
@@ -15,10 +16,10 @@ namespace DaylightNS {
         daylightSettings.daylightEnabled = !daylightSettings.daylightEnabled;
     }
 
-    void increase_time_speed(){
+    void increase_time_speed() {
         daylightSettings.dayLengthSeconds += 10.0f;
     }
-    void decrease_time_speed(){
+    void decrease_time_speed() {
         daylightSettings.dayLengthSeconds = std::max(5.0f, daylightSettings.dayLengthSeconds - 10.0f);
     }
 
@@ -78,7 +79,7 @@ namespace DaylightNS {
         SDL_RenderDebugText(renderer, 50, 190, bufDay);
     }
 
-    void draw(SDL_Renderer* renderer) {
+    void draw(GameState* gS) {
         // Draw day/night overlay: tint the final framebuffer according to timeOfDay
         if (daylightSettings.daylightEnabled) {
             // brightness oscillates with cosine: 1.0 = full day, 0.0 = full night
@@ -88,12 +89,11 @@ namespace DaylightNS {
             const float maxNightAlpha = 200.0f; // how dark the night can get
             float nightAlpha = (1.0f - brightness) * maxNightAlpha;
             if (nightAlpha > 0.5f) {
-                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-                // bluish night tint
-                Uint8 a = static_cast<Uint8>(std::clamp(nightAlpha, 0.0f, 255.0f));
-                SDL_SetRenderDrawColor(renderer, 12, 24, 64, a);
-                SDL_FRect full = { 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) };
-                SDL_RenderFillRect(renderer, &full);
+                SDL_SetRenderDrawBlendMode(gS->s_renderer, SDL_BLENDMODE_BLEND);
+
+                SDL_SetRenderDrawColor(gS->s_renderer, 12, 24, 64, static_cast<Uint8>(std::clamp(nightAlpha, 0.0f, 255.0f)));
+                SDL_FRect full = { 0, 0, static_cast<float>(gS->screenWidth), static_cast<float>(gS->screenHeight) };
+                SDL_RenderFillRect(gS->s_renderer, &full);
             }
         }
     }

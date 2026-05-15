@@ -1,4 +1,7 @@
 #pragma once
+#include "game_state.hpp"
+#include "player.hpp"
+
 /* camera offset */
 struct Offset {
     float x;
@@ -7,4 +10,4 @@ struct Offset {
 };
 extern Offset offset;
 
-void update_offset(struct PlayerData& player);
+void update_offset(GameState* gS, struct PlayerData& player);

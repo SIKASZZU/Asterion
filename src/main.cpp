@@ -1,22 +1,27 @@
 #define SDL_MAIN_HANDLED
 #include "game.hpp"
+#include "game_state.hpp"
 #include <iostream>
 
 int main() {
-    std::cout << "C++ version: " << __cplusplus << '\n';
 
-    if (!Game::init()) {
+    GameState* gS = new GameState();
+
+    if (!Game::init(gS)) {
+        delete gS;
         return 1;
     }
 
-    Game::load_level();
+    Game::load_level(gS);
 
-    while (Game::is_running()) {
-        Game::handle_events();
-        Game::update();
-        Game::render();
+    while (Game::is_running(gS)) {
+        Game::handle_events(gS);
+        Game::update(gS);
+        Game::render(gS);
     }
 
-    Game::shutdown();
+    Game::shutdown(gS);
+
+    delete gS;
     return 0;
 }

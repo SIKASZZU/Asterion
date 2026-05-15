@@ -15,29 +15,32 @@
 int map[mapSize][mapSize];  // tra mdea, aga see peab siin uuesti olema ilma externita.
 
 namespace MapNS {
+    float tileSize = 100.0f;
+    bool testMapEnvironment = false;
+
     void increase_tilesize() {
         float old = tileSize;
-        tileSize += 5;
+        MapNS::tileSize += 5;
         Raycast::updateMaxGridSize = true;
-        rescale_world(old, tileSize);
+        rescale_world(old, MapNS::tileSize);
     }
 
     void decrease_tilesize() {
         float old = tileSize;
-        if (tileSize > 5) tileSize -= 5;
+        if (MapNS::tileSize > 5) MapNS::tileSize -= 5;
         Raycast::updateMaxGridSize = true;
-        rescale_world(old, tileSize);
+        rescale_world(old, MapNS::tileSize);
     }
 
     void increase_radius() {
-        renderRadius += 5;
-        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
+        Raycast::renderRadius += 5;
+        Raycast::maxRayLength = Raycast::renderRadius * (MapNS::tileSize * 0.75f);
         Raycast::updateMaxGridSize = true;
     }
 
     void decrease_radius() {
-        if (renderRadius > 5) renderRadius -= 5;
-        Raycast::maxRayLength = renderRadius * (tileSize * 0.75f);
+        if (Raycast::renderRadius > 5) Raycast::renderRadius -= 5;
+        Raycast::maxRayLength = Raycast::renderRadius * (MapNS::tileSize * 0.75f);
         Raycast::updateMaxGridSize = true;
     }
 
@@ -329,7 +332,7 @@ namespace MapGenerator {
                         auto is_wall = [&](int r, int c) -> bool {
                             if (r < 0 || r >= mapSize || c < 0 || c >= mapSize) return false;
                             return wallValues.count(map[r][c]) > 0;
-                        };
+                            };
                         int supportCount = 0;
                         if (is_wall(row - 1, col)) ++supportCount; // north
                         if (is_wall(row + 1, col)) ++supportCount; // south
@@ -466,7 +469,7 @@ namespace MapGenerator {
         MapGenerator::generate_glade(map);
 
         { // random blocks afterwards
-            if (testMapEnvironment)
+            if (MapNS::testMapEnvironment)
                 map[165][165] = Map::CAMPFIRE;
         }
     }

@@ -2,51 +2,22 @@
 
 #include <random>
 #include <SDL3/SDL.h>
+#include "game_state.hpp"
+#include "common.hpp"
 
 /* ── Game loop ────────────────────────────────────────────── */
 
 namespace Game {
-    bool init();
-    void load_level();
-    void handle_events();
-    void update();
-    void render();
-    bool is_running();
-    void shutdown();
-    void debug(SDL_Renderer* renderer);
+    bool init(GameState* gS);
+    void load_level(GameState* gS);
+    void handle_events(GameState* gS);
+    void update(GameState* gS);
+    void render(GameState* gS);
+    bool is_running(GameState* gS);
+    void shutdown(GameState* gS);
+    void debug(GameState* gS, SDL_Renderer* renderer);
 }
-
-/* ── Globals (defined in game.cpp) ───────────────────────── */
-
-// game state
-extern bool  isRunning;
-extern float mouse_x;
-extern float mouse_y;
-extern int   screenWidth;
-extern int   screenHeight;
-
-// framerate
-extern Uint32 frameCount;
-extern float  fps;
-extern Uint32 fpsTimer;
-extern Uint32 frameTime;
-
-// tickrate
-extern Uint32    tickLag;
-extern const int tickrate;
-extern int       tickCount;
-extern float     tps;
-extern Uint64    previousTick;
-
-// world
-extern int      renderRadius;
-extern float    tileSize;
-extern bool     testMapEnvironment;
-
-// keys
-extern bool v_pressed;
-
-/* constants */
+// move into state
 const double PI = 3.1415926535897932384626433832;
 
 inline float generateRandomFloat(float min, float max) {
@@ -56,17 +27,12 @@ inline float generateRandomFloat(float min, float max) {
     return dis(gen);
 }
 
-struct pair_hash {
-    std::size_t operator()(const std::pair<int, int>& p) const {
-        return std::hash<int>()(p.first) ^ std::hash<int>()(p.second << 1);
-    }
-};
 
 inline uint32_t make_grid_key(int row, int col) {
     return (static_cast<uint32_t>(row) << 16) | static_cast<uint32_t>(col);
 }
 
 /* functions */
-void react_to_keyboard_down(SDL_Keycode key);
-void react_to_keyboard_up(SDL_Keycode key);
+void react_to_keyboard_down(GameState* gS, SDL_Keycode key);
+void react_to_keyboard_up(GameState* gS, SDL_Keycode key);
 void rescale_world(float oldTileSize, float newTileSize);

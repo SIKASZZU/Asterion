@@ -9,10 +9,10 @@
 
 namespace Minimap {
     // Draw a simple top-right minimap of size 200x200px showing nearby tiles.
-    void render_minimap(SDL_Renderer* renderer) {
+    void render_minimap(GameState* gS, SDL_Renderer* renderer) {
         const float minimapSize = 200.0f;
         const float margin = 10.0f;
-        const float x0 = screenWidth - minimapSize - margin;
+        const float x0 = gS->screenWidth - minimapSize - margin;
         const float y0 = margin;
 
         SDL_FRect bg = { x0, y0, minimapSize, minimapSize };
@@ -20,11 +20,11 @@ namespace Minimap {
         // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
         // SDL_RenderFillRect(renderer, &bg);
 
-        int tiles = std::max(1, renderRadius * 2 + 1);
+        int tiles = std::max(1, Raycast::renderRadius * 2 + 1);
         float cell = minimapSize / tiles;
 
-        int startX = player.grid.x - renderRadius;
-        int startY = player.grid.y - renderRadius;
+        int startX = player.grid.x - Raycast::renderRadius;
+        int startY = player.grid.y - Raycast::renderRadius;
 
         bool haveEndpoints = !Raycast::endpointActiveGrids.empty();
         bool raycastEnabled = Raycast::enabled;
@@ -69,8 +69,8 @@ namespace Minimap {
         }
 
         // Draw player marker in center
-        float px = bg.x + (renderRadius)*cell + cell * 0.5f;
-        float py = bg.y + (renderRadius)*cell + cell * 0.5f;
+        float px = bg.x + (Raycast::renderRadius)*cell + cell * 0.5f;
+        float py = bg.y + (Raycast::renderRadius)*cell + cell * 0.5f;
         SDL_FRect pRect = { px - cell * 0.35f, py - cell * 0.35f, cell * 0.7f, cell * 0.7f };
         SDL_SetRenderDrawColor(renderer, 220, 40, 40, 255);
         SDL_RenderFillRect(renderer, &pRect);
@@ -82,6 +82,6 @@ namespace Minimap {
 }
 
 // Expose C-linkage function matching header
-void render_minimap(SDL_Renderer* renderer) {
-    Minimap::render_minimap(renderer);
+void render_minimap(GameState* gS, SDL_Renderer* renderer) {
+    Minimap::render_minimap(gS, renderer);
 }

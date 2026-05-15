@@ -52,7 +52,7 @@ public:
     void spawn(SDL_Point spawnGrid) {
         grid = spawnGrid;
         // teleport to grid center
-        // cancer buhg, 100.0f is hardcoded tilesize xD
+        // cancer buhg, 100.0f is hardcoded MapNS::tileSize xD
         pos = SDL_FPoint{ static_cast<float>(grid.x * 100.0f + (size / 2)), static_cast<float>(grid.y * 100.0f + (size / 2)) };
         velocity = { 0.0f, 0.0f };
         movementVector = { 0, 0 };

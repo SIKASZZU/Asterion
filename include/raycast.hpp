@@ -15,6 +15,7 @@
 
 namespace Raycast {
     extern bool enabled;
+    extern int renderRadius;
     extern SDL_FPoint sourcePos;
     const int increment = 3;
     const int angleStep = 1;

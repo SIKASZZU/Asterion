@@ -315,6 +315,9 @@ const int groundMod = 12;
 const int sector3CutoutMod = 3;
 
 namespace MapNS {
+    extern float tileSize;
+    extern bool testMapEnvironment;
+
     void increase_tilesize();
     void decrease_tilesize();
     void increase_radius();

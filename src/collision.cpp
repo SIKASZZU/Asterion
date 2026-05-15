@@ -18,10 +18,10 @@ bool check_collision(int map[mapSize][mapSize], struct PlayerData& player, SDL_F
     }
 
     // Calculate grid indices for all four corners
-    int grid_x_left = static_cast<int>(tempRect.x / tileSize);
-    int grid_x_right = static_cast<int>((tempRect.x + tempRect.w) / tileSize);
-    int grid_y_top = static_cast<int>(tempRect.y / tileSize);
-    int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / tileSize);
+    int grid_x_left = static_cast<int>(tempRect.x / MapNS::tileSize);
+    int grid_x_right = static_cast<int>((tempRect.x + tempRect.w) / MapNS::tileSize);
+    int grid_y_top = static_cast<int>(tempRect.y / MapNS::tileSize);
+    int grid_y_bottom = static_cast<int>((tempRect.y + tempRect.h) / MapNS::tileSize);
 
     // For each corner: if the grid value is a collidable value and
     // the grid is NOT in sector3Cutouts, count it as a collision.
@@ -48,7 +48,7 @@ bool check_collision(int map[mapSize][mapSize], struct PlayerData& player, SDL_F
 
     uint32_t key_br = make_grid_key(grid_y_bottom, grid_x_right);
     int val_br = map[grid_y_bottom][grid_x_right];
-    if (player.collision_array.find(val_br) != player.collision_array.end() 
+    if (player.collision_array.find(val_br) != player.collision_array.end()
         && sector3Cutouts.find(key_br) == sector3Cutouts.end()) {
         return true;
     }

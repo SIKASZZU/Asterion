@@ -7,10 +7,10 @@
 /* camera offset */
 Offset offset = { 0, 0, false };
 
-void update_offset(struct PlayerData& player) {
+void update_offset(GameState* gS, PlayerData& player) {
 
     SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
 
-    offset.x = screenWidth / 2 - coords.x;
-    offset.y = screenHeight / 2 - coords.y;
+    offset.x = gS->screenWidth / 2 - coords.x;
+    offset.y = gS->screenHeight / 2 - coords.y;
 }

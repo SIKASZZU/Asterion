@@ -23,15 +23,17 @@
 
 namespace Raycast {
     bool enabled = false;
+    int renderRadius = 20;
     SDL_FPoint sourcePos = {};
     SDL_FPoint lastComputedSource = {};
-    signed int maxActiveSize = ((renderRadius / tileSize) * (renderRadius / tileSize) * PI);
+    signed int maxActiveSize = ((renderRadius / MapNS::tileSize) * (renderRadius / MapNS::tileSize) * PI);
     signed int maxDecaySize = maxActiveSize / 2;
-    float maxRayLength = renderRadius * (tileSize * 0.75);
+    float maxRayLength = renderRadius * (MapNS::tileSize * 0.75);
     bool updateMaxGridSize = true;
     std::set<std::pair<int, int>> endpointActiveGrids;
     std::set<std::pair<int, int>> activeGridsMaxSize;
     std::deque<std::pair<int, int>> decayGrids;
+
 
     // Worker thread primitives
     static std::jthread workerThread;
@@ -77,27 +79,27 @@ namespace Raycast {
 
     // Trace ray with provided precomputed unit steps
     static float trace_ray(const SDL_FPoint& srcPos, int map[mapSize][mapSize], const SDL_FPoint& direction, const SDL_FPoint& rayUnitStep, std::set<std::pair<int, int>>& localEndpoints) {
-        int gridX = static_cast<int>(srcPos.x / tileSize);
-        int gridY = static_cast<int>(srcPos.y / tileSize);
+        int gridX = static_cast<int>(srcPos.x / MapNS::tileSize);
+        int gridY = static_cast<int>(srcPos.y / MapNS::tileSize);
 
         SDL_Point step;
         SDL_FPoint rayLength1D;
         if (direction.x < 0) {
             step.x = -1;
-            rayLength1D.x = (srcPos.x - (gridX * tileSize)) / tileSize * rayUnitStep.x;
+            rayLength1D.x = (srcPos.x - (gridX * MapNS::tileSize)) / MapNS::tileSize * rayUnitStep.x;
         }
         else {
             step.x = 1;
-            rayLength1D.x = ((gridX + 1) * tileSize - srcPos.x) / tileSize * rayUnitStep.x;
+            rayLength1D.x = ((gridX + 1) * MapNS::tileSize - srcPos.x) / MapNS::tileSize * rayUnitStep.x;
         }
 
         if (direction.y < 0) {
             step.y = -1;
-            rayLength1D.y = (srcPos.y - (gridY * tileSize)) / tileSize * rayUnitStep.y;
+            rayLength1D.y = (srcPos.y - (gridY * MapNS::tileSize)) / MapNS::tileSize * rayUnitStep.y;
         }
         else {
             step.y = 1;
-            rayLength1D.y = ((gridY + 1) * tileSize - srcPos.y) / tileSize * rayUnitStep.y;
+            rayLength1D.y = ((gridY + 1) * MapNS::tileSize - srcPos.y) / MapNS::tileSize * rayUnitStep.y;
         }
 
         float distance = 0.0f;
@@ -106,12 +108,12 @@ namespace Raycast {
             localEndpoints.insert({ gridY, gridX });
             if (rayLength1D.x < rayLength1D.y) {
                 gridX += step.x;
-                distance = rayLength1D.x * tileSize;
+                distance = rayLength1D.x * MapNS::tileSize;
                 rayLength1D.x += rayUnitStep.x;
             }
             else {
                 gridY += step.y;
-                distance = rayLength1D.y * tileSize;
+                distance = rayLength1D.y * MapNS::tileSize;
                 rayLength1D.y += rayUnitStep.y;
             }
 
@@ -131,12 +133,12 @@ namespace Raycast {
             // do an extra reach ahead to make smoother ray endings by showing more walls.
             if (rayLength1D.x < rayLength1D.y) {
                 gridX += step.x;
-                distance = rayLength1D.x * tileSize;
+                distance = rayLength1D.x * MapNS::tileSize;
                 rayLength1D.x += rayUnitStep.x;
             }
             else {
                 gridY += step.y;
-                distance = rayLength1D.y * tileSize;
+                distance = rayLength1D.y * MapNS::tileSize;
                 rayLength1D.y += rayUnitStep.y;
             }
             if (player.collision_array.find(map[gridY][gridX]) != player.collision_array.end()) {
@@ -228,7 +230,7 @@ namespace Raycast {
 
         // Only request a new one if we aren't already busy
         // todo:: if you dont move and doors open/close, the raycast doesnt realise to update visibility.
-        if (distMoved > tileSize * 0.5f && !computeRequested.load()) {
+        if (distMoved > MapNS::tileSize * 0.5f && !computeRequested.load()) {
             request_calculation();
         }
 

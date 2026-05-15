@@ -32,8 +32,8 @@ Below is a breakdown of in-game keybindings and their functionalities:
 - V	Toggle      Vision system toggle on/off.
 - PLUS  +	      Increase renderRadius and update raycast range.
 - MINUS -	      Decrease renderRadius (minimum of 5) and update raycast range.
-- . (Period)	  Increase tileSize (and player size accordingly).
-- , (Comma)	    Decrease tileSize (with a minimum cap).
+- . (Period)	  Increase MapNS::tileSize (and player size accordingly).
+- , (Comma)	    Decrease MapNS::tileSize (with a minimum cap).
 - PageDown	    Set pathfinding start point to player's current grid tile.
 - PageUp	      Set pathfinding end point to player's current grid tile, then compute path.
 - Left Shift	  Temporarily reduce movement speed (1/4th); enables "sneak" or precision
