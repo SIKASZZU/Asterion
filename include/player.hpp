@@ -24,6 +24,7 @@ struct PlayerData {
     float x;
     float y;
     SDL_FRect rect;
+    SDL_FRect hitboxRect;
     bool collision;
     std::unordered_set<int> collision_array;
     SDL_Point movementVector;  // Will be used to calculate where player will end up at, direction alike.

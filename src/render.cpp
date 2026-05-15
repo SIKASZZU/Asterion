@@ -153,7 +153,7 @@ void TerrainClass::create_renderQ_ground() {
                 || gridValue == Map::VINE_OVERHANG_EW) {
                 int xr = randomOffsetsGround.try_emplace(make_grid_key(row, column), rand() % groundMod)
                     .first->second;
-                xr = std::max(4, xr);
+                // xr = std::max(4, xr);
                 destTile.y += (xr);
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazeGround);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazeGround.row);
@@ -184,7 +184,7 @@ void TerrainClass::create_renderQ_ground() {
             case Map::SECTOR_3_PATHWAY: {
                 int xr = randomOffsetsGround.try_emplace(make_grid_key(row, column), rand() % groundMod)
                     .first->second;
-                xr = std::max(4, xr);
+                // xr = std::max(4, xr);
                 destTile.y += (xr);
                 int idx = ensure_spritesheet_index_for_row(gridPos, ssi::mazePathway);
                 const SDL_FRect& src = get_cached_spritesheet_src(idx, ssi::mazePathway.row);
@@ -300,20 +300,21 @@ void TerrainClass::create_renderQ_walls() {
             case Map::SECTOR_1_WALL_VAL: {
                 destTile.y -= halfTile;
 
-                // int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
-                // const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
-
                 if (shiftedWalls.find(key) != shiftedWalls.end()) {
                     alpha = inFrontAlpha;
                 }
-                int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
-                const SDL_FRect& src = get_wall_spritesheet_src(idx);
-                renderQueue.push_back(
-                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
-                );
+
+                // int idx = ensure_spritesheet_index_for_row(gridPos, 0, 0, 9);
+                // const SDL_FRect& src = get_wall_spritesheet_src(idx);
                 // renderQueue.push_back(
-                //     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                //     RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::WALL_SPRITESHEET], alpha)
                 // );
+
+                int idx = ensure_spritesheet_index_for_row(gridPos, 5, 0, 5);
+                const SDL_FRect& src = get_cached_spritesheet_src(idx, 5);
+                renderQueue.push_back(
+                    RenderQueueItem(destTile.y, src, destTile, &textureMap[Map::SPRITESHEET], alpha)
+                );
                 break;
             }
             case Map::SECTOR_2_WALL_VAL: {
@@ -531,7 +532,8 @@ void TerrainClass::create_renderQ_entities() {
     // Use the player's ground Y (undo vertical `z`) for render ordering so
     // jumping (which shifts the drawn rect by -z) doesn't change depth sorting.
     float playerGroundY = player.rect.y + player.z;
-    renderQueue.push_back(RenderQueueItem(static_cast<int>(playerGroundY - (tileSize / 2)), [](SDL_Renderer* renderer) { animation_player(renderer); }));
+    //  - (tileSize / 2)
+    renderQueue.push_back(RenderQueueItem(static_cast<int>(playerGroundY), [](SDL_Renderer* renderer) { animation_player(renderer); }));
 
     // add enemies to renderQ
     for (auto& e : enemyArray) {

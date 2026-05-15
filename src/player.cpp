@@ -98,11 +98,12 @@ namespace PlayerNS {
     }
 
     SDL_FPoint validate_velocity(SDL_FPoint newVelocity) {
-        SDL_FRect templatePlayerRect = {
-            player.x,
-            player.y,
-            player.size,
-            player.size
+        SDL_FRect templatePlayerRect =
+        {
+            player.x + (player.size / 4.0f),
+            player.y + (player.size / 8.0f),
+            player.size - (player.size / 2.0f),
+            player.size - (player.size / 4.0f)
         };
 
         SDL_FRect rectX = templatePlayerRect;
@@ -131,10 +132,18 @@ namespace PlayerNS {
         }
 
         player.rect = {
-            screenWidth / 2.0f - player.size / 2.0f,
-            screenHeight / 2.0f - player.size / 2.0f - player.z - groundOffsetAmount,
+            screenWidth / 2.0f, //  - player.size / 2.0f
+            screenHeight / 2.0f - player.z - groundOffsetAmount, //  - player.size / 2.0f
             player.size,
             player.size
+        };
+
+        // Update hitboxRect to stay relative to the visible `player.rect` each frame.
+        player.hitboxRect = {
+            player.rect.x + (player.size / 4.0f),
+            player.rect.y + (player.size / 8.0f),
+            player.rect.w - (player.size / 2.0f),
+            player.rect.h - (player.size / 4.0f)
         };
     }
 
@@ -273,6 +282,12 @@ namespace PlayerNS {
         player.x = static_cast<float>(spawnpointGrid.x * tileSize);
         player.y = static_cast<float>(spawnpointGrid.y * tileSize);
         player.rect = { 0.0f, 0.0f, player.size, player.size };
+        player.hitboxRect = {
+            player.rect.x + (player.size / 4.0f),
+            player.rect.y + (player.size / 8.0f),
+            player.rect.w - (player.size / 2.0f),
+            player.rect.h - (player.size / 2.0f)
+        };
         player.collision = false;
         player.collision_array = wallValues;
         player.movementVector = { 0, 0 };
@@ -339,6 +354,8 @@ namespace PlayerNS {
         if (debugText) {
             SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
             SDL_RenderRect(renderer, &player.rect);
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_RenderRect(renderer, &player.hitboxRect);
         }
     }
 }
