@@ -123,21 +123,16 @@ namespace PlayerNS {
     void update_rect() {
 
         // apply ground offset to player.y
-        auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
         int groundOffsetAmount = 0;
 
+        auto it = randomOffsetsGround.find(make_grid_key(player.grid.y, player.grid.x));
         if (it != randomOffsetsGround.end()) {
             groundOffsetAmount = it->second;
         }
 
-        // float x = player.x;  //  + player.size //  / 4.0f
-        // float y = player.y;  //  - player.size //  / 4.0f
-        SDL_FPoint coords = to_isometric_coordinate(player.x, player.y);
-
-
         player.rect = {
-            coords.x + offset.x, // - (player.size / 4) 
-            coords.y + offset.y - groundOffsetAmount - player.z, // - (player.size / 4) 
+            screenWidth / 2.0f - player.size / 2.0f,
+            screenHeight / 2.0f - player.size / 2.0f - player.z - groundOffsetAmount,
             player.size,
             player.size
         };
